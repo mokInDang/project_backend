@@ -44,8 +44,8 @@ jobs:
     - name: Setup MySQL
       uses: samin/mysql-action@v1
       with:
-        character set server: 'utf8mb4'
         mysql database: 'mockindangdb'
+        character set server: 'utf8mb4'
         mysql user: 'root'
         mysql password: 'qwerqwer'
         mysql ports: 3306
