@@ -39,6 +39,7 @@ jobs:
     - name : MYSQL setup
       uses: mirromutth/mysql-action@v1.1
       with:
+        character set server: 'utf8mb4'
         mysql version: '8.0.31'
         mysql database: 'mokindangdb'
         mysql user: 'root'
