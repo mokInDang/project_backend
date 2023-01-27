@@ -36,8 +36,9 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
         
+    
+    - uses: samin/mysql-action@v1
     - name: Setup MySql
-      uses: samin/mysql-action@v1
       with:
         mysql version: '8.0.31'
         mysql database: 'mokindangdb'
