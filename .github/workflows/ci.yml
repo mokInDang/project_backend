@@ -44,7 +44,7 @@ jobs:
       uses: samin/mysql-action@v1
       with:
         mysql version: '8.0.31'
-        mysql database: 'mockindangdb'
+        mysql database: 'mokindangdb'
         mysql user: 'root'
         mysql password: ${{ secrets.MYSQL_PASSWORD }}
 
