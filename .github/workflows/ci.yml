@@ -35,7 +35,14 @@ jobs:
       with:
         java-version: '11'
         distribution: 'temurin'
-    - name: Build with Gradle
-      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+        
+    - name: Setup MySQL
+      uses: samin/mysql-action@v1
       with:
-        arguments: build
+        character set server: 'utf8mb4'
+        mysql database: 'mokindangdb'
+        mysql user: 'root'
+        mysql password: 'qwerqwer'
+        
+    - name: Build with Gradle
+      run: ./gradlew clean build bootJar -x test —no-daemon
