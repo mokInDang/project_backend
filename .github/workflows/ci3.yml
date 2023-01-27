@@ -42,7 +42,7 @@ jobs:
         character set server: 'utf8mb4'
         mysql database: 'mokindangdb'
         mysql user: 'root'
-        mysql password: ${{secrets.MYSQL_PASSWORD}}
+        mysql password: 'qwerqwer'
         
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
