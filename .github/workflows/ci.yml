@@ -46,7 +46,7 @@ jobs:
         mysql version: '8.0.31'
         mysql database: 'mockindangdb'
         mysql user: 'root'
-        mysql password: 'qwerqwer'
+        mysql password: ${{ secrets.MYSQL_PASSWORD }}
 
         
     - name: Build with Gradle
