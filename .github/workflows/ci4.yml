@@ -20,9 +20,6 @@ on:
     - dev
     - feature/*
 
-permissions:
-  contents: read
-
 jobs:
   build:
 
@@ -43,14 +40,6 @@ jobs:
         mysql database: 'mokindangdb'
         mysql user: 'root'
         mysql password: 'qwerqwer'
-        
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-
-    - name: Build with Gradle
-      uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
-      with:
-        arguments: build
 
     - name: Build with Gradle
       run: ./gradlew build
