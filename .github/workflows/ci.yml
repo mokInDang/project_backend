@@ -39,13 +39,13 @@ jobs:
         uses: samin/mysql-action@v1
         with:
           character set server: 'utf8mb4'
+          mysql version: '8.0.31'
           mysql database: 'mokindangdb'
           mysql user: 'root'
           mysql password: 'qwerqwer'
           
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew     
-        
 
       - name: Build with Gradle
         run: ./gradlew build
