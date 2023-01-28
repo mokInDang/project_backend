@@ -11,7 +11,6 @@ class ProjectBackendApplicationTests {
 
     @Test
     void contextLoads() {
-        Assertions.assertThat(1+1).isEqualTo(2);
     }
 
 }
