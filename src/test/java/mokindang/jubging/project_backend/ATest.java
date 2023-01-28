@@ -4,10 +4,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ProjectBackendApplicationTests {
+public class ATest {
 
     @Test
-    void contextLoads() {
-    }
+    void a() {
+        //given
 
+        //when
+
+        //then
+    }
 }
