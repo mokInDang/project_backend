@@ -45,4 +45,4 @@ jobs:
         mysql password: ${{ secrets.MYSQL_PASSWORD }}
 
     - name: Build with Gradle
-      run: ./gradlew bootjar
+      run: ./gradlew clean build
