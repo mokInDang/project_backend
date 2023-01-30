@@ -1,19 +1,22 @@
 spring:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
 
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    url: jdbc:mysql://localhost:3306/mokindangdb?character_set_server=utf8mb4&allowPublicKeyRetrieval=true
-    password: qwerqwer
+    hikari:
+      jdbc-url: jdbc:h2:tcp://localhost/~/test
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
 
   jpa:
-    show-sql: true
-    open-in-view: false
+    database-platform: org.hibernate.dialect.H2Dialect
     properties:
       hibernate:
-        auto-ddl: create
         format_sql: true
-    database-platform: org.hibernate.dialect.MySQL8Dialect
-
-server:
-  port: 8080
+        show_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create
