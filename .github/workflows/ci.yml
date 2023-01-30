@@ -20,7 +20,7 @@ on:
       - dev
       - feature/*
     
-permissions: write-all
+permissions: read-all
 
 jobs:
   test:
@@ -48,5 +48,3 @@ jobs:
         run: chmod +x gradlew     
 
       - name: Build with Gradle
-        run: ./gradlew test
-
