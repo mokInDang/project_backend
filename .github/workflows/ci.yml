@@ -25,19 +25,21 @@ permissions: read-all
 jobs:
   test:
     runs-on: ubuntu-latest
+    
+    services:
+      mysql:
+          image: mysql:8.0.31
+          env:
+              MYSQL_DATABASE: mokindang
+              MYSQL_USER: root
+              MYSQL_PASSWORD: qwerqwer
+              MYSQL_ROOT_PASSWORD: qwerqwer
+          ports:
+              - 3306
+          options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
 
     steps:
-      - name: Setup MySQL
-        uses: mirromutth/mysql-action@v1.1
-        with:
-          host port: 3306
-          container port: 3306
-          mysql version: '8.0.31'
-          mysql database: mokindangdb
-          mysql user: 'root'
-          mysql password: 'qwerqwer'
           
-    
       - uses: actions/checkout@v3
       
       - name: Set up JDK 11
