@@ -36,9 +36,10 @@ jobs:
           distribution: 'temurin'
       
       - name: Setup MySQL
-        uses: samin/mysql-action@v1
+        uses: mirromutth/mysql-action@v1.1
         with:
           character set server: 'utf8mb4'
+          collation server: 'utf8mb4_general_ci'
           mysql version: '8.0.31'
           mysql database: 'mokindangdb'
           mysql user: 'root'
