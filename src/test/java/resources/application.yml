@@ -1,6 +1,4 @@
 spring:
-  profiles:
-    active: local
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -13,30 +11,9 @@ spring:
     open-in-view: false
     properties:
       hibernate:
+        auto-ddl: create
         format_sql: true
     database-platform: org.hibernate.dialect.MySQL8Dialect
 
 server:
   port: 8080
-
----
-
-spring:
-  config:
-    activate:
-      on-profile: local
-
-  jpa:
-    hibernate:
-      ddl-auto: create
-
----
-
-spring:
-  config:
-    activate:
-      on-profile: ci
-
-  jpa:
-    hibernate:
-      ddl-auto: validate
