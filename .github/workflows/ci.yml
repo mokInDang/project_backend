@@ -50,5 +50,5 @@ jobs:
       - name: mysql !!!!!
 
       - name: Build with Gradle
-        run: ./gradlew test -Pprofile=local
+        run: ./gradlew test
 
