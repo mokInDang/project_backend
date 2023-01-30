@@ -47,6 +47,9 @@ jobs:
           
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew     
+        
+      - name : docker
+        run : sudo docker ps -a
 
       - name: Build with Gradle
         run: ./gradlew test
