@@ -48,7 +48,7 @@ jobs:
         run: chmod +x gradlew     
         
       - name: mysql !!!!!
-        run: service mysql status
+        run: service mysql start
 
       - name: Build with Gradle
         run: ./gradlew build -Pprofile=local
