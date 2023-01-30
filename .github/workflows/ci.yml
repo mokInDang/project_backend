@@ -53,4 +53,7 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build
+  
+      - name: docker status
+        run: sudo docker ps -a
 
