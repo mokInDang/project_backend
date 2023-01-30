@@ -20,7 +20,7 @@ on:
       - dev
       - feature/*
     
-permissions: read-all
+permissions: write-all
 
 jobs:
   test:
