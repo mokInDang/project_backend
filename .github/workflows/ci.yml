@@ -40,7 +40,7 @@ jobs:
         run: sudo docker ps -a
         
       - name: access
-        run: docker exec -it mysql
+        run:  docker exec -it mysql /bin/bash
         
       - name: mysql access
         run: mysql -u root -p qwerqwer
