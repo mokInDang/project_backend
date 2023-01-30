@@ -48,7 +48,9 @@ jobs:
         run: chmod +x gradlew     
         
       - name: mysql !!!!!
-        run: service mysql start
+        run: |
+          sudo service mysql start
+          mysql -uroot -p qwerqwer -e "SHOW DATABASES"
 
       - name: Build with Gradle
         run: ./gradlew build -Pprofile=local
