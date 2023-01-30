@@ -43,8 +43,11 @@ jobs:
         run: sudo docker exec -i mysql /bin/bash
         
       - name: mysql access
-        run: mysql -u root -p qwerqwer
-        
+        run: mysql -u root -p
+
+      - name: mysql access -p
+        run: qwerqwer
+       
       - name: create db
         run: CREATE DATABASE mokindang CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
       
