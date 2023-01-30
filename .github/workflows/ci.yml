@@ -20,7 +20,7 @@ on:
       - dev
       - feature/*
     
-permissions: read-all
+permissions: write-all
 
 jobs:
   test:
@@ -38,7 +38,6 @@ jobs:
       - name: Setup MySQL
         uses: samin/mysql-action@v1
         with:
-          host port: '3306'
           character set server: 'utf8mb4'
           mysql version: '8.0.31'
           mysql database: 'mokindangdb'
@@ -49,6 +48,5 @@ jobs:
         run: chmod +x gradlew     
 
       - name: Build with Gradle
-        uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
-        with:
-          arguments: build
+        run: ./gradlew test
+
