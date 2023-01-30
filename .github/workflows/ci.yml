@@ -39,8 +39,8 @@ jobs:
       - name: docker status
         run: sudo docker ps -a
         
-      - name: access
-        run: sudo docker exec -i mysql mysql -u -p && qwerqwer && CREATE DATABASE mokindang CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+      - name: setup mysql
+        run: sudo docker exec mysql mysql -u -p && qwerqwer && CREATE DATABASE mokindang CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
               
       
       - name: Set up JDK 11
