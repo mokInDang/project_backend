@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,16 +41,31 @@ class MemberRepositoryTest {
 
     @Test
     @DisplayName("id가 주어지면 일치하는 멤버를 반환한다")
-    public void findOne() {
+    public void findOneById() {
         //given
         Member testMember = new Member("koho1047@naver.com", "고민호");
         Member saveMember = memberRepository.save(testMember);
 
         //when
-        Member findMember = memberRepository.findOne(saveMember.getId());
+        Member findMember = memberRepository.findById(saveMember.getId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID는 존재하지 않는 ID입니다."));
 
         //then
         assertThat(findMember).isEqualTo(saveMember);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 ID가 주어지면 예외를 반환한다.")
+    public void findOneById_error() {
+        //given
+        Member testMember = new Member("koho1047@naver.com", "고민호");
+        Member saveMember = memberRepository.save(testMember);
+
+        //when
+
+        //then
+        assertThatThrownBy(() -> memberRepository.findById(3L)
+                .orElseThrow(() -> new IllegalArgumentException())).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -64,40 +80,6 @@ class MemberRepositoryTest {
 
         //then
         assertThat(findMember).isEqualTo(saveMember);
-    }
-
-    @Test
-    @DisplayName("alias가 주어지면 일치하는 멤버를 반환한다(이름 중복 없는 경우).")
-    public void findByAlias() {
-        //given
-        Member member1 = new Member("abc123@naver.com", "고민호");
-        Member saveMember1 = memberRepository.save(member1);
-
-        //when
-        List<Member> findMembers = memberRepository.findByAlias(saveMember1.getAlias());
-        Member findMember = findMembers.get(0);
-        String findAlias = findMember.getAlias();
-
-        //then
-        assertThat(findMember).isEqualTo(saveMember1);
-        assertThat(findAlias).isEqualTo("고민호");
-    }
-
-    @Test
-    @DisplayName("alias가 주어지면 일치하는 모든 멤버들을 반환한다.")
-    public void findByAlias_중복_alias() {
-        //given
-        Member member1 = new Member("abc123@naver.com", "고민호");
-        Member member2 = new Member("test789@naver.com", "고민호");
-        Member saveMember1 = memberRepository.save(member1);
-        Member saveMember2 = memberRepository.save(member2);
-
-
-        //when
-        List<Member> findMembers = memberRepository.findByAlias("고민호");
-
-        //then
-        assertThat(findMembers).contains(saveMember1,saveMember2);
     }
 
     @Test
