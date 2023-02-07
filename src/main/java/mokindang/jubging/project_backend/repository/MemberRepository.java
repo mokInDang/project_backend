@@ -2,40 +2,14 @@ package mokindang.jubging.project_backend.repository;
 
 import lombok.RequiredArgsConstructor;
 import mokindang.jubging.project_backend.domain.member.Member;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 
 @Repository
-@RequiredArgsConstructor
-public class MemberRepository {
+public interface MemberRepository extends JpaRepository<Member, Long> {
 
-    private final EntityManager em;
-
-    public Member save(Member member) {
-        em.persist(member);
-        return member;
-    }
-
-    public Member findOne(Long id) {
-        return em.find(Member.class,id);
-    }
-
-    public Member findOneByEmail(String email) {
-        return em.createQuery("select m from Member m where m.email = :email", Member.class)
-                .setParameter("email", email)
-                .getSingleResult();
-    }
-
-    public List<Member> findByAlias(String alias) {
-        return em.createQuery("select m from Member m where m.alias = :alias", Member.class)
-                .setParameter("alias", alias)
-                .getResultList();
-    }
-
-    public List<Member> findAll() {
-        return em.createQuery("select m from Member m", Member.class)
-                .getResultList();
-    }
+    <Optional> Member findOneByEmail(String email);
 }
