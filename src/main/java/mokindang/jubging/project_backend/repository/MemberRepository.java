@@ -7,9 +7,10 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
-    Member findOneByEmail(String email);
+    Optional<Member> findOneByEmail(String email);
 }
