@@ -47,8 +47,7 @@ class MemberRepositoryTest {
         Member saveMember = memberRepository.save(testMember);
 
         //when
-        Member findMember = memberRepository.findById(saveMember.getId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID는 존재하지 않는 ID입니다."));
+        Member findMember = memberRepository.findById(saveMember.getId()).get();
 
         //then
         assertThat(findMember).isEqualTo(saveMember);
@@ -76,10 +75,24 @@ class MemberRepositoryTest {
         Member saveMember = memberRepository.save(testMember);
 
         //when
-        Member findMember = memberRepository.findOneByEmail(saveMember.getEmail());
+        Member findMember = memberRepository.findOneByEmail(saveMember.getEmail()).get();
 
         //then
         assertThat(findMember).isEqualTo(saveMember);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 email이 주어지면 null을 반환한다.")
+    public void findOneByEmail_error() {
+        //given
+        Member testMember = new Member("koho1047@naver.com", "고민호");
+        Member saveMember = memberRepository.save(testMember);
+
+        //when
+        Member findMember = memberRepository.findOneByEmail("abc12345@naver.com").orElse(null);
+
+        //then
+        assertNull(findMember);
     }
 
     @Test
