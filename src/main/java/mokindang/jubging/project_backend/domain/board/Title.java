@@ -4,15 +4,19 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import java.util.Objects;
 
 
 @Getter
+@Embeddable
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Title {
 
     private static final int MAXIMUM_TITLE_SIZE = 140;
 
+    @Column(nullable = false)
     private String value;
 
     public Title(final String value) {
