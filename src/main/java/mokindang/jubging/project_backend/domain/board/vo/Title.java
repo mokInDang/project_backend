@@ -16,7 +16,7 @@ public class Title {
 
     private static final int MAXIMUM_TITLE_SIZE = 140;
 
-    @Column(nullable = false)
+    @Column(name = "title", nullable = false)
     private String value;
 
     public Title(final String value) {
