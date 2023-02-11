@@ -1,25 +1,25 @@
 package mokindang.jubging.project_backend.repository;
 
 import mokindang.jubging.project_backend.domain.member.Member;
-import org.assertj.core.api.Assertions;
+import mokindang.jubging.project_backend.repository.member.MemberRepository;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@Transactional
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class MemberRepositoryTest {
 
-    @Autowired MemberRepository memberRepository;
+    @Autowired
+    private MemberRepository memberRepository;
 
     @Test
     @DisplayName("멤버의 email 과 alias를 데이터베이스에 저장한다.")
@@ -41,58 +41,62 @@ class MemberRepositoryTest {
 
     @Test
     @DisplayName("id가 주어지면 일치하는 멤버를 반환한다")
-    public void findOneById() {
+    public void findById() {
         //given
         Member testMember = new Member("koho1047@naver.com", "고민호");
         Member saveMember = memberRepository.save(testMember);
 
         //when
-        Member findMember = memberRepository.findById(saveMember.getId()).get();
+        Member findMember = memberRepository.findById(saveMember.getId())
+                                            .get();
 
         //then
         assertThat(findMember).isEqualTo(saveMember);
     }
 
     @Test
-    @DisplayName("존재하지 않는 ID가 주어지면 예외를 반환한다.")
-    public void findOneById_error() {
+    @DisplayName("존재하지 않는 ID가 주어지면 아무것도 반환하지 않는다.")
+    public void findByIdError() {
         //given
+        Long testId = 10L;
         Member testMember = new Member("koho1047@naver.com", "고민호");
-        Member saveMember = memberRepository.save(testMember);
+        memberRepository.save(testMember);
 
         //when
+        Optional<Member> findMember = memberRepository.findById(testId);
 
         //then
-        assertThatThrownBy(() -> memberRepository.findById(3L)
-                .orElseThrow(() -> new IllegalArgumentException())).isInstanceOf(IllegalArgumentException.class);
+        assertThat(findMember).isEmpty();
+
     }
 
     @Test
     @DisplayName("email이 주어지면 일치하는 멤버를 반환한다.")
-    public void findOneByEmail() {
+    public void findByEmail() {
         //given
         Member testMember = new Member("koho1047@naver.com", "고민호");
         Member saveMember = memberRepository.save(testMember);
 
         //when
-        Member findMember = memberRepository.findOneByEmail(saveMember.getEmail()).get();
+        Member findMember = memberRepository.findByEmail(saveMember.getEmail())
+                                            .get();
 
         //then
         assertThat(findMember).isEqualTo(saveMember);
     }
 
     @Test
-    @DisplayName("존재하지 않는 email이 주어지면 null을 반환한다.")
-    public void findOneByEmail_error() {
+    @DisplayName("존재하지 않는 email이 주어지면 아무것도 반환하지 않는다.")
+    public void findByEmailError() {
         //given
         Member testMember = new Member("koho1047@naver.com", "고민호");
         Member saveMember = memberRepository.save(testMember);
 
         //when
-        Member findMember = memberRepository.findOneByEmail("abc12345@naver.com").orElse(null);
+        Optional<Member> findMember = memberRepository.findByEmail("abc12345@naver.com");
 
         //then
-        assertNull(findMember);
+        assertThat(findMember).isEmpty();
     }
 
     @Test
@@ -110,5 +114,4 @@ class MemberRepositoryTest {
         //then
         assertThat(members).contains(saveMember1,saveMember2);
     }
-
 }
