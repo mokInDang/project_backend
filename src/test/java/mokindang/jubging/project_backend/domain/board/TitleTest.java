@@ -40,5 +40,4 @@ class TitleTest {
                 Arguments.of("a".repeat(141))
         );
     }
-
 }
