@@ -1,4 +1,4 @@
-package mokindang.jubging.project_backend.domain.board;
+package mokindang.jubging.project_backend.domain.board.vo;
 
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -3,6 +3,8 @@ package mokindang.jubging.project_backend.domain.board;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import mokindang.jubging.project_backend.domain.board.vo.Content;
+import mokindang.jubging.project_backend.domain.board.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
 
 import javax.persistence.*;
