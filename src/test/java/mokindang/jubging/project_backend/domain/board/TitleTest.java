@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
@@ -39,5 +40,19 @@ class TitleTest {
                 Arguments.of(" "),
                 Arguments.of("a".repeat(141))
         );
+    }
+
+    @Test
+    @DisplayName("제목 내용을 반환한다.")
+    void getValue() {
+        //given
+        String sampleTitle = "테스트용 제목입니다.";
+        Title title = new Title(sampleTitle);
+
+        //when
+        String actual = title.getValue();
+
+        //then
+        assertThat(actual).isEqualTo(sampleTitle);
     }
 }
