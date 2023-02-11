@@ -1,6 +1,6 @@
 package mokindang.jubging.project_backend.security.kakao;
 
-import mokindang.jubging.project_backend.domain.member.MemberDto;
+import mokindang.jubging.project_backend.service.member.dto.KakaoApiMemberResponse;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -29,19 +29,16 @@ public class KaKaoOAuth2 {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
-        // HttpBody 오브젝트 생성
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
         params.add("client_id", "60b35611c843f6c8f618a495ecc8eaf6");
         params.add("redirect_uri", "http://localhost:8080/api/member/join");
         params.add("code", authorizationCode);
 
-        // HttpHeader와 HttpBody를 하나의 오브젝트에 담기
         RestTemplate rt = new RestTemplate();
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest =
                 new HttpEntity<>(params, headers);
 
-        // Http 요청하기 - Post방식으로 - 그리고 response 변수의 응답 받음.
         ResponseEntity<String> response = rt.exchange(
                 "https://kauth.kakao.com/oauth/token",
                 HttpMethod.POST,
@@ -49,7 +46,6 @@ public class KaKaoOAuth2 {
                 String.class
         );
 
-        // JSON -> 액세스 토큰 파싱
         String tokenJson = response.getBody();
         JSONObject rjson = new JSONObject(tokenJson);
         String accessToken = rjson.getString("access_token");
@@ -70,16 +66,13 @@ public class KaKaoOAuth2 {
         String accessToken = (String) tokenList.get(0);
         String refreshToken = (String) tokenList.get(1);
 
-        // HttpHeader 오브젝트 생성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
-        // HttpHeader와 HttpBody를 하나의 오브젝트에 담기
         RestTemplate rt = new RestTemplate();
         HttpEntity<MultiValueMap<String, String>> kakaoProfileRequest = new HttpEntity<>(headers);
 
-        // Http 요청하기 - Post방식으로 - 그리고 response 변수의 응답 받음.
         ResponseEntity<String> response = rt.exchange(
                 "https://kapi.kakao.com/v2/user/me",
                 HttpMethod.POST,
