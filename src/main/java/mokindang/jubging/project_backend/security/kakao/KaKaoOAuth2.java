@@ -17,15 +17,13 @@ import java.util.List;
 @Component
 public class KaKaoOAuth2 {
 
-    public MemberDto getMemberDto(String authorizationCode) {
-        //인가코드 -> 액세스 토큰, 리프레쉬 토큰
-        List<Object> tokens = getToken(authorizationCode);
+    public KakaoApiMemberResponse getMemberDto(String authorizationCode) {
+        List<Object> tokens = callKakaoApiToken(authorizationCode);
 
-        //엑세스 코드로 회원 정보 가져오기
-        return getMemberDto(tokens);
+        return getMemberInformation(tokens);
     }
 
-    public List<Object> getToken(String authorizationCode) {
+    public List<Object> callKakaoApiToken(String authorizationCode) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
@@ -55,13 +53,10 @@ public class KaKaoOAuth2 {
         tokenList.add(accessToken);
         tokenList.add(refreshToken);
 
-        System.out.println("access token:" + accessToken);
-        System.out.println("refresh token:" + refreshToken);
-
         return tokenList;
     }
 
-    public MemberDto getMemberDto(List<Object> tokenList) {
+    public KakaoApiMemberResponse getMemberInformation(List<Object> tokenList) {
 
         String accessToken = (String) tokenList.get(0);
         String refreshToken = (String) tokenList.get(1);
@@ -84,7 +79,7 @@ public class KaKaoOAuth2 {
         String alias = body.getJSONObject("properties").getString("nickname");
         String email = body.getJSONObject("kakao_account").getString("email");
 
-        return new MemberDto(accessToken, refreshToken, alias, email);
+        return new KakaoApiMemberResponse(accessToken, refreshToken, alias, email);
     }
 
 }
