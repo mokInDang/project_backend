@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Lob;
 import java.util.Objects;
@@ -15,6 +16,7 @@ public class Content {
     private static final int MAXIMUM_CONTENT_SIZE = 4000;
 
     @Lob
+    @Column(nullable = false)
     private String value;
 
     public Content(final String value) {
