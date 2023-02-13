@@ -2,13 +2,15 @@ package mokindang.jubging.project_backend.controller.authentication;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import mokindang.jubging.project_backend.service.member.dto.LoginResponseDto;
 import mokindang.jubging.project_backend.domain.member.MemberState;
-import mokindang.jubging.project_backend.service.member.dto.MemberStateDto;
 import mokindang.jubging.project_backend.service.member.MemberService;
+import mokindang.jubging.project_backend.service.member.dto.LoginResponseDto;
+import mokindang.jubging.project_backend.service.member.dto.LoginStateDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
@@ -17,14 +19,17 @@ public class AuthenticationController {
 
     private final MemberService memberService;
 
-    @GetMapping("api/member/join")
+    @GetMapping("/api/member/join")
     public ResponseEntity<LoginResponseDto> kakaoCallback(@RequestParam String code) {
-        MemberStateDto memberStateDto = memberService.login(code);
+        LoginStateDto loginStateDto = memberService.login(code);
         LoginResponseDto loginResponseDto =
-                new LoginResponseDto(memberStateDto.getAccessToken(),memberStateDto.getRefreshToken(), memberStateDto.getAlias());
-        if (memberStateDto.getMemberState() == MemberState.JOIN) {
-            return new ResponseEntity<>(loginResponseDto, HttpStatus.CREATED);
+                new LoginResponseDto(loginStateDto.getAccessToken(), loginStateDto.getRefreshToken(), loginStateDto.getAlias());
+
+        if (loginStateDto.getMemberState() == MemberState.JOIN) {
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(loginResponseDto);
         }
-        return new ResponseEntity<>(loginResponseDto,HttpStatus.OK);
+        return ResponseEntity.ok()
+                .body(loginResponseDto);
     }
 }
