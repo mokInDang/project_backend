@@ -20,9 +20,8 @@ public class AuthenticationController {
     @GetMapping("api/member/join")
     public ResponseEntity<LoginResponseDto> kakaoCallback(@RequestParam String code) {
         MemberStateDto memberStateDto = memberService.login(code);
-        LoginResponseDto loginResponseDto = new LoginResponseDto(memberStateDto.getAccessToken(),
-                                                memberStateDto.getRefreshToken(), memberStateDto.getAlias());
-
+        LoginResponseDto loginResponseDto =
+                new LoginResponseDto(memberStateDto.getAccessToken(),memberStateDto.getRefreshToken(), memberStateDto.getAlias());
         if (memberStateDto.getMemberState() == MemberState.JOIN) {
             return new ResponseEntity<>(loginResponseDto, HttpStatus.CREATED);
         }
