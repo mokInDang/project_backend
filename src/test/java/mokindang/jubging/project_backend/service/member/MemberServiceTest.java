@@ -2,10 +2,10 @@ package mokindang.jubging.project_backend.service.member;
 
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.member.MemberState;
-import mokindang.jubging.project_backend.service.member.dto.MemberStateDto;
 import mokindang.jubging.project_backend.repository.member.MemberRepository;
 import mokindang.jubging.project_backend.security.kakao.KaKaoOAuth2;
 import mokindang.jubging.project_backend.service.member.dto.KakaoApiMemberResponse;
+import mokindang.jubging.project_backend.service.member.dto.LoginStateDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,10 +46,10 @@ class MemberServiceTest {
         Mockito.when(kakaoOAuth2.getMemberDto("testAuthorizationCode")).thenReturn(memberDto);
 
         //when
-        MemberStateDto memberStateDto = memberService.login("testAuthorizationCode");
+        LoginStateDto loginStateDto = memberService.login("testAuthorizationCode");
 
         //then
-        Assertions.assertThat(memberStateDto.getMemberState()).isEqualTo(MemberState.JOIN);
+        Assertions.assertThat(loginStateDto.getMemberState()).isEqualTo(MemberState.JOIN);
     }
 
     @Test
@@ -64,9 +64,9 @@ class MemberServiceTest {
         Mockito.when(kakaoOAuth2.getMemberDto("testAuthorizationCode")).thenReturn(memberDto);
 
         //when
-        MemberStateDto memberStateDto = memberService.login("testAuthorizationCode");
+        LoginStateDto loginStateDto = memberService.login("testAuthorizationCode");
 
         //then
-        Assertions.assertThat(memberStateDto.getMemberState()).isEqualTo(MemberState.LOGIN);
+        Assertions.assertThat(loginStateDto.getMemberState()).isEqualTo(MemberState.LOGIN);
     }
 }
