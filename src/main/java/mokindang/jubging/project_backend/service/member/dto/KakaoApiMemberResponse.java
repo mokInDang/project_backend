@@ -1,15 +1,14 @@
 package mokindang.jubging.project_backend.service.member.dto;
 
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class KakaoApiMemberResponse {
-
-    private String accessToken;
-    private String refreshToken;
-    private String alias;
-    private String email;
+    private final String accessToken;
+    private final String refreshToken;
+    private final String alias;
+    private final String email;
 }

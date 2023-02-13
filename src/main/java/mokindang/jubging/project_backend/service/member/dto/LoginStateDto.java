@@ -6,7 +6,8 @@ import mokindang.jubging.project_backend.domain.member.MemberState;
 
 @Getter
 @RequiredArgsConstructor
-public class MemberStateDto {
+public class LoginStateDto {
+
     private final String accessToken;
     private final String refreshToken;
     private final String alias;
