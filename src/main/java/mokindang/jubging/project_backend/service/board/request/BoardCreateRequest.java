@@ -2,6 +2,7 @@ package mokindang.jubging.project_backend.service.board.request;
 
 import com.sun.istack.NotNull;
 import lombok.Getter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -18,6 +19,7 @@ public class BoardCreateRequest {
     private final String activityCategory;
 
     @NotNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private final LocalDate startDate;
 
     public BoardCreateRequest(final String title, final String content, final String activityCategory, final LocalDate startDate) {
