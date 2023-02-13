@@ -32,8 +32,8 @@ public class MemberService {
             Member newMember = memberRepository.save(new Member(memberDto.getEmail(), memberDto.getAlias()));
             return new MemberStateDto(memberDto.getAccessToken(), memberDto.getRefreshToken(), newMember.getAlias(), JOIN);
         }
-        return new MemberStateDto(memberDto.getAccessToken(), memberDto.getRefreshToken(),
-                member.orElseThrow(IllegalArgumentException::new).getAlias(),LOGIN);
+        return new MemberStateDto(memberDto.getAccessToken(),
+                memberDto.getRefreshToken(), member.orElseThrow(IllegalArgumentException::new).getAlias(),LOGIN);
     }
     public Member findByMemberId(Long memberId) {
         return memberRepository.findById(memberId)
