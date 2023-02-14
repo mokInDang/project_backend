@@ -8,6 +8,7 @@ import mokindang.jubging.project_backend.web.argumentresolver.Login;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,7 +21,7 @@ public class BoardController {
     private final BoardService boardService;
 
     @PostMapping
-    public ResponseEntity<Void> write(@Login Long memberId, final BoardCreateRequest boardCreateRequest) {
+    public ResponseEntity<Void> write(@Login Long memberId, @RequestBody final BoardCreateRequest boardCreateRequest) {
         log.info("memberId = {} 의 새글작성", memberId);
         boardService.write(memberId, boardCreateRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
