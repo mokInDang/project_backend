@@ -2,11 +2,13 @@ package mokindang.jubging.project_backend.service.board.request;
 
 import com.sun.istack.NotNull;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
 @Getter
+@RequiredArgsConstructor
 public class BoardCreateRequest {
 
     @NotNull
@@ -21,11 +23,4 @@ public class BoardCreateRequest {
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private final LocalDate startDate;
-
-    public BoardCreateRequest(final String title, final String content, final String activityCategory, final LocalDate startDate) {
-        this.title = title;
-        this.content = content;
-        this.activityCategory = activityCategory;
-        this.startDate = startDate;
-    }
 }
