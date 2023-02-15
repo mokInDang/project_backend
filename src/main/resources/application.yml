@@ -30,6 +30,14 @@ spring:
     hibernate:
       ddl-auto: create
 
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: always
+      data-locations:
+        - classpath:data.sql
+
 ---
 
 spring:
