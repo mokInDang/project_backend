@@ -1,7 +1,6 @@
 package mokindang.jubging.project_backend.controller.board;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,7 +26,6 @@ public class BoardController {
     private final BoardService boardService;
 
     @Operation(summary = "새글작성")
-    @Parameter()
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "새글작성"),
             @ApiResponse(responseCode = "400", description = "유효하지 않은 유저"),
