@@ -30,7 +30,8 @@ public class BoardController {
             @ApiResponse(responseCode = "201", description = "새글작성"),
             @ApiResponse(responseCode = "400", description = "유효하지 않은 유저"),
             @ApiResponse(responseCode = "400", description = "유효하지 않은 본문내용"),
-            @ApiResponse(responseCode = "400", description = "유효하지 않은 제목")
+            @ApiResponse(responseCode = "400", description = "유효하지 않은 제목"),
+            @ApiResponse(responseCode = "400", description = "유효하지 않은 활동 시작일")
     })
     @PostMapping
     public ResponseEntity<Void> write(@Login Long memberId, @RequestBody final BoardCreateRequest boardCreateRequest) {
