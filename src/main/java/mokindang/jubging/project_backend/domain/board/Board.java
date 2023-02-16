@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mokindang.jubging.project_backend.domain.board.vo.Content;
+import mokindang.jubging.project_backend.domain.board.vo.StartingDate;
 import mokindang.jubging.project_backend.domain.board.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
 
@@ -25,7 +26,8 @@ public class Board {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private LocalDate startDate;
+    @Embedded
+    private StartingDate startDate;
 
     @Enumerated(EnumType.STRING)
     private ActivityCategory activityCategory;
@@ -38,7 +40,7 @@ public class Board {
 
     public Board(final Member member, final LocalDate startDate, final String activityCategory, final String title, final String content) {
         this.member = member;
-        this.startDate = startDate;
+        this.startDate = new StartingDate(LocalDate.now(), startDate);
         this.activityCategory = ActivityCategory.from(activityCategory);
         this.title = new Title(title);
         this.content = new Content(content);

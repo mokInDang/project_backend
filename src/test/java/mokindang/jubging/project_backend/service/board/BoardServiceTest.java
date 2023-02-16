@@ -37,7 +37,7 @@ class BoardServiceTest {
         when(memberService.findByMemberId(anyLong())).thenReturn(member);
 
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest("제목", "본문내용", "달리기",
-                LocalDate.of(2023, 2, 12));
+                LocalDate.of(2025, 2, 12));
 
         //when
         boardService.write(1L, boardCreateRequest);
