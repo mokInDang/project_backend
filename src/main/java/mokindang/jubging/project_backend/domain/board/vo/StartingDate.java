@@ -13,17 +13,21 @@ import java.util.Objects;
 public class StartingDate {
 
     @Column(name = "starting_date", nullable = false)
-    private LocalDate value;
+    private LocalDate startingDate;
 
     public StartingDate(final LocalDate currentDate, final LocalDate startingDate) {
         validateDate(currentDate, startingDate);
-        this.value = startingDate;
+        this.startingDate = startingDate;
     }
 
     private void validateDate(final LocalDate currentDate, final LocalDate startingDate) {
         if (currentDate.isAfter(startingDate)) {
             throw new IllegalArgumentException("이미 지난 날짜는 활동 시작일로 할 수 없습니다.");
         }
+    }
+
+    public boolean isPassed(final LocalDate now) {
+        return startingDate.isBefore(now);
     }
 
     @Override
@@ -33,11 +37,11 @@ public class StartingDate {
 
         final StartingDate that = (StartingDate) o;
 
-        return Objects.equals(value, that.value);
+        return Objects.equals(startingDate, that.startingDate);
     }
 
     @Override
     public int hashCode() {
-        return value != null ? value.hashCode() : 0;
+        return startingDate != null ? startingDate.hashCode() : 0;
     }
 }

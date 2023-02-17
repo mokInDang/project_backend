@@ -11,7 +11,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.*;
@@ -25,14 +28,18 @@ class BoardServiceTest {
     @Mock
     private BoardRepository boardRepository;
 
+    @Mock
+    private Clock clock;
+
     @InjectMocks
     private BoardService boardService;
-
 
     @Test
     @DisplayName("해당하는 유저가 작성한 게시글을 저장한다.")
     void write() {
         //given
+        when(clock.instant()).thenReturn(Instant.parse("2022-08-10T00:00:00Z"));
+        when(clock.getZone()).thenReturn(ZoneId.systemDefault());
         Member member = mock(Member.class);
         when(memberService.findByMemberId(anyLong())).thenReturn(member);
 
@@ -47,7 +54,7 @@ class BoardServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 유저가 게시글 저장 시 , 예외를 발생한다.")
+    @DisplayName("존재하지 않는 유저가 게시글 저장 시, 예외를 발생한다.")
     void writeFailedByNonexistentMember() {
         //given
         when(memberService.findByMemberId(anyLong())).thenThrow(new IllegalArgumentException("해당하는 유저가 존재하지 않습니다."));
