@@ -12,8 +12,8 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
-@Entity
 @Getter
+@Entity
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Board {
 
@@ -27,7 +27,7 @@ public class Board {
     private Member member;
 
     @Embedded
-    private StartingDate startDate;
+    private StartingDate startingDate;
 
     @Enumerated(EnumType.STRING)
     private ActivityCategory activityCategory;
@@ -38,12 +38,23 @@ public class Board {
     @Embedded
     private Content content;
 
-    public Board(final Member member, final LocalDate startDate, final String activityCategory, final String title, final String content) {
+    private boolean onRecruitment;
+
+    public Board(final Member member, final LocalDate startingDate, final String activityCategory, final String title, final String content, final LocalDate now) {
         this.member = member;
-        this.startDate = new StartingDate(LocalDate.now(), startDate);
+        this.startingDate = new StartingDate(now, startingDate);
         this.activityCategory = ActivityCategory.from(activityCategory);
         this.title = new Title(title);
         this.content = new Content(content);
+        this.onRecruitment = true;
+    }
+
+    public boolean isOver(final LocalDate now) {
+        return !onRecruitment || startingDate.isPassed(now);
+    }
+
+    public void closeRecruitment() {
+        this.onRecruitment = false;
     }
 
     @Override
