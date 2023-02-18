@@ -28,5 +28,5 @@ public class BoardCreateRequest {
     @NotNull
     @Schema(description = "활동 시작일", example = "2023-11-23", pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private final LocalDate startDate;
+    private final LocalDate startingDate;
 }

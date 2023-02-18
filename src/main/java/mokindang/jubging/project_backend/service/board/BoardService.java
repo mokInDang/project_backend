@@ -25,7 +25,7 @@ public class BoardService {
     public void write(final Long memberId, final BoardCreateRequest boardCreateRequest) {
         Member member = memberService.findByMemberId(memberId);
         LocalDate now = LocalDate.now(clock);
-        Board board = new Board(member, boardCreateRequest.getStartDate(), boardCreateRequest.getActivityCategory(),
+        Board board = new Board(member, boardCreateRequest.getStartingDate(), boardCreateRequest.getActivityCategory(),
                 boardCreateRequest.getTitle(), boardCreateRequest.getContent(), now);
         boardRepository.save(board);
     }
