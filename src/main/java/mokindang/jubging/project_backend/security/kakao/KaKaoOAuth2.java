@@ -1,6 +1,6 @@
 package mokindang.jubging.project_backend.security.kakao;
 
-import mokindang.jubging.project_backend.service.dto.KakaoApiMemberResponse;
+import mokindang.jubging.project_backend.service.member.response.KakaoApiMemberResponse;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

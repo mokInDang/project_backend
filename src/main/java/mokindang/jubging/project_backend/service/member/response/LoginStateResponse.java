@@ -1,4 +1,4 @@
-package mokindang.jubging.project_backend.service.dto;
+package mokindang.jubging.project_backend.service.member.response;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -6,7 +6,7 @@ import mokindang.jubging.project_backend.domain.member.LoginState;
 
 @Getter
 @RequiredArgsConstructor
-public class LoginStateDto {
+public class LoginStateResponse {
 
     private final String accessToken;
     private final String refreshToken;
