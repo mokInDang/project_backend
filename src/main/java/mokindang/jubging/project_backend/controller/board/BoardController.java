@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @Slf4j
 @Tag(name = "게시판", description = "게시판 관련 api")
 @RequestMapping("/api/boards")
@@ -37,7 +39,7 @@ public class BoardController {
                     "유효하지 않은 활동 시작일", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @PostMapping
-    public ResponseEntity<Void> write(@Login Long memberId, @RequestBody final BoardCreateRequest boardCreateRequest) {
+    public ResponseEntity<Void> write(@Login Long memberId, @Valid @RequestBody final BoardCreateRequest boardCreateRequest) {
         log.info("memberId = {} 의 새글작성", memberId);
         boardService.write(memberId, boardCreateRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
