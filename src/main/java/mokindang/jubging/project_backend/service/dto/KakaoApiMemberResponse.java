@@ -1,4 +1,4 @@
-package mokindang.jubging.project_backend.service.member.dto;
+package mokindang.jubging.project_backend.service.dto;
 
 
 import lombok.Getter;
