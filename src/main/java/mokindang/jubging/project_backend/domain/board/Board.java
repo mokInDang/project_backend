@@ -49,10 +49,6 @@ public class Board {
         this.onRecruitment = true;
     }
 
-    public boolean isOver(final LocalDate now) {
-        return !onRecruitment || startingDate.isPassed(now);
-    }
-
     public void closeRecruitment() {
         this.onRecruitment = false;
     }

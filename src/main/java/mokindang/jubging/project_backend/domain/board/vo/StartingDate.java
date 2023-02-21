@@ -26,10 +26,6 @@ public class StartingDate {
         }
     }
 
-    public boolean isPassed(final LocalDate now) {
-        return startingDate.isBefore(now);
-    }
-
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
