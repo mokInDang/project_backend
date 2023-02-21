@@ -1,4 +1,4 @@
-package mokindang.jubging.project_backend.service.dto;
+package mokindang.jubging.project_backend.service.member.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 public class RefreshTokenRequest {
 
     private String refreshToken;
-
     public RefreshTokenRequest(String refreshToken) {
         this.refreshToken = refreshToken;
     }
