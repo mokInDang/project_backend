@@ -3,7 +3,6 @@ package mokindang.jubging.project_backend.service.board.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import mokindang.jubging.project_backend.domain.board.ActivityCategory;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
@@ -28,7 +27,7 @@ public class BoardCreateRequest {
     @NotNull
     @NotBlank
     @Schema(description = "활동 종류", example = "달리기", allowableValues = {"달리기", "산책"})
-    private final ActivityCategory activityCategory;
+    private final String activityCategory;
 
     @NotNull
     @NotBlank

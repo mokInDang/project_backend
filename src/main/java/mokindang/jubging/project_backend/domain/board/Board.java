@@ -40,10 +40,10 @@ public class Board {
 
     private boolean onRecruitment;
 
-    public Board(final Member member, final LocalDate startingDate, final ActivityCategory activityCategory, final String title, final String content, final LocalDate now) {
+    public Board(final Member member, final LocalDate startingDate, final String activityCategory, final String title, final String content, final LocalDate now) {
         this.member = member;
         this.startingDate = new StartingDate(now, startingDate);
-        this.activityCategory = activityCategory;
+        this.activityCategory = ActivityCategory.from(activityCategory);
         this.title = new Title(title);
         this.content = new Content(content);
         this.onRecruitment = true;
