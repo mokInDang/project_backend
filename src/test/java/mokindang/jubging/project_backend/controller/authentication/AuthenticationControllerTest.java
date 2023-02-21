@@ -3,10 +3,10 @@ package mokindang.jubging.project_backend.controller.authentication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.JwtException;
 import mokindang.jubging.project_backend.domain.member.LoginState;
-import mokindang.jubging.project_backend.service.dto.JwtResponse;
-import mokindang.jubging.project_backend.service.dto.LoginStateDto;
-import mokindang.jubging.project_backend.service.dto.RefreshTokenRequest;
 import mokindang.jubging.project_backend.service.member.MemberService;
+import mokindang.jubging.project_backend.service.member.request.RefreshTokenRequest;
+import mokindang.jubging.project_backend.service.member.response.JwtResponse;
+import mokindang.jubging.project_backend.service.member.response.LoginStateResponse;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,11 +17,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AuthenticationController.class)
 class AuthenticationControllerTest {
@@ -47,9 +47,9 @@ class AuthenticationControllerTest {
     @DisplayName("회원가입 시 HTTP 상태코드는 201(CREATED)이며 Alias를 JSON으로 반환한다. Access Token 과 Refresh Token 은 Authorization 헤더에 담아 반환한다.")
     void joinAndState201() throws Exception{
         //given
-        LoginStateDto loginStateDto = new LoginStateDto("Test Access Token", "Test Refresh Token", "Test Alias", LoginState.JOIN);
+        LoginStateResponse loginStateResponse = new LoginStateResponse("Test Access Token", "Test Refresh Token", "Test Alias", LoginState.JOIN);
 
-        when(memberService.login(any())).thenReturn(loginStateDto);
+        when(memberService.login(any())).thenReturn(loginStateResponse);
 
         //when
         ResultActions resultActions = mockMvc.perform(get("/api/member/join?code=testcode")
@@ -65,9 +65,9 @@ class AuthenticationControllerTest {
     @DisplayName("로그인 시 HTTP 상태코드는 200(OK)이며 Alias를 JSON으로 반환한다. Access Token 과 Refresh Token 은 Authorization 헤더에 담아 반환한다.")
     void loginAndState200() throws Exception{
         //given
-        LoginStateDto loginStateDto = new LoginStateDto("Test Access Token", "Test Refresh Token", "Test Alias", LoginState.LOGIN);
+        LoginStateResponse loginStateResponse = new LoginStateResponse("Test Access Token", "Test Refresh Token", "Test Alias", LoginState.LOGIN);
 
-        when(memberService.login(any())).thenReturn(loginStateDto);
+        when(memberService.login(any())).thenReturn(loginStateResponse);
 
         //when
         ResultActions resultActions = mockMvc.perform(get("/api/member/join?code=testcode")
