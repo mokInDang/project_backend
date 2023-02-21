@@ -1,6 +1,7 @@
 spring:
   profiles:
-    active: local
+    active: local, swagger
+    include: jwt
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -29,6 +30,14 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
+
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: always
+      data-locations:
+        - classpath:data.sql
 
 ---
 

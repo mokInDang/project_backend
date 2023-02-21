@@ -1,0 +1,3 @@
+jwt:
+  secret: 91bewgjjrt491asf1a2qf6asavhhw981aadgh0qgeg6se8eq8svaxb1xfnd14h651swkkfsv1651aflkasnif01qwagg35asvsdhuygfhg132afa
+  token-validity-in-seconds: 1800
