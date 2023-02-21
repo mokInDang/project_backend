@@ -20,6 +20,12 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(e.getMessage()));
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ErrorResponse> handleOverlapException(final IllegalStateException e) {
+        return ResponseEntity.badRequest()
+                .body(new ErrorResponse(e.getMessage()));
+    }
+
     @ExceptionHandler(JwtException.class)
     public ResponseEntity<ErrorResponse> handleJwtException(final RuntimeException e) {
         return ResponseEntity.badRequest()
