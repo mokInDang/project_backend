@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthenticationController {
 
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+
     private final MemberService memberService;
 
     @GetMapping("/api/member/join")
@@ -27,11 +29,11 @@ public class AuthenticationController {
 
         if (loginStateResponse.getLoginState() == LoginState.JOIN) {
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .header("Authorization", loginStateResponse.getAccessToken(), loginStateResponse.getRefreshToken())
+                    .header(AUTHORIZATION_HEADER, loginStateResponse.getAccessToken(), loginStateResponse.getRefreshToken())
                     .body(loginResponseDto);
         }
         return ResponseEntity.ok()
-                .header("Authorization", loginStateResponse.getAccessToken(), loginStateResponse.getRefreshToken())
+                .header(AUTHORIZATION_HEADER, loginStateResponse.getAccessToken(), loginStateResponse.getRefreshToken())
                 .body(loginResponseDto);
     }
 
@@ -39,7 +41,7 @@ public class AuthenticationController {
     public ResponseEntity<JwtResponse> reissueJwtToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
         JwtResponse jwtResponse = memberService.reissue(refreshTokenRequest);
         return ResponseEntity.ok()
-                .header("Authorization", jwtResponse.getAccessToken(), jwtResponse.getRefreshToken())
+                .header(AUTHORIZATION_HEADER, jwtResponse.getAccessToken(), jwtResponse.getRefreshToken())
                 .build();
     }
 }
