@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mokindang.jubging.project_backend.domain.board.vo.Content;
+import mokindang.jubging.project_backend.domain.board.vo.StartingDate;
 import mokindang.jubging.project_backend.domain.board.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
 
@@ -11,8 +12,8 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
-@Entity
 @Getter
+@Entity
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Board {
 
@@ -25,7 +26,8 @@ public class Board {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private LocalDate startDate;
+    @Embedded
+    private StartingDate startingDate;
 
     @Enumerated(EnumType.STRING)
     private ActivityCategory activityCategory;
@@ -36,12 +38,19 @@ public class Board {
     @Embedded
     private Content content;
 
-    public Board(final Member member, final LocalDate startDate, final String activityCategory, final String title, final String content) {
+    private boolean onRecruitment;
+
+    public Board(final Member member, final LocalDate startingDate, final String activityCategory, final String title, final String content, final LocalDate now) {
         this.member = member;
-        this.startDate = startDate;
+        this.startingDate = new StartingDate(now, startingDate);
         this.activityCategory = ActivityCategory.from(activityCategory);
         this.title = new Title(title);
         this.content = new Content(content);
+        this.onRecruitment = true;
+    }
+
+    public void closeRecruitment() {
+        this.onRecruitment = false;
     }
 
     @Override
