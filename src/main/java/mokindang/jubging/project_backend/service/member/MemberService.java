@@ -67,12 +67,15 @@ public class MemberService {
         refreshTokenRepository.findByMemberId(member.getId())
                 .ifPresentOrElse(
                         existRefreshToken -> {
-                            existRefreshToken.switchRefreshToken(newRefreshToken, LocalDateTime.now().plusMonths(2));
+                            existRefreshToken.switchRefreshToken(newRefreshToken, LocalDateTime.now());
                             log.info("JWT 토큰 재발행 - MemberId : {}, Email : {}, Alias : {}, Access Token : {}, RefreshToken : {} ",
                                     member.getId(), member.getEmail(), member.getAlias(), newAccessToken, newRefreshToken);
                         },
                         () -> {
-                            RefreshToken refreshToken = new RefreshToken(member.getId(), newRefreshToken, LocalDateTime.now().plusMonths(2));
+                            LocalDateTime newTokenExpirationTime = LocalDateTime.now()
+                                    .plusMonths(2);
+
+                            RefreshToken refreshToken = new RefreshToken(member.getId(), newRefreshToken, newTokenExpirationTime);
                             refreshTokenRepository.save(refreshToken);
                             log.info("JWT 토큰 발행 - MemberId : {}, Email : {}, Alias : {}, Access Token : {}, RefreshToken : {} ",
                                     member.getId(), member.getEmail(), member.getAlias(), newAccessToken, newRefreshToken);
