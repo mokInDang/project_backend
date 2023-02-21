@@ -11,10 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.Clock;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.*;
@@ -28,9 +25,6 @@ class BoardServiceTest {
     @Mock
     private BoardRepository boardRepository;
 
-    @Mock
-    private Clock clock;
-
     @InjectMocks
     private BoardService boardService;
 
@@ -38,13 +32,11 @@ class BoardServiceTest {
     @DisplayName("해당하는 유저가 작성한 게시글을 저장한다.")
     void write() {
         //given
-        when(clock.instant()).thenReturn(Instant.parse("2022-08-10T00:00:00Z"));
-        when(clock.getZone()).thenReturn(ZoneId.systemDefault());
         Member member = mock(Member.class);
         when(memberService.findByMemberId(anyLong())).thenReturn(member);
 
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest("제목", "본문내용", "달리기",
-                LocalDate.of(2025, 2, 12));
+                LocalDate.of(2025, 2, 12), LocalDate.of(2023, 11, 10));
 
         //when
         boardService.write(1L, boardCreateRequest);
@@ -60,7 +52,7 @@ class BoardServiceTest {
         when(memberService.findByMemberId(anyLong())).thenThrow(new IllegalArgumentException("해당하는 유저가 존재하지 않습니다."));
 
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest("제목", "본문내용", "달리기",
-                LocalDate.of(2023, 2, 12));
+                LocalDate.of(2023, 2, 12), LocalDate.of(2023, 11, 10));
 
         //when, then
         assertThatThrownBy(() -> boardService.write(1L, boardCreateRequest))

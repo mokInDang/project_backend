@@ -39,7 +39,7 @@ class BoardControllerTest {
     void write() throws Exception {
         //given
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest("제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11));
+                LocalDate.of(2023, 11, 11), LocalDate.of(2023, 11, 10));
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards")
@@ -58,7 +58,7 @@ class BoardControllerTest {
                 .write(anyLong(), any(BoardCreateRequest.class));
 
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest("제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11));
+                LocalDate.of(2023, 11, 11),LocalDate.of(2023, 11, 10));
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards")
@@ -78,7 +78,7 @@ class BoardControllerTest {
                 .write(anyLong(), any(BoardCreateRequest.class));
 
         BoardCreateRequest incorrectTitleRequest = new BoardCreateRequest("잘못된 제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11));
+                LocalDate.of(2023, 11, 11),LocalDate.of(2023, 11, 10));
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards")
@@ -98,7 +98,7 @@ class BoardControllerTest {
                 .write(anyLong(), any(BoardCreateRequest.class));
 
         BoardCreateRequest incorrectContentRequest = new BoardCreateRequest("제목", "잘못된 본문", "달리기",
-                LocalDate.of(2023, 11, 11));
+                LocalDate.of(2023, 11, 11),LocalDate.of(2023, 11, 10));
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards")
@@ -118,7 +118,7 @@ class BoardControllerTest {
                 .write(anyLong(), any(BoardCreateRequest.class));
 
         BoardCreateRequest incorrectContentRequest = new BoardCreateRequest("제목", "잘못된 본문", "달리기",
-                LocalDate.of(2023, 11, 11));
+                LocalDate.of(2023, 11, 11),LocalDate.of(2023, 11, 10));
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards")
