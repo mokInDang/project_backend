@@ -20,8 +20,8 @@ public class BoardService {
     @Transactional
     public void write(final Long memberId, final BoardCreateRequest boardCreateRequest) {
         Member member = memberService.findByMemberId(memberId);
-        Board board = new Board(member, boardCreateRequest.getStartDate(), boardCreateRequest.getActivityCategory(),
-                boardCreateRequest.getTitle(), boardCreateRequest.getContent());
+        Board board = new Board(member, boardCreateRequest.getStartingDate(), boardCreateRequest.getActivityCategory(),
+                boardCreateRequest.getTitle(), boardCreateRequest.getContent(), boardCreateRequest.getRequestDate());
         boardRepository.save(board);
     }
 }

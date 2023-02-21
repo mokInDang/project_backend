@@ -43,7 +43,7 @@ class BoardControllerTest {
     void write() throws Exception {
         //given
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest("제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11));
+                LocalDate.of(2023, 11, 11), LocalDate.of(2023, 11, 10));
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards")
@@ -62,7 +62,7 @@ class BoardControllerTest {
                 .write(anyLong(), any(BoardCreateRequest.class));
 
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest("제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11));
+                LocalDate.of(2023, 11, 11),LocalDate.of(2023, 11, 10));
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards")
@@ -82,7 +82,7 @@ class BoardControllerTest {
                 .write(anyLong(), any(BoardCreateRequest.class));
 
         BoardCreateRequest incorrectTitleRequest = new BoardCreateRequest("잘못된 제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11));
+                LocalDate.of(2023, 11, 11),LocalDate.of(2023, 11, 10));
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards")
@@ -102,7 +102,7 @@ class BoardControllerTest {
                 .write(anyLong(), any(BoardCreateRequest.class));
 
         BoardCreateRequest incorrectContentRequest = new BoardCreateRequest("제목", "잘못된 본문", "달리기",
-                LocalDate.of(2023, 11, 11));
+                LocalDate.of(2023, 11, 11),LocalDate.of(2023, 11, 10));
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards")
@@ -112,5 +112,25 @@ class BoardControllerTest {
         //then
         actual.andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("글 내용은 최소 1자 이상, 최대 4000자 입니다."));
+    }
+
+    @Test
+    @DisplayName("새 게시글 작성 시, 입력받은 활동 날짜가 유효하지 않으면 HTTP 400 을 반환한다.")
+    void writeFailedByIncorrectStartingDate() throws Exception {
+        //given
+        doThrow(new IllegalArgumentException("이미 지난 날짜는 활동 시작일로 할 수 없습니다.")).when(boardService)
+                .write(anyLong(), any(BoardCreateRequest.class));
+
+        BoardCreateRequest incorrectContentRequest = new BoardCreateRequest("제목", "잘못된 본문", "달리기",
+                LocalDate.of(2023, 11, 11),LocalDate.of(2023, 11, 10));
+
+        //when
+        ResultActions actual = mockMvc.perform(post("/api/boards")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(incorrectContentRequest)));
+
+        //then
+        actual.andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("이미 지난 날짜는 활동 시작일로 할 수 없습니다."));
     }
 }
