@@ -1,5 +1,6 @@
-package mokindang.jubging.project_backend.service.member.dto;
+package mokindang.jubging.project_backend.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -7,7 +8,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class LoginResponseDto {
 
+    @JsonIgnore
     private final String accessToken;
+
+    @JsonIgnore
     private final String refreshToken;
+
     private final String alias;
 }
