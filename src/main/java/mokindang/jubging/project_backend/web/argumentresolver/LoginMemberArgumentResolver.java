@@ -1,6 +1,7 @@
 package mokindang.jubging.project_backend.web.argumentresolver;
 
 import lombok.RequiredArgsConstructor;
+import mokindang.jubging.project_backend.web.jwt.TokenManager;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -12,13 +13,18 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @RequiredArgsConstructor
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
 
+    private final TokenManager tokenManager;
+
     @Override
     public boolean supportsParameter(final MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(Login.class);
+        boolean hasLoginAnnotation = parameter.hasParameterAnnotation(Login.class);
+        boolean hasMemberIdType = Long.class.isAssignableFrom(parameter.getParameterType());
+        return hasLoginAnnotation && hasMemberIdType;
     }
 
     @Override
     public Object resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer, final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) {
-        return 1L;
+        String authorizationHeader = webRequest.getHeader("Authorization");
+        return tokenManager.getMemberId(authorizationHeader);
     }
 }
