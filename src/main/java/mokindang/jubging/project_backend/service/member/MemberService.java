@@ -9,9 +9,9 @@ import mokindang.jubging.project_backend.repository.member.MemberRepository;
 import mokindang.jubging.project_backend.repository.token.RefreshTokenRepository;
 import mokindang.jubging.project_backend.security.kakao.KaKaoOAuth2;
 import mokindang.jubging.project_backend.service.dto.JwtResponse;
-import mokindang.jubging.project_backend.service.dto.RefreshTokenRequest;
 import mokindang.jubging.project_backend.service.dto.KakaoApiMemberResponse;
 import mokindang.jubging.project_backend.service.dto.LoginStateDto;
+import mokindang.jubging.project_backend.service.dto.RefreshTokenRequest;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
 import org.springframework.stereotype.Service;
 
@@ -67,12 +67,12 @@ public class MemberService {
         refreshTokenRepository.findByMemberId(member.getId())
                 .ifPresentOrElse(
                         existRefreshToken -> {
-                            existRefreshToken.switchRefreshToken(newRefreshToken, LocalDateTime.now());
+                            existRefreshToken.switchRefreshToken(newRefreshToken, LocalDateTime.now().plusMonths(2));
                             log.info("JWT 토큰 재발행 - MemberId : {}, Email : {}, Alias : {}, Access Token : {}, RefreshToken : {} ",
                                     member.getId(), member.getEmail(), member.getAlias(), newAccessToken, newRefreshToken);
                         },
                         () -> {
-                            RefreshToken refreshToken = new RefreshToken(member.getId(), newRefreshToken, LocalDateTime.now());
+                            RefreshToken refreshToken = new RefreshToken(member.getId(), newRefreshToken, LocalDateTime.now().plusMonths(2));
                             refreshTokenRepository.save(refreshToken);
                             log.info("JWT 토큰 발행 - MemberId : {}, Email : {}, Alias : {}, Access Token : {}, RefreshToken : {} ",
                                     member.getId(), member.getEmail(), member.getAlias(), newAccessToken, newRefreshToken);
