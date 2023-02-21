@@ -3,6 +3,7 @@ package mokindang.jubging.project_backend.controller.board;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mokindang.jubging.project_backend.service.board.BoardService;
 import mokindang.jubging.project_backend.service.board.request.BoardCreateRequest;
+import mokindang.jubging.project_backend.web.jwt.TokenManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,9 @@ class BoardControllerTest {
 
     @MockBean
     private BoardService boardService;
+
+    @MockBean
+    private TokenManager tokenManager;
 
     @Test
     @DisplayName("새 게시글을 작성한 후, HTTP 201 상태코드를 반환한다.")

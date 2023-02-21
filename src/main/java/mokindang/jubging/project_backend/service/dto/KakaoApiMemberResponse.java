@@ -1,15 +1,14 @@
-package mokindang.jubging.project_backend.service.member.dto;
+package mokindang.jubging.project_backend.service.dto;
+
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import mokindang.jubging.project_backend.domain.member.MemberState;
 
 @Getter
 @RequiredArgsConstructor
-public class LoginStateDto {
-
+public class KakaoApiMemberResponse {
     private final String accessToken;
     private final String refreshToken;
     private final String alias;
-    private final MemberState memberState;
+    private final String email;
 }
