@@ -3,7 +3,7 @@ package mokindang.jubging.project_backend.controller.authentication;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mokindang.jubging.project_backend.domain.member.LoginState;
-import mokindang.jubging.project_backend.service.member.MemberService;
+import mokindang.jubging.project_backend.service.authentication.AuthenticationService;
 import mokindang.jubging.project_backend.service.member.request.RefreshTokenRequest;
 import mokindang.jubging.project_backend.service.member.response.JwtResponse;
 import mokindang.jubging.project_backend.service.member.response.LoginResponseDto;
@@ -19,11 +19,11 @@ public class AuthenticationController {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
 
-    private final MemberService memberService;
+    private final AuthenticationService authenticationService;
 
     @GetMapping("/api/member/join")
     public ResponseEntity<LoginResponseDto> kakaoCallback(@RequestParam String code) {
-        LoginStateResponse loginStateResponse = memberService.login(code);
+        LoginStateResponse loginStateResponse = authenticationService.login(code);
         LoginResponseDto loginResponseDto =
                 new LoginResponseDto(loginStateResponse.getAccessToken(), loginStateResponse.getRefreshToken(), loginStateResponse.getAlias());
 
@@ -39,7 +39,7 @@ public class AuthenticationController {
 
     @PostMapping("/api/member/reissueToken")
     public ResponseEntity<JwtResponse> reissueJwtToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
-        JwtResponse jwtResponse = memberService.reissue(refreshTokenRequest);
+        JwtResponse jwtResponse = authenticationService.reissue(refreshTokenRequest);
         return ResponseEntity.ok()
                 .header(AUTHORIZATION_HEADER, jwtResponse.getAccessToken(), jwtResponse.getRefreshToken())
                 .build();
