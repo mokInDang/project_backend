@@ -3,7 +3,7 @@ package mokindang.jubging.project_backend.controller.authentication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.JwtException;
 import mokindang.jubging.project_backend.domain.member.LoginState;
-import mokindang.jubging.project_backend.service.member.MemberService;
+import mokindang.jubging.project_backend.service.authentication.AuthenticationService;
 import mokindang.jubging.project_backend.service.member.request.RefreshTokenRequest;
 import mokindang.jubging.project_backend.service.member.response.JwtResponse;
 import mokindang.jubging.project_backend.service.member.response.LoginStateResponse;
@@ -33,7 +33,7 @@ class AuthenticationControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private MemberService memberService;
+    private AuthenticationService authenticationService;
 
     @MockBean
     private TokenManager tokenManager;
@@ -49,7 +49,7 @@ class AuthenticationControllerTest {
         //given
         LoginStateResponse loginStateResponse = new LoginStateResponse("Test Access Token", "Test Refresh Token", "Test Alias", LoginState.JOIN);
 
-        when(memberService.login(any())).thenReturn(loginStateResponse);
+        when(authenticationService.login(any())).thenReturn(loginStateResponse);
 
         //when
         ResultActions resultActions = mockMvc.perform(get("/api/member/join?code=testcode")
@@ -67,7 +67,7 @@ class AuthenticationControllerTest {
         //given
         LoginStateResponse loginStateResponse = new LoginStateResponse("Test Access Token", "Test Refresh Token", "Test Alias", LoginState.LOGIN);
 
-        when(memberService.login(any())).thenReturn(loginStateResponse);
+        when(authenticationService.login(any())).thenReturn(loginStateResponse);
 
         //when
         ResultActions resultActions = mockMvc.perform(get("/api/member/join?code=testcode")
@@ -85,7 +85,7 @@ class AuthenticationControllerTest {
         //given
         RefreshTokenRequest refreshTokenRequest = new RefreshTokenRequest("Refresh Token");
 
-        when(memberService.reissue(any(RefreshTokenRequest.class))).thenReturn(jwtResponse);
+        when(authenticationService.reissue(any(RefreshTokenRequest.class))).thenReturn(jwtResponse);
         when(jwtResponse.getAccessToken()).thenReturn("New Access Token");
         when(jwtResponse.getRefreshToken()).thenReturn("New Refresh Token");
 
@@ -107,7 +107,7 @@ class AuthenticationControllerTest {
         //given
         RefreshTokenRequest refreshTokenRequest = new RefreshTokenRequest("Refresh Token");
 
-        when(memberService.reissue(any(RefreshTokenRequest.class))).thenThrow(new JwtException("Refresh Token 이 존재하지 않습니다."));
+        when(authenticationService.reissue(any(RefreshTokenRequest.class))).thenThrow(new JwtException("Refresh Token 이 존재하지 않습니다."));
 
         //when
         ResultActions resultActions = mockMvc.perform(post("/api/member/reissueToken")
