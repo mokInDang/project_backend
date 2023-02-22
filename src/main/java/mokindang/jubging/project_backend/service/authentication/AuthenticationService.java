@@ -32,7 +32,6 @@ public class AuthenticationService {
     private final TokenManager tokenManager;
     private final RefreshTokenRepository refreshTokenRepository;
 
-
     public LoginStateResponse login(final String authorizedCode) {
         KakaoApiMemberResponse kakaoApiMemberResponse = kakaoOAuth2.getMemberDto(authorizedCode);
         return authenticate(kakaoApiMemberResponse);
