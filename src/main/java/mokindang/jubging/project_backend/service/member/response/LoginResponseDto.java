@@ -1,18 +1,15 @@
 package mokindang.jubging.project_backend.service.member.response;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class LoginResponseDto {
 
-    @JsonIgnore
-    private final String accessToken;
+    private String alias;
 
-    @JsonIgnore
-    private final String refreshToken;
-
-    private final String alias;
+    public LoginResponseDto(String alias) {
+        this.alias = alias;
+    }
 }
