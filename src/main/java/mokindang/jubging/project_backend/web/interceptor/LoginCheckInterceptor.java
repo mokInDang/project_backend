@@ -21,7 +21,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             tokenManager.validateToken(authorizationHeader);
         } catch (final RuntimeException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.sendRedirect("/");
+            response.sendRedirect("/index.html");
         }
         return true;
     }

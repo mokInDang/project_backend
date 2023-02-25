@@ -10,7 +10,7 @@ import mokindang.jubging.project_backend.service.member.MemberService;
 import mokindang.jubging.project_backend.service.member.request.RefreshTokenRequest;
 import mokindang.jubging.project_backend.service.member.response.JwtResponse;
 import mokindang.jubging.project_backend.service.member.response.KakaoApiMemberResponse;
-import mokindang.jubging.project_backend.service.member.response.LoginStateResponse;
+import mokindang.jubging.project_backend.service.member.response.KakaoLoginResponse;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
@@ -68,14 +68,14 @@ class AuthenticationServiceTest {
         when(tokenManager.createToken(any())).thenReturn("Test Access Token");
 
         //when
-        LoginStateResponse loginStateResponse = authenticationService.login("Test AuthorizedCode");
+        KakaoLoginResponse kakaoLoginResponse = authenticationService.login("Test AuthorizedCode");
 
         //then
-        softly.assertThat(loginStateResponse.getLoginState()).isEqualTo(LoginState.JOIN);
-        softly.assertThat(loginStateResponse.getAccessToken()).isNotEmpty();
-        softly.assertThat(loginStateResponse.getRefreshToken()).isNotEmpty();
-        softly.assertThat(loginStateResponse.getAccessToken()).isNotEqualTo("Kakao Test Access Token");
-        softly.assertThat(loginStateResponse.getRefreshToken()).isNotEqualTo("Kakao Test Refresh Token");
+        softly.assertThat(kakaoLoginResponse.getLoginState()).isEqualTo(LoginState.JOIN);
+        softly.assertThat(kakaoLoginResponse.getAccessToken()).isNotEmpty();
+        softly.assertThat(kakaoLoginResponse.getRefreshToken()).isNotEmpty();
+        softly.assertThat(kakaoLoginResponse.getAccessToken()).isNotEqualTo("Kakao Test Access Token");
+        softly.assertThat(kakaoLoginResponse.getRefreshToken()).isNotEqualTo("Kakao Test Refresh Token");
         softly.assertAll();
         verify(refreshTokenRepository, times(1)).save(any());
     }
@@ -94,12 +94,12 @@ class AuthenticationServiceTest {
         when(refreshTokenRepository.findByMemberId(member.getId())).thenReturn(Optional.of(refreshToken));
 
         //when
-        LoginStateResponse loginStateResponse = authenticationService.login("Test AuthorizedCode");
+        KakaoLoginResponse kakaoLoginResponse = authenticationService.login("Test AuthorizedCode");
 
         //then
-        softly.assertThat(loginStateResponse.getLoginState()).isEqualTo(LoginState.LOGIN);
-        softly.assertThat(loginStateResponse.getAccessToken()).isNotEmpty();
-        softly.assertThat(loginStateResponse.getRefreshToken()).isNotEmpty();
+        softly.assertThat(kakaoLoginResponse.getLoginState()).isEqualTo(LoginState.LOGIN);
+        softly.assertThat(kakaoLoginResponse.getAccessToken()).isNotEmpty();
+        softly.assertThat(kakaoLoginResponse.getRefreshToken()).isNotEmpty();
         softly.assertAll();
         verify(refreshToken, times(1)).switchRefreshToken(any(), any());
 
@@ -118,12 +118,12 @@ class AuthenticationServiceTest {
         when(tokenManager.createToken(any())).thenReturn("Test Access Token");
 
         //when
-        LoginStateResponse loginStateResponse = authenticationService.login("Test AuthorizedCode");
+        KakaoLoginResponse kakaoLoginResponse = authenticationService.login("Test AuthorizedCode");
 
         //then
-        softly.assertThat(loginStateResponse.getLoginState()).isEqualTo(LoginState.LOGIN);
-        softly.assertThat(loginStateResponse.getAccessToken()).isNotEmpty();
-        softly.assertThat(loginStateResponse.getRefreshToken()).isNotEmpty();
+        softly.assertThat(kakaoLoginResponse.getLoginState()).isEqualTo(LoginState.LOGIN);
+        softly.assertThat(kakaoLoginResponse.getAccessToken()).isNotEmpty();
+        softly.assertThat(kakaoLoginResponse.getRefreshToken()).isNotEmpty();
         softly.assertAll();
         verify(refreshTokenRepository, times(1)).save(any());
     }

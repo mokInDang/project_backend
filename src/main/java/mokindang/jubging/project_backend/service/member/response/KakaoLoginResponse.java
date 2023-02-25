@@ -3,10 +3,11 @@ package mokindang.jubging.project_backend.service.member.response;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import mokindang.jubging.project_backend.domain.member.LoginState;
 
 @Getter
 @RequiredArgsConstructor
-public class LoginResponseDto {
+public class KakaoLoginResponse {
 
     @JsonIgnore
     private final String accessToken;
@@ -15,4 +16,6 @@ public class LoginResponseDto {
     private final String refreshToken;
 
     private final String alias;
+
+    private final LoginState loginState;
 }
