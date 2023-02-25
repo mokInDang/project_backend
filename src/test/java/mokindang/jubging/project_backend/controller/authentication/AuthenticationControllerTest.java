@@ -6,7 +6,7 @@ import mokindang.jubging.project_backend.domain.member.LoginState;
 import mokindang.jubging.project_backend.service.authentication.AuthenticationService;
 import mokindang.jubging.project_backend.service.member.request.RefreshTokenRequest;
 import mokindang.jubging.project_backend.service.member.response.JwtResponse;
-import mokindang.jubging.project_backend.service.member.response.LoginStateResponse;
+import mokindang.jubging.project_backend.service.member.response.KakaoLoginResponse;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,9 +47,9 @@ class AuthenticationControllerTest {
     @DisplayName("회원가입 시 HTTP 상태코드는 201(CREATED)이며 Alias를 JSON으로 반환한다. Access Token 과 Refresh Token 은 Authorization 헤더에 담아 반환한다.")
     void joinAndState201() throws Exception{
         //given
-        LoginStateResponse loginStateResponse = new LoginStateResponse("Test Access Token", "Test Refresh Token", "Test Alias", LoginState.JOIN);
+        KakaoLoginResponse kakaoLoginResponse = new KakaoLoginResponse("Test Access Token", "Test Refresh Token", "Test Alias", LoginState.JOIN);
 
-        when(authenticationService.login(any())).thenReturn(loginStateResponse);
+        when(authenticationService.login(any())).thenReturn(kakaoLoginResponse);
 
         //when
         ResultActions resultActions = mockMvc.perform(get("/api/member/join?code=testcode")
@@ -65,9 +65,9 @@ class AuthenticationControllerTest {
     @DisplayName("로그인 시 HTTP 상태코드는 200(OK)이며 Alias를 JSON으로 반환한다. Access Token 과 Refresh Token 은 Authorization 헤더에 담아 반환한다.")
     void loginAndState200() throws Exception{
         //given
-        LoginStateResponse loginStateResponse = new LoginStateResponse("Test Access Token", "Test Refresh Token", "Test Alias", LoginState.LOGIN);
+        KakaoLoginResponse kakaoLoginResponse = new KakaoLoginResponse("Test Access Token", "Test Refresh Token", "Test Alias", LoginState.LOGIN);
 
-        when(authenticationService.login(any())).thenReturn(loginStateResponse);
+        when(authenticationService.login(any())).thenReturn(kakaoLoginResponse);
 
         //when
         ResultActions resultActions = mockMvc.perform(get("/api/member/join?code=testcode")

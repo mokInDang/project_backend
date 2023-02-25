@@ -7,7 +7,7 @@ import mokindang.jubging.project_backend.domain.member.LoginState;
 
 @Getter
 @RequiredArgsConstructor
-public class LoginStateResponse {
+public class KakaoLoginResponse {
 
     @JsonIgnore
     private final String accessToken;
@@ -15,9 +15,7 @@ public class LoginStateResponse {
     @JsonIgnore
     private final String refreshToken;
 
-    @JsonIgnore
     private final String alias;
 
-    @JsonIgnore
     private final LoginState loginState;
 }

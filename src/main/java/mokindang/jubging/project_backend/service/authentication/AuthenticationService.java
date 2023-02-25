@@ -11,7 +11,7 @@ import mokindang.jubging.project_backend.service.member.MemberService;
 import mokindang.jubging.project_backend.service.member.request.RefreshTokenRequest;
 import mokindang.jubging.project_backend.service.member.response.JwtResponse;
 import mokindang.jubging.project_backend.service.member.response.KakaoApiMemberResponse;
-import mokindang.jubging.project_backend.service.member.response.LoginStateResponse;
+import mokindang.jubging.project_backend.service.member.response.KakaoLoginResponse;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
 import org.springframework.stereotype.Service;
 
@@ -32,27 +32,28 @@ public class AuthenticationService {
     private final TokenManager tokenManager;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public LoginStateResponse login(final String authorizedCode) {
+    public KakaoLoginResponse login(final String authorizedCode) {
         KakaoApiMemberResponse kakaoApiMemberResponse = kakaoOAuth2.getMemberDto(authorizedCode);
         return authenticate(kakaoApiMemberResponse);
     }
 
-    private LoginStateResponse authenticate(final KakaoApiMemberResponse kakaoApiMemberResponse) {
+    private KakaoLoginResponse authenticate(final KakaoApiMemberResponse kakaoApiMemberResponse) {
         Optional<Member> member = memberService.findByMemberEmail(kakaoApiMemberResponse.getEmail());
         if (member.isEmpty()) {
             return join(kakaoApiMemberResponse);
         }
-        log.info("memberId = {}, email = {}, alias = {} 의 로그인", member.get().getId(), kakaoApiMemberResponse.getEmail(), kakaoApiMemberResponse.getAlias());
-        JwtResponse jwtResponse = issueJwtToken(member.get());
-        return new LoginStateResponse(jwtResponse.getAccessToken(),
-                jwtResponse.getRefreshToken(), member.orElseThrow(IllegalArgumentException::new).getAlias(), LOGIN);
+        Member existMember = member.get();
+        log.info("memberId = {}, email = {}, alias = {} 의 로그인", existMember.getId(), kakaoApiMemberResponse.getEmail(), kakaoApiMemberResponse.getAlias());
+        JwtResponse jwtResponse = issueJwtToken(existMember);
+        return new KakaoLoginResponse(jwtResponse.getAccessToken(),
+                jwtResponse.getRefreshToken(), existMember.getAlias(), LOGIN);
     }
 
-    private LoginStateResponse join(final KakaoApiMemberResponse kakaoApiMemberResponse) {
+    private KakaoLoginResponse join(final KakaoApiMemberResponse kakaoApiMemberResponse) {
         log.info("email = {}, alias = {} 의 회원 가입", kakaoApiMemberResponse.getEmail(), kakaoApiMemberResponse.getAlias());
         Member newMember = memberService.saveMember(new Member(kakaoApiMemberResponse.getEmail(), kakaoApiMemberResponse.getAlias()));
         JwtResponse jwtResponse = issueJwtToken(newMember);
-        return new LoginStateResponse(jwtResponse.getAccessToken(), jwtResponse.getRefreshToken(), newMember.getAlias(), JOIN);
+        return new KakaoLoginResponse(jwtResponse.getAccessToken(), jwtResponse.getRefreshToken(), newMember.getAlias(), JOIN);
     }
 
     private JwtResponse issueJwtToken(final Member member) {

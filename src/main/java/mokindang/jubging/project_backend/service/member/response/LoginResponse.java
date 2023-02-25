@@ -5,11 +5,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class LoginResponseDto {
+public class LoginResponse {
 
     private String alias;
 
-    public LoginResponseDto(String alias) {
+    public LoginResponse(String alias) {
         this.alias = alias;
     }
 }
