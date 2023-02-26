@@ -28,9 +28,8 @@ public class AuthorizationConfiguration implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         List<String> memberServicePatterns = List.of("/", "/api/member/join/**");
         List<String> kakaoLoginPatterns = List.of("/index.html", "/kakao_login_medium_narrow.png");
-        List<String> swaggerPatterns = List.of("/v3/api-docs", "/swagger-ui.html",
-                "/swagger-ui/index.html", "/swagger-ui/swagger-initializer.js",
-                "/v3/api-docs/swagger-config");
+        List<String> swaggerPatterns = List.of("/v3/api-docs", "/swagger-ui.html", "/swagger-ui/index.html",
+                "/swagger-ui/swagger-initializer.js", "/v3/api-docs/swagger-config");
 
         List<String> allPatterns = new ArrayList<>(memberServicePatterns);
         allPatterns.addAll(kakaoLoginPatterns);
