@@ -21,6 +21,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             tokenManager.validateToken(authorizationHeader);
         } catch (final RuntimeException e) {
             response.sendRedirect("/index.html");
+            return false;
         }
         return true;
     }
