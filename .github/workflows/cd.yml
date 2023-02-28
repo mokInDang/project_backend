@@ -33,11 +33,25 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
 
-      # (3) Gradle build (Test 제외)
+      # (3) 테스트를 위한 MYsql 세팅
+      - name: Setup MySQL
+        uses: mirromutth/mysql-action@v1.1
+        with:
+          host port: 3306
+          container port: 3306
+          character set server: utf8mb4
+          collation server: utf8mb4_general_ci
+          mysql version: 8.0.31
+          mysql root password: qwerqwer
+          mysql database: mokindangdb
+          mysql user: root
+          mysql password: qwerqwer
+
+      # (3) Gradle build(테스트 및 빌드)
       - name: Build with Gradle
         uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
         with:
-          arguments: clean build -Pprofile=deploy -x test
+          arguments: clean build -Pprofile=deploy
 
       # (4) AWS 인증 (IAM 사용자 Access Key, Secret Key 활용)
       - name: Configure AWS credentials
