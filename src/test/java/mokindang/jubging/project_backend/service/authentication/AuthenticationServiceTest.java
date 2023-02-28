@@ -1,16 +1,16 @@
-package mokindang.jubging.project_backend.service.member;
+package mokindang.jubging.project_backend.service.authentication;
 
 import io.jsonwebtoken.JwtException;
 import mokindang.jubging.project_backend.domain.member.LoginState;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.token.RefreshToken;
-import mokindang.jubging.project_backend.repository.member.MemberRepository;
 import mokindang.jubging.project_backend.repository.token.RefreshTokenRepository;
 import mokindang.jubging.project_backend.security.kakao.KaKaoOAuth2;
+import mokindang.jubging.project_backend.service.member.MemberService;
 import mokindang.jubging.project_backend.service.member.request.RefreshTokenRequest;
 import mokindang.jubging.project_backend.service.member.response.JwtResponse;
 import mokindang.jubging.project_backend.service.member.response.KakaoApiMemberResponse;
-import mokindang.jubging.project_backend.service.member.response.LoginStateResponse;
+import mokindang.jubging.project_backend.service.member.response.KakaoLoginResponse;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
@@ -32,9 +32,10 @@ import static org.mockito.Mockito.*;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ExtendWith(SpringExtension.class)
-class MemberServiceTest {
+class AuthenticationServiceTest {
+
     @Mock
-    private MemberRepository memberRepository;
+    private MemberService memberService;
 
     @Mock
     private RefreshTokenRepository refreshTokenRepository;
@@ -49,7 +50,7 @@ class MemberServiceTest {
     private RefreshToken refreshToken;
 
     @InjectMocks
-    private MemberService memberService;
+    private AuthenticationService authenticationService;
 
     private final SoftAssertions softly = new SoftAssertions();
 
@@ -62,19 +63,19 @@ class MemberServiceTest {
                 "Kakao Test Refresh Token", "고민호", "koho1047@naver.com");
 
         when(kakaoOAuth2.getMemberDto(any())).thenReturn(kakaoApiMemberResponse);
-        when(memberRepository.findByEmail(any())).thenReturn(Optional.empty());
-        when(memberRepository.save(any())).thenReturn(member);
+        when(memberService.findByMemberEmail(any())).thenReturn(Optional.empty());
+        when(memberService.saveMember(any())).thenReturn(member);
         when(tokenManager.createToken(any())).thenReturn("Test Access Token");
 
         //when
-        LoginStateResponse loginStateResponse = memberService.login("Test AuthorizedCode");
+        KakaoLoginResponse kakaoLoginResponse = authenticationService.login("Test AuthorizedCode");
 
         //then
-        softly.assertThat(loginStateResponse.getLoginState()).isEqualTo(LoginState.JOIN);
-        softly.assertThat(loginStateResponse.getAccessToken()).isNotEmpty();
-        softly.assertThat(loginStateResponse.getRefreshToken()).isNotEmpty();
-        softly.assertThat(loginStateResponse.getAccessToken()).isNotEqualTo("Kakao Test Access Token");
-        softly.assertThat(loginStateResponse.getRefreshToken()).isNotEqualTo("Kakao Test Refresh Token");
+        softly.assertThat(kakaoLoginResponse.getLoginState()).isEqualTo(LoginState.JOIN);
+        softly.assertThat(kakaoLoginResponse.getAccessToken()).isNotEmpty();
+        softly.assertThat(kakaoLoginResponse.getRefreshToken()).isNotEmpty();
+        softly.assertThat(kakaoLoginResponse.getAccessToken()).isNotEqualTo("Kakao Test Access Token");
+        softly.assertThat(kakaoLoginResponse.getRefreshToken()).isNotEqualTo("Kakao Test Refresh Token");
         softly.assertAll();
         verify(refreshTokenRepository, times(1)).save(any());
     }
@@ -88,17 +89,17 @@ class MemberServiceTest {
                 "testRefreshToken", "고민호", "koho1047@naver.com");
 
         when(kakaoOAuth2.getMemberDto(any())).thenReturn(kakaoApiMemberResponse);
-        when(memberRepository.findByEmail(any())).thenReturn(Optional.of(member));
+        when(memberService.findByMemberEmail(any())).thenReturn(Optional.of(member));
         when(tokenManager.createToken(member.getId())).thenReturn("Test Access Token");
         when(refreshTokenRepository.findByMemberId(member.getId())).thenReturn(Optional.of(refreshToken));
 
         //when
-        LoginStateResponse loginStateResponse = memberService.login("Test AuthorizedCode");
+        KakaoLoginResponse kakaoLoginResponse = authenticationService.login("Test AuthorizedCode");
 
         //then
-        softly.assertThat(loginStateResponse.getLoginState()).isEqualTo(LoginState.LOGIN);
-        softly.assertThat(loginStateResponse.getAccessToken()).isNotEmpty();
-        softly.assertThat(loginStateResponse.getRefreshToken()).isNotEmpty();
+        softly.assertThat(kakaoLoginResponse.getLoginState()).isEqualTo(LoginState.LOGIN);
+        softly.assertThat(kakaoLoginResponse.getAccessToken()).isNotEmpty();
+        softly.assertThat(kakaoLoginResponse.getRefreshToken()).isNotEmpty();
         softly.assertAll();
         verify(refreshToken, times(1)).switchRefreshToken(any(), any());
 
@@ -113,16 +114,16 @@ class MemberServiceTest {
                 "testRefreshToken", "고민호", "koho1047@naver.com");
 
         when(kakaoOAuth2.getMemberDto(any())).thenReturn(kakaoApiMemberResponse);
-        when(memberRepository.findByEmail(any())).thenReturn(Optional.of(member));
+        when(memberService.findByMemberEmail(any())).thenReturn(Optional.of(member));
         when(tokenManager.createToken(any())).thenReturn("Test Access Token");
 
         //when
-        LoginStateResponse loginStateResponse = memberService.login("Test AuthorizedCode");
+        KakaoLoginResponse kakaoLoginResponse = authenticationService.login("Test AuthorizedCode");
 
         //then
-        softly.assertThat(loginStateResponse.getLoginState()).isEqualTo(LoginState.LOGIN);
-        softly.assertThat(loginStateResponse.getAccessToken()).isNotEmpty();
-        softly.assertThat(loginStateResponse.getRefreshToken()).isNotEmpty();
+        softly.assertThat(kakaoLoginResponse.getLoginState()).isEqualTo(LoginState.LOGIN);
+        softly.assertThat(kakaoLoginResponse.getAccessToken()).isNotEmpty();
+        softly.assertThat(kakaoLoginResponse.getRefreshToken()).isNotEmpty();
         softly.assertAll();
         verify(refreshTokenRepository, times(1)).save(any());
     }
@@ -135,11 +136,11 @@ class MemberServiceTest {
         RefreshTokenRequest requestRefreshToken = new RefreshTokenRequest("Request Refresh Token");
 
         when(refreshTokenRepository.findByToken(any())).thenReturn(Optional.of(refreshToken));
-        when(memberRepository.findById(any())).thenReturn(Optional.of(member));
+        when(memberService.findByMemberId(any())).thenReturn(member);
         when(tokenManager.createToken(any())).thenReturn("Test Access Token");
 
         //when
-        JwtResponse reissue = memberService.reissue(requestRefreshToken);
+        JwtResponse reissue = authenticationService.reissue(requestRefreshToken);
 
         //then
         softly.assertThat(reissue.getAccessToken()).isEqualTo("Test Access Token");
@@ -156,7 +157,7 @@ class MemberServiceTest {
         when(refreshTokenRepository.findByToken(anyString())).thenThrow(new JwtException("Refresh Token 이 존재하지 않습니다."));
 
         //when, then
-        Assertions.assertThatThrownBy(() -> memberService.reissue(refreshTokenRequest)).isInstanceOf(JwtException.class)
+        Assertions.assertThatThrownBy(() -> authenticationService.reissue(refreshTokenRequest)).isInstanceOf(JwtException.class)
                 .hasMessage("Refresh Token 이 존재하지 않습니다.");
     }
 }

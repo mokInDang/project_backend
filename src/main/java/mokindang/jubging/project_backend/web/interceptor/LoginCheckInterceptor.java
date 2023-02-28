@@ -20,8 +20,8 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             String authorizationHeader = request.getHeader("Authorization");
             tokenManager.validateToken(authorizationHeader);
         } catch (final RuntimeException e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.sendRedirect("/");
+            response.sendRedirect("/index.html");
+            return false;
         }
         return true;
     }
