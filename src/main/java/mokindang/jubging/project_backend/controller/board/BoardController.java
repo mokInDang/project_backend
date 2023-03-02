@@ -43,7 +43,7 @@ public class BoardController {
                     "유효하지 않은 활동 시작일", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @PostMapping
-    public ResponseEntity<Void> write(@Login Long memberId, @Valid @RequestBody final BoardCreateRequest boardCreateRequest) {
+    public ResponseEntity<Void> write(@Parameter(hidden = true) @Login Long memberId, @Valid @RequestBody final BoardCreateRequest boardCreateRequest) {
         log.info("memberId = {} 의 새글작성", memberId);
         boardService.write(memberId, boardCreateRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
