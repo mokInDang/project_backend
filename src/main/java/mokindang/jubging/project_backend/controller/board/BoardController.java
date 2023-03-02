@@ -1,6 +1,8 @@
 package mokindang.jubging.project_backend.controller.board;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -21,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 @Slf4j
 @Tag(name = "게시판", description = "게시판 관련 api")
 @RequestMapping("/api/boards")
@@ -30,7 +34,7 @@ public class BoardController {
 
     private final BoardService boardService;
 
-    @Operation(summary = "새글작성")
+    @Operation(summary = "새글작성", parameters = @Parameter(name = AUTHORIZATION, in = ParameterIn.HEADER, required = true))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "새글작성"),
             @ApiResponse(responseCode = "400", description = "유효하지 않은 유저 \t\n" +
