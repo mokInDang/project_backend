@@ -5,11 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 import mokindang.jubging.project_backend.domain.member.LoginState;
 import mokindang.jubging.project_backend.service.authentication.AuthenticationService;
 import mokindang.jubging.project_backend.service.member.request.RefreshTokenRequest;
+import mokindang.jubging.project_backend.service.member.request.RegionRequest;
 import mokindang.jubging.project_backend.service.member.response.JwtResponse;
 import mokindang.jubging.project_backend.service.member.response.KakaoLoginResponse;
 import mokindang.jubging.project_backend.service.member.response.LoginResponse;
+import mokindang.jubging.project_backend.service.member.response.RegionResponse;
+import mokindang.jubging.project_backend.web.argumentresolver.Login;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -42,5 +46,13 @@ public class AuthenticationController {
         return ResponseEntity.ok()
                 .header(AUTHORIZATION_HEADER, jwtResponse.getAccessToken(), jwtResponse.getRefreshToken())
                 .build();
+    }
+
+    @PutMapping("/regionAuth")
+    public ResponseEntity<RegionResponse> callRegion(@Validated @RequestBody RegionRequest regionRequest, @Login Long memberId) {
+        String region = authenticationService.getRegion(regionRequest, memberId);
+        RegionResponse regionResponse = new RegionResponse(region);
+        return ResponseEntity.ok()
+                .body(regionResponse);
     }
 }
