@@ -34,7 +34,7 @@ public class BoardController {
 
     private final BoardService boardService;
 
-    @Operation(summary = "새글작성", parameters = @Parameter(name = AUTHORIZATION, in = ParameterIn.HEADER, required = true))
+    @Operation(summary = "새글작성", parameters = @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "새글작성"),
             @ApiResponse(responseCode = "400", description = "유효하지 않은 유저 \t\n" +
