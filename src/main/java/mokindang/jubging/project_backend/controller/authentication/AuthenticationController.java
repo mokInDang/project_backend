@@ -13,8 +13,9 @@ import mokindang.jubging.project_backend.service.member.response.RegionResponse;
 import mokindang.jubging.project_backend.web.argumentresolver.Login;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Slf4j
 @RestController
@@ -49,7 +50,7 @@ public class AuthenticationController {
     }
 
     @PutMapping("/regionAuth")
-    public ResponseEntity<RegionResponse> callRegion(@Validated @RequestBody RegionRequest regionRequest, @Login Long memberId) {
+    public ResponseEntity<RegionResponse> callRegion(@Valid @RequestBody RegionRequest regionRequest, @Login Long memberId) {
         String region = authenticationService.getRegion(regionRequest, memberId);
         RegionResponse regionResponse = new RegionResponse(region);
         return ResponseEntity.ok()
