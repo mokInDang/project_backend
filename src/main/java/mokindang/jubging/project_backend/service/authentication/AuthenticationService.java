@@ -6,9 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.token.RefreshToken;
 import mokindang.jubging.project_backend.repository.token.RefreshTokenRepository;
+import mokindang.jubging.project_backend.security.kakao.KaKaoLocal;
 import mokindang.jubging.project_backend.security.kakao.KaKaoOAuth2;
 import mokindang.jubging.project_backend.service.member.MemberService;
 import mokindang.jubging.project_backend.service.member.request.RefreshTokenRequest;
+import mokindang.jubging.project_backend.service.member.request.RegionRequest;
 import mokindang.jubging.project_backend.service.member.response.JwtResponse;
 import mokindang.jubging.project_backend.service.member.response.KakaoApiMemberResponse;
 import mokindang.jubging.project_backend.service.member.response.KakaoLoginResponse;
@@ -29,6 +31,7 @@ public class AuthenticationService {
 
     private final MemberService memberService;
     private final KaKaoOAuth2 kakaoOAuth2;
+    private final KaKaoLocal kakaoLocal;
     private final TokenManager tokenManager;
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -90,6 +93,18 @@ public class AuthenticationService {
         existRefreshToken.switchRefreshToken(newRefreshToken, LocalDateTime.now());
         Member member = memberService.findByMemberId(existRefreshToken.getId());
         return new JwtResponse(tokenManager.createToken(member.getId()), newRefreshToken);
+    }
+
+    public String getRegion(RegionRequest regionRequest, Long memberId) {
+        String findRegion = kakaoLocal.switchCoordinateToRegion(regionRequest);
+        changeRegion(memberId, findRegion);
+        return findRegion;
+    }
+
+    private void changeRegion(Long memberId, String findRegion) {
+        Member findMember = memberService.findByMemberId(memberId);
+        findMember.getRegion().switchRegion(findRegion);
+        memberService.saveMember(findMember);
     }
 
 }
