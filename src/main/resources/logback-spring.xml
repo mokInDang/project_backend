@@ -31,14 +31,14 @@
             <maxFlushTime>0</maxFlushTime>
             <appender-ref ref="STDOUT"/>
         </appender>
-        <logger name="hamkke.board" level="DEBUG" appender-ref="STDOUT"/>
+        <logger name="mokindang.jubging" level="DEBUG" appender-ref="STDOUT"/>
 
         <root level="INFO">
             <appender-ref ref="ASYNC_STDOUT"/>
         </root>
     </springProfile>
 
-    <springProfile name ="ci">
+    <springProfile name="ci">
         <appender name="ASYNC_INFO_LOG_FILE" class="ch.qos.logback.classic.AsyncAppender">
             <maxFlushTime>0</maxFlushTime>
             <appender-ref ref="INFO_LOG_FILE"/>
@@ -48,7 +48,7 @@
         </root>
     </springProfile>
 
-    <springProfile name ="deploy">
+    <springProfile name="deploy">
         <appender name="ASYNC_INFO_LOG_FILE" class="ch.qos.logback.classic.AsyncAppender">
             <maxFlushTime>0</maxFlushTime>
             <appender-ref ref="INFO_LOG_FILE"/>
@@ -57,5 +57,4 @@
             <appender-ref ref="ASYNC_INFO_LOG_FILE"/>
         </root>
     </springProfile>
-
 </configuration>
