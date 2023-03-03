@@ -9,7 +9,6 @@
     </appender>
 
     <appender name="INFO_LOG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>./logs/info.log</file>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>INFO</level>
         </filter>
