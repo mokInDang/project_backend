@@ -3,6 +3,7 @@ package mokindang.jubging.project_backend.domain.member;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import mokindang.jubging.project_backend.domain.region.vo.Region;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -21,9 +22,12 @@ public class Member {
 
     private String alias;
 
+    private Region region;
+
     public Member(final String email, final String alias) {
         this.email = email;
         this.alias = alias;
+        this.region = new Region("DEFAULT REGION");
     }
 
     @Override
