@@ -7,6 +7,7 @@ import mokindang.jubging.project_backend.domain.token.RefreshToken;
 import mokindang.jubging.project_backend.repository.token.RefreshTokenRepository;
 import mokindang.jubging.project_backend.security.kakao.KaKaoOAuth2;
 import mokindang.jubging.project_backend.service.member.MemberService;
+import mokindang.jubging.project_backend.service.member.request.AuthorizationCodeRequest;
 import mokindang.jubging.project_backend.service.member.request.RefreshTokenRequest;
 import mokindang.jubging.project_backend.service.member.response.JwtResponse;
 import mokindang.jubging.project_backend.service.member.response.KakaoApiMemberResponse;
@@ -61,6 +62,7 @@ class AuthenticationServiceTest {
         Member member = new Member("koho1047@naver.com", "고민호");
         KakaoApiMemberResponse kakaoApiMemberResponse = new KakaoApiMemberResponse("Kakao Test Access Token",
                 "Kakao Test Refresh Token", "고민호", "koho1047@naver.com");
+        AuthorizationCodeRequest authorizationCodeRequest = new AuthorizationCodeRequest("Test AuthorizedCode");
 
         when(kakaoOAuth2.getMemberDto(any())).thenReturn(kakaoApiMemberResponse);
         when(memberService.findByMemberEmail(any())).thenReturn(Optional.empty());
@@ -68,7 +70,7 @@ class AuthenticationServiceTest {
         when(tokenManager.createToken(any())).thenReturn("Test Access Token");
 
         //when
-        KakaoLoginResponse kakaoLoginResponse = authenticationService.login("Test AuthorizedCode");
+        KakaoLoginResponse kakaoLoginResponse = authenticationService.login(authorizationCodeRequest);
 
         //then
         softly.assertThat(kakaoLoginResponse.getLoginState()).isEqualTo(LoginState.JOIN);
@@ -87,6 +89,7 @@ class AuthenticationServiceTest {
         Member member = new Member("koho1047@naver.com", "고민호");
         KakaoApiMemberResponse kakaoApiMemberResponse = new KakaoApiMemberResponse("testAccessToken",
                 "testRefreshToken", "고민호", "koho1047@naver.com");
+        AuthorizationCodeRequest authorizationCodeRequest = new AuthorizationCodeRequest("Test AuthorizedCode");
 
         when(kakaoOAuth2.getMemberDto(any())).thenReturn(kakaoApiMemberResponse);
         when(memberService.findByMemberEmail(any())).thenReturn(Optional.of(member));
@@ -94,7 +97,7 @@ class AuthenticationServiceTest {
         when(refreshTokenRepository.findByMemberId(member.getId())).thenReturn(Optional.of(refreshToken));
 
         //when
-        KakaoLoginResponse kakaoLoginResponse = authenticationService.login("Test AuthorizedCode");
+        KakaoLoginResponse kakaoLoginResponse = authenticationService.login(authorizationCodeRequest);
 
         //then
         softly.assertThat(kakaoLoginResponse.getLoginState()).isEqualTo(LoginState.LOGIN);
@@ -112,13 +115,14 @@ class AuthenticationServiceTest {
         Member member = new Member("koho1047@naver.com", "고민호");
         KakaoApiMemberResponse kakaoApiMemberResponse = new KakaoApiMemberResponse("testAccessToken",
                 "testRefreshToken", "고민호", "koho1047@naver.com");
+        AuthorizationCodeRequest authorizationCodeRequest = new AuthorizationCodeRequest("Test AuthorizedCode");
 
         when(kakaoOAuth2.getMemberDto(any())).thenReturn(kakaoApiMemberResponse);
         when(memberService.findByMemberEmail(any())).thenReturn(Optional.of(member));
         when(tokenManager.createToken(any())).thenReturn("Test Access Token");
 
         //when
-        KakaoLoginResponse kakaoLoginResponse = authenticationService.login("Test AuthorizedCode");
+        KakaoLoginResponse kakaoLoginResponse = authenticationService.login(authorizationCodeRequest);
 
         //then
         softly.assertThat(kakaoLoginResponse.getLoginState()).isEqualTo(LoginState.LOGIN);
