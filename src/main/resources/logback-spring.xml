@@ -32,7 +32,6 @@
             <appender-ref ref="STDOUT"/>
         </appender>
         <logger name="mokindang.jubging" level="DEBUG" appender-ref="STDOUT"/>
-
         <root level="INFO">
             <appender-ref ref="ASYNC_STDOUT"/>
         </root>
