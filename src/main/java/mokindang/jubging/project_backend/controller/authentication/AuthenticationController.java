@@ -15,7 +15,10 @@ import mokindang.jubging.project_backend.service.member.response.RegionResponse;
 import mokindang.jubging.project_backend.web.argumentresolver.Login;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
@@ -28,7 +31,7 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
-    @GetMapping("/api/member/join")
+    @PostMapping("/api/member/join")
     public ResponseEntity<LoginResponse> kakaoCallback(@RequestBody AuthorizationCodeRequest authorizationCodeRequest) {
         KakaoLoginResponse kakaoLoginResponse = authenticationService.login(authorizationCodeRequest);
         LoginResponse loginResponse = new LoginResponse(kakaoLoginResponse.getAlias());
