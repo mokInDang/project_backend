@@ -22,7 +22,8 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(AuthenticationController.class)
@@ -53,7 +54,7 @@ class AuthenticationControllerTest {
         when(authenticationService.login(any())).thenReturn(kakaoLoginResponse);
 
         //when
-        ResultActions resultActions = mockMvc.perform(get("/api/member/join?code")
+        ResultActions resultActions = mockMvc.perform(post("/api/member/join?code")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(authorizationCodeRequest)));
 
@@ -73,7 +74,7 @@ class AuthenticationControllerTest {
         when(authenticationService.login(any())).thenReturn(kakaoLoginResponse);
 
         //when
-        ResultActions resultActions = mockMvc.perform(get("/api/member/join?code")
+        ResultActions resultActions = mockMvc.perform(post("/api/member/join?code")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(authorizationCodeRequest)));
 
