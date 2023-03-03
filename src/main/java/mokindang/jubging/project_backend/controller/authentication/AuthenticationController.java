@@ -3,7 +3,9 @@ package mokindang.jubging.project_backend.controller.authentication;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mokindang.jubging.project_backend.domain.member.LoginState;
+import mokindang.jubging.project_backend.domain.region.vo.Region;
 import mokindang.jubging.project_backend.service.authentication.AuthenticationService;
+import mokindang.jubging.project_backend.service.member.request.AuthorizationCodeRequest;
 import mokindang.jubging.project_backend.service.member.request.RefreshTokenRequest;
 import mokindang.jubging.project_backend.service.member.request.RegionRequest;
 import mokindang.jubging.project_backend.service.member.response.JwtResponse;
@@ -27,8 +29,8 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @GetMapping("/api/member/join")
-    public ResponseEntity<LoginResponse> kakaoCallback(@RequestParam String code) {
-        KakaoLoginResponse kakaoLoginResponse = authenticationService.login(code);
+    public ResponseEntity<LoginResponse> kakaoCallback(@RequestBody AuthorizationCodeRequest authorizationCodeRequest) {
+        KakaoLoginResponse kakaoLoginResponse = authenticationService.login(authorizationCodeRequest);
         LoginResponse loginResponse = new LoginResponse(kakaoLoginResponse.getAlias());
 
         if (kakaoLoginResponse.getLoginState() == LoginState.JOIN) {
@@ -49,10 +51,10 @@ public class AuthenticationController {
                 .build();
     }
 
-    @PutMapping("/regionAuth")
-    public ResponseEntity<RegionResponse> callRegion(@Valid @RequestBody RegionRequest regionRequest, @Login Long memberId) {
-        String region = authenticationService.getRegion(regionRequest, memberId);
-        RegionResponse regionResponse = new RegionResponse(region);
+    @PutMapping("/region")
+    public ResponseEntity<RegionResponse> updateRegion(@Valid @RequestBody RegionRequest regionRequest, @Login Long memberId) {
+        Region region = authenticationService.getRegion(regionRequest, memberId);
+        RegionResponse regionResponse = new RegionResponse(region.getValue());
         return ResponseEntity.ok()
                 .body(regionResponse);
     }
