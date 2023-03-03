@@ -30,13 +30,11 @@ public class BoardCreateRequest {
     private final String activityCategory;
 
     @NotNull
-    //@NotBlank
     @Schema(description = "활동 시작일", example = "2023-11-23", pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private final LocalDate startingDate;
 
     @NotNull
-    //@NotBlank
     @Schema(description = "request 요청 날짜", example = "2023-11-20", pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private final LocalDate requestDate;
