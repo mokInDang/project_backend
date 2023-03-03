@@ -108,5 +108,4 @@ public class AuthenticationService {
         findMember.getRegion().switchRegion(findRegion.getValue());
         memberService.saveMember(findMember);
     }
-
 }
