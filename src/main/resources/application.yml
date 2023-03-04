@@ -57,7 +57,7 @@ spring:
       on-profile: deploy
 
   datasource:
-    url: jdbc:mysql://mokindang-db.cla9o9xvetck.ap-northeast-2.rds.amazonaws.com:3306/mydb?useSSL=false&serverTimezone=Asia/Seoul&character_set_server=utf8mb4&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://mokindang-db.cla9o9xvetck.ap-northeast-2.rds.amazonaws.com:3306/mokindangdb?useSSL=false&serverTimezone=Asia/Seoul&character_set_server=utf8mb4&allowPublicKeyRetrieval=true
   jpa:
     hibernate:
       ddl-auto: create
