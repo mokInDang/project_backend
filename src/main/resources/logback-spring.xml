@@ -33,9 +33,10 @@
 
     <springProfile name="deploy">
         <appender name="ASYNC_INFO_LOG_FILE" class="ch.qos.logback.classic.AsyncAppender">
-            <file>/home/ubuntu/app/logs/info.log</file>
-            <maxFlushTime>0</maxFlushTime>
             <appender-ref ref="INFO_LOG_FILE"/>
+            <file>/home/ubuntu/app/logs/info.log</file>
+            <queueSize>10000</queueSize>
+            <maxFlushTime>0</maxFlushTime>
             <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
                 <fileNamePattern>/home/ubuntu/app/was-logs/info.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
                 <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
