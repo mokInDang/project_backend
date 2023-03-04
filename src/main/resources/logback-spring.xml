@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <property name="LOGS_ABSOLUTE_PATH" value="./logs"/>
-
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
             <Pattern>[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%thread] %-5level %logger{36} - %msg%n</Pattern>
@@ -31,7 +29,7 @@
             <maxFlushTime>0</maxFlushTime>
             <appender-ref ref="STDOUT"/>
         </appender>
-        <logger name="mokindang.jubging" level="DEBUG" appender-ref="STDOUT"/>
+        <logger name="mokindang.jubging" level="DEBUG" appender-ref="ASYNC_STDOUT"/>
         <root level="INFO">
             <appender-ref ref="ASYNC_STDOUT"/>
         </root>
