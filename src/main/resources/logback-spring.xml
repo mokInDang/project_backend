@@ -49,6 +49,7 @@
 
     <springProfile name="deploy">
         <appender name="ASYNC_INFO_LOG_FILE" class="ch.qos.logback.classic.AsyncAppender">
+            <file>/home/ubuntu/app/logs/info.log</file>
             <maxFlushTime>0</maxFlushTime>
             <appender-ref ref="INFO_LOG_FILE"/>
         </appender>
