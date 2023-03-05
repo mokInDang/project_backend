@@ -1,6 +1,7 @@
 package mokindang.jubging.project_backend.service.board;
 
 import mokindang.jubging.project_backend.domain.member.Member;
+import mokindang.jubging.project_backend.domain.region.vo.Region;
 import mokindang.jubging.project_backend.repository.board.BoardRepository;
 import mokindang.jubging.project_backend.service.board.request.BoardCreateRequest;
 import mokindang.jubging.project_backend.service.member.MemberService;
@@ -33,6 +34,7 @@ class BoardServiceTest {
     void write() {
         //given
         Member member = mock(Member.class);
+        when(member.getRegion()).thenReturn(new Region("동작구"));
         when(memberService.findByMemberId(anyLong())).thenReturn(member);
 
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest("제목", "본문내용", "달리기",
