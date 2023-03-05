@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<ErrorResponse> handleOverlapException(final IllegalStateException e) {
+    public ResponseEntity<ErrorResponse> handleIllegalStateException(final IllegalStateException e) {
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse(e.getMessage()));
     }

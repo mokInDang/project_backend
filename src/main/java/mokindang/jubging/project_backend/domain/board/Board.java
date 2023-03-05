@@ -40,7 +40,7 @@ public class Board {
     private Content content;
 
     @Embedded
-    private Region region;
+    private Region writingRegion;
 
     private boolean onRecruitment;
 
@@ -50,8 +50,16 @@ public class Board {
         this.activityCategory = ActivityCategory.from(activityCategory);
         this.title = new Title(title);
         this.content = new Content(content);
-        this.region = member.getRegion();
+        Region region = member.getRegion();
+        validateRegion(region);
+        this.writingRegion = region;
         this.onRecruitment = true;
+    }
+
+    private void validateRegion(final Region region) {
+        if (region.getValue().equals("DEFAULT REGION")) {
+            throw new IllegalStateException("지역 인증이 되지 않아, 게시글을 생성할 수 없습니다.");
+        }
     }
 
     public void closeRecruitment() {
