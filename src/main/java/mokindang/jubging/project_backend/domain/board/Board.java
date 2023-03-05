@@ -7,6 +7,7 @@ import mokindang.jubging.project_backend.domain.board.vo.Content;
 import mokindang.jubging.project_backend.domain.board.vo.StartingDate;
 import mokindang.jubging.project_backend.domain.board.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
+import mokindang.jubging.project_backend.domain.region.vo.Region;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -38,6 +39,9 @@ public class Board {
     @Embedded
     private Content content;
 
+    @Embedded
+    private Region region;
+
     private boolean onRecruitment;
 
     public Board(final Member member, final LocalDate startingDate, final String activityCategory, final String title, final String content, final LocalDate now) {
@@ -46,6 +50,7 @@ public class Board {
         this.activityCategory = ActivityCategory.from(activityCategory);
         this.title = new Title(title);
         this.content = new Content(content);
+        this.region = member.getRegion();
         this.onRecruitment = true;
     }
 
