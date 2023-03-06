@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.region.vo.Region;
 import mokindang.jubging.project_backend.repository.member.MemberRepository;
-import mokindang.jubging.project_backend.security.kakao.KaKaoLocal;
+import mokindang.jubging.project_backend.security.kakao.KaKaoLocalApi;
 import mokindang.jubging.project_backend.service.member.request.RegionUpdateRequest;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +14,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberService {
 
-    private final KaKaoLocal kakaoLocalApi;
+    private final KaKaoLocalApi kakaoLocalApi;
     private final MemberRepository memberRepository;
 
     public Member saveMember(Member member) {
