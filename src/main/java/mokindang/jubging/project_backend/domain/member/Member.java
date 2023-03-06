@@ -27,7 +27,11 @@ public class Member {
     public Member(final String email, final String alias) {
         this.email = email;
         this.alias = alias;
-        this.region = new Region("DEFAULT REGION");
+        region = Region.createByDefaultValue();
+    }
+
+    public void updateRegion(final String region) {
+        this.region.updateRegion(region);
     }
 
     @Override
