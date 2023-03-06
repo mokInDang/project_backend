@@ -15,6 +15,7 @@ public class TokenManager {
     private static final String ISSUER = "mokindang";
     private static final String MEMBER_ID = "memberId";
     private static final String TOKEN_TYPE = "Bearer ";
+    public static final String DELIMITER = " ";
     private final String secretKey;
     private final Long tokenValidateTime;
 
@@ -67,7 +68,7 @@ public class TokenManager {
     }
 
     private String parseTokenType(String token) {
-        return token.split(" ")[1];
+        return token.split(DELIMITER)[1];
     }
 
     private Key generateKey() {
