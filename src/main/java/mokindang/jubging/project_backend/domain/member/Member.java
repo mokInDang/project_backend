@@ -22,6 +22,7 @@ public class Member {
 
     private String alias;
 
+    @Embedded
     private Region region;
 
     public Member(final String email, final String alias) {
@@ -32,6 +33,10 @@ public class Member {
 
     public void updateRegion(final String region) {
         this.region.updateRegion(region);
+    }
+
+    public void updateRegion(final String region) {
+        this.region = new Region(region);
     }
 
     @Override
