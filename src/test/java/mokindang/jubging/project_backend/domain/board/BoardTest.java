@@ -4,6 +4,7 @@ import mokindang.jubging.project_backend.domain.board.vo.Content;
 import mokindang.jubging.project_backend.domain.board.vo.StartingDate;
 import mokindang.jubging.project_backend.domain.board.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
+import mokindang.jubging.project_backend.domain.region.vo.Region;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,7 +48,7 @@ class BoardTest {
     }
 
     @Test
-    @DisplayName("게시글의 member(작성자), title, content, 활동 종류, 활동 시작일, 모집 여부 를 반환한다.")
+    @DisplayName("게시글의 member(작성자), title, content, 활동 종류, 활동 시작일, 모집 여부, 작성 지역을 반환한다.")
     void getter() {
         //given
         SoftAssertions softly = new SoftAssertions();
@@ -62,6 +63,7 @@ class BoardTest {
         Content content = board.getContent();
         ActivityCategory activityCategory = board.getActivityCategory();
         StartingDate startingDate = board.getStartingDate();
+        Region region = board.getRegion();
         boolean onRecruitment = board.isOnRecruitment();
 
         //then
@@ -71,6 +73,7 @@ class BoardTest {
                 LocalDate.of(2025, 2, 11)));
         softly.assertThat(title).isEqualTo(new Title("게시판 제목"));
         softly.assertThat(content).isEqualTo(new Content("게시판 내용 작성 테스트"));
+        softly.assertThat(region).isEqualTo(member.getRegion());
         softly.assertThat(onRecruitment).isEqualTo(true);
         softly.assertAll();
     }
