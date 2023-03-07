@@ -13,6 +13,7 @@ public class OriginConfig implements WebMvcConfigurer {
     public void addCorsMappings(final CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("https://dongnejupging.xyz",
+                        "https://www.dongnejupging.xyz",
                         "http://dongnejupging.xyz",
                         "https://www.dongnejupging.xyz",
                         "http://www.dongnejupging.xyz",
