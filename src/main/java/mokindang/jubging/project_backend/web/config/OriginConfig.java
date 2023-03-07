@@ -14,6 +14,7 @@ public class OriginConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins("https://dongnejupging.xyz",
                         "https://www.dongnejupging.xyz",
+                        "http://www.dongnejupging.xyz",
                         "http://dongnejupging.xyz",
                         "https://www.dongnejupging.xyz",
                         "http://www.dongnejupging.xyz",
