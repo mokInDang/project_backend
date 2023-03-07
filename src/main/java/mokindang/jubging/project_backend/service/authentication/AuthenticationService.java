@@ -26,7 +26,7 @@ import static mokindang.jubging.project_backend.domain.member.LoginState.LOGIN;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class AuthenticationService {
 
     private final MemberService memberService;
