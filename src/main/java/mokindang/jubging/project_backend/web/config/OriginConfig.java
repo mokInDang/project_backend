@@ -15,7 +15,8 @@ public class OriginConfig implements WebMvcConfigurer {
                 .allowedOrigins("https://dongnejupging.xyz",
                         "http://dongnejupging.xyz",
                         "http://localhost:8080",
-                        "http://localhost:3000")
+                        "http://localhost:3000",
+                        "https://localhost")
                 .allowedMethods(ALLOWED_METHOD_NAMES.split(","))
                 .allowedHeaders("*")
                 .allowCredentials(true)
