@@ -1,4 +1,4 @@
-package mokindang.jubging.project_backend.security.kakao;
+package mokindang.jubging.project_backend.service.authentication;
 
 import mokindang.jubging.project_backend.service.member.response.KakaoApiMemberResponse;
 import org.json.JSONObject;
