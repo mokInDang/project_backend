@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @RequiredArgsConstructor
-public class RegionRequest {
+public class RegionUpdateRequest {
 
     @NotNull
     @Range(min = 124, max = 132, message = "longitude(경도)는 대한민국 영토 범위 124~132 내의 값이어야 합니다.")
