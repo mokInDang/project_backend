@@ -24,7 +24,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             String authorizationHeader = request.getHeader("Authorization");
             tokenManager.validateToken(authorizationHeader);
         } catch (final RuntimeException e) {
-            response.sendRedirect("/index.html");
+            response.sendRedirect("https://www.dongnejupging.xyz");
             return false;
         }
         return true;
