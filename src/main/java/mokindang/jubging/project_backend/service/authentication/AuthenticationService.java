@@ -34,6 +34,7 @@ public class AuthenticationService {
     private final TokenManager tokenManager;
     private final RefreshTokenRepository refreshTokenRepository;
 
+    @Transactional
     public KakaoLoginResponse login(final AuthorizationCodeRequest authorizationCodeRequest) {
         KakaoApiMemberResponse kakaoApiMemberResponse = kakaoOAuth2.getMemberDto(authorizationCodeRequest.getAuthorizationCode());
         return authenticate(kakaoApiMemberResponse);
@@ -94,5 +95,4 @@ public class AuthenticationService {
         Member member = memberService.findByMemberId(existRefreshToken.getId());
         return new JwtResponse(tokenManager.createToken(member.getId()), newRefreshToken);
     }
-
 }
