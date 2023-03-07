@@ -3,7 +3,6 @@ package mokindang.jubging.project_backend.service.member;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.region.vo.Region;
 import mokindang.jubging.project_backend.repository.member.MemberRepository;
-import mokindang.jubging.project_backend.security.kakao.KaKaoLocalApi;
 import mokindang.jubging.project_backend.service.member.request.RegionUpdateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
