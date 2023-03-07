@@ -4,15 +4,12 @@ import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mokindang.jubging.project_backend.domain.member.Member;
-import mokindang.jubging.project_backend.domain.region.vo.Region;
 import mokindang.jubging.project_backend.domain.token.RefreshToken;
 import mokindang.jubging.project_backend.repository.token.RefreshTokenRepository;
-import mokindang.jubging.project_backend.security.kakao.KaKaoLocal;
 import mokindang.jubging.project_backend.security.kakao.KaKaoOAuth2;
 import mokindang.jubging.project_backend.service.member.MemberService;
 import mokindang.jubging.project_backend.service.member.request.AuthorizationCodeRequest;
 import mokindang.jubging.project_backend.service.member.request.RefreshTokenRequest;
-import mokindang.jubging.project_backend.service.member.request.RegionRequest;
 import mokindang.jubging.project_backend.service.member.response.JwtResponse;
 import mokindang.jubging.project_backend.service.member.response.KakaoApiMemberResponse;
 import mokindang.jubging.project_backend.service.member.response.KakaoLoginResponse;
@@ -33,7 +30,6 @@ public class AuthenticationService {
 
     private final MemberService memberService;
     private final KaKaoOAuth2 kakaoOAuth2;
-    private final KaKaoLocal kakaoLocal;
     private final TokenManager tokenManager;
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -97,15 +93,4 @@ public class AuthenticationService {
         return new JwtResponse(tokenManager.createToken(member.getId()), newRefreshToken);
     }
 
-    public Region getRegion(RegionRequest regionRequest, Long memberId) {
-        Region findRegion = new Region(kakaoLocal.switchCoordinateToRegion(regionRequest));
-        updateRegion(memberId, findRegion);
-        return findRegion;
-    }
-
-    private void updateRegion(Long memberId, Region findRegion) {
-        Member findMember = memberService.findByMemberId(memberId);
-        findMember.getRegion().switchRegion(findRegion.getValue());
-        memberService.saveMember(findMember);
-    }
 }

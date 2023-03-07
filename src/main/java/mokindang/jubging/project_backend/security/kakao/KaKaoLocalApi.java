@@ -1,6 +1,6 @@
 package mokindang.jubging.project_backend.security.kakao;
 
-import mokindang.jubging.project_backend.service.member.request.RegionRequest;
+import mokindang.jubging.project_backend.service.member.request.RegionUpdateRequest;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -14,16 +14,16 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 @Component
-public class KaKaoLocal {
+public class KaKaoLocalApi {
 
     public static final String REGION_2_DEPTH_NAME = "region_2depth_name";
 
-    public String switchCoordinateToRegion(RegionRequest regionRequest){
-        String url = "https://dapi.kakao.com/v2/local/geo/coord2address.json?x="+regionRequest.getLongitude()+"&y="+regionRequest.getLatitude();
+    public String switchCoordinateToRegion(RegionUpdateRequest regionUpdateRequest) {
+        String url = "https://dapi.kakao.com/v2/local/geo/coord2address.json?x=" + regionUpdateRequest.getLongitude() + "&y=" + regionUpdateRequest.getLatitude();
         String addr = "";
-        try{
+        try {
             addr = getRegionAddress(getJSONData(url));
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return addr;
@@ -68,22 +68,22 @@ public class KaKaoLocal {
         JSONObject meta = (JSONObject) jObj.get("meta");
         long size = (long) meta.get("total_count");
 
-        if(size>0){
+        if (size > 0) {
             JSONArray jArray = (JSONArray) jObj.get("documents");
             JSONObject subJobj = (JSONObject) jArray.get(0);
-            JSONObject roadAddress =  (JSONObject) subJobj.get("road_address");
+            JSONObject roadAddress = (JSONObject) subJobj.get("road_address");
 
-            if(roadAddress == null){
+            if (roadAddress == null) {
                 JSONObject subsubJobj = (JSONObject) subJobj.get("address");
                 regionDepth2 = (String) subsubJobj.get(REGION_2_DEPTH_NAME);
-            }else{
+            } else {
                 regionDepth2 = (String) roadAddress.get(REGION_2_DEPTH_NAME);
             }
 
-            if(regionDepth2.equals("") || regionDepth2==null){
+            if (regionDepth2.equals("") || regionDepth2 == null) {
                 subJobj = (JSONObject) jArray.get(1);
                 subJobj = (JSONObject) subJobj.get("address");
-                regionDepth2 =(String) subJobj.get(REGION_2_DEPTH_NAME);
+                regionDepth2 = (String) subJobj.get(REGION_2_DEPTH_NAME);
             }
         }
         return regionDepth2;

@@ -13,14 +13,20 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Region {
 
+    private static final String DEFAULT_REGION = "DEFAULT_REGION";
+
     @Column(name = "region")
     private String value;
 
-    public Region(String value) {
+    public static Region createByDefaultValue(){
+        return new Region(DEFAULT_REGION);
+    }
+
+    private Region(String value) {
         this.value = value;
     }
 
-    public void switchRegion(String value) {
+    public void updateRegion(String value) {
         this.value = value;
     }
 
