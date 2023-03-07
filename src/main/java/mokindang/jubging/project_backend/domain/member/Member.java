@@ -35,10 +35,6 @@ public class Member {
         this.region.updateRegion(region);
     }
 
-    public void updateRegion(final String region) {
-        this.region = new Region(region);
-    }
-
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
