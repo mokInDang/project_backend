@@ -4,14 +4,15 @@ import lombok.RequiredArgsConstructor;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.region.vo.Region;
 import mokindang.jubging.project_backend.repository.member.MemberRepository;
-import mokindang.jubging.project_backend.security.kakao.KaKaoLocalApi;
 import mokindang.jubging.project_backend.service.member.request.RegionUpdateRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MemberService {
 
     private final KaKaoLocalApi kakaoLocalApi;
@@ -30,6 +31,7 @@ public class MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 유저가 존재하지 않습니다."));
     }
 
+    @Transactional
     public Region updateRegion(final RegionUpdateRequest regionUpdateRequest, final Long memberId) {
         Member member = findByMemberId(memberId);
         member.updateRegion(kakaoLocalApi.switchCoordinateToRegion(regionUpdateRequest));
