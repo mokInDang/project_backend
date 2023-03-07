@@ -7,11 +7,18 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class OriginConfig implements WebMvcConfigurer {
 
-    private static final String LOCAL_HOST = "http://localhost:8080";
+    private static final String ALLOWED_METHOD_NAMES = "GET,HEAD,POST,DELETE,TRACE,OPTIONS,PATCH,PUT";
 
     @Override
     public void addCorsMappings(final CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins(LOCAL_HOST);
+                .allowedOrigins("https://dongnejupging.xyz",
+                        "http://dongnejupging.xyz",
+                        "http://localhost:8080",
+                        "http://localhost:3000")
+                .allowedMethods(ALLOWED_METHOD_NAMES.split(","))
+                .allowedHeaders("*")
+                .allowCredentials(true)
+                .exposedHeaders("Authorization");
     }
 }
