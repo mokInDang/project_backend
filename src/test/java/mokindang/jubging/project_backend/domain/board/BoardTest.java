@@ -92,7 +92,7 @@ class BoardTest {
         //when, then
         assertThatThrownBy(() -> new Board(member, LocalDate.of(2025, 2, 11),
                 "달리기", "게시판 제목", "게시판 내용 작성 테스트", now))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("지역 인증이 되지 않아, 게시글을 생성할 수 없습니다.");
     }
 }

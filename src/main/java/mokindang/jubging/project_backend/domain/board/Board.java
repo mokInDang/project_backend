@@ -57,8 +57,8 @@ public class Board {
     }
 
     private void validateRegion(final Region region) {
-        if (region.getValue().equals("DEFAULT REGION")) {
-            throw new IllegalStateException("지역 인증이 되지 않아, 게시글을 생성할 수 없습니다.");
+        if (region.isDefault()) {
+            throw new IllegalArgumentException("지역 인증이 되지 않아, 게시글을 생성할 수 없습니다.");
         }
     }
 
