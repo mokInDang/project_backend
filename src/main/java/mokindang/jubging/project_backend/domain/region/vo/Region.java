@@ -30,6 +30,10 @@ public class Region {
         this.value = value;
     }
 
+    public boolean isDefault() {
+        return this.value.equals(DEFAULT_REGION);
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
