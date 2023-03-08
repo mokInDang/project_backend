@@ -1,4 +1,4 @@
-package mokindang.jubging.project_backend.security.kakao;
+package mokindang.jubging.project_backend.service.member;
 
 import mokindang.jubging.project_backend.service.member.request.RegionUpdateRequest;
 import org.json.simple.JSONArray;

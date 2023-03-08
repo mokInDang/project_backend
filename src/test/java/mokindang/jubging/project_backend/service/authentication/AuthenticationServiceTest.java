@@ -5,7 +5,6 @@ import mokindang.jubging.project_backend.domain.member.LoginState;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.token.RefreshToken;
 import mokindang.jubging.project_backend.repository.token.RefreshTokenRepository;
-import mokindang.jubging.project_backend.security.kakao.KaKaoOAuth2;
 import mokindang.jubging.project_backend.service.member.MemberService;
 import mokindang.jubging.project_backend.service.member.request.AuthorizationCodeRequest;
 import mokindang.jubging.project_backend.service.member.request.RefreshTokenRequest;

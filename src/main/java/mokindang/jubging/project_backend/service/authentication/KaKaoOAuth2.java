@@ -1,4 +1,4 @@
-package mokindang.jubging.project_backend.security.kakao;
+package mokindang.jubging.project_backend.service.authentication;
 
 import mokindang.jubging.project_backend.service.member.response.KakaoApiMemberResponse;
 import org.json.JSONObject;
@@ -30,7 +30,7 @@ public class KaKaoOAuth2 {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
         params.add("client_id", "60b35611c843f6c8f618a495ecc8eaf6");
-        params.add("redirect_uri", "http://localhost:8080/api/member/join");
+        params.add("redirect_uri", "https://www.dongnejupging.xyz/api/member/join");
         params.add("code", authorizationCode);
 
         RestTemplate rt = new RestTemplate();
