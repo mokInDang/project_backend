@@ -3,6 +3,7 @@ package mokindang.jubging.project_backend.controller.board;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mokindang.jubging.project_backend.service.board.BoardService;
 import mokindang.jubging.project_backend.service.board.request.BoardCreateRequest;
+import mokindang.jubging.project_backend.service.board.response.BoardSelectResponse;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,10 +19,11 @@ import java.time.LocalDate;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 
 @WebMvcTest(BoardController.class)
 class BoardControllerTest {
@@ -62,7 +64,7 @@ class BoardControllerTest {
                 .write(anyLong(), any(BoardCreateRequest.class));
 
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest("제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11),LocalDate.of(2023, 11, 10));
+                LocalDate.of(2023, 11, 11), LocalDate.of(2023, 11, 10));
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards")
@@ -82,7 +84,7 @@ class BoardControllerTest {
                 .write(anyLong(), any(BoardCreateRequest.class));
 
         BoardCreateRequest incorrectTitleRequest = new BoardCreateRequest("잘못된 제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11),LocalDate.of(2023, 11, 10));
+                LocalDate.of(2023, 11, 11), LocalDate.of(2023, 11, 10));
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards")
@@ -102,7 +104,7 @@ class BoardControllerTest {
                 .write(anyLong(), any(BoardCreateRequest.class));
 
         BoardCreateRequest incorrectContentRequest = new BoardCreateRequest("제목", "잘못된 본문", "달리기",
-                LocalDate.of(2023, 11, 11),LocalDate.of(2023, 11, 10));
+                LocalDate.of(2023, 11, 11), LocalDate.of(2023, 11, 10));
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards")
@@ -122,7 +124,7 @@ class BoardControllerTest {
                 .write(anyLong(), any(BoardCreateRequest.class));
 
         BoardCreateRequest incorrectContentRequest = new BoardCreateRequest("제목", "잘못된 본문", "달리기",
-                LocalDate.of(2023, 11, 11),LocalDate.of(2023, 11, 10));
+                LocalDate.of(2023, 11, 11), LocalDate.of(2023, 11, 10));
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards")
@@ -132,5 +134,63 @@ class BoardControllerTest {
         //then
         actual.andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("이미 지난 날짜는 활동 시작일로 할 수 없습니다."));
+    }
+
+    @Test
+    @DisplayName("게시글 식별 번호를 입력받아 게시글 조회 시, 유저의 지역과 게시글의 지역이 일치한 경우 HTTP 200 과" +
+            " 게시글 제목, 본문, 작성자, 활동 지역, 활동 예정일 활동 종류, 모집 여부 를 담은 BoardSelectResponse 를 반환한다.")
+    void select() throws Exception {
+        //given
+        LocalDate now = LocalDate.of(2023, 3, 9);
+        BoardSelectResponse boardSelectResponse = new BoardSelectResponse(1L, "제목", "본문", "작성자",
+                "2023-03-10", "동작구", "달리기", true);
+        when(boardService.select(anyLong(), anyLong())).thenReturn(boardSelectResponse);
+
+        //when
+        ResultActions actual = mockMvc.perform(get("/api/boards/{boardId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        actual.andExpect(status().isOk())
+                .andExpect(jsonPath("boardId").value(1L))
+                .andExpect(jsonPath("$.title").value("제목"))
+                .andExpect(jsonPath("$.content").value("본문"))
+                .andExpect(jsonPath("$.writerAlias").value("작성자"))
+                .andExpect(jsonPath("$.startingDate").value("2023-03-10"))
+                .andExpect(jsonPath("$.region").value("동작구"))
+                .andExpect(jsonPath("$.activityCategory").value("달리기"))
+                .andExpect(jsonPath("onRecruitment").value("true"));
+    }
+
+    @Test
+    @DisplayName("게시글 식별 번호를 입력받아 게시글 조회 시, 유저의 지역과 게시글의 지역이 일치하지 않으면 HTTP 400 상태코드와 함께 예외를 반환한다.")
+    void failedToMatchMemberRegionAndBoardArea() throws Exception {
+        //given
+        doThrow(new IllegalArgumentException("지역이 다른 유저는 게시글에 접근 할 수 없습니다.")).when(boardService)
+                .select(anyLong(), anyLong());
+
+        //when
+        ResultActions actual = mockMvc.perform(get("/api/boards/{boardId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        actual.andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("지역이 다른 유저는 게시글에 접근 할 수 없습니다."));
+    }
+
+    @Test
+    @DisplayName("게시글 식별 번호를 입력받아 게시글 조회 시, 존재하지 않는 게시글이면 400 상태코드와 함께 예외를 반환한다.")
+    void failedByNonexistentBoard() throws Exception {
+        //given
+        doThrow(new IllegalArgumentException("존재하지 않는 게시물입니다.")).when(boardService)
+                .select(anyLong(), anyLong());
+
+        //when
+        ResultActions actual = mockMvc.perform(get("/api/boards/{boardId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        actual.andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("존재하지 않는 게시물입니다."));
     }
 }
