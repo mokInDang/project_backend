@@ -1,10 +1,8 @@
 package mokindang.jubging.project_backend.service.board.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import mokindang.jubging.project_backend.domain.board.ActivityCategory;
-import mokindang.jubging.project_backend.domain.board.vo.StartingDate;
-import mokindang.jubging.project_backend.domain.region.vo.Region;
 
 @Getter
 @AllArgsConstructor
@@ -14,8 +12,10 @@ public class BoardSelectResponse {
     private String title;
     private String content;
     private String writerAlias;
-    private StartingDate startingDate;
-    private Region region;
-    private ActivityCategory activityCategory;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private String startingDate;
+    private String region;
+    private String activityCategory;
     private boolean onRecruitment;
 }
