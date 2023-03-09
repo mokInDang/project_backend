@@ -13,13 +13,11 @@ import lombok.extern.slf4j.Slf4j;
 import mokindang.jubging.project_backend.exception.ErrorResponse;
 import mokindang.jubging.project_backend.service.board.BoardService;
 import mokindang.jubging.project_backend.service.board.request.BoardCreateRequest;
+import mokindang.jubging.project_backend.service.board.response.BoardSelectResponse;
 import mokindang.jubging.project_backend.web.argumentresolver.Login;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -48,5 +46,13 @@ public class BoardController {
         boardService.write(memberId, boardCreateRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .build();
+    }
+
+    @GetMapping("/{boardId}")
+    public ResponseEntity<BoardSelectResponse> selectBoard(@Parameter(hidden = true) @Login Long memberId, @PathVariable final Long boardId) {
+        log.info("memberId = [} 의 게시글 조회, 게시글 번호 : {}", memberId, boardId);
+        BoardSelectResponse boardSelectResponse = boardService.select(memberId, boardId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(boardSelectResponse);
     }
 }
