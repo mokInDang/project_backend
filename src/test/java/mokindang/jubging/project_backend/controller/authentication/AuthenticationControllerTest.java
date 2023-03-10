@@ -60,8 +60,8 @@ class AuthenticationControllerTest {
         //then
         resultActions.andExpect(status().isCreated())
                 .andExpect(jsonPath("$.alias").value("Test Alias"))
-                .andExpect(header().exists("Authorization"))
-                .andExpect(header().exists("Set-Cookie"))
+                .andExpect(header().exists(HttpHeaders.AUTHORIZATION))
+                .andExpect(header().exists(HttpHeaders.SET_COOKIE))
                 .andExpect(header().stringValues("set-cookie","refreshToken=f6341354-be83-11ed-afa1-0242ac120002; Path=/; Secure; HttpOnly"));
     }
 
@@ -82,8 +82,8 @@ class AuthenticationControllerTest {
         //then
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.alias").value("Test Alias"))
-                .andExpect(header().exists("Authorization"))
-                .andExpect(header().exists("Set-Cookie"))
+                .andExpect(header().exists(HttpHeaders.AUTHORIZATION))
+                .andExpect(header().exists(HttpHeaders.SET_COOKIE))
                 .andExpect(header().stringValues("set-cookie","refreshToken=f6341354-be83-11ed-afa1-0242ac120002; Path=/; Secure; HttpOnly"));
     }
 
@@ -103,8 +103,8 @@ class AuthenticationControllerTest {
 
         //then
         resultActions.andExpect(status().isOk())
-                .andExpect(header().exists("Authorization"))
-                .andExpect(header().exists("Set-Cookie"))
+                .andExpect(header().exists(HttpHeaders.AUTHORIZATION))
+                .andExpect(header().exists(HttpHeaders.SET_COOKIE))
                 .andExpect(header().stringValues("set-cookie","refreshToken=9ecfd4fe-bee2-11ed-afa1-0242ac120002; Path=/; Secure; HttpOnly"));
     }
 
