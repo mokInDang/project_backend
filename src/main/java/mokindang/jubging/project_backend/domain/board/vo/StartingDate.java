@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 @Embeddable
@@ -24,6 +25,10 @@ public class StartingDate {
         if (currentDate.isAfter(startingDate)) {
             throw new IllegalArgumentException("이미 지난 날짜는 활동 시작일로 할 수 없습니다.");
         }
+    }
+
+    public String getValue() {
+        return this.startingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
     @Override

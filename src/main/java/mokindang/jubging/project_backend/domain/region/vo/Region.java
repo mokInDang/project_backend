@@ -22,6 +22,10 @@ public class Region {
         return new Region(DEFAULT_REGION);
     }
 
+    public static Region from(final String region) {
+        return new Region(region);
+    }
+
     private Region(String value) {
         this.value = value;
     }

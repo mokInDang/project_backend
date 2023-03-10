@@ -26,6 +26,19 @@ class RegionTest {
     }
 
     @Test
+    @DisplayName("입력 받은 값을 기반으로 Region 객체를 생성한다.")
+    void form() {
+        //given
+        String region = "동작구";
+
+        //when
+        Region actual = Region.from(region);
+
+        //then
+        assertThat(actual.getValue()).isEqualTo(region);
+    }
+
+    @Test
     @DisplayName("리즌을 변경한다.")
     void updateRegion() {
         //given

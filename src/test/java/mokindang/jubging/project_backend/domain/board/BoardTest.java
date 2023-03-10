@@ -62,7 +62,7 @@ class BoardTest {
                 "달리기", "게시판 제목", "게시판 내용 작성 테스트", now);
 
         //when
-        Member member = board.getMember();
+        Member member = board.getWriter();
         Title title = board.getTitle();
         Content content = board.getContent();
         ActivityCategory activityCategory = board.getActivityCategory();
@@ -94,5 +94,38 @@ class BoardTest {
                 "달리기", "게시판 제목", "게시판 내용 작성 테스트", now))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("지역 인증이 되지 않아, 게시글을 생성할 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("지역을 입력 받아, 게시글의 지역과 다르면 예외를 반환한다.")
+    void checkRegion() {
+        //given
+        LocalDate now = LocalDate.of(2023, 11, 12);
+        Member testMember = new Member("koho1047@naver.com", "민호");
+        testMember.updateRegion("동작구");
+        Board board = new Board(testMember, LocalDate.of(2025, 2, 11),
+                "달리기", "게시판 제목", "게시판 내용 작성 테스트", now);
+
+        //when, then
+        assertThatThrownBy(() -> board.checkRegion(Region.from("성동구")))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("지역이 다른 유저는 게시글에 접근 할 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("게시글 작성자의 별명을 반환한다.")
+    void getWriterAlias() {
+        //given
+        LocalDate now = LocalDate.of(2023, 11, 12);
+        Member testMember = new Member("koho1047@naver.com", "민호");
+        testMember.updateRegion("동작구");
+        Board board = new Board(testMember, LocalDate.of(2025, 2, 11),
+                "달리기", "게시판 제목", "게시판 내용 작성 테스트", now);
+
+        //when
+        String actual = board.getWriter().getAlias();
+
+        //then
+        assertThat(actual).isEqualTo("민호");
     }
 }
