@@ -2,6 +2,11 @@ package mokindang.jubging.project_backend.domain.region.vo;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -44,5 +49,23 @@ class RegionTest {
 
         //then
         assertThat(region.getValue()).isEqualTo("동작구");
+    }
+
+    @ParameterizedTest
+    @MethodSource("regionParameterProvider")
+    @DisplayName("DEFAULT_REGION 이면 true 를 반환하고, 그렇지 않은경우 false 를 반환한다.")
+    void isDefaultRegion(final Region region, final boolean expect) {
+        //when
+        boolean actual = region.isDefault();
+
+        //then
+        assertThat(actual).isEqualTo(expect);
+    }
+
+    private static Stream<Arguments> regionParameterProvider() {
+        Region noneDefaultRegion = Region.createByDefaultValue();
+        noneDefaultRegion.updateRegion("동작구");
+        return Stream.of(Arguments.of(Region.createByDefaultValue(), true),
+                Arguments.of(noneDefaultRegion, false));
     }
 }

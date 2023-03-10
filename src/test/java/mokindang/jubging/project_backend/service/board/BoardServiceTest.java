@@ -42,6 +42,9 @@ class BoardServiceTest {
     void write() {
         //given
         Member member = mock(Member.class);
+        Region region = mock(Region.class);
+        when(member.getRegion()).thenReturn(region);
+        when(region.isDefault()).thenReturn(false);
         when(memberService.findByMemberId(anyLong())).thenReturn(member);
 
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest("제목", "본문내용", "달리기",
