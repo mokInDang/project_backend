@@ -5,10 +5,10 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class RegionResponse {
+public class RegionUpdateResponse {
 
     private String region;
 
-    public RegionResponse() {
+    public RegionUpdateResponse() {
     }
 }

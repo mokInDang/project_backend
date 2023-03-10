@@ -3,11 +3,9 @@ package mokindang.jubging.project_backend.controller.authentication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.JwtException;
 import mokindang.jubging.project_backend.domain.member.LoginState;
-import mokindang.jubging.project_backend.domain.region.vo.Region;
 import mokindang.jubging.project_backend.service.authentication.AuthenticationService;
 import mokindang.jubging.project_backend.service.member.request.AuthorizationCodeRequest;
 import mokindang.jubging.project_backend.service.member.request.RefreshTokenRequest;
-import mokindang.jubging.project_backend.service.member.request.RegionRequest;
 import mokindang.jubging.project_backend.service.member.response.JwtResponse;
 import mokindang.jubging.project_backend.service.member.response.KakaoLoginResponse;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
@@ -23,7 +21,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(AuthenticationController.class)
@@ -46,7 +43,7 @@ class AuthenticationControllerTest {
 
     @Test
     @DisplayName("회원가입 시 HTTP 상태코드는 201(CREATED)이며 Alias를 JSON으로 반환한다. Access Token 과 Refresh Token 은 Authorization 헤더에 담아 반환한다.")
-    void joinAndState201() throws Exception{
+    void joinAndState201() throws Exception {
         //given
         KakaoLoginResponse kakaoLoginResponse = new KakaoLoginResponse("Test Access Token", "Test Refresh Token", "Test Alias", LoginState.JOIN);
         AuthorizationCodeRequest authorizationCodeRequest = new AuthorizationCodeRequest("Test Authorization Code");
@@ -66,7 +63,7 @@ class AuthenticationControllerTest {
 
     @Test
     @DisplayName("로그인 시 HTTP 상태코드는 200(OK)이며 Alias를 JSON으로 반환한다. Access Token 과 Refresh Token 은 Authorization 헤더에 담아 반환한다.")
-    void loginAndState200() throws Exception{
+    void loginAndState200() throws Exception {
         //given
         KakaoLoginResponse kakaoLoginResponse = new KakaoLoginResponse("Test Access Token", "Test Refresh Token", "Test Alias", LoginState.LOGIN);
         AuthorizationCodeRequest authorizationCodeRequest = new AuthorizationCodeRequest("Test Authorization Code");
@@ -86,7 +83,7 @@ class AuthenticationControllerTest {
 
     @Test
     @DisplayName("Refresh Token 재발급 요청 시 DB에 해당 Refresh Token 존재하면 새로운 Access Token, Refresh Token 을 재발급 및 상태코드 200(OK)을 반환한다.")
-    void reissue() throws Exception{
+    void reissue() throws Exception {
         //given
         RefreshTokenRequest refreshTokenRequest = new RefreshTokenRequest("Refresh Token");
 
@@ -124,55 +121,5 @@ class AuthenticationControllerTest {
                 .andExpect(jsonPath("$.error").value("Refresh Token 이 존재하지 않습니다."));
     }
 
-    @Test
-    @DisplayName("대한민국 영토 범위 안의 위도와 경도 입력 시 이에 대응하는 지역을 반환한다.")
-    void callRegion() throws Exception {
-        //given
-        RegionRequest regionRequest = new RegionRequest(126.95389562345368, 37.496322794913326);
-
-        when(authenticationService.getRegion(any(), any())).thenReturn(new Region("동작구"));
-
-        //when
-        ResultActions resultActions = mockMvc.perform(put("/region")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(regionRequest)));
-
-        //then
-        resultActions.andExpect(jsonPath("$.region").value("동작구"));
-    }
-
-    @Test
-    @DisplayName("longitude(경도)가 대한민국 영토 범위 124~132에 포함되지 않는 값이 들어온 경우 예외를 반환한다.")
-    void validateLongitude() throws Exception {
-        //given
-        RegionRequest regionRequest = new RegionRequest(115.13181351, 37.496322794913326);
-
-        when(authenticationService.getRegion(any(), any())).thenReturn(new Region("동작구"));
-
-        //when
-        ResultActions resultActions = mockMvc.perform(put("/region")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(regionRequest)));
-
-        //then
-        resultActions.andExpect(jsonPath("$.error").value("longitude(경도)는 대한민국 영토 범위 124~132 내의 값이어야 합니다."));
-    }
-
-    @Test
-    @DisplayName("longitude(경도)가 대한민국 영토 범위 124~132에 포함되지 않는 값이 들어온 경우 예외를 반환한다.")
-    void validateLatitude() throws Exception {
-        //given
-        RegionRequest regionRequest = new RegionRequest(126.95389562345368, 50.335618198);
-
-        when(authenticationService.getRegion(any(), any())).thenReturn(new Region("동작구"));
-
-        //when
-        ResultActions resultActions = mockMvc.perform(put("/region")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(regionRequest)));
-
-        //then
-        resultActions.andExpect(jsonPath("$.error").value("latitude(위도)는 대한민국 영토 범위 33~39 내의 값이어야 합니다."));
-    }
 
 }

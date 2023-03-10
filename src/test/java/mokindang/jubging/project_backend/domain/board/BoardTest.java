@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 class BoardTest {
 
@@ -21,6 +22,7 @@ class BoardTest {
         //given
         LocalDate now = LocalDate.of(2023, 11, 12);
         Member testMember = new Member("koho1047@naver.com", "민호");
+        testMember.updateRegion("동작구");
         Board board = new Board(testMember, LocalDate.of(2025, 2, 11),
                 "달리기", "게시판 제목", "게시판 내용 작성 테스트", now);
 
@@ -37,6 +39,7 @@ class BoardTest {
         //given
         LocalDate now = LocalDate.of(2023, 11, 12);
         Member testMember = new Member("koho1047@naver.com", "민호");
+        testMember.updateRegion("동작구");
         Board board = new Board(testMember, LocalDate.of(2025, 2, 11),
                 "달리기", "게시판 제목", "게시판 내용 작성 테스트", now);
 
@@ -54,6 +57,7 @@ class BoardTest {
         SoftAssertions softly = new SoftAssertions();
         LocalDate now = LocalDate.of(2023, 11, 12);
         Member testMember = new Member("koho1047@naver.com", "민호");
+        testMember.updateRegion("동작구");
         Board board = new Board(testMember, LocalDate.of(2025, 2, 11),
                 "달리기", "게시판 제목", "게시판 내용 작성 테스트", now);
 
@@ -63,7 +67,7 @@ class BoardTest {
         Content content = board.getContent();
         ActivityCategory activityCategory = board.getActivityCategory();
         StartingDate startingDate = board.getStartingDate();
-        Region region = board.getRegion();
+        Region region = board.getWritingRegion();
         boolean onRecruitment = board.isOnRecruitment();
 
         //then
@@ -76,5 +80,19 @@ class BoardTest {
         softly.assertThat(region).isEqualTo(member.getRegion());
         softly.assertThat(onRecruitment).isEqualTo(true);
         softly.assertAll();
+    }
+
+    @Test
+    @DisplayName("계시글 생성 시, 유저의 지역이 인증되지 않은 상태면 예외를 반환한다.")
+    void validateRegion() {
+        //given
+        Member member = new Member("Test@email.com", "test");
+        LocalDate now = LocalDate.of(2023, 11, 12);
+
+        //when, then
+        assertThatThrownBy(() -> new Board(member, LocalDate.of(2025, 2, 11),
+                "달리기", "게시판 제목", "게시판 내용 작성 테스트", now))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("지역 인증이 되지 않아, 게시글을 생성할 수 없습니다.");
     }
 }
