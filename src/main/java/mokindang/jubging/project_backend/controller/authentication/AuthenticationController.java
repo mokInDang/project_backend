@@ -8,6 +8,7 @@ import mokindang.jubging.project_backend.service.member.request.AuthorizationCod
 import mokindang.jubging.project_backend.service.member.response.JwtResponse;
 import mokindang.jubging.project_backend.service.member.response.KakaoLoginResponse;
 import mokindang.jubging.project_backend.service.member.response.LoginResponse;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthenticationController {
 
-    private static final String AUTHORIZATION_HEADER = "Authorization";
-    private static final String SET_COOKIE = "Set-Cookie";
-
     private final AuthenticationService authenticationService;
-
 
     @PostMapping("/api/member/join")
     public ResponseEntity<LoginResponse> kakaoCallback(@RequestBody AuthorizationCodeRequest authorizationCodeRequest) {
@@ -35,24 +32,24 @@ public class AuthenticationController {
 
         if (kakaoLoginResponse.getLoginState() == LoginState.JOIN) {
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .header(AUTHORIZATION_HEADER, kakaoLoginResponse.getAccessToken())
-                    .header(SET_COOKIE, responseCookie.toString())
+                    .header(HttpHeaders.AUTHORIZATION, kakaoLoginResponse.getAccessToken())
+                    .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                     .body(loginResponse);
         }
         return ResponseEntity.ok()
-                .header(AUTHORIZATION_HEADER, kakaoLoginResponse.getAccessToken())
-                .header(SET_COOKIE, responseCookie.toString())
+                .header(HttpHeaders.AUTHORIZATION, kakaoLoginResponse.getAccessToken())
+                .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                 .body(loginResponse);
     }
 
     @PostMapping("/api/member/reissueToken")
-    public ResponseEntity<JwtResponse> reissueJwtToken(@RequestHeader(SET_COOKIE) String refreshToken) {
+    public ResponseEntity<JwtResponse> reissueJwtToken(@RequestHeader(HttpHeaders.SET_COOKIE) String refreshToken) {
         JwtResponse jwtResponse = authenticationService.reissue(refreshToken);
         ResponseCookie responseCookie = createCookie(jwtResponse.getRefreshToken());
 
         return ResponseEntity.ok()
-                .header(AUTHORIZATION_HEADER, jwtResponse.getAccessToken())
-                .header(SET_COOKIE, responseCookie.toString())
+                .header(HttpHeaders.AUTHORIZATION, jwtResponse.getAccessToken())
+                .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                 .build();
     }
 
