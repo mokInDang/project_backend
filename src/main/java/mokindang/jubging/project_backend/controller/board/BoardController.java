@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
 @Slf4j
 @Tag(name = "게시판", description = "게시판 관련 api")
@@ -32,7 +33,10 @@ public class BoardController {
 
     private final BoardService boardService;
 
-    @Operation(summary = "새글작성", parameters = @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true))
+    @Operation(summary = "새글작성", parameters = {
+            @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true),
+            @Parameter(name = SET_COOKIE, description = "refreshToken", in = ParameterIn.COOKIE, required = true)}
+    )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "새글작성"),
             @ApiResponse(responseCode = "400", description = "유효하지 않은 유저 \t\n" +
@@ -48,6 +52,11 @@ public class BoardController {
                 .build();
     }
 
+    @Operation(summary = "게시글 조회", parameters = {
+            @Parameter(name = "boardId", description = "Board 의 id", in = ParameterIn.PATH),
+            @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true),
+            @Parameter(name = SET_COOKIE, description = "refreshToken", in = ParameterIn.COOKIE, required = true)}
+    )
     @GetMapping("/{boardId}")
     public ResponseEntity<BoardSelectResponse> selectBoard(@Parameter(hidden = true) @Login Long memberId, @PathVariable final Long boardId) {
         log.info("memberId = [} 의 게시글 조회, 게시글 번호 : {}", memberId, boardId);
