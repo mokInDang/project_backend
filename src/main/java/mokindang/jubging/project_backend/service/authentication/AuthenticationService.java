@@ -8,7 +8,6 @@ import mokindang.jubging.project_backend.domain.token.RefreshToken;
 import mokindang.jubging.project_backend.repository.token.RefreshTokenRepository;
 import mokindang.jubging.project_backend.service.member.MemberService;
 import mokindang.jubging.project_backend.service.member.request.AuthorizationCodeRequest;
-import mokindang.jubging.project_backend.service.member.request.RefreshTokenRequest;
 import mokindang.jubging.project_backend.service.member.response.JwtResponse;
 import mokindang.jubging.project_backend.service.member.response.KakaoApiMemberResponse;
 import mokindang.jubging.project_backend.service.member.response.KakaoLoginResponse;
@@ -87,8 +86,8 @@ public class AuthenticationService {
     }
 
     @Transactional
-    public JwtResponse reissue(final RefreshTokenRequest request) {
-        RefreshToken existRefreshToken = refreshTokenRepository.findByToken(request.getRefreshToken())
+    public JwtResponse reissue(final String refreshToken) {
+        RefreshToken existRefreshToken = refreshTokenRepository.findByToken(refreshToken)
                 .orElseThrow(() -> new JwtException("Refresh Token 이 존재하지 않습니다."));
         String newRefreshToken = UUID.randomUUID().toString();
         existRefreshToken.switchRefreshToken(newRefreshToken, LocalDateTime.now());

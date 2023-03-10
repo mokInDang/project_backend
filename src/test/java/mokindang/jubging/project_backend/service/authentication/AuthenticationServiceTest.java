@@ -7,7 +7,6 @@ import mokindang.jubging.project_backend.domain.token.RefreshToken;
 import mokindang.jubging.project_backend.repository.token.RefreshTokenRepository;
 import mokindang.jubging.project_backend.service.member.MemberService;
 import mokindang.jubging.project_backend.service.member.request.AuthorizationCodeRequest;
-import mokindang.jubging.project_backend.service.member.request.RefreshTokenRequest;
 import mokindang.jubging.project_backend.service.member.response.JwtResponse;
 import mokindang.jubging.project_backend.service.member.response.KakaoApiMemberResponse;
 import mokindang.jubging.project_backend.service.member.response.KakaoLoginResponse;
@@ -136,18 +135,17 @@ class AuthenticationServiceTest {
     void reissue() {
         //given
         Member member = new Member("koho1047@naver.com", "고민호");
-        RefreshTokenRequest requestRefreshToken = new RefreshTokenRequest("Request Refresh Token");
 
         when(refreshTokenRepository.findByToken(any())).thenReturn(Optional.of(refreshToken));
         when(memberService.findByMemberId(any())).thenReturn(member);
         when(tokenManager.createToken(any())).thenReturn("Test Access Token");
 
         //when
-        JwtResponse reissue = authenticationService.reissue(requestRefreshToken);
+        JwtResponse reissue = authenticationService.reissue("Test Refresh Token");
 
         //then
         softly.assertThat(reissue.getAccessToken()).isEqualTo("Test Access Token");
-        softly.assertThat(reissue.getRefreshToken()).isNotEqualTo("Request Refresh Token");
+        softly.assertThat(reissue.getRefreshToken()).isNotEqualTo("Test Refresh Token");
         softly.assertAll();
         verify(refreshToken, times(1)).switchRefreshToken(any(), any());
     }
@@ -156,11 +154,10 @@ class AuthenticationServiceTest {
     @DisplayName("RefreshToken을 입력 받아 유효한지 확인, 유효하지 않은 경우 예외를 반환한다.")
     void reissueError() {
         //given
-        RefreshTokenRequest refreshTokenRequest = new RefreshTokenRequest("Request Refresh Token");
         when(refreshTokenRepository.findByToken(anyString())).thenThrow(new JwtException("Refresh Token 이 존재하지 않습니다."));
 
         //when, then
-        Assertions.assertThatThrownBy(() -> authenticationService.reissue(refreshTokenRequest)).isInstanceOf(JwtException.class)
+        Assertions.assertThatThrownBy(() -> authenticationService.reissue("Test Refresh Token")).isInstanceOf(JwtException.class)
                 .hasMessage("Refresh Token 이 존재하지 않습니다.");
     }
 }
