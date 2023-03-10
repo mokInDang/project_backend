@@ -50,7 +50,7 @@ public class Board {
         this.activityCategory = ActivityCategory.from(activityCategory);
         this.title = new Title(title);
         this.content = new Content(content);
-        Region region = member.getRegion();
+        Region region = writer.getRegion();
         validateRegion(region);
         this.writingRegion = region;
         this.onRecruitment = true;
@@ -67,7 +67,7 @@ public class Board {
     }
 
     public void checkRegion(final Region region) {
-        if (!this.region.equals(region)){
+        if (!this.writingRegion.isDefault()){
             throw new IllegalArgumentException("지역이 다른 유저는 게시글에 접근 할 수 없습니다.");
         }
     }

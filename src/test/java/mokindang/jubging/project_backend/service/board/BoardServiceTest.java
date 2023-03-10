@@ -86,7 +86,7 @@ class BoardServiceTest {
         when(board.getContent()).thenReturn(new Content("본문내용입니다."));
         when(board.getWriter()).thenReturn(mock(Member.class));
         when(board.getWriter().getAlias()).thenReturn("글작성자");
-        when(board.getRegion()).thenReturn(Region.from("동작구"));
+        when(board.getWritingRegion()).thenReturn(Region.from("동작구"));
         when(board.getActivityCategory()).thenReturn(ActivityCategory.RUNNING);
         LocalDate now = LocalDate.of(2023, 3, 10);
         when(board.getStartingDate()).thenReturn(new StartingDate(now, LocalDate.of(2023, 3, 11)));
