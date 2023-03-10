@@ -57,6 +57,11 @@ public class BoardController {
             @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true),
             @Parameter(name = SET_COOKIE, description = "refreshToken", in = ParameterIn.COOKIE, required = true)}
     )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "글 조회"),
+            @ApiResponse(responseCode = "400", description = "지역이 유효하지 않는 유저 \t\n" +
+                    "존재하지 않는 게시글 조회", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
     @GetMapping("/{boardId}")
     public ResponseEntity<BoardSelectResponse> selectBoard(@Parameter(hidden = true) @Login Long memberId, @PathVariable final Long boardId) {
         log.info("memberId = [} 의 게시글 조회, 게시글 번호 : {}", memberId, boardId);
