@@ -10,14 +10,9 @@ import lombok.RequiredArgsConstructor;
 public class KakaoApiMemberResponse {
 
     @JsonIgnore
-    private final String kakaoAccessToken;
-
-    @JsonIgnore
-    private final String kakaoRefreshToken;
+    private final String email;
 
     @JsonIgnore
     private final String alias;
 
-    @JsonIgnore
-    private final String email;
 }

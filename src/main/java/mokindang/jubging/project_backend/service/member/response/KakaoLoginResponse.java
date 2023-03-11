@@ -15,7 +15,11 @@ public class KakaoLoginResponse {
     @JsonIgnore
     private final String refreshToken;
 
+    private final String email;
+
     private final String alias;
+
+    private final String region;
 
     private final LoginState loginState;
 }
