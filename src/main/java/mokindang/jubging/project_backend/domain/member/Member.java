@@ -35,6 +35,10 @@ public class Member {
         this.region.updateRegion(region);
     }
 
+    public String getFourLengthEmail() {
+        return this.email.substring(0, 4);
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
