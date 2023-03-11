@@ -2,6 +2,7 @@ package mokindang.jubging.project_backend.web.interceptor;
 
 import lombok.RequiredArgsConstructor;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -21,7 +22,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             return true;
         }
         try {
-            String authorizationHeader = request.getHeader("Authorization");
+            String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
             tokenManager.validateToken(authorizationHeader);
         } catch (final RuntimeException e) {
             response.sendRedirect("https://www.dongnejupging.xyz");
