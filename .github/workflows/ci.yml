@@ -13,6 +13,7 @@ on:
       - 'feature/**'
       - 'refactor/**'
       - 'bugfix/**'
+      - 'setting/**'
 
 permissions:
   contents: read
