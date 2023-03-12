@@ -48,14 +48,15 @@ public class AuthenticationService {
         log.info("memberId = {}, email = {}, alias = {} 의 로그인", existMember.getId(), kakaoApiMemberResponse.getEmail(), kakaoApiMemberResponse.getAlias());
         JwtResponse jwtResponse = issueJwtToken(existMember);
         return new KakaoLoginResponse(jwtResponse.getAccessToken(),
-                jwtResponse.getRefreshToken(), existMember.getAlias(), LOGIN);
+                jwtResponse.getRefreshToken(), existMember.getFourLengthEmail(), existMember.getAlias(), existMember.getRegion().getValue(), LOGIN);
     }
 
     private KakaoLoginResponse join(final KakaoApiMemberResponse kakaoApiMemberResponse) {
         log.info("email = {}, alias = {} 의 회원 가입", kakaoApiMemberResponse.getEmail(), kakaoApiMemberResponse.getAlias());
         Member newMember = memberService.saveMember(new Member(kakaoApiMemberResponse.getEmail(), kakaoApiMemberResponse.getAlias()));
         JwtResponse jwtResponse = issueJwtToken(newMember);
-        return new KakaoLoginResponse(jwtResponse.getAccessToken(), jwtResponse.getRefreshToken(), newMember.getAlias(), JOIN);
+        return new KakaoLoginResponse(jwtResponse.getAccessToken(),
+                jwtResponse.getRefreshToken(), newMember.getFourLengthEmail(), newMember.getAlias(), newMember.getRegion().getValue(), JOIN);
     }
 
     private JwtResponse issueJwtToken(final Member member) {

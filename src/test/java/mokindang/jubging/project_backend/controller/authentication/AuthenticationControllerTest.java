@@ -44,10 +44,10 @@ class AuthenticationControllerTest {
     private TokenManager tokenManager;
 
     @Test
-    @DisplayName("회원가입 시 HTTP 상태코드는 201(CREATED)이며 Alias를 JSON으로 반환한다. Access Token 과 Refresh Token 은 Authorization 헤더에 담아 반환한다.")
+    @DisplayName("회원가입 시 HTTP 상태코드는 201(CREATED)이다. Access Token은 Authorization, Refresh Token은 Set-Cookie 헤더에 담아 응답한다.")
     void joinAndState201() throws Exception {
         //given
-        KakaoLoginResponse kakaoLoginResponse = new KakaoLoginResponse(TEST_ACCESS_TOKEN, TEST_REFRESH_TOKEN, "Test Alias", LoginState.JOIN);
+        KakaoLoginResponse kakaoLoginResponse = new KakaoLoginResponse(TEST_ACCESS_TOKEN, TEST_REFRESH_TOKEN, "dog1", "minho", "동작구", LoginState.JOIN);
         AuthorizationCodeRequest authorizationCodeRequest = new AuthorizationCodeRequest("Test Authorization Code");
 
         when(authenticationService.login(any())).thenReturn(kakaoLoginResponse);
@@ -59,17 +59,18 @@ class AuthenticationControllerTest {
 
         //then
         resultActions.andExpect(status().isCreated())
-                .andExpect(jsonPath("$.alias").value("Test Alias"))
+                .andExpect(jsonPath("$.email").value("dog1"))
+                .andExpect(jsonPath("$.alias").value("minho"))
+                .andExpect(jsonPath("$.region").value("동작구"))
                 .andExpect(header().exists(HttpHeaders.AUTHORIZATION))
-                .andExpect(header().exists(HttpHeaders.SET_COOKIE))
-                .andExpect(header().stringValues("set-cookie","refreshToken=f6341354-be83-11ed-afa1-0242ac120002; Path=/; Secure; HttpOnly"));
+                .andExpect(header().stringValues(HttpHeaders.SET_COOKIE,"refreshToken=f6341354-be83-11ed-afa1-0242ac120002; Path=/; Secure; HttpOnly"));
     }
 
     @Test
-    @DisplayName("로그인 시 HTTP 상태코드는 200(OK)이며 Alias를 JSON으로 반환한다. Access Token 과 Refresh Token 은 Authorization 헤더에 담아 반환한다.")
+    @DisplayName("로그인 시 HTTP 상태코드는 200(OK)이며 Alias를 JSON으로 반환한다. Access Token은 Authorization, Refresh Token은 Set-Cookie 헤더에 담아 응답한다.")
     void loginAndState200() throws Exception {
         //given
-        KakaoLoginResponse kakaoLoginResponse = new KakaoLoginResponse(TEST_ACCESS_TOKEN, TEST_REFRESH_TOKEN, "Test Alias", LoginState.LOGIN);
+        KakaoLoginResponse kakaoLoginResponse = new KakaoLoginResponse(TEST_ACCESS_TOKEN, TEST_REFRESH_TOKEN, "dog1", "minho", "동작구", LoginState.LOGIN);
         AuthorizationCodeRequest authorizationCodeRequest = new AuthorizationCodeRequest("Test Authorization Code");
 
         when(authenticationService.login(any())).thenReturn(kakaoLoginResponse);
@@ -81,10 +82,11 @@ class AuthenticationControllerTest {
 
         //then
         resultActions.andExpect(status().isOk())
-                .andExpect(jsonPath("$.alias").value("Test Alias"))
+                .andExpect(jsonPath("$.email").value("dog1"))
+                .andExpect(jsonPath("$.alias").value("minho"))
+                .andExpect(jsonPath("$.region").value("동작구"))
                 .andExpect(header().exists(HttpHeaders.AUTHORIZATION))
-                .andExpect(header().exists(HttpHeaders.SET_COOKIE))
-                .andExpect(header().stringValues("set-cookie","refreshToken=f6341354-be83-11ed-afa1-0242ac120002; Path=/; Secure; HttpOnly"));
+                .andExpect(header().stringValues(HttpHeaders.SET_COOKIE,"refreshToken=f6341354-be83-11ed-afa1-0242ac120002; Path=/; Secure; HttpOnly"));
     }
 
     @Test
@@ -104,8 +106,7 @@ class AuthenticationControllerTest {
         //then
         resultActions.andExpect(status().isOk())
                 .andExpect(header().exists(HttpHeaders.AUTHORIZATION))
-                .andExpect(header().exists(HttpHeaders.SET_COOKIE))
-                .andExpect(header().stringValues("set-cookie","refreshToken=9ecfd4fe-bee2-11ed-afa1-0242ac120002; Path=/; Secure; HttpOnly"));
+                .andExpect(header().stringValues(HttpHeaders.SET_COOKIE,"refreshToken=9ecfd4fe-bee2-11ed-afa1-0242ac120002; Path=/; Secure; HttpOnly"));
     }
 
     @Test

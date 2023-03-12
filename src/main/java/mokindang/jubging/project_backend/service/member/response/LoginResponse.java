@@ -1,15 +1,15 @@
 package mokindang.jubging.project_backend.service.member.response;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class LoginResponse {
 
-    private String alias;
+    private final String email;
 
-    public LoginResponse(String alias) {
-        this.alias = alias;
-    }
+    private final String alias;
+
+    private final String region;
 }
