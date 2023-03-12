@@ -2,6 +2,7 @@ package mokindang.jubging.project_backend.web.interceptor;
 
 import lombok.RequiredArgsConstructor;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -15,6 +16,9 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 
     private final TokenManager tokenManager;
 
+    @Value("${redirect-url}")
+    private String redirectURI;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (CorsUtils.isPreFlightRequest(request)) {
@@ -24,7 +28,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             String authorizationHeader = request.getHeader("Authorization");
             tokenManager.validateToken(authorizationHeader);
         } catch (final RuntimeException e) {
-            response.sendRedirect("https://www.dongnejupging.xyz");
+            response.sendRedirect(redirectURI);
             return false;
         }
         return true;
