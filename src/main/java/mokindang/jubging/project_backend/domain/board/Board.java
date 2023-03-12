@@ -67,7 +67,7 @@ public class Board {
     }
 
     public void checkRegion(final Region region) {
-        if (!this.writingRegion.isDefault()){
+        if (!this.writingRegion.equals(region)){
             throw new IllegalArgumentException("지역이 다른 유저는 게시글에 접근 할 수 없습니다.");
         }
     }

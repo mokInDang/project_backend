@@ -1,1 +1,4 @@
-INSERT INTO member (EMAIL, ALIAS) VALUES ('test@email.com','테스트유저')
+INSERT INTO member (EMAIL, ALIAS, REGION)
+VALUES ('test@email.com', '테스트유저', '동작구');
+INSERT INTO board (MEMBER_ID, STARTING_DATE, ACTIVITY_CATEGORY, TITLE, CONTENT, REGION, ON_RECRUITMENT)
+VALUES (1, '2023-3-15', 'RUNNING', '제목', '본문내용', '동작구', false);
