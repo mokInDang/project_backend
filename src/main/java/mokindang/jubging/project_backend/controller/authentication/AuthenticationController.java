@@ -27,7 +27,7 @@ public class AuthenticationController {
     @PostMapping("/api/member/join")
     public ResponseEntity<LoginResponse> kakaoCallback(@RequestBody AuthorizationCodeRequest authorizationCodeRequest) {
         KakaoLoginResponse kakaoLoginResponse = authenticationService.login(authorizationCodeRequest);
-        LoginResponse loginResponse = new LoginResponse(kakaoLoginResponse.getAlias());
+        LoginResponse loginResponse = new LoginResponse(kakaoLoginResponse.getEmail(), kakaoLoginResponse.getAlias(), kakaoLoginResponse.getRegion());
         ResponseCookie responseCookie = createCookie(kakaoLoginResponse.getRefreshToken());
 
         if (kakaoLoginResponse.getLoginState() == LoginState.JOIN) {
