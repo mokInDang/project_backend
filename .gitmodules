@@ -1,0 +1,3 @@
+[submodule "src/main/resources/project_backend_security"]
+	path = src/main/resources/project_backend_security
+	url = https://github.com/mokInDang/project_backend_security.git
