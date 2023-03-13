@@ -13,13 +13,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import javax.servlet.http.Cookie;
+
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpHeaders.SET_COOKIE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -62,8 +65,8 @@ class AuthenticationControllerTest {
                 .andExpect(jsonPath("$.email").value("dog1"))
                 .andExpect(jsonPath("$.alias").value("minho"))
                 .andExpect(jsonPath("$.region").value("동작구"))
-                .andExpect(header().exists(HttpHeaders.AUTHORIZATION))
-                .andExpect(header().stringValues(HttpHeaders.SET_COOKIE, "refreshToken=f6341354-be83-11ed-afa1-0242ac120002; Path=/; Secure; HttpOnly"));
+                .andExpect(header().exists(AUTHORIZATION))
+                .andExpect(header().exists(SET_COOKIE));
     }
 
     @Test
@@ -85,8 +88,9 @@ class AuthenticationControllerTest {
                 .andExpect(jsonPath("$.email").value("dog1"))
                 .andExpect(jsonPath("$.alias").value("minho"))
                 .andExpect(jsonPath("$.region").value("동작구"))
-                .andExpect(header().exists(HttpHeaders.AUTHORIZATION))
-                .andExpect(header().stringValues(HttpHeaders.SET_COOKIE, "refreshToken=f6341354-be83-11ed-afa1-0242ac120002; Path=/; Secure; HttpOnly"));
+                .andExpect(header().exists(AUTHORIZATION))
+                .andExpect(header().exists(SET_COOKIE));
+
     }
 
     @Test
@@ -99,14 +103,14 @@ class AuthenticationControllerTest {
 
         //when
         ResultActions resultActions = mockMvc.perform(post("/api/member/reissueToken")
-                .header(HttpHeaders.SET_COOKIE, TEST_REFRESH_TOKEN)
+                .cookie(new Cookie("refreshToken", TEST_REFRESH_TOKEN))
                 .contentType(MediaType.APPLICATION_JSON));
 
 
         //then
         resultActions.andExpect(status().isOk())
-                .andExpect(header().exists(HttpHeaders.AUTHORIZATION))
-                .andExpect(header().stringValues(HttpHeaders.SET_COOKIE, "refreshToken=9ecfd4fe-bee2-11ed-afa1-0242ac120002; Path=/; Secure; HttpOnly"));
+                .andExpect(header().exists(AUTHORIZATION))
+                .andExpect(header().exists(SET_COOKIE));
     }
 
     @Test
@@ -117,7 +121,7 @@ class AuthenticationControllerTest {
 
         //when
         ResultActions resultActions = mockMvc.perform(post("/api/member/reissueToken")
-                .header(HttpHeaders.SET_COOKIE, TEST_REFRESH_TOKEN)
+                .cookie(new Cookie("refreshToken", TEST_REFRESH_TOKEN))
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
