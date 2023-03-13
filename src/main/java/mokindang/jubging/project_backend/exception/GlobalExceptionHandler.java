@@ -1,7 +1,9 @@
 package mokindang.jubging.project_backend.exception;
 
 import io.jsonwebtoken.JwtException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,28 +20,16 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(e.getMessage()));
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
+    @ExceptionHandler({IllegalArgumentException.class, HttpMessageNotReadableException.class,BindException.class})
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(final RuntimeException e) {
-        return ResponseEntity.badRequest()
-                .body(new ErrorResponse(e.getMessage()));
-    }
-
-    @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<ErrorResponse> handleIllegalStateException(final IllegalStateException e) {
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse(e.getMessage()));
     }
 
     @ExceptionHandler(JwtException.class)
     public ResponseEntity<ErrorResponse> handleJwtException(final RuntimeException e) {
-        return ResponseEntity.badRequest()
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new ErrorResponse(e.getMessage()));
-    }
-
-    @ExceptionHandler(BindException.class)
-    public ResponseEntity<ErrorResponse> handleGlobalBindException(final BindException e) {
-        return ResponseEntity.internalServerError()
-                .build();
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
