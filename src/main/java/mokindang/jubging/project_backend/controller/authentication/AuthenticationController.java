@@ -12,20 +12,18 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
+@RequestMapping("/api/auth")
 @RestController
 @RequiredArgsConstructor
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
-    @PostMapping("/api/member/join")
-    public ResponseEntity<LoginResponse> kakaoCallback(@RequestBody AuthorizationCodeRequest authorizationCodeRequest) {
+    @PostMapping("/join")
+    public ResponseEntity<LoginResponse> kakaoLogin(@RequestBody AuthorizationCodeRequest authorizationCodeRequest) {
         KakaoLoginResponse kakaoLoginResponse = authenticationService.login(authorizationCodeRequest);
         LoginResponse loginResponse = new LoginResponse(kakaoLoginResponse.getEmail(), kakaoLoginResponse.getAlias(), kakaoLoginResponse.getRegion());
         ResponseCookie responseCookie = createCookie(kakaoLoginResponse.getRefreshToken());
@@ -42,7 +40,7 @@ public class AuthenticationController {
                 .body(loginResponse);
     }
 
-    @PostMapping("/api/member/reissueToken")
+    @PostMapping("/refresh")
     public ResponseEntity<JwtResponse> reissueJwtToken(@RequestHeader(HttpHeaders.SET_COOKIE) String refreshToken) {
         JwtResponse jwtResponse = authenticationService.reissue(refreshToken);
         ResponseCookie responseCookie = createCookie(jwtResponse.getRefreshToken());
