@@ -63,7 +63,7 @@ class AuthenticationControllerTest {
                 .andExpect(jsonPath("$.alias").value("minho"))
                 .andExpect(jsonPath("$.region").value("동작구"))
                 .andExpect(header().exists(HttpHeaders.AUTHORIZATION))
-                .andExpect(header().stringValues(HttpHeaders.SET_COOKIE,"refreshToken=f6341354-be83-11ed-afa1-0242ac120002; Path=/; Secure; HttpOnly"));
+                .andExpect(header().stringValues(HttpHeaders.SET_COOKIE, "refreshToken=f6341354-be83-11ed-afa1-0242ac120002; Path=/; Secure; HttpOnly"));
     }
 
     @Test
@@ -86,7 +86,7 @@ class AuthenticationControllerTest {
                 .andExpect(jsonPath("$.alias").value("minho"))
                 .andExpect(jsonPath("$.region").value("동작구"))
                 .andExpect(header().exists(HttpHeaders.AUTHORIZATION))
-                .andExpect(header().stringValues(HttpHeaders.SET_COOKIE,"refreshToken=f6341354-be83-11ed-afa1-0242ac120002; Path=/; Secure; HttpOnly"));
+                .andExpect(header().stringValues(HttpHeaders.SET_COOKIE, "refreshToken=f6341354-be83-11ed-afa1-0242ac120002; Path=/; Secure; HttpOnly"));
     }
 
     @Test
@@ -99,14 +99,14 @@ class AuthenticationControllerTest {
 
         //when
         ResultActions resultActions = mockMvc.perform(post("/api/member/reissueToken")
-                .header(HttpHeaders.SET_COOKIE,TEST_REFRESH_TOKEN)
+                .header(HttpHeaders.SET_COOKIE, TEST_REFRESH_TOKEN)
                 .contentType(MediaType.APPLICATION_JSON));
 
 
         //then
         resultActions.andExpect(status().isOk())
                 .andExpect(header().exists(HttpHeaders.AUTHORIZATION))
-                .andExpect(header().stringValues(HttpHeaders.SET_COOKIE,"refreshToken=9ecfd4fe-bee2-11ed-afa1-0242ac120002; Path=/; Secure; HttpOnly"));
+                .andExpect(header().stringValues(HttpHeaders.SET_COOKIE, "refreshToken=9ecfd4fe-bee2-11ed-afa1-0242ac120002; Path=/; Secure; HttpOnly"));
     }
 
     @Test
@@ -117,11 +117,11 @@ class AuthenticationControllerTest {
 
         //when
         ResultActions resultActions = mockMvc.perform(post("/api/member/reissueToken")
-                .header(HttpHeaders.SET_COOKIE,TEST_REFRESH_TOKEN)
+                .header(HttpHeaders.SET_COOKIE, TEST_REFRESH_TOKEN)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
-        resultActions.andExpect(status().isBadRequest())
+        resultActions.andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.error").value("Refresh Token 이 존재하지 않습니다."));
     }
 }
