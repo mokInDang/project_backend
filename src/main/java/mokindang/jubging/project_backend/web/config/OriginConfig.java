@@ -1,9 +1,10 @@
 package mokindang.jubging.project_backend.web.config;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Configuration
 public class OriginConfig implements WebMvcConfigurer {
@@ -25,6 +26,6 @@ public class OriginConfig implements WebMvcConfigurer {
                 .allowedMethods(ALLOWED_METHOD_NAMES.split(","))
                 .allowedHeaders("*")
                 .allowCredentials(true)
-                .exposedHeaders(HttpHeaders.AUTHORIZATION);
+                .exposedHeaders(AUTHORIZATION);
     }
 }
