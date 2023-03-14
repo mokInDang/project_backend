@@ -56,7 +56,7 @@ class AuthenticationControllerTest {
         when(authenticationService.login(any())).thenReturn(kakaoLoginResponse);
 
         //when
-        ResultActions resultActions = mockMvc.perform(post("/api/member/join")
+        ResultActions resultActions = mockMvc.perform(post("/api/auth/join")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(authorizationCodeRequest)));
 
@@ -79,7 +79,7 @@ class AuthenticationControllerTest {
         when(authenticationService.login(any())).thenReturn(kakaoLoginResponse);
 
         //when
-        ResultActions resultActions = mockMvc.perform(post("/api/member/join?code")
+        ResultActions resultActions = mockMvc.perform(post("/api/auth/join")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(authorizationCodeRequest)));
 

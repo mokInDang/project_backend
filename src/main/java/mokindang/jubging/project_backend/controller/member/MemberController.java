@@ -7,7 +7,7 @@ import mokindang.jubging.project_backend.service.member.request.RegionUpdateRequ
 import mokindang.jubging.project_backend.service.member.response.RegionUpdateResponse;
 import mokindang.jubging.project_backend.web.argumentresolver.Login;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +21,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @PutMapping("/region")
+    @PatchMapping("/region")
     public ResponseEntity<RegionUpdateResponse> updateRegion(@Login Long memberId, @Valid @RequestBody RegionUpdateRequest regionUpdateRequest) {
         Region updateRegion = memberService.updateRegion(regionUpdateRequest, memberId);
         return ResponseEntity.ok()
