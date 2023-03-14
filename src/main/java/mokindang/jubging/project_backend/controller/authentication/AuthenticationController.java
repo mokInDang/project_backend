@@ -8,11 +8,18 @@ import mokindang.jubging.project_backend.service.member.request.AuthorizationCod
 import mokindang.jubging.project_backend.service.member.response.JwtResponse;
 import mokindang.jubging.project_backend.service.member.response.KakaoLoginResponse;
 import mokindang.jubging.project_backend.service.member.response.LoginResponse;
-import org.springframework.http.HttpHeaders;
+import org.springframework.http.*;
+import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.Duration;
+
+import static org.springframework.boot.web.server.Cookie.SameSite.NONE;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
 @Slf4j
 @RequestMapping("/api/auth")
@@ -26,36 +33,38 @@ public class AuthenticationController {
     public ResponseEntity<LoginResponse> kakaoLogin(@RequestBody AuthorizationCodeRequest authorizationCodeRequest) {
         KakaoLoginResponse kakaoLoginResponse = authenticationService.login(authorizationCodeRequest);
         LoginResponse loginResponse = new LoginResponse(kakaoLoginResponse.getEmail(), kakaoLoginResponse.getAlias(), kakaoLoginResponse.getRegion());
-        ResponseCookie responseCookie = createCookie(kakaoLoginResponse.getRefreshToken());
+        HttpCookie httpCookie = createCookie(kakaoLoginResponse.getRefreshToken());
 
         if (kakaoLoginResponse.getLoginState() == LoginState.JOIN) {
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .header(HttpHeaders.AUTHORIZATION, kakaoLoginResponse.getAccessToken())
-                    .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+                    .header(AUTHORIZATION, kakaoLoginResponse.getAccessToken())
+                    .header(SET_COOKIE, httpCookie.toString())
                     .body(loginResponse);
         }
         return ResponseEntity.ok()
-                .header(HttpHeaders.AUTHORIZATION, kakaoLoginResponse.getAccessToken())
-                .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+                .header(AUTHORIZATION, kakaoLoginResponse.getAccessToken())
+                .header(SET_COOKIE, httpCookie.toString())
                 .body(loginResponse);
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<JwtResponse> reissueJwtToken(@RequestHeader(HttpHeaders.SET_COOKIE) String refreshToken) {
+    public ResponseEntity<JwtResponse> reissueJwtToken(@CookieValue(name = "refreshToken") String refreshToken) {
         JwtResponse jwtResponse = authenticationService.reissue(refreshToken);
-        ResponseCookie responseCookie = createCookie(jwtResponse.getRefreshToken());
+        HttpCookie httpCookie = createCookie(jwtResponse.getRefreshToken());
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.AUTHORIZATION, jwtResponse.getAccessToken())
-                .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+                .header(AUTHORIZATION, jwtResponse.getAccessToken())
+                .header(SET_COOKIE, httpCookie.toString())
                 .build();
     }
 
-    private static ResponseCookie createCookie(String refreshToken) {
+    private ResponseCookie createCookie(String refreshToken) {
         return ResponseCookie.from("refreshToken", refreshToken)
                 .httpOnly(true)
                 .secure(true)
                 .path("/")
+                .sameSite(NONE.attributeValue())
+                .maxAge(Duration.ofDays(60))
                 .build();
     }
 }

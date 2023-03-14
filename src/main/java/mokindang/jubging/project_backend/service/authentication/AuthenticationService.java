@@ -76,7 +76,7 @@ public class AuthenticationService {
                         },
                         () -> {
                             LocalDateTime newTokenExpirationTime = LocalDateTime.now()
-                                    .plusMonths(2);
+                                    .plusDays(60);
 
                             RefreshToken refreshToken = new RefreshToken(member.getId(), newRefreshToken, newTokenExpirationTime);
                             refreshTokenRepository.save(refreshToken);
