@@ -56,7 +56,7 @@ class AuthenticationControllerTest {
         when(authenticationService.login(any())).thenReturn(kakaoLoginResponse);
 
         //when
-        ResultActions resultActions = mockMvc.perform(post("/api/member/join")
+        ResultActions resultActions = mockMvc.perform(post("/api/auth/join")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(authorizationCodeRequest)));
 
@@ -79,7 +79,7 @@ class AuthenticationControllerTest {
         when(authenticationService.login(any())).thenReturn(kakaoLoginResponse);
 
         //when
-        ResultActions resultActions = mockMvc.perform(post("/api/member/join?code")
+        ResultActions resultActions = mockMvc.perform(post("/api/auth/join")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(authorizationCodeRequest)));
 
@@ -102,7 +102,7 @@ class AuthenticationControllerTest {
         when(authenticationService.reissue(any())).thenReturn(jwtResponse);
 
         //when
-        ResultActions resultActions = mockMvc.perform(post("/api/member/reissueToken")
+        ResultActions resultActions = mockMvc.perform(post("/api/auth/refresh")
                 .cookie(new Cookie("refreshToken", TEST_REFRESH_TOKEN))
                 .contentType(MediaType.APPLICATION_JSON));
 
@@ -120,7 +120,7 @@ class AuthenticationControllerTest {
         when(authenticationService.reissue(any())).thenThrow(new JwtException("Refresh Token 이 존재하지 않습니다."));
 
         //when
-        ResultActions resultActions = mockMvc.perform(post("/api/member/reissueToken")
+        ResultActions resultActions = mockMvc.perform(post("/api/auth/refresh")
                 .cookie(new Cookie("refreshToken", TEST_REFRESH_TOKEN))
                 .contentType(MediaType.APPLICATION_JSON));
 

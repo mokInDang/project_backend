@@ -2,7 +2,6 @@ package mokindang.jubging.project_backend.controller.member;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mokindang.jubging.project_backend.domain.region.vo.Region;
-import mokindang.jubging.project_backend.repository.member.MemberRepository;
 import mokindang.jubging.project_backend.service.member.MemberService;
 import mokindang.jubging.project_backend.service.member.request.RegionUpdateRequest;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
@@ -18,7 +17,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -37,9 +36,6 @@ class MemberControllerTest {
     @MockBean
     private MemberService memberService;
 
-    @MockBean
-    private MemberRepository memberRepository;
-
     @Test
     @DisplayName("대한민국 영토 범위 안의 위도와 경도 입력 시 이에 대응하는 Region을 반환한다.")
     void callRegion() throws Exception {
@@ -50,7 +46,7 @@ class MemberControllerTest {
         RegionUpdateRequest regionUpdateRequest = new RegionUpdateRequest(126.95389562345368, 37.496322794913326);
 
         //when
-        ResultActions actual = mockMvc.perform(put("/api/member/region")
+        ResultActions actual = mockMvc.perform(patch("/api/member/region")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(regionUpdateRequest)));
 
@@ -70,7 +66,7 @@ class MemberControllerTest {
         when(memberService.updateRegion(any(RegionUpdateRequest.class), anyLong())).thenReturn(region);
 
         //when
-        ResultActions resultActions = mockMvc.perform(put("/api/member/region")
+        ResultActions resultActions = mockMvc.perform(patch("/api/member/region")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(regionRequest)));
 
@@ -88,7 +84,7 @@ class MemberControllerTest {
         RegionUpdateRequest regionRequest = new RegionUpdateRequest(126.95389562345368, 50.335618198);
 
         //when
-        ResultActions resultActions = mockMvc.perform(put("/api/member/region")
+        ResultActions resultActions = mockMvc.perform(patch("/api/member/region")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(regionRequest)));
 
