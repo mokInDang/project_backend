@@ -44,10 +44,10 @@ jobs:
           character set server: utf8mb4
           collation server: utf8mb4_general_ci
           mysql version: 8.0.31
-          mysql root password: qwerqwer
-          mysql database: mokindangdb
+          mysql root password: ${{ secrets.DATABASE_PASSWORD }}
+          mysql database: ${{ secrets.DATABASE_NAME }}
           mysql user: root
-          mysql password: qwerqwer
+          mysql password: ${{ secrets.DATABASE_PASSWORD }}
 
       - name: Build with Gradle
         uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
