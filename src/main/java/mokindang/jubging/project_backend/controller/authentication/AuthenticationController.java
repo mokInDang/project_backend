@@ -8,6 +8,7 @@ import mokindang.jubging.project_backend.service.member.request.AuthorizationCod
 import mokindang.jubging.project_backend.service.member.response.JwtResponse;
 import mokindang.jubging.project_backend.service.member.response.KakaoLoginResponse;
 import mokindang.jubging.project_backend.service.member.response.LoginResponse;
+import org.springframework.http.*;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -57,7 +58,7 @@ public class AuthenticationController {
                 .build();
     }
 
-    private static ResponseCookie createCookie(String refreshToken) {
+    private ResponseCookie createCookie(String refreshToken) {
         return ResponseCookie.from("refreshToken", refreshToken)
                 .httpOnly(true)
                 .secure(true)
