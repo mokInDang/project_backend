@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
 
+import static org.springframework.boot.web.server.Cookie.SameSite.NONE;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
@@ -63,7 +64,7 @@ public class AuthenticationController {
                 .httpOnly(true)
                 .secure(true)
                 .path("/")
-                .sameSite("None")
+                .sameSite(NONE.attributeValue())
                 .maxAge(Duration.ofDays(60))
                 .build();
     }
