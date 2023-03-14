@@ -23,8 +23,10 @@ jobs:
 
     steps:
       # (1) 기본 체크아웃
-      - name: Checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.USER_GIT_TOKEN }}
+          submodules: true
 
       # (2) JDK 11 세팅
       - name: Set up JDK 11
@@ -42,10 +44,10 @@ jobs:
           character set server: utf8mb4
           collation server: utf8mb4_general_ci
           mysql version: 8.0.31
-          mysql root password: qwerqwer
-          mysql database: mokindangdb
+          mysql root password: ${{ secrets.DATABASE_PASSWORD }}
+          mysql database: ${{ secrets.DATABASE_NAME }}
           mysql user: root
-          mysql password: qwerqwer
+          mysql password: ${{ secrets.DATABASE_PASSWORD }}
 
       # (4) Gradle build(테스트 및 빌드)
       - name: Build with Gradle
@@ -87,5 +89,5 @@ jobs:
           author_name: Deployment with Github Actions
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
         env:
-            SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ALERT_URL }}
         if: always()
