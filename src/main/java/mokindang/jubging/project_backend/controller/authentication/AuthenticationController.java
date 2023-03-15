@@ -8,7 +8,7 @@ import mokindang.jubging.project_backend.service.member.request.AuthorizationCod
 import mokindang.jubging.project_backend.service.member.response.JwtResponse;
 import mokindang.jubging.project_backend.service.member.response.KakaoLoginResponse;
 import mokindang.jubging.project_backend.service.member.response.LoginResponse;
-import org.springframework.http.*;
+import mokindang.jubging.project_backend.web.argumentresolver.Login;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -55,6 +55,13 @@ public class AuthenticationController {
         return ResponseEntity.ok()
                 .header(AUTHORIZATION, jwtResponse.getAccessToken())
                 .header(SET_COOKIE, httpCookie.toString())
+                .build();
+    }
+
+    @DeleteMapping("/logout")
+    public ResponseEntity<Void> logout(@Login Long memberId) {
+        authenticationService.logout(memberId);
+        return ResponseEntity.noContent()
                 .build();
     }
 
