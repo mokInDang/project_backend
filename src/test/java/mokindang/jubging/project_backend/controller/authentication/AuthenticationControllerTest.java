@@ -19,10 +19,10 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import javax.servlet.http.Cookie;
 
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.SET_COOKIE;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -127,5 +127,16 @@ class AuthenticationControllerTest {
         //then
         resultActions.andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.error").value("Refresh Token 이 존재하지 않습니다."));
+    }
+
+    @Test
+    @DisplayName("로그아웃 시 204 반환")
+    void logout() throws Exception{
+        //given
+        doNothing().when(authenticationService).logout(any());
+
+        //when,then
+        mockMvc.perform(delete("/api/auth/logout"))
+                .andExpect(status().isNoContent());
     }
 }
