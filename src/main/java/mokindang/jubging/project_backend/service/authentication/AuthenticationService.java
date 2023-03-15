@@ -95,4 +95,10 @@ public class AuthenticationService {
         Member member = memberService.findByMemberId(existRefreshToken.getId());
         return new JwtResponse(tokenManager.createToken(member.getId()), newRefreshToken);
     }
+
+    @Transactional
+    public void logout(Long memberId) {
+        refreshTokenRepository.deleteAllByMemberId(memberId);
+        kakaoOAuth2.kakaoLogout();
+    }
 }
