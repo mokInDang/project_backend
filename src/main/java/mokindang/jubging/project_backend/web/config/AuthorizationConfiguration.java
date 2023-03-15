@@ -15,8 +15,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuthorizationConfiguration implements WebMvcConfigurer {
 
-    private static final List<String> MEMBER_SERVICES_PATTERNS = List.of("/api/member/join/**");
-    private static final List<String> KAKAO_LOGIN_PATTERNS = List.of("/", "/error", "/index.html", "/*.ico", "/kakao_login_medium_narrow.png");
+    private static final List<String> MEMBER_SERVICES_PATTERNS = List.of("/api/auth/join/**");
+    private static final List<String> KAKAO_LOGIN_PATTERNS = List.of("/", "/error", "/*.ico");
     private static final List<String> SWAGGER_PATTERNS = List.of("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**", "/swagger-resources/**");
 
     private final LoginMemberArgumentResolver loginMemberArgumentResolver;
