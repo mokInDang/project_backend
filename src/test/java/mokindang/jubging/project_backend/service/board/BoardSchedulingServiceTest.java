@@ -21,10 +21,10 @@ class BoardSchedulingServiceTest {
 
     private static final String DIFFERENCE_BETWEEN_UCT_AND_KST = "+9";
     @Mock
-    BoardRepository boardRepository;
+    private BoardRepository boardRepository;
 
     @Mock
-    Clock clock;
+    private Clock clock;
 
     @InjectMocks
     private BoardSchedulingService boardSchedulingService;
