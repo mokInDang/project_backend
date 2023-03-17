@@ -25,7 +25,7 @@ public class Board {
 
     @ManyToOne
     @JoinColumn(name = "member_id")
-    private Member member;
+    private Member writer;
 
     @Embedded
     private StartingDate startingDate;
@@ -40,22 +40,36 @@ public class Board {
     private Content content;
 
     @Embedded
-    private Region region;
+    private Region writingRegion;
 
     private boolean onRecruitment;
 
-    public Board(final Member member, final LocalDate startingDate, final String activityCategory, final String title, final String content, final LocalDate now) {
-        this.member = member;
+    public Board(final Member writer, final LocalDate startingDate, final String activityCategory, final String title, final String content, final LocalDate now) {
+        this.writer = writer;
         this.startingDate = new StartingDate(now, startingDate);
         this.activityCategory = ActivityCategory.from(activityCategory);
         this.title = new Title(title);
         this.content = new Content(content);
-        this.region = member.getRegion();
+        Region region = writer.getRegion();
+        validateRegion(region);
+        this.writingRegion = region;
         this.onRecruitment = true;
+    }
+
+    private void validateRegion(final Region region) {
+        if (region.isDefault()) {
+            throw new IllegalArgumentException("지역 인증이 되지 않아, 게시글을 생성할 수 없습니다.");
+        }
     }
 
     public void closeRecruitment() {
         this.onRecruitment = false;
+    }
+
+    public void checkRegion(final Region region) {
+        if (!this.writingRegion.equals(region)){
+            throw new IllegalArgumentException("지역이 다른 유저는 게시글에 접근 할 수 없습니다.");
+        }
     }
 
     @Override

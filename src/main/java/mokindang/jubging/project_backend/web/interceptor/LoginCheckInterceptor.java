@@ -9,6 +9,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 @Component
 @RequiredArgsConstructor
 public class LoginCheckInterceptor implements HandlerInterceptor {
@@ -21,7 +23,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             return true;
         }
         try {
-            String authorizationHeader = request.getHeader("Authorization");
+            String authorizationHeader = request.getHeader(AUTHORIZATION);
             tokenManager.validateToken(authorizationHeader);
         } catch (final RuntimeException e) {
             response.sendRedirect("https://www.dongnejupging.xyz");

@@ -37,4 +37,17 @@ class MemberTest {
         //then
         assertThat(member.getRegion().getValue()).isEqualTo("동작구");
     }
+
+    @Test
+    @DisplayName("이메일의 앞자리 4개를 반환한다.")
+    void getFourLengthEmail(){
+        //given
+        Member member = new Member("testfourlength123@mail.com", "test");
+
+        //when
+        String fourLengthEmail = member.getFourLengthEmail();
+
+        //then
+        assertThat(fourLengthEmail).isEqualTo("test");
+    }
 }

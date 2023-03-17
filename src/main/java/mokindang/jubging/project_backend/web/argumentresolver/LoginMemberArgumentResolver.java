@@ -3,6 +3,7 @@ package mokindang.jubging.project_backend.web.argumentresolver;
 import lombok.RequiredArgsConstructor;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
 import org.springframework.core.MethodParameter;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -24,7 +25,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
     @Override
     public Object resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer, final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) {
-        String authorizationHeader = webRequest.getHeader("Authorization");
+        String authorizationHeader = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
         return tokenManager.getMemberId(authorizationHeader);
     }
 }

@@ -8,7 +8,6 @@ import mokindang.jubging.project_backend.domain.token.RefreshToken;
 import mokindang.jubging.project_backend.repository.token.RefreshTokenRepository;
 import mokindang.jubging.project_backend.service.member.MemberService;
 import mokindang.jubging.project_backend.service.member.request.AuthorizationCodeRequest;
-import mokindang.jubging.project_backend.service.member.request.RefreshTokenRequest;
 import mokindang.jubging.project_backend.service.member.response.JwtResponse;
 import mokindang.jubging.project_backend.service.member.response.KakaoApiMemberResponse;
 import mokindang.jubging.project_backend.service.member.response.KakaoLoginResponse;
@@ -49,14 +48,15 @@ public class AuthenticationService {
         log.info("memberId = {}, email = {}, alias = {} 의 로그인", existMember.getId(), kakaoApiMemberResponse.getEmail(), kakaoApiMemberResponse.getAlias());
         JwtResponse jwtResponse = issueJwtToken(existMember);
         return new KakaoLoginResponse(jwtResponse.getAccessToken(),
-                jwtResponse.getRefreshToken(), existMember.getAlias(), LOGIN);
+                jwtResponse.getRefreshToken(), existMember.getFourLengthEmail(), existMember.getAlias(), existMember.getRegion().getValue(), LOGIN);
     }
 
     private KakaoLoginResponse join(final KakaoApiMemberResponse kakaoApiMemberResponse) {
         log.info("email = {}, alias = {} 의 회원 가입", kakaoApiMemberResponse.getEmail(), kakaoApiMemberResponse.getAlias());
         Member newMember = memberService.saveMember(new Member(kakaoApiMemberResponse.getEmail(), kakaoApiMemberResponse.getAlias()));
         JwtResponse jwtResponse = issueJwtToken(newMember);
-        return new KakaoLoginResponse(jwtResponse.getAccessToken(), jwtResponse.getRefreshToken(), newMember.getAlias(), JOIN);
+        return new KakaoLoginResponse(jwtResponse.getAccessToken(),
+                jwtResponse.getRefreshToken(), newMember.getFourLengthEmail(), newMember.getAlias(), newMember.getRegion().getValue(), JOIN);
     }
 
     private JwtResponse issueJwtToken(final Member member) {
@@ -76,7 +76,7 @@ public class AuthenticationService {
                         },
                         () -> {
                             LocalDateTime newTokenExpirationTime = LocalDateTime.now()
-                                    .plusMonths(2);
+                                    .plusDays(60);
 
                             RefreshToken refreshToken = new RefreshToken(member.getId(), newRefreshToken, newTokenExpirationTime);
                             refreshTokenRepository.save(refreshToken);
@@ -87,8 +87,8 @@ public class AuthenticationService {
     }
 
     @Transactional
-    public JwtResponse reissue(final RefreshTokenRequest request) {
-        RefreshToken existRefreshToken = refreshTokenRepository.findByToken(request.getRefreshToken())
+    public JwtResponse reissue(final String refreshToken) {
+        RefreshToken existRefreshToken = refreshTokenRepository.findByToken(refreshToken)
                 .orElseThrow(() -> new JwtException("Refresh Token 이 존재하지 않습니다."));
         String newRefreshToken = UUID.randomUUID().toString();
         existRefreshToken.switchRefreshToken(newRefreshToken, LocalDateTime.now());

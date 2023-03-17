@@ -4,6 +4,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 @Configuration
 public class OriginConfig implements WebMvcConfigurer {
 
@@ -19,10 +21,11 @@ public class OriginConfig implements WebMvcConfigurer {
                         "https://www.dongnejupging.xyz",
                         "http://www.dongnejupging.xyz",
                         "http://localhost:8080",
-                        "http://localhost:3000")
+                        "http://localhost:3000",
+                        "https://localhost:3000")
                 .allowedMethods(ALLOWED_METHOD_NAMES.split(","))
                 .allowedHeaders("*")
                 .allowCredentials(true)
-                .exposedHeaders("Authorization");
+                .exposedHeaders(AUTHORIZATION);
     }
 }

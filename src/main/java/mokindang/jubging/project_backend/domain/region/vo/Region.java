@@ -22,12 +22,20 @@ public class Region {
         return new Region(DEFAULT_REGION);
     }
 
+    public static Region from(final String region) {
+        return new Region(region);
+    }
+
     private Region(String value) {
         this.value = value;
     }
 
     public void updateRegion(String value) {
         this.value = value;
+    }
+
+    public boolean isDefault() {
+        return this.value.equals(DEFAULT_REGION);
     }
 
     @Override

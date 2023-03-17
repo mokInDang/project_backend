@@ -19,4 +19,8 @@ public enum ActivityCategory {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 활동 구분 입니다."));
     }
+
+    public String getValue() {
+        return value;
+    }
 }

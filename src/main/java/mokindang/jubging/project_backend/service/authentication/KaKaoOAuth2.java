@@ -11,26 +11,23 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Component
 public class KaKaoOAuth2 {
 
     public KakaoApiMemberResponse getMemberDto(String authorizationCode) {
-        List<Object> tokens = callKakaoApiToken(authorizationCode);
+        String accessToken = callKakaoApiToken(authorizationCode);
 
-        return getMemberInformation(tokens);
+        return getMemberInformation(accessToken);
     }
 
-    public List<Object> callKakaoApiToken(String authorizationCode) {
+    public String callKakaoApiToken(String authorizationCode) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
         params.add("client_id", "60b35611c843f6c8f618a495ecc8eaf6");
-        params.add("redirect_uri", "https://www.dongnejupging.xyz/api/member/join");
+        params.add("redirect_uri", "https://www.dongnejupging.xyz/api/auth/join");
         params.add("code", authorizationCode);
 
         RestTemplate rt = new RestTemplate();
@@ -46,23 +43,15 @@ public class KaKaoOAuth2 {
 
         String tokenJson = response.getBody();
         JSONObject rjson = new JSONObject(tokenJson);
-        String accessToken = rjson.getString("access_token");
-        String refreshToken = rjson.getString("refresh_token");
+        String kakaoAccessToken = rjson.getString("access_token");
 
-        List<Object> tokenList = new ArrayList<>();
-        tokenList.add(accessToken);
-        tokenList.add(refreshToken);
-
-        return tokenList;
+        return kakaoAccessToken;
     }
 
-    public KakaoApiMemberResponse getMemberInformation(List<Object> tokenList) {
-
-        String accessToken = (String) tokenList.get(0);
-        String refreshToken = (String) tokenList.get(1);
+    public KakaoApiMemberResponse getMemberInformation(String kakaoAccessToken) {
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + accessToken);
+        headers.add("Authorization", "Bearer " + kakaoAccessToken);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
         RestTemplate rt = new RestTemplate();
@@ -76,10 +65,10 @@ public class KaKaoOAuth2 {
         );
 
         JSONObject body = new JSONObject(response.getBody());
-        String alias = body.getJSONObject("properties").getString("nickname");
         String email = body.getJSONObject("kakao_account").getString("email");
+        String alias = body.getJSONObject("properties").getString("nickname");
 
-        return new KakaoApiMemberResponse(accessToken, refreshToken, alias, email);
+        return new KakaoApiMemberResponse(email, alias);
     }
 
 }
