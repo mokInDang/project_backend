@@ -98,6 +98,7 @@ public class AuthenticationService {
 
     @Transactional
     public void logout(Long memberId) {
+        log.info("memberId = {} 의 로그아웃 요청", memberId);
         refreshTokenRepository.deleteAllByMemberId(memberId);
         kakaoOAuth2.kakaoLogout();
     }
