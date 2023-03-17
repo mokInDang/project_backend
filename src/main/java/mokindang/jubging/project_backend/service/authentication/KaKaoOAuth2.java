@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class KaKaoOAuth2 {
 
-    @Value("${kakao.token-redirect-url}")
+    @Value("${kakao.client-id}")
     private String clientId ;
 
     public KakaoApiMemberResponse getMemberDto(String authorizationCode) {
