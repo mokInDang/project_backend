@@ -19,7 +19,8 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import javax.servlet.http.Cookie;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.SET_COOKIE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -130,11 +131,8 @@ class AuthenticationControllerTest {
     }
 
     @Test
-    @DisplayName("로그아웃 시 204 반환")
+    @DisplayName("로그아웃 시 상태코드 204를 반환하며 요청 유저에 매칭되는 refreshToken을 DB에서 삭제 및 카카오 세션 만료 요청을 수행한다.")
     void logout() throws Exception{
-        //given
-        doNothing().when(authenticationService).logout(any());
-
         //when,then
         mockMvc.perform(delete("/api/auth/logout"))
                 .andExpect(status().isNoContent());
