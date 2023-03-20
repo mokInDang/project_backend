@@ -74,16 +74,7 @@ public class KaKaoOAuth2 {
         return new KakaoApiMemberResponse(email, alias);
     }
 
-    public void kakaoLogout() {
-        HttpHeaders headers = new HttpHeaders();
-        RestTemplate rt = new RestTemplate();
-        HttpEntity<MultiValueMap<String, String>> kakaoLogoutRequest = new HttpEntity<>(headers);
-
-        rt.exchange(
-                "https://kauth.kakao.com/oauth/logout?client_id="+clientId+"&logout_redirect_uri=https://dongnejupging.xyz",
-                HttpMethod.GET,
-                kakaoLogoutRequest,
-                String.class
-        );
+    public String getKakaoLogoutRedirectUrl() {
+        return "https://kauth.kakao.com/oauth/logout?client_id="+clientId+"&logout_redirect_uri=https://dongnejupging.xyz";
     }
 }
