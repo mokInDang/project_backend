@@ -137,4 +137,18 @@ class AuthenticationServiceTest {
         Assertions.assertThatThrownBy(() -> authenticationService.reissue("Test Refresh Token")).isInstanceOf(JwtException.class)
                 .hasMessage("Refresh Token 이 존재하지 않습니다.");
     }
+
+    @Test
+    @DisplayName("로그아웃 시 refreshToken삭제, 카카오 만료 요청을 수행한다.")
+    void logout(){
+        //given
+        Member member = mock(Member.class);
+
+        //when
+        authenticationService.logout(member.getId());
+
+        //then
+        verify(refreshTokenRepository, times(1)).deleteAllByMemberId(member.getId());
+        verify(kakaoOAuth2, times(1)).kakaoLogout();
+    }
 }

@@ -2,6 +2,7 @@ package mokindang.jubging.project_backend.service.authentication;
 
 import mokindang.jubging.project_backend.service.member.response.KakaoApiMemberResponse;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -13,6 +14,9 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 public class KaKaoOAuth2 {
+
+    @Value("${kakao.client-id}")
+    private String clientId ;
 
     public KakaoApiMemberResponse getMemberDto(String authorizationCode) {
         String accessToken = callKakaoApiToken(authorizationCode);
@@ -26,7 +30,7 @@ public class KaKaoOAuth2 {
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
-        params.add("client_id", "60b35611c843f6c8f618a495ecc8eaf6");
+        params.add("client_id", clientId);
         params.add("redirect_uri", "https://www.dongnejupging.xyz/api/auth/join");
         params.add("code", authorizationCode);
 
@@ -49,7 +53,6 @@ public class KaKaoOAuth2 {
     }
 
     public KakaoApiMemberResponse getMemberInformation(String kakaoAccessToken) {
-
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + kakaoAccessToken);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -71,6 +74,16 @@ public class KaKaoOAuth2 {
         return new KakaoApiMemberResponse(email, alias);
     }
 
+    public void kakaoLogout() {
+        HttpHeaders headers = new HttpHeaders();
+        RestTemplate rt = new RestTemplate();
+        HttpEntity<MultiValueMap<String, String>> kakaoLogoutRequest = new HttpEntity<>(headers);
+
+        rt.exchange(
+                "https://kauth.kakao.com/oauth/logout?client_id="+clientId+"&logout_redirect_uri=https://www.dongnejupging.xyz/",
+                HttpMethod.GET,
+                kakaoLogoutRequest,
+                String.class
+        );
+    }
 }
-
-
