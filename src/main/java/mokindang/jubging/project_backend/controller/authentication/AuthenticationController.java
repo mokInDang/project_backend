@@ -9,15 +9,16 @@ import mokindang.jubging.project_backend.service.member.response.JwtResponse;
 import mokindang.jubging.project_backend.service.member.response.KakaoLoginResponse;
 import mokindang.jubging.project_backend.service.member.response.LoginResponse;
 import mokindang.jubging.project_backend.web.argumentresolver.Login;
-import org.springframework.http.*;
+import org.springframework.http.HttpCookie;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.time.Duration;
 
 import static org.springframework.boot.web.server.Cookie.SameSite.NONE;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.HttpHeaders.SET_COOKIE;
+import static org.springframework.http.HttpHeaders.*;
 
 @Slf4j
 @RequestMapping("/api/auth")
@@ -59,10 +60,10 @@ public class AuthenticationController {
     @DeleteMapping("/logout")
     public ResponseEntity<Void> logout(@Login Long memberId) {
         String logoutRedirectUrl = authenticationService.logout(memberId);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create(logoutRedirectUrl));
 
-        return new ResponseEntity<>(httpHeaders, HttpStatus.NO_CONTENT);
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .header(LOCATION, logoutRedirectUrl)
+                .build();
     }
 
     private ResponseCookie createCookie(String refreshToken) {
