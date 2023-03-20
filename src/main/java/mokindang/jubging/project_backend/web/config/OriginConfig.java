@@ -20,6 +20,7 @@ public class OriginConfig implements WebMvcConfigurer {
                         "http://dongnejupging.xyz",
                         "https://www.dongnejupging.xyz",
                         "http://www.dongnejupging.xyz",
+                        "https://dev.dongnejupging.xyz/api/auth/logout",
                         "http://localhost:8080",
                         "http://localhost:3000",
                         "https://localhost:3000")
