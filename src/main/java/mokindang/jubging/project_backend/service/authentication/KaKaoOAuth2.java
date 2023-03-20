@@ -80,7 +80,7 @@ public class KaKaoOAuth2 {
         HttpEntity<MultiValueMap<String, String>> kakaoLogoutRequest = new HttpEntity<>(headers);
 
         rt.exchange(
-                "https://kauth.kakao.com/oauth/logout?client_id="+clientId+"&logout_redirect_uri=https://www.dongnejupging.xyz/",
+                "https://kauth.kakao.com/oauth/logout?client_id="+clientId+"&logout_redirect_uri=https://dongnejupging.xyz",
                 HttpMethod.GET,
                 kakaoLogoutRequest,
                 String.class
