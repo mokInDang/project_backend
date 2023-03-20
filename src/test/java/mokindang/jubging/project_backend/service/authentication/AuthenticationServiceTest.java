@@ -149,6 +149,6 @@ class AuthenticationServiceTest {
 
         //then
         verify(refreshTokenRepository, times(1)).deleteAllByMemberId(member.getId());
-        verify(kakaoOAuth2, times(1)).kakaoLogout();
+        verify(kakaoOAuth2, times(1)).getKakaoLogoutRedirectUrl();
     }
 }
