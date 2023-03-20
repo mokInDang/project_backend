@@ -61,7 +61,7 @@ public class AuthenticationController {
     public ResponseEntity<Void> logout(@Login Long memberId) {
         String logoutRedirectUrl = authenticationService.logout(memberId);
 
-        return ResponseEntity.status(HttpStatus.FOUND)
+        return ResponseEntity.status(HttpStatus.SEE_OTHER)
                 .header(LOCATION, logoutRedirectUrl)
                 .build();
     }
