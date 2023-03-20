@@ -9,12 +9,10 @@ import mokindang.jubging.project_backend.service.member.response.JwtResponse;
 import mokindang.jubging.project_backend.service.member.response.KakaoLoginResponse;
 import mokindang.jubging.project_backend.service.member.response.LoginResponse;
 import mokindang.jubging.project_backend.web.argumentresolver.Login;
-import org.springframework.http.HttpCookie;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.time.Duration;
 
 import static org.springframework.boot.web.server.Cookie.SameSite.NONE;
@@ -60,9 +58,11 @@ public class AuthenticationController {
 
     @DeleteMapping("/logout")
     public ResponseEntity<Void> logout(@Login Long memberId) {
-        authenticationService.logout(memberId);
-        return ResponseEntity.noContent()
-                .build();
+        String logoutRedirectUrl = authenticationService.logout(memberId);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setLocation(URI.create(logoutRedirectUrl));
+
+        return new ResponseEntity<>(httpHeaders, HttpStatus.NO_CONTENT);
     }
 
     private ResponseCookie createCookie(String refreshToken) {

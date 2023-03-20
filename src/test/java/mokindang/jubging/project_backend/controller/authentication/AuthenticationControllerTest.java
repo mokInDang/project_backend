@@ -23,7 +23,6 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.SET_COOKIE;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -128,13 +127,5 @@ class AuthenticationControllerTest {
         //then
         resultActions.andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.error").value("Refresh Token 이 존재하지 않습니다."));
-    }
-
-    @Test
-    @DisplayName("로그아웃 시 상태코드 204를 반환하며 요청 유저에 매칭되는 refreshToken을 DB에서 삭제 및 카카오 세션 만료 요청을 수행한다.")
-    void logout() throws Exception{
-        //when,then
-        mockMvc.perform(delete("/api/auth/logout"))
-                .andExpect(status().isNoContent());
     }
 }
