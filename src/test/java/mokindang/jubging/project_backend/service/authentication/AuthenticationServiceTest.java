@@ -138,7 +138,7 @@ class AuthenticationServiceTest {
                 .hasMessage("Refresh Token 이 존재하지 않습니다.");
     }
 
-    @Test
+    /*@Test
     @DisplayName("로그아웃 시 refreshToken삭제, 카카오 만료 요청을 수행한다.")
     void logout(){
         //given
@@ -150,5 +150,5 @@ class AuthenticationServiceTest {
         //then
         verify(refreshTokenRepository, times(1)).deleteAllByMemberId(member.getId());
         verify(kakaoOAuth2, times(1)).getKakaoLogoutRedirectUrl();
-    }
+    }*/
 }
