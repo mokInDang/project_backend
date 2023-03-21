@@ -18,7 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Duration;
 
 import static org.springframework.boot.web.server.Cookie.SameSite.NONE;
-import static org.springframework.http.HttpHeaders.*;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
 @Slf4j
 @RequestMapping("/api/auth")
@@ -59,10 +60,9 @@ public class AuthenticationController {
 
     @DeleteMapping("/logout")
     public ResponseEntity<Void> logout(@Login Long memberId) {
-        String logoutRedirectUrl = authenticationService.logout(memberId);
+        authenticationService.logout(memberId);
 
-        return ResponseEntity.status(HttpStatus.SEE_OTHER)
-                .header(LOCATION, logoutRedirectUrl)
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .build();
     }
 

@@ -73,8 +73,4 @@ public class KaKaoOAuth2 {
 
         return new KakaoApiMemberResponse(email, alias);
     }
-
-    public String getKakaoLogoutRedirectUrl() {
-        return "https://kauth.kakao.com/oauth/logout?client_id="+clientId+"&logout_redirect_uri=https://dongnejupging.xyz";
-    }
 }
