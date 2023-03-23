@@ -67,8 +67,14 @@ public class Board {
     }
 
     public void checkRegion(final Region region) {
-        if (!this.writingRegion.equals(region)){
+        if (!this.writingRegion.equals(region)) {
             throw new IllegalArgumentException("지역이 다른 유저는 게시글에 접근 할 수 없습니다.");
+        }
+    }
+
+    public void updateOnRecruitmentByStaringDate(final LocalDate now) {
+        if (onRecruitment == true && startingDate.isBefore(now)) {
+            closeRecruitment();
         }
     }
 

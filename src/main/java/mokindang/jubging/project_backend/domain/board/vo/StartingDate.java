@@ -27,6 +27,10 @@ public class StartingDate {
         }
     }
 
+    public boolean isBefore(final LocalDate now) {
+        return startingDate.isBefore(now);
+    }
+
     public String getValue() {
         return this.startingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
