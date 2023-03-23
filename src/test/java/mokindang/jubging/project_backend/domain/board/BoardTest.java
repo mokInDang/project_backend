@@ -8,13 +8,24 @@ import mokindang.jubging.project_backend.domain.region.vo.Region;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.annotation.Rollback;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Rollback
+@DataJpaTest
 class BoardTest {
+
+    @PersistenceContext
+    private EntityManager em;
 
     @Test
     @DisplayName("게시글 생성 시, 모집 여부는 상태는 항상 true 이다.")
@@ -145,5 +156,52 @@ class BoardTest {
 
         //then
         assertThat(board.isOnRecruitment()).isFalse();
+    }
+
+    @Test
+    @DisplayName("게시글 작성자인지 확인한다. 작성자인경우 true 를 반환한다.")
+    void isWriter() {
+        //given
+        LocalDate now = LocalDate.of(2023, 11, 12);
+        Member writer = new Member("test1@email.com", "test");
+        writer.updateRegion("동작구");
+        Board board = new Board(writer, LocalDate.of(2025, 2, 11), "달리기",
+                "제목", "본문내용", now);
+
+        em.persist(writer);
+        em.persist(board);
+        em.flush();
+        em.clear();
+
+        //when
+        boolean actual = board.isWriter(writer);
+
+        //then
+        assertThat(actual).isTrue();
+    }
+
+    @Test
+    @DisplayName("게시글 작성자인지 확인한다. 작성자가 아닌경우 false 를 반환한다.")
+    void isWriterWhenNoneWriter() {
+        //given
+        LocalDate now = LocalDate.of(2023, 11, 12);
+        Member writer = new Member("test1@email.com", "test");
+        writer.updateRegion("동작구");
+        Board board = new Board(writer, LocalDate.of(2025, 2, 11), "달리기",
+                "제목", "본문내용", now);
+
+        Member noneWriter = new Member("noneWriter@test.com", "noneWriter");
+
+        em.persist(writer);
+        em.persist(board);
+        em.persist(noneWriter);
+        em.flush();
+        em.clear();
+
+        //when
+        boolean actual = board.isWriter(noneWriter);
+
+        //then
+        assertThat(actual).isFalse();
     }
 }

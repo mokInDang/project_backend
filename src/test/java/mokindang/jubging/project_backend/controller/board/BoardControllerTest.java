@@ -147,7 +147,7 @@ class BoardControllerTest {
         //given
         LocalDate now = LocalDate.of(2023, 3, 9);
         BoardSelectResponse boardSelectResponse = new BoardSelectResponse(1L, "제목", "본문", "작성자",
-                "2023-03-10", "동작구", "달리기", true);
+                "2023-03-10", "동작구", "달리기", true, "test", true);
         when(boardService.select(anyLong(), anyLong())).thenReturn(boardSelectResponse);
 
         //when
@@ -163,7 +163,9 @@ class BoardControllerTest {
                 .andExpect(jsonPath("$.startingDate").value("2023-03-10"))
                 .andExpect(jsonPath("$.region").value("동작구"))
                 .andExpect(jsonPath("$.activityCategory").value("달리기"))
-                .andExpect(jsonPath("onRecruitment").value("true"));
+                .andExpect(jsonPath("$.onRecruitment").value(true))
+                .andExpect(jsonPath("$.firstFourLettersOfEmail").value("test"))
+                .andExpect(jsonPath("$.mine").value(true));
     }
 
     @Test

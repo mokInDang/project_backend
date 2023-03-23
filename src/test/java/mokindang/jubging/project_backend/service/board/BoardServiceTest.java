@@ -96,17 +96,26 @@ class BoardServiceTest {
         when(board.getWriter().getAlias()).thenReturn("글작성자");
         when(board.getWritingRegion()).thenReturn(Region.from("동작구"));
         when(board.getActivityCategory()).thenReturn(ActivityCategory.RUNNING);
+        when(board.isOnRecruitment()).thenReturn(true);
         LocalDate now = LocalDate.of(2023, 3, 10);
         when(board.getStartingDate()).thenReturn(new StartingDate(now, LocalDate.of(2023, 3, 11)));
+        when(board.getWriter().getFourLengthEmail()).thenReturn("test");
+        when(board.isWriter(member)).thenReturn(true);
         when(boardRepository.findById(1L)).thenReturn(Optional.of(board));
-        when(member.getRegion()).thenReturn(Region.from("동작구"));
 
         //when
         BoardSelectResponse actual = boardService.select(1L, 1L);
 
         //then
         softly.assertThat(actual.getBoardId()).isEqualTo(1L);
-        softly.assertThat(actual.getTitle()).isEqualTo("제목");
-        softly.assertThat(actual.getWriterAlias()).isEqualTo("test");
+        softly.assertThat(actual.getTitle()).isEqualTo("제목입니다.");
+        softly.assertThat(actual.getContent()).isEqualTo("본문내용입니다.");
+        softly.assertThat(actual.getWriterAlias()).isEqualTo("글작성자");
+        softly.assertThat(actual.getStartingDate()).isEqualTo("2023-03-11");
+        softly.assertThat(actual.getActivityCategory()).isEqualTo("달리기");
+        softly.assertThat(actual.isOnRecruitment()).isEqualTo(true);
+        softly.assertThat(actual.getFirstFourLettersOfEmail()).isEqualTo("test");
+        softly.assertThat(actual.isMine()).isEqualTo(true);
+        softly.assertAll();
     }
 }
