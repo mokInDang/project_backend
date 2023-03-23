@@ -49,5 +49,5 @@ public interface AuthenticationControllerSwagger {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "회원 로그아웃 완료")
     })
-    ResponseEntity<Void> logout(@Login Long memberId);
+    ResponseEntity<Void> logout(@Parameter(hidden = true) @Login Long memberId);
 }

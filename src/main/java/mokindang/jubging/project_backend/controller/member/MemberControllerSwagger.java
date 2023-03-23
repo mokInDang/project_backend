@@ -32,5 +32,5 @@ public interface MemberControllerSwagger {
             @ApiResponse(responseCode = "400", description = "유효하지 않은 유저 \t\n",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    ResponseEntity<RegionUpdateResponse> updateRegion(@Login Long memberId, @Valid @RequestBody RegionUpdateRequest regionUpdateRequest);
+    ResponseEntity<RegionUpdateResponse> updateRegion(@Parameter(hidden = true) @Login Long memberId, @Valid @RequestBody RegionUpdateRequest regionUpdateRequest);
 }
