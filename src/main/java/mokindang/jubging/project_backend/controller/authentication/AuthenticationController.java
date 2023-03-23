@@ -25,7 +25,7 @@ import static org.springframework.http.HttpHeaders.SET_COOKIE;
 @RequestMapping("/api/auth")
 @RestController
 @RequiredArgsConstructor
-public class AuthenticationController {
+public class AuthenticationController implements AuthenticationControllerSwagger{
 
     private final AuthenticationService authenticationService;
 
