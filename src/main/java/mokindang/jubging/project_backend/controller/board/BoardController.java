@@ -29,7 +29,7 @@ public class BoardController implements BoardControllerSwagger{
     }
 
     @GetMapping("/{boardId}")
-    public ResponseEntity<BoardSelectResponse> selectBoard(@Login Long memberId, @PathVariable final Long boardId) {
+    public ResponseEntity<BoardSelectResponse> selectBoard(@Login final Long memberId, @PathVariable final Long boardId) {
         log.info("memberId = [} 의 게시글 조회, 게시글 번호 : {}", memberId, boardId);
         BoardSelectResponse boardSelectResponse = boardService.select(memberId, boardId);
         return ResponseEntity.status(HttpStatus.OK)
