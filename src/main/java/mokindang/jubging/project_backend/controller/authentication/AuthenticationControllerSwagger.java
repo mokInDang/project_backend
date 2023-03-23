@@ -30,8 +30,7 @@ public interface AuthenticationControllerSwagger {
     ResponseEntity<LoginResponse> kakaoLogin(@RequestBody AuthorizationCodeRequest authorizationCodeRequest);
 
     @Operation(summary = "Refresh 토큰 재요청", parameters = {
-            @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true),
-            @Parameter(name = SET_COOKIE, description = "refreshToken", in = ParameterIn.COOKIE, required = true)
+            @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true)
     })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Refresh 토큰 재발급 완료"),

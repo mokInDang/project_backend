@@ -29,7 +29,8 @@ public interface MemberControllerSwagger {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "변경완료"),
-            @ApiResponse(responseCode = "400", description = "유효하지 않은 유저 \t\n",
+            @ApiResponse(responseCode = "400", description = "유효하지 않은 유저 \t\n"+
+                    "입력 받은 위도 경도가 대한민국이 아닌 경우",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     ResponseEntity<RegionUpdateResponse> updateRegion(@Parameter(hidden = true) @Login Long memberId, @Valid @RequestBody RegionUpdateRequest regionUpdateRequest);
