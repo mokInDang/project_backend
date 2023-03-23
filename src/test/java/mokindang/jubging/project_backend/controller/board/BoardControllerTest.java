@@ -3,6 +3,7 @@ package mokindang.jubging.project_backend.controller.board;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mokindang.jubging.project_backend.service.board.BoardService;
 import mokindang.jubging.project_backend.service.board.request.BoardCreateRequest;
+import mokindang.jubging.project_backend.service.board.response.BoardIdResponse;
 import mokindang.jubging.project_backend.service.board.response.BoardSelectResponse;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
 import org.junit.jupiter.api.DisplayName;
@@ -41,9 +42,11 @@ class BoardControllerTest {
     private TokenManager tokenManager;
 
     @Test
-    @DisplayName("새 게시글을 작성한 후, HTTP 201 상태코드를 반환한다.")
+    @DisplayName("새 게시글을 작성한 후, 작성된 게시글의 id 값과 함께 HTTP 201 상태코드를 반환한다.")
     void write() throws Exception {
         //given
+        when(boardService.write(anyLong(), any(BoardCreateRequest.class))).thenReturn(new BoardIdResponse(1L));
+
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest("제목", "본문", "달리기",
                 LocalDate.of(2023, 11, 11), LocalDate.of(2023, 11, 10));
 
@@ -53,7 +56,8 @@ class BoardControllerTest {
                 .content(objectMapper.writeValueAsString(boardCreateRequest)));
 
         //then
-        actual.andExpect(status().isCreated());
+        actual.andExpect(status().isCreated())
+                .andExpect(jsonPath("$.boardId").value(1L));
     }
 
     @Test
