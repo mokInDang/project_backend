@@ -3,6 +3,7 @@ package mokindang.jubging.project_backend.controller.authentication;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,15 +26,21 @@ public interface AuthenticationControllerSwagger {
 
     @Operation(summary = "카카오 로그인")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "카카오 로그안 완료", content = @Content(schema = @Schema(implementation = LoginResponse.class))),
+            @ApiResponse(responseCode = "200", description = "카카오 로그안 완료",
+                    headers = {@Header(name = AUTHORIZATION),
+                            @Header(name = SET_COOKIE, description = "refreshToken")
+                    }, content = @Content(schema = @Schema(implementation = LoginResponse.class))),
     })
     ResponseEntity<LoginResponse> kakaoLogin(@RequestBody AuthorizationCodeRequest authorizationCodeRequest);
 
-    @Operation(summary = "Refresh 토큰 재요청", parameters = {
+    @Operation(summary = "Refresh 토큰을 통한 Access 토큰 재발급", parameters = {
             @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true)
     })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Refresh 토큰 재발급 완료"),
+            @ApiResponse(responseCode = "200", description = "Refresh 토큰 재발급 완료",
+                    headers = {@Header(name = AUTHORIZATION),
+                            @Header(name = SET_COOKIE, description = "refreshToken")
+                    }),
             @ApiResponse(responseCode = "401", description = "존재 하지 않는 Refresh 토큰 입력\t\n" +
                     "Refresh 토큰이 만료됨", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "400", description = "refresh token 이 null 이나 공백으로 입력 \t\n" +

@@ -48,7 +48,8 @@ public interface BoardControllerSwagger {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "글 조회"),
             @ApiResponse(responseCode = "400", description = "지역이 유효하지 않는 유저 \t\n" +
-                    "존재하지 않는 게시글 조회", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),}
+                    "존재하지 않는 게시글 조회", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            }
     )
     @GetMapping("/{boardId}")
     ResponseEntity<BoardSelectResponse> selectBoard(@Parameter(hidden = true) @Login Long memberId, @PathVariable final Long boardId);
