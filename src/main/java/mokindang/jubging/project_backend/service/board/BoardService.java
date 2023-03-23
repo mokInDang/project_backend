@@ -32,6 +32,6 @@ public class BoardService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
         board.checkRegion(logindMember.getRegion());
         return new BoardSelectResponse(board.getId(), board.getTitle().getValue(), board.getContent().getValue(), board.getWriter().getAlias(),
-                board.getStartingDate().getValue(), board.getWritingRegion().getValue(), board.getActivityCategory().getValue(), board.isOnRecruitment());
-    }
-}
+                board.getStartingDate().getValue(), board.getWritingRegion().getValue(), board.getActivityCategory().getValue(),
+                board.isOnRecruitment(), board.getWriter().getFourLengthEmail(), board.isWriter(logindMember));
+    }}
