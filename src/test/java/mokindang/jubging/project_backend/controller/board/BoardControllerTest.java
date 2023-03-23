@@ -161,7 +161,7 @@ class BoardControllerTest {
                 .andExpect(jsonPath("$.activityCategory").value("달리기"))
                 .andExpect(jsonPath("$.onRecruitment").value(true))
                 .andExpect(jsonPath("$.firstFourLettersOfEmail").value("test"))
-                .andExpect(jsonPath("$.isWriter").value(true));
+                .andExpect(jsonPath("$.mine").value(true));
     }
 
     @Test

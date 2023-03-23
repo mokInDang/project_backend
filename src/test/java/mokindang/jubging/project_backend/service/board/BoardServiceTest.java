@@ -107,7 +107,7 @@ class BoardServiceTest {
         softly.assertThat(actual.getActivityCategory()).isEqualTo("달리기");
         softly.assertThat(actual.isOnRecruitment()).isEqualTo(true);
         softly.assertThat(actual.getFirstFourLettersOfEmail()).isEqualTo("test");
-        softly.assertThat(actual.isWriter()).isEqualTo(true);
+        softly.assertThat(actual.isMine()).isEqualTo(true);
         softly.assertAll();
     }
 }
