@@ -34,4 +34,7 @@ public class BoardSelectResponse {
 
     @Schema(description = "게시글 작성자의 이메일 앞 4글자")
     private String firstFourLettersOfEmail;
+
+    @Schema(description = "게시글 조회 회원이, 작성자인지에 대한 정보", allowableValues = {"true", "false"})
+    private boolean isWriter;
 }

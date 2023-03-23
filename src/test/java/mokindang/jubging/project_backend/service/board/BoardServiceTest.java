@@ -92,6 +92,7 @@ class BoardServiceTest {
         LocalDate now = LocalDate.of(2023, 3, 10);
         when(board.getStartingDate()).thenReturn(new StartingDate(now, LocalDate.of(2023, 3, 11)));
         when(board.getWriter().getFourLengthEmail()).thenReturn("test");
+        when(board.isWriter(member)).thenReturn(true);
         when(boardRepository.findById(1L)).thenReturn(Optional.of(board));
 
         //when
@@ -106,6 +107,7 @@ class BoardServiceTest {
         softly.assertThat(actual.getActivityCategory()).isEqualTo("달리기");
         softly.assertThat(actual.isOnRecruitment()).isEqualTo(true);
         softly.assertThat(actual.getFirstFourLettersOfEmail()).isEqualTo("test");
+        softly.assertThat(actual.isWriter()).isEqualTo(true);
         softly.assertAll();
     }
 }
