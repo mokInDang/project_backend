@@ -78,6 +78,10 @@ public class Board {
         }
     }
 
+    public boolean isWriter(final Member member) {
+        return this.writer.equals(member);
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
