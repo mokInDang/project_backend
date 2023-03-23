@@ -31,4 +31,7 @@ public class BoardSelectResponse {
 
     @Schema(description = "모집 여부")
     private boolean onRecruitment;
+
+    @Schema(description = "게시글 작성자의 이메일 앞 4글자")
+    private String firstFourLettersOfEmail;
 }

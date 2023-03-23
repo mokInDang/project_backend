@@ -63,7 +63,7 @@ public class BoardController {
                     "존재하지 않는 게시글 조회", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @GetMapping("/{boardId}")
-    public ResponseEntity<BoardSelectResponse> selectBoard(@Parameter(hidden = true) @Login Long memberId, @PathVariable final Long boardId) {
+    public ResponseEntity<BoardSelectResponse> selectBoard(@Parameter(hidden = true) @Login final Long memberId, @PathVariable final Long boardId) {
         log.info("memberId = [} 의 게시글 조회, 게시글 번호 : {}", memberId, boardId);
         BoardSelectResponse boardSelectResponse = boardService.select(memberId, boardId);
         return ResponseEntity.status(HttpStatus.OK)
