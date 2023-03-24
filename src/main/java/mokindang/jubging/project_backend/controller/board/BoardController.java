@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mokindang.jubging.project_backend.service.board.BoardService;
 import mokindang.jubging.project_backend.service.board.request.BoardCreateRequest;
+import mokindang.jubging.project_backend.service.board.response.BoardIdResponse;
 import mokindang.jubging.project_backend.service.board.response.BoardSelectResponse;
 import mokindang.jubging.project_backend.web.argumentresolver.Login;
 import org.springframework.http.HttpStatus;
@@ -21,11 +22,11 @@ public class BoardController implements BoardControllerSwagger{
     private final BoardService boardService;
 
     @PostMapping
-    public ResponseEntity<Void> write(@Login Long memberId, @Valid @RequestBody final BoardCreateRequest boardCreateRequest) {
+    public ResponseEntity<BoardIdResponse> write(@Login Long memberId, @Valid @RequestBody final BoardCreateRequest boardCreateRequest) {
         log.info("memberId = {} 의 새글작성", memberId);
-        boardService.write(memberId, boardCreateRequest);
+        BoardIdResponse boardIdResponse = boardService.write(memberId, boardCreateRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .build();
+                .body(boardIdResponse);
     }
 
     @GetMapping("/{boardId}")

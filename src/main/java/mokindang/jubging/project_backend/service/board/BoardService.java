@@ -5,6 +5,7 @@ import mokindang.jubging.project_backend.domain.board.Board;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.repository.board.BoardRepository;
 import mokindang.jubging.project_backend.service.board.request.BoardCreateRequest;
+import mokindang.jubging.project_backend.service.board.response.BoardIdResponse;
 import mokindang.jubging.project_backend.service.board.response.BoardSelectResponse;
 import mokindang.jubging.project_backend.service.member.MemberService;
 import org.springframework.stereotype.Service;
@@ -19,11 +20,12 @@ public class BoardService {
     private final BoardRepository boardRepository;
 
     @Transactional
-    public void write(final Long memberId, final BoardCreateRequest boardCreateRequest) {
+    public BoardIdResponse write(final Long memberId, final BoardCreateRequest boardCreateRequest) {
         Member member = memberService.findByMemberId(memberId);
         Board board = new Board(member, boardCreateRequest.getStartingDate(), boardCreateRequest.getActivityCategory(),
                 boardCreateRequest.getTitle(), boardCreateRequest.getContent(), boardCreateRequest.getRequestDate());
-        boardRepository.save(board);
+        Board savedBoard = boardRepository.save(board);
+        return new BoardIdResponse(savedBoard.getId());
     }
 
     public BoardSelectResponse select(final Long memberId, final Long boardId) {
