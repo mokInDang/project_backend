@@ -6,7 +6,9 @@ import mokindang.jubging.project_backend.service.board.BoardService;
 import mokindang.jubging.project_backend.service.board.request.BoardCreateRequest;
 import mokindang.jubging.project_backend.service.board.response.BoardIdResponse;
 import mokindang.jubging.project_backend.service.board.response.BoardSelectResponse;
+import mokindang.jubging.project_backend.service.board.response.MultiBoardSelectResponse;
 import mokindang.jubging.project_backend.web.argumentresolver.Login;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,4 +38,10 @@ public class BoardController implements BoardControllerSwagger{
         return ResponseEntity.status(HttpStatus.OK)
                 .body(boardSelectResponse);
     }
+
+    @GetMapping
+    public ResponseEntity<MultiBoardSelectResponse> selectBoards(final Pageable pageable) {
+        MultiBoardSelectResponse multiBoardSelectResponse = boardService.selectAllBoards(pageable);
+        return ResponseEntity.ok()
+                .body(multiBoardSelectResponse);}
 }
