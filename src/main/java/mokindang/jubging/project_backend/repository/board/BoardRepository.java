@@ -2,13 +2,14 @@ package mokindang.jubging.project_backend.repository.board;
 
 import mokindang.jubging.project_backend.domain.board.Board;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDate;
 
 public interface BoardRepository extends JpaRepository<Board, Long> {
 
-    Optional<Board> findById(Long id);
-
-    List<Board> findBoardsByOnRecruitmentTrue();
+    @Modifying
+    @Query("UPDATE Board b SET b.onRecruitment = false WHERE b.onRecruitment IS true AND b.startingDate.startingDate < :today")
+    void updateOnRecruitmentByStartingDate(LocalDate today);
 }
