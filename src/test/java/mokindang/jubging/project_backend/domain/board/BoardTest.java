@@ -15,6 +15,7 @@ import org.springframework.test.annotation.Rollback;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -31,11 +32,12 @@ class BoardTest {
     @DisplayName("게시글 생성 시, 모집 여부는 상태는 항상 true 이다.")
     void defaultOfOnRecruitment() {
         //given
-        LocalDate now = LocalDate.of(2023, 11, 12);
+        LocalDate today = LocalDate.of(2023, 11, 12);
+        LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
         Member testMember = new Member("koho1047@naver.com", "민호");
         testMember.updateRegion("동작구");
-        Board board = new Board(testMember, LocalDate.of(2025, 2, 11),
-                "달리기", "게시판 제목", "게시판 내용 작성 테스트", now);
+        Board board = new Board(now, testMember, LocalDate.of(2025, 2, 11),
+                "달리기", "게시판 제목", "게시판 내용 작성 테스트");
 
         //when
         boolean onRecruitment = board.isOnRecruitment();
@@ -48,11 +50,12 @@ class BoardTest {
     @DisplayName("모집 여부를 마감한다.")
     void closeRecruitment() {
         //given
-        LocalDate now = LocalDate.of(2023, 11, 12);
+        LocalDate today = LocalDate.of(2023, 11, 12);
+        LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
         Member testMember = new Member("koho1047@naver.com", "민호");
         testMember.updateRegion("동작구");
-        Board board = new Board(testMember, LocalDate.of(2025, 2, 11),
-                "달리기", "게시판 제목", "게시판 내용 작성 테스트", now);
+        Board board = new Board(now, testMember, LocalDate.of(2025, 2, 11),
+                "달리기", "게시판 제목", "게시판 내용 작성 테스트");
 
         //when
         board.closeRecruitment();
@@ -66,11 +69,12 @@ class BoardTest {
     void getter() {
         //given
         SoftAssertions softly = new SoftAssertions();
-        LocalDate now = LocalDate.of(2023, 11, 12);
+        LocalDate today = LocalDate.of(2023, 11, 12);
+        LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
         Member testMember = new Member("koho1047@naver.com", "민호");
         testMember.updateRegion("동작구");
-        Board board = new Board(testMember, LocalDate.of(2025, 2, 11),
-                "달리기", "게시판 제목", "게시판 내용 작성 테스트", now);
+        Board board = new Board(now, testMember, LocalDate.of(2025, 2, 11),
+                "달리기", "게시판 제목", "게시판 내용 작성 테스트");
 
         //when
         Member member = board.getWriter();
@@ -98,11 +102,12 @@ class BoardTest {
     void validateRegion() {
         //given
         Member member = new Member("Test@email.com", "test");
-        LocalDate now = LocalDate.of(2023, 11, 12);
+        LocalDate today = LocalDate.of(2023, 11, 12);
+        LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
 
         //when, then
-        assertThatThrownBy(() -> new Board(member, LocalDate.of(2025, 2, 11),
-                "달리기", "게시판 제목", "게시판 내용 작성 테스트", now))
+        assertThatThrownBy(() -> new Board(now, member, LocalDate.of(2025, 2, 11),
+                "달리기", "게시판 제목", "게시판 내용 작성 테스트"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("지역 인증이 되지 않아, 게시글을 생성할 수 없습니다.");
     }
@@ -111,11 +116,12 @@ class BoardTest {
     @DisplayName("지역을 입력 받아, 게시글의 지역과 다르면 예외를 반환한다.")
     void checkRegion() {
         //given
-        LocalDate now = LocalDate.of(2023, 11, 12);
+        LocalDate today = LocalDate.of(2023, 11, 12);
+        LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
         Member testMember = new Member("koho1047@naver.com", "민호");
         testMember.updateRegion("동작구");
-        Board board = new Board(testMember, LocalDate.of(2025, 2, 11),
-                "달리기", "게시판 제목", "게시판 내용 작성 테스트", now);
+        Board board = new Board(now, testMember, LocalDate.of(2025, 2, 11),
+                "달리기", "게시판 제목", "게시판 내용 작성 테스트");
 
         //when, then
         assertThatThrownBy(() -> board.checkRegion(Region.from("성동구")))
@@ -127,11 +133,12 @@ class BoardTest {
     @DisplayName("게시글 작성자의 별명을 반환한다.")
     void getWriterAlias() {
         //given
-        LocalDate now = LocalDate.of(2023, 11, 12);
+        LocalDate today = LocalDate.of(2023, 11, 12);
+        LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
         Member testMember = new Member("koho1047@naver.com", "민호");
         testMember.updateRegion("동작구");
-        Board board = new Board(testMember, LocalDate.of(2025, 2, 11),
-                "달리기", "게시판 제목", "게시판 내용 작성 테스트", now);
+        Board board = new Board(now, testMember, LocalDate.of(2025, 2, 11),
+                "달리기", "게시판 제목", "게시판 내용 작성 테스트");
 
         //when
         String actual = board.getWriter().getAlias();
@@ -144,11 +151,12 @@ class BoardTest {
     @DisplayName("게시글 작성자인지 확인한다. 작성자인경우 true 를 반환한다.")
     void isWriter() {
         //given
-        LocalDate now = LocalDate.of(2023, 11, 12);
+        LocalDate today = LocalDate.of(2023, 11, 12);
+        LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
         Member writer = new Member("test1@email.com", "test");
         writer.updateRegion("동작구");
-        Board board = new Board(writer, LocalDate.of(2025, 2, 11), "달리기",
-                "제목", "본문내용", now);
+        Board board = new Board(now, writer, LocalDate.of(2025, 2, 11), "달리기",
+                "제목", "본문내용");
 
         em.persist(writer);
         em.persist(board);
@@ -166,11 +174,12 @@ class BoardTest {
     @DisplayName("게시글 작성자인지 확인한다. 작성자가 아닌경우 false 를 반환한다.")
     void isWriterWhenNoneWriter() {
         //given
-        LocalDate now = LocalDate.of(2023, 11, 12);
+        LocalDate today = LocalDate.of(2023, 11, 12);
+        LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
         Member writer = new Member("test1@email.com", "test");
         writer.updateRegion("동작구");
-        Board board = new Board(writer, LocalDate.of(2025, 2, 11), "달리기",
-                "제목", "본문내용", now);
+        Board board = new Board(now, writer, LocalDate.of(2025, 2, 11), "달리기",
+                "제목", "본문내용");
 
         Member noneWriter = new Member("noneWriter@test.com", "noneWriter");
 

@@ -11,6 +11,7 @@ import mokindang.jubging.project_backend.domain.region.vo.Region;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
@@ -22,6 +23,8 @@ public class Board {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_id")
     private Long id;
+
+    private LocalDateTime creatingDateTime;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
@@ -44,9 +47,10 @@ public class Board {
 
     private boolean onRecruitment;
 
-    public Board(final Member writer, final LocalDate startingDate, final String activityCategory, final String title, final String content, final LocalDate now) {
+    public Board(final LocalDateTime creatingDateTime, final Member writer, final LocalDate startingDate, final String activityCategory, final String title, final String content) { this.creatingDateTime = creatingDateTime;
         this.writer = writer;
-        this.startingDate = new StartingDate(now, startingDate);
+        LocalDate creatingDate = creatingDateTime.toLocalDate();
+        this.startingDate = new StartingDate(creatingDate, startingDate);
         this.activityCategory = ActivityCategory.from(activityCategory);
         this.title = new Title(title);
         this.content = new Content(content);
