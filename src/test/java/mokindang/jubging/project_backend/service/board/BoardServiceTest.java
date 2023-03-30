@@ -55,7 +55,7 @@ class BoardServiceTest {
         when(boardRepository.save(any(Board.class))).thenReturn(savedBoard);
 
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest("제목", "본문내용", "달리기",
-                LocalDate.of(2025, 2, 12), LocalDate.of(2023, 11, 10));
+                LocalDate.of(2025, 2, 12));
 
         //when
         BoardIdResponse savedBoardId = boardService.write(1L, boardCreateRequest);
@@ -72,7 +72,7 @@ class BoardServiceTest {
         when(memberService.findByMemberId(anyLong())).thenThrow(new IllegalArgumentException("해당하는 유저가 존재하지 않습니다."));
 
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest("제목", "본문내용", "달리기",
-                LocalDate.of(2023, 2, 12), LocalDate.of(2023, 11, 10));
+                LocalDate.of(2023, 2, 12));
 
         //when, then
         assertThatThrownBy(() -> boardService.write(1L, boardCreateRequest))
