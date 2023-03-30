@@ -72,12 +72,6 @@ public class Board {
         }
     }
 
-    public void updateOnRecruitmentByStaringDate(final LocalDate now) {
-        if (onRecruitment == true && startingDate.isBefore(now)) {
-            closeRecruitment();
-        }
-    }
-
     public boolean isWriter(final Member member) {
         return this.writer.equals(member);
     }

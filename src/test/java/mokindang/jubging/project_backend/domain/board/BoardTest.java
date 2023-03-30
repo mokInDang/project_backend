@@ -141,24 +141,6 @@ class BoardTest {
     }
 
     @Test
-    @DisplayName("입력받은 현재 날짜 보다 활동 시작일이 과거에 있으면 onRecruitment 를 false 로 변경한다.")
-    void updateOnRecruitment() {
-        //given
-        LocalDate boardCreationDate = LocalDate.of(2023, 11, 12);
-        Member testMember = new Member("koho1047@naver.com", "민호");
-        testMember.updateRegion("동작구");
-        LocalDate startingDate = LocalDate.of(2023, 11, 13);
-        Board board = new Board(testMember, startingDate, "달리기", "게시판 제목", "게시판 내용 작성 테스트", boardCreationDate);
-
-        LocalDate now = LocalDate.of(2023, 11, 14);
-        //when
-        board.updateOnRecruitmentByStaringDate(now);
-
-        //then
-        assertThat(board.isOnRecruitment()).isFalse();
-    }
-
-    @Test
     @DisplayName("게시글 작성자인지 확인한다. 작성자인경우 true 를 반환한다.")
     void isWriter() {
         //given
