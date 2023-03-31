@@ -2,7 +2,7 @@ package mokindang.jubging.project_backend.service.member;
 
 import lombok.RequiredArgsConstructor;
 import mokindang.jubging.project_backend.domain.member.Member;
-import mokindang.jubging.project_backend.domain.region.vo.Region;
+import mokindang.jubging.project_backend.domain.member.vo.Region;
 import mokindang.jubging.project_backend.repository.member.MemberRepository;
 import mokindang.jubging.project_backend.service.member.request.RegionUpdateRequest;
 import org.springframework.stereotype.Service;
@@ -36,5 +36,10 @@ public class MemberService {
         Member member = findByMemberId(memberId);
         member.updateRegion(kakaoLocalApi.switchCoordinateToRegion(regionUpdateRequest));
         return member.getRegion();
+    }
+
+    @Transactional
+    public void updateProfile(final Member member, final String newProfileImageUrl, final String newProfileImageName) {
+        member.updateProfileImage(newProfileImageUrl, newProfileImageName);
     }
 }
