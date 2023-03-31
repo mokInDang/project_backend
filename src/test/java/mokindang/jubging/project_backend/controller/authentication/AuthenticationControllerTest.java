@@ -50,7 +50,7 @@ class AuthenticationControllerTest {
     @DisplayName("회원가입 시 HTTP 상태코드는 201(CREATED)이다. Access Token은 Authorization, Refresh Token은 Set-Cookie 헤더에 담아 응답한다.")
     void joinAndState201() throws Exception {
         //given
-        KakaoLoginResponse kakaoLoginResponse = new KakaoLoginResponse(TEST_ACCESS_TOKEN, TEST_REFRESH_TOKEN, "dog1", "minho", "동작구", LoginState.JOIN);
+        KakaoLoginResponse kakaoLoginResponse = new KakaoLoginResponse(TEST_ACCESS_TOKEN, TEST_REFRESH_TOKEN, "dog1", "minho", "동작구", "https://test.png",LoginState.JOIN);
         AuthorizationCodeRequest authorizationCodeRequest = new AuthorizationCodeRequest("Test Authorization Code");
 
         when(authenticationService.login(any())).thenReturn(kakaoLoginResponse);
@@ -65,6 +65,7 @@ class AuthenticationControllerTest {
                 .andExpect(jsonPath("$.email").value("dog1"))
                 .andExpect(jsonPath("$.alias").value("minho"))
                 .andExpect(jsonPath("$.region").value("동작구"))
+                .andExpect(jsonPath("$.profileImageUrl").value("https://test.png"))
                 .andExpect(header().exists(AUTHORIZATION))
                 .andExpect(header().exists(SET_COOKIE));
     }
@@ -73,7 +74,7 @@ class AuthenticationControllerTest {
     @DisplayName("로그인 시 HTTP 상태코드는 200(OK)이며 Alias를 JSON으로 반환한다. Access Token은 Authorization, Refresh Token은 Set-Cookie 헤더에 담아 응답한다.")
     void loginAndState200() throws Exception {
         //given
-        KakaoLoginResponse kakaoLoginResponse = new KakaoLoginResponse(TEST_ACCESS_TOKEN, TEST_REFRESH_TOKEN, "dog1", "minho", "동작구", LoginState.LOGIN);
+        KakaoLoginResponse kakaoLoginResponse = new KakaoLoginResponse(TEST_ACCESS_TOKEN, TEST_REFRESH_TOKEN, "dog1", "minho", "동작구", "https://test.png", LoginState.LOGIN);
         AuthorizationCodeRequest authorizationCodeRequest = new AuthorizationCodeRequest("Test Authorization Code");
 
         when(authenticationService.login(any())).thenReturn(kakaoLoginResponse);
@@ -88,6 +89,7 @@ class AuthenticationControllerTest {
                 .andExpect(jsonPath("$.email").value("dog1"))
                 .andExpect(jsonPath("$.alias").value("minho"))
                 .andExpect(jsonPath("$.region").value("동작구"))
+                .andExpect(jsonPath("$.profileImageUrl").value("https://test.png"))
                 .andExpect(header().exists(AUTHORIZATION))
                 .andExpect(header().exists(SET_COOKIE));
 
