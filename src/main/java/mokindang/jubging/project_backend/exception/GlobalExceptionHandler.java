@@ -1,6 +1,7 @@
 package mokindang.jubging.project_backend.exception;
 
 import io.jsonwebtoken.JwtException;
+import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -26,11 +27,12 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(e.getMessage()));
     }
 
-    @ExceptionHandler(JwtException.class)
+    @ExceptionHandler({JwtException.class, ForbiddenException.class})
     public ResponseEntity<ErrorResponse> handleJwtException(final RuntimeException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new ErrorResponse(e.getMessage()));
     }
+
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentValidation(final MethodArgumentNotValidException e) {
