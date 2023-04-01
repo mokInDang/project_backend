@@ -1,6 +1,7 @@
 package mokindang.jubging.project_backend.controller.board;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.service.board.BoardService;
 import mokindang.jubging.project_backend.service.board.request.BoardCreateRequest;
 import mokindang.jubging.project_backend.service.board.response.BoardIdResponse;
@@ -219,7 +220,7 @@ class BoardControllerTest {
     @DisplayName("게시글 삭제 요청 시, 요청 회원이 작성자가 아닌경우 예외를 반환하고, Http 401을 반환한다.")
     void deleteFailedByNoneMatchingBoardWhitWritingMember() throws Exception {
         //given
-        doThrow(new IllegalArgumentException("글 작성자만 게시글을 삭제할 수 있습니다.")).when(boardService)
+        doThrow(new ForbiddenException("글 작성자만 게시글을 삭제할 수 있습니다.")).when(boardService)
                 .delete(anyLong(), anyLong());
 
         //when
@@ -235,7 +236,7 @@ class BoardControllerTest {
     @DisplayName("존재하지 않는 게시글에 대한 삭제 요청일 경우, Http 400 상태코드와 에러 메세지를 반환한다.")
     void deleteFailedByNonexistentBoard() throws Exception {
         //given
-        doReturn(new IllegalArgumentException("존재하지 않는 게시물입니다.")).when(boardService)
+        doThrow(new IllegalArgumentException("존재하지 않는 게시물입니다.")).when(boardService)
                 .delete(anyLong(), anyLong());
 
         //when
@@ -243,7 +244,7 @@ class BoardControllerTest {
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
-        actual.andExpect(status().isForbidden())
+        actual.andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("존재하지 않는 게시물입니다."));
     }
 }
