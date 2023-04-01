@@ -29,11 +29,24 @@ public class BoardService {
     }
 
     public BoardSelectResponse select(final Long memberId, final Long boardId) {
-        Member logindMember = memberService.findByMemberId(memberId);
+        Member loggedInMember = memberService.findByMemberId(memberId);
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
-        board.checkRegion(logindMember.getRegion());
+        board.checkRegion(loggedInMember.getRegion());
         return new BoardSelectResponse(board.getId(), board.getTitle().getValue(), board.getContent().getValue(), board.getWriter().getAlias(),
                 board.getStartingDate().getValue(), board.getWritingRegion().getValue(), board.getActivityCategory().getValue(),
-                board.isOnRecruitment(), board.getWriter().getFourLengthEmail(), board.isWriter(logindMember));
-    }}
+                board.isOnRecruitment(), board.getWriter().getFourLengthEmail(), board.isWriter(loggedInMember));
+    }
+
+    @Transactional
+    public BoardIdResponse delete(final Long memberId, final Long boardId) {
+        Member loggedInMember = memberService.findByMemberId(memberId);
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
+        if (!board.isWriter(loggedInMember)) {
+            throw new IllegalArgumentException("글 작성자만 게시글을 삭제할 수 있습니다.");
+        }
+        boardRepository.delete(board);
+        return new BoardIdResponse(board.getId());
+    }
+}
