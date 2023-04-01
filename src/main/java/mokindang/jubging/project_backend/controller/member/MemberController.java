@@ -28,8 +28,8 @@ public class MemberController implements MemberControllerSwagger{
 
     @GetMapping("/mypage")
     public ResponseEntity<MyPageResponse> callMyPage(@Login Long memberId) {
-        MyPageResponse myInformation = memberService.getMyInformation(memberId);
+        MyPageResponse myPageResponse = memberService.getMyInformation(memberId);
         return ResponseEntity.ok()
-                .body(myInformation);
+                .body(myPageResponse);
     }
 }
