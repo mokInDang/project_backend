@@ -147,10 +147,10 @@ class BoardServiceTest {
         //given
         Member writer = mock(Member.class);
         when(memberService.findByMemberId(1L)).thenReturn(writer);
-        when(boardRepository.findById(anyLong())).thenThrow(new ForbiddenException("존재하지 않는 게시물 입니다."));
+        when(boardRepository.findById(anyLong())).thenThrow(new IllegalArgumentException("존재하지 않는 게시물 입니다."));
 
         //when, then
-        assertThatThrownBy(() -> boardService.delete(1L, 1L)).isInstanceOf(ForbiddenException.class)
+        assertThatThrownBy(() -> boardService.delete(1L, 1L)).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하지 않는 게시물 입니다.");
     }
 
@@ -165,7 +165,7 @@ class BoardServiceTest {
         when(boardRepository.findById(anyLong())).thenReturn(Optional.of(board));
 
         //when, then
-        assertThatThrownBy(() -> boardService.delete(1L, 1L)).isInstanceOf(IllegalArgumentException.class)
+        assertThatThrownBy(() -> boardService.delete(1L, 1L)).isInstanceOf(ForbiddenException.class)
                 .hasMessage("글 작성자만 게시글을 삭제할 수 있습니다.");
     }
 }
