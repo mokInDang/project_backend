@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import mokindang.jubging.project_backend.domain.region.vo.Region;
 import mokindang.jubging.project_backend.service.member.MemberService;
 import mokindang.jubging.project_backend.service.member.request.RegionUpdateRequest;
+import mokindang.jubging.project_backend.service.member.response.MyPageResponse;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -90,5 +92,22 @@ class MemberControllerTest {
 
         //then
         resultActions.andExpect(jsonPath("$.error").value("latitude(위도)는 대한민국 영토 범위 33~39 내의 값이어야 합니다."));
+    }
+
+    @Test
+    @DisplayName("마이페이지 조회 시 alias, region, profileImageUrl을 반환한다.")
+    void myPage() throws Exception {
+        //given
+        MyPageResponse mypageResponse = new MyPageResponse("minho", "동작구", "https://test.png");
+        when(memberService.getMyInformation(any())).thenReturn(mypageResponse);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(get("/api/member/mypage"));
+
+        //then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.alias").value("minho"))
+                .andExpect(jsonPath("$.region").value("동작구"))
+                .andExpect(jsonPath("$.profileImageUrl").value("https://test.png"));
     }
 }
