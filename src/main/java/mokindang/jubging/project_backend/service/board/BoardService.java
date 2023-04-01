@@ -3,6 +3,7 @@ package mokindang.jubging.project_backend.service.board;
 import lombok.RequiredArgsConstructor;
 import mokindang.jubging.project_backend.domain.board.Board;
 import mokindang.jubging.project_backend.domain.member.Member;
+import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.repository.board.BoardRepository;
 import mokindang.jubging.project_backend.service.board.request.BoardCreateRequest;
 import mokindang.jubging.project_backend.service.board.response.BoardIdResponse;
@@ -44,7 +45,7 @@ public class BoardService {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
         if (!board.isWriter(loggedInMember)) {
-            throw new IllegalArgumentException("글 작성자만 게시글을 삭제할 수 있습니다.");
+            throw new ForbiddenException("글 작성자만 게시글을 삭제할 수 있습니다.");
         }
         boardRepository.delete(board);
         return new BoardIdResponse(board.getId());

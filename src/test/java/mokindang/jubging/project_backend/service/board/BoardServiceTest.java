@@ -7,6 +7,7 @@ import mokindang.jubging.project_backend.domain.board.vo.StartingDate;
 import mokindang.jubging.project_backend.domain.board.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.region.vo.Region;
+import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.repository.board.BoardRepository;
 import mokindang.jubging.project_backend.service.board.request.BoardCreateRequest;
 import mokindang.jubging.project_backend.service.board.response.BoardIdResponse;
@@ -146,10 +147,10 @@ class BoardServiceTest {
         //given
         Member writer = mock(Member.class);
         when(memberService.findByMemberId(1L)).thenReturn(writer);
-        when(boardRepository.findById(anyLong())).thenThrow(new IllegalArgumentException("존재하지 않는 게시물 입니다."));
+        when(boardRepository.findById(anyLong())).thenThrow(new ForbiddenException("존재하지 않는 게시물 입니다."));
 
         //when, then
-        assertThatThrownBy(() -> boardService.delete(1L, 1L)).isInstanceOf(IllegalArgumentException.class)
+        assertThatThrownBy(() -> boardService.delete(1L, 1L)).isInstanceOf(ForbiddenException.class)
                 .hasMessage("존재하지 않는 게시물 입니다.");
     }
 
