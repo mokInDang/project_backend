@@ -5,6 +5,7 @@ import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.region.vo.Region;
 import mokindang.jubging.project_backend.repository.member.MemberRepository;
 import mokindang.jubging.project_backend.service.member.request.RegionUpdateRequest;
+import mokindang.jubging.project_backend.service.member.response.MyPageResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,5 +37,15 @@ public class MemberService {
         Member member = findByMemberId(memberId);
         member.updateRegion(kakaoLocalApi.switchCoordinateToRegion(regionUpdateRequest));
         return member.getRegion();
+    }
+
+    public MyPageResponse getMyInformation(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 유저가 존재하지 않습니다."));
+        return MyPageResponse.builder()
+                .alias(member.getAlias())
+                .region(member.getRegion().getValue())
+                .profileImageUrl(member.getProfileImage().getProfileImageUrl())
+                .build();
     }
 }
