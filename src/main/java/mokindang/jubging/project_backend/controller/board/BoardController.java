@@ -17,7 +17,7 @@ import javax.validation.Valid;
 @RequestMapping("/api/boards")
 @RestController
 @RequiredArgsConstructor
-public class BoardController implements BoardControllerSwagger{
+public class BoardController implements BoardControllerSwagger {
 
     private final BoardService boardService;
 
@@ -31,9 +31,16 @@ public class BoardController implements BoardControllerSwagger{
 
     @GetMapping("/{boardId}")
     public ResponseEntity<BoardSelectResponse> selectBoard(@Login final Long memberId, @PathVariable final Long boardId) {
-        log.info("memberId = [} 의 게시글 조회, 게시글 번호 : {}", memberId, boardId);
+        log.info("memberId = {} 의 게시글 조회 요청, 게시글 번호 : {}", memberId, boardId);
         BoardSelectResponse boardSelectResponse = boardService.select(memberId, boardId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(boardSelectResponse);
+    }
+
+    @DeleteMapping("/{boardId}")
+    public ResponseEntity<BoardIdResponse> delete(@Login final Long memberId, @PathVariable final Long boardId) {
+        log.info("memberId = {} 의 게시글 삭제 요청, 게시글 번호 : {}", memberId, boardId);
+        BoardIdResponse deletedBoardId = boardService.delete(memberId, boardId);
+        return ResponseEntity.ok(deletedBoardId);
     }
 }
