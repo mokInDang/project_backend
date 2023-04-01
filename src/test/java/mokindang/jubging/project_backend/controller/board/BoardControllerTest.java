@@ -14,13 +14,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -145,7 +145,6 @@ class BoardControllerTest {
             " 게시글 제목, 본문, 작성자, 활동 지역, 활동 예정일 활동 종류, 모집 여부 를 담은 BoardSelectResponse 를 반환한다.")
     void select() throws Exception {
         //given
-        LocalDate now = LocalDate.of(2023, 3, 9);
         BoardSelectResponse boardSelectResponse = new BoardSelectResponse(1L, "제목", "본문", "작성자",
                 "2023-03-10", "동작구", "달리기", true, "test", true);
         when(boardService.select(anyLong(), anyLong())).thenReturn(boardSelectResponse);
@@ -197,6 +196,54 @@ class BoardControllerTest {
 
         //then
         actual.andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("존재하지 않는 게시물입니다."));
+    }
+
+    @Test
+    @DisplayName("게시글 삭제 요청 시, 요청 회원이 작성자인지 확인하고 게시글을 삭제한다. " +
+            "삭제 후 Http 200 코드와 삭제된 게시글 id 를 담은 BoardIdResponse 를 반환한다.")
+    void delete() throws Exception {
+        //given
+        when(boardService.delete(anyLong(), anyLong())).thenReturn(new BoardIdResponse(1L));
+
+        //when
+        ResultActions actual = mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/{boardId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        actual.andExpect(status().isOk())
+                .andExpect(jsonPath("$.boardId").value(1L));
+    }
+
+    @Test
+    @DisplayName("게시글 삭제 요청 시, 요청 회원이 작성자가 아닌경우 예외를 반환하고, Http 401을 반환한다.")
+    void deleteFailedByNoneMatchingBoardWhitWritingMember() throws Exception {
+        //given
+        doThrow(new IllegalArgumentException("글 작성자만 게시글을 삭제할 수 있습니다.")).when(boardService)
+                .delete(anyLong(), anyLong());
+
+        //when
+        ResultActions actual = mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/{boardId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        actual.andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.error").value("글 작성자만 게시글을 삭제할 수 있습니다."));
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 게시글에 대한 삭제 요청일 경우, Http 400 상태코드와 에러 메세지를 반환한다.")
+    void deleteFailedByNonexistentBoard() throws Exception {
+        //given
+        doReturn(new IllegalArgumentException("존재하지 않는 게시물입니다.")).when(boardService)
+                .delete(anyLong(), anyLong());
+
+        //when
+        ResultActions actual = mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/{boardId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        actual.andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.error").value("존재하지 않는 게시물입니다."));
     }
 }
