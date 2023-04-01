@@ -4,12 +4,14 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static mokindang.jubging.project_backend.domain.member.vo.ProfileImage.DEFAULT_PROFILE_IMAGE_NAME;
+import static mokindang.jubging.project_backend.domain.member.vo.ProfileImage.DEFAULT_PROFILE_IMAGE_URL;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberTest {
 
     @Test
-    @DisplayName("멤버의 email 과 alias 를 반환한다.")
+    @DisplayName("멤버 생성 시 멤버의 email 과 alias 를 반환하고 ProfileImageUrl 과 ProfileImageName은 DEFAULT 값을 반환한다.")
     void getter() {
         //given
         SoftAssertions softly = new SoftAssertions();
@@ -18,10 +20,14 @@ class MemberTest {
         //when
         String email = member.getEmail();
         String alias = member.getAlias();
+        String profileImageUrl = member.getProfileImage().getProfileImageUrl();
+        String profileImageName = member.getProfileImage().getProfileImageName();
 
         //then
         softly.assertThat(email).isEqualTo("cjh87467@gmail.com");
         softly.assertThat(alias).isEqualTo("지환");
+        softly.assertThat(profileImageUrl).isEqualTo(DEFAULT_PROFILE_IMAGE_URL);
+        softly.assertThat(profileImageName).isEqualTo(DEFAULT_PROFILE_IMAGE_NAME);
         softly.assertAll();
     }
 
