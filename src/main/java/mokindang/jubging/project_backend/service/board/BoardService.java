@@ -3,6 +3,7 @@ package mokindang.jubging.project_backend.service.board;
 import lombok.RequiredArgsConstructor;
 import mokindang.jubging.project_backend.domain.board.Board;
 import mokindang.jubging.project_backend.domain.member.Member;
+import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.repository.board.BoardRepository;
 import mokindang.jubging.project_backend.service.board.request.BoardCreateRequest;
 import mokindang.jubging.project_backend.service.board.response.BoardIdResponse;
@@ -32,12 +33,25 @@ public class BoardService {
     }
 
     public BoardSelectResponse select(final Long memberId, final Long boardId) {
-        Member logindMember = memberService.findByMemberId(memberId);
+        Member loggedInMember = memberService.findByMemberId(memberId);
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
-        board.checkRegion(logindMember.getRegion());
+        board.checkRegion(loggedInMember.getRegion());
         return new BoardSelectResponse(board.getId(), board.getTitle().getValue(), board.getContent().getValue(), board.getCreatingDateTime(),
                 board.getWriter().getAlias(), board.getStartingDate().getValue(), board.getWritingRegion().getValue(),
-                board.getActivityCategory().getValue(), board.isOnRecruitment(), board.getWriter().getFourLengthEmail(), board.isWriter(logindMember));
+                board.getActivityCategory().getValue(), board.isOnRecruitment(), board.getWriter().getFourLengthEmail(),
+                board.isWriter(loggedInMember));
+    }
+
+    @Transactional
+    public BoardIdResponse delete(final Long memberId, final Long boardId) {
+        Member loggedInMember = memberService.findByMemberId(memberId);
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
+        if (!board.isWriter(loggedInMember)) {
+            throw new ForbiddenException("글 작성자만 게시글을 삭제할 수 있습니다.");
+        }
+        boardRepository.delete(board);
+        return new BoardIdResponse(board.getId());
     }
 }
