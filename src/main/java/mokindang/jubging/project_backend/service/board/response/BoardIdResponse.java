@@ -8,6 +8,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class BoardIdResponse {
 
-    @Schema(description = "작성된 게시글 Id", example = "1")
+    @Schema(description = "게시글 Id", example = "1")
     private Long boardId;
 }

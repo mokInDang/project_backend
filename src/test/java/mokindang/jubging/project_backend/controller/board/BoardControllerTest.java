@@ -1,6 +1,7 @@
 package mokindang.jubging.project_backend.controller.board;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.service.board.BoardService;
 import mokindang.jubging.project_backend.service.board.request.BoardCreateRequest;
 import mokindang.jubging.project_backend.service.board.response.BoardIdResponse;
@@ -14,8 +15,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -48,7 +51,7 @@ class BoardControllerTest {
         when(boardService.write(anyLong(), any(BoardCreateRequest.class))).thenReturn(new BoardIdResponse(1L));
 
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest("제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11), LocalDate.of(2023, 11, 10));
+                LocalDate.of(2023, 11, 11));
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards")
@@ -68,7 +71,7 @@ class BoardControllerTest {
                 .write(anyLong(), any(BoardCreateRequest.class));
 
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest("제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11), LocalDate.of(2023, 11, 10));
+                LocalDate.of(2023, 11, 11));
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards")
@@ -88,7 +91,7 @@ class BoardControllerTest {
                 .write(anyLong(), any(BoardCreateRequest.class));
 
         BoardCreateRequest incorrectTitleRequest = new BoardCreateRequest("잘못된 제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11), LocalDate.of(2023, 11, 10));
+                LocalDate.of(2023, 11, 11));
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards")
@@ -108,7 +111,7 @@ class BoardControllerTest {
                 .write(anyLong(), any(BoardCreateRequest.class));
 
         BoardCreateRequest incorrectContentRequest = new BoardCreateRequest("제목", "잘못된 본문", "달리기",
-                LocalDate.of(2023, 11, 11), LocalDate.of(2023, 11, 10));
+                LocalDate.of(2023, 11, 11));
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards")
@@ -128,7 +131,7 @@ class BoardControllerTest {
                 .write(anyLong(), any(BoardCreateRequest.class));
 
         BoardCreateRequest incorrectContentRequest = new BoardCreateRequest("제목", "잘못된 본문", "달리기",
-                LocalDate.of(2023, 11, 11), LocalDate.of(2023, 11, 10));
+                LocalDate.of(2023, 11, 11));
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards")
@@ -145,8 +148,8 @@ class BoardControllerTest {
             " 게시글 제목, 본문, 작성자, 활동 지역, 활동 예정일 활동 종류, 모집 여부 를 담은 BoardSelectResponse 를 반환한다.")
     void select() throws Exception {
         //given
-        LocalDate now = LocalDate.of(2023, 3, 9);
-        BoardSelectResponse boardSelectResponse = new BoardSelectResponse(1L, "제목", "본문", "작성자",
+        LocalDateTime now = LocalDateTime.of(2023, 3, 30, 11, 11);
+        BoardSelectResponse boardSelectResponse = new BoardSelectResponse(1L, "제목", "본문", now, "작성자",
                 "2023-03-10", "동작구", "달리기", true, "test", true);
         when(boardService.select(anyLong(), anyLong())).thenReturn(boardSelectResponse);
 
@@ -165,7 +168,8 @@ class BoardControllerTest {
                 .andExpect(jsonPath("$.activityCategory").value("달리기"))
                 .andExpect(jsonPath("$.onRecruitment").value(true))
                 .andExpect(jsonPath("$.firstFourLettersOfEmail").value("test"))
-                .andExpect(jsonPath("$.mine").value(true));
+                .andExpect(jsonPath("$.mine").value(true))
+                .andExpect(jsonPath("$.creatingDatetime").value("2023-03-30T11:11:00"));
     }
 
     @Test
@@ -193,6 +197,54 @@ class BoardControllerTest {
 
         //when
         ResultActions actual = mockMvc.perform(get("/api/boards/{boardId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        actual.andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("존재하지 않는 게시물입니다."));
+    }
+
+    @Test
+    @DisplayName("게시글 삭제 요청 시, 요청 회원이 작성자인지 확인하고 게시글을 삭제한다. " +
+            "삭제 후 Http 200 코드와 삭제된 게시글 id 를 담은 BoardIdResponse 를 반환한다.")
+    void delete() throws Exception {
+        //given
+        when(boardService.delete(anyLong(), anyLong())).thenReturn(new BoardIdResponse(1L));
+
+        //when
+        ResultActions actual = mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/{boardId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        actual.andExpect(status().isOk())
+                .andExpect(jsonPath("$.boardId").value(1L));
+    }
+
+    @Test
+    @DisplayName("게시글 삭제 요청 시, 요청 회원이 작성자가 아닌경우 예외를 반환하고, Http 401을 반환한다.")
+    void deleteFailedByNoneMatchingBoardWhitWritingMember() throws Exception {
+        //given
+        doThrow(new ForbiddenException("글 작성자만 게시글을 삭제할 수 있습니다.")).when(boardService)
+                .delete(anyLong(), anyLong());
+
+        //when
+        ResultActions actual = mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/{boardId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        actual.andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.error").value("글 작성자만 게시글을 삭제할 수 있습니다."));
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 게시글에 대한 삭제 요청일 경우, Http 400 상태코드와 에러 메세지를 반환한다.")
+    void deleteFailedByNonexistentBoard() throws Exception {
+        //given
+        doThrow(new IllegalArgumentException("존재하지 않는 게시물입니다.")).when(boardService)
+                .delete(anyLong(), anyLong());
+
+        //when
+        ResultActions actual = mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then

@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,8 +36,8 @@ class BoardRepositoryTest {
         Member member = new Member("test@mail.com", "test");
         member.updateRegion("동작구");
         memberRepository.save(member);
-        LocalDate dateOfCreation = LocalDate.of(2023, 3, 15);
-        Board recruitingBoardWithPastStartingDate = new Board(member, LocalDate.of(2023, 3, 27), "달리기", "제목", "본문", dateOfCreation);
+        LocalDateTime now = LocalDateTime.of(2023, 3, 25, 1, 1);
+        Board recruitingBoardWithPastStartingDate = new Board(now, member, LocalDate.of(2023, 3, 27), "달리기", "제목", "본문");
         Board save = boardRepository.save(recruitingBoardWithPastStartingDate);
 
         LocalDate today = LocalDate.of(2023, 3, 28);

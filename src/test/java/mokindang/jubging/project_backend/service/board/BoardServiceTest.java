@@ -7,6 +7,7 @@ import mokindang.jubging.project_backend.domain.board.vo.StartingDate;
 import mokindang.jubging.project_backend.domain.board.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.region.vo.Region;
+import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.repository.board.BoardRepository;
 import mokindang.jubging.project_backend.service.board.request.BoardCreateRequest;
 import mokindang.jubging.project_backend.service.board.response.BoardIdResponse;
@@ -55,7 +56,7 @@ class BoardServiceTest {
         when(boardRepository.save(any(Board.class))).thenReturn(savedBoard);
 
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest("제목", "본문내용", "달리기",
-                LocalDate.of(2025, 2, 12), LocalDate.of(2023, 11, 10));
+                LocalDate.of(2025, 2, 12));
 
         //when
         BoardIdResponse savedBoardId = boardService.write(1L, boardCreateRequest);
@@ -72,7 +73,7 @@ class BoardServiceTest {
         when(memberService.findByMemberId(anyLong())).thenThrow(new IllegalArgumentException("해당하는 유저가 존재하지 않습니다."));
 
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest("제목", "본문내용", "달리기",
-                LocalDate.of(2023, 2, 12), LocalDate.of(2023, 11, 10));
+                LocalDate.of(2023, 2, 12));
 
         //when, then
         assertThatThrownBy(() -> boardService.write(1L, boardCreateRequest))
@@ -117,5 +118,54 @@ class BoardServiceTest {
         softly.assertThat(actual.getFirstFourLettersOfEmail()).isEqualTo("test");
         softly.assertThat(actual.isMine()).isEqualTo(true);
         softly.assertAll();
+    }
+
+    @Test
+    @DisplayName("게시글 작성자가 게시글 삭제를 요청한 경우 게시글을 삭제한다." +
+            " 삭제 후 삭제된 게시글 Id를 가진 BoardIdResponse 를 반환한다.")
+    void delete() {
+        //given
+        Member writer = mock(Member.class);
+        when(memberService.findByMemberId(1L)).thenReturn(writer);
+        Board board = mock(Board.class);
+        when(board.isWriter(writer)).thenReturn(true);
+        Long boardId = 1L;
+        when(boardRepository.findById(boardId)).thenReturn(Optional.of(board));
+        when(board.getId()).thenReturn(boardId);
+
+        Long writerId = 1L;
+        //when
+        BoardIdResponse deleteBoardIdResponse = boardService.delete(writerId, boardId);
+
+        //then
+        assertThat(deleteBoardIdResponse.getBoardId()).isEqualTo(boardId);
+    }
+
+    @Test
+    @DisplayName("게시글 삭제 요청 시, 존재하지 않는 게시물에 대한 접근이면 예외를 발생한다.")
+    void deleteFailedByNonexistentBoard() {
+        //given
+        Member writer = mock(Member.class);
+        when(memberService.findByMemberId(1L)).thenReturn(writer);
+        when(boardRepository.findById(anyLong())).thenThrow(new IllegalArgumentException("존재하지 않는 게시물 입니다."));
+
+        //when, then
+        assertThatThrownBy(() -> boardService.delete(1L, 1L)).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("존재하지 않는 게시물 입니다.");
+    }
+
+    @Test
+    @DisplayName("게시글 삭제 요청 시, 삭제 요청 회원이 게시글 작성자가 아닌 경우 예외를 반환한다.")
+    void deleteFailedByNoneMatchingBoardWhitWritingMember() {
+        //given
+        Member writer = mock(Member.class);
+        when(memberService.findByMemberId(1L)).thenReturn(writer);
+        Board board = mock(Board.class);
+        when(board.isWriter(writer)).thenReturn(false);
+        when(boardRepository.findById(anyLong())).thenReturn(Optional.of(board));
+
+        //when, then
+        assertThatThrownBy(() -> boardService.delete(1L, 1L)).isInstanceOf(ForbiddenException.class)
+                .hasMessage("글 작성자만 게시글을 삭제할 수 있습니다.");
     }
 }
