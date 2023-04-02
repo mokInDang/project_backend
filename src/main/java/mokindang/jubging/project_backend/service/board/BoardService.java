@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,13 +43,13 @@ public class BoardService {
         return convertToBoardSelectResponse(logindMember, board);
     }
 
-    private  BoardSelectResponse convertToBoardSelectResponse(final Member logindMember, final Board board) {
+    private BoardSelectResponse convertToBoardSelectResponse(final Member logindMember, final Board board) {
         return new BoardSelectResponse(board.getId(), board.getTitle().getValue(), board.getContent().getValue(), board.getWriter().getAlias(),
                 board.getStartingDate().getValue(), board.getWritingRegion().getValue(), board.getActivityCategory().getValue(),
                 board.isOnRecruitment(), board.getWriter().getFourLengthEmail(), board.isWriter(logindMember));
     }
 
-    public MultiBoardSelectResponse selectAllBoards(@RequestParam final Pageable pageable) {
+    public MultiBoardSelectResponse selectAllBoards(final Pageable pageable) {
         Slice<Board> boards = boardRepository.selectBoards(pageable);
         List<SummaryBoardResponse> summaryBoards = boards.stream()
                 .map(this::convertToSummaryBoard)
