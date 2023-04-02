@@ -12,6 +12,8 @@ import mokindang.jubging.project_backend.service.member.MemberService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -23,8 +25,9 @@ public class BoardService {
     @Transactional
     public BoardIdResponse write(final Long memberId, final BoardCreateRequest boardCreateRequest) {
         Member member = memberService.findByMemberId(memberId);
-        Board board = new Board(member, boardCreateRequest.getStartingDate(), boardCreateRequest.getActivityCategory(),
-                boardCreateRequest.getTitle(), boardCreateRequest.getContent(), boardCreateRequest.getRequestDate());
+        LocalDateTime now = LocalDateTime.now();
+        Board board = new Board(now, member, boardCreateRequest.getStartingDate(), boardCreateRequest.getActivityCategory(),
+                boardCreateRequest.getTitle(), boardCreateRequest.getContent());
         Board savedBoard = boardRepository.save(board);
         return new BoardIdResponse(savedBoard.getId());
     }
@@ -34,9 +37,10 @@ public class BoardService {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
         board.checkRegion(loggedInMember.getRegion());
-        return new BoardSelectResponse(board.getId(), board.getTitle().getValue(), board.getContent().getValue(), board.getWriter().getAlias(),
-                board.getStartingDate().getValue(), board.getWritingRegion().getValue(), board.getActivityCategory().getValue(),
-                board.isOnRecruitment(), board.getWriter().getFourLengthEmail(), board.isWriter(loggedInMember));
+        return new BoardSelectResponse(board.getId(), board.getTitle().getValue(), board.getContent().getValue(), board.getCreatingDateTime(),
+                board.getWriter().getAlias(), board.getStartingDate().getValue(), board.getWritingRegion().getValue(),
+                board.getActivityCategory().getValue(), board.isOnRecruitment(), board.getWriter().getFourLengthEmail(),
+                board.isWriter(loggedInMember));
     }
 
     @Transactional

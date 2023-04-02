@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @AllArgsConstructor
 public class BoardSelectResponse {
@@ -16,6 +18,9 @@ public class BoardSelectResponse {
 
     @Schema(description = "게시글 본문", example = "게시글 본문 입니다.")
     private String content;
+
+    @Schema(description = "게시글 작성 일시")
+    private LocalDateTime creatingDatetime;
 
     @Schema(description = "작성자", example = "작성자닉네임")
     private String writerAlias;
