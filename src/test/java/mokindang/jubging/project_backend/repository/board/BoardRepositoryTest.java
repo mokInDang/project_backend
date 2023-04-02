@@ -30,7 +30,7 @@ class BoardRepositoryTest {
     private EntityManager entityManager;
 
     @Test
-    @DisplayName("모집여부가 true 인 게시글 중, 활동 시작일이 입력받은 날짜 보다 과거에 있는 경우 모집여부를 false 로 변경한다. ")
+    @DisplayName("모집여부가 true 인 게시글 중, 활동 시작일이 입력받은 날짜 보다 과거에 있는 경우 모집여부를 false 로 변경한다.")
     void updateOnRecruitmentByStartingDate() {
         //given
         Member member = new Member("test@mail.com", "test");
