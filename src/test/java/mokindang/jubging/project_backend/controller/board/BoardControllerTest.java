@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -48,7 +49,7 @@ class BoardControllerTest {
         when(boardService.write(anyLong(), any(BoardCreateRequest.class))).thenReturn(new BoardIdResponse(1L));
 
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest("제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11), LocalDate.of(2023, 11, 10));
+                LocalDate.of(2023, 11, 11));
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards")
@@ -68,7 +69,7 @@ class BoardControllerTest {
                 .write(anyLong(), any(BoardCreateRequest.class));
 
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest("제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11), LocalDate.of(2023, 11, 10));
+                LocalDate.of(2023, 11, 11));
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards")
@@ -88,7 +89,7 @@ class BoardControllerTest {
                 .write(anyLong(), any(BoardCreateRequest.class));
 
         BoardCreateRequest incorrectTitleRequest = new BoardCreateRequest("잘못된 제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11), LocalDate.of(2023, 11, 10));
+                LocalDate.of(2023, 11, 11));
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards")
@@ -108,7 +109,7 @@ class BoardControllerTest {
                 .write(anyLong(), any(BoardCreateRequest.class));
 
         BoardCreateRequest incorrectContentRequest = new BoardCreateRequest("제목", "잘못된 본문", "달리기",
-                LocalDate.of(2023, 11, 11), LocalDate.of(2023, 11, 10));
+                LocalDate.of(2023, 11, 11));
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards")
@@ -128,7 +129,7 @@ class BoardControllerTest {
                 .write(anyLong(), any(BoardCreateRequest.class));
 
         BoardCreateRequest incorrectContentRequest = new BoardCreateRequest("제목", "잘못된 본문", "달리기",
-                LocalDate.of(2023, 11, 11), LocalDate.of(2023, 11, 10));
+                LocalDate.of(2023, 11, 11));
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards")
@@ -145,8 +146,8 @@ class BoardControllerTest {
             " 게시글 제목, 본문, 작성자, 활동 지역, 활동 예정일 활동 종류, 모집 여부 를 담은 BoardSelectResponse 를 반환한다.")
     void select() throws Exception {
         //given
-        LocalDate now = LocalDate.of(2023, 3, 9);
-        BoardSelectResponse boardSelectResponse = new BoardSelectResponse(1L, "제목", "본문", "작성자",
+        LocalDateTime creatingDate = LocalDateTime.of(2023, 3, 30,11,11);
+        BoardSelectResponse boardSelectResponse = new BoardSelectResponse(1L, "제목", "본문", creatingDate ,"작성자",
                 "2023-03-10", "동작구", "달리기", true, "test", true);
         when(boardService.select(anyLong(), anyLong())).thenReturn(boardSelectResponse);
 
@@ -165,7 +166,8 @@ class BoardControllerTest {
                 .andExpect(jsonPath("$.activityCategory").value("달리기"))
                 .andExpect(jsonPath("$.onRecruitment").value(true))
                 .andExpect(jsonPath("$.firstFourLettersOfEmail").value("test"))
-                .andExpect(jsonPath("$.mine").value(true));
+                .andExpect(jsonPath("$.mine").value(true))
+                .andExpect(jsonPath("$.creatingDatetime").value("2023-03-30T11:11:00"));
     }
 
     @Test
