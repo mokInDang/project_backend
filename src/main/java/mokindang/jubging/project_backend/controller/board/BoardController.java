@@ -51,4 +51,10 @@ public class BoardController implements BoardControllerSwagger {
         BoardIdResponse deletedBoardId = boardService.delete(memberId, boardId);
         return ResponseEntity.ok(deletedBoardId);
     }
+
+    @PatchMapping("/{boardId}")
+    public ResponseEntity<BoardIdResponse> modifyBoard(@Login final Long memberId, @PathVariable final Long boardId) {
+        log.info("memberId = {} 의 게시글 수정 요청, 게시글 번호 : {}", memberId, boardId);
+        return null;
+    }
 }

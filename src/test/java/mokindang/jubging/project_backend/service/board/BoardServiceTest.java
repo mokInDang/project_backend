@@ -168,4 +168,14 @@ class BoardServiceTest {
         assertThatThrownBy(() -> boardService.delete(1L, 1L)).isInstanceOf(ForbiddenException.class)
                 .hasMessage("글 작성자만 게시글을 삭제할 수 있습니다.");
     }
+
+    @Test
+    @DisplayName("게시글을 수정한다.")
+    void modifiy() {
+        //given
+
+        //when
+
+        //then
+    }
 }
