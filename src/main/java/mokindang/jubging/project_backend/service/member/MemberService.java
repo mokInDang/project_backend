@@ -5,6 +5,7 @@ import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.member.vo.Region;
 import mokindang.jubging.project_backend.repository.member.MemberRepository;
 import mokindang.jubging.project_backend.service.member.request.RegionUpdateRequest;
+import mokindang.jubging.project_backend.service.member.response.MyPageResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,5 +42,11 @@ public class MemberService {
     @Transactional
     public void updateProfile(final Member member, final String newProfileImageUrl, final String newProfileImageName) {
         member.updateProfileImage(newProfileImageUrl, newProfileImageName);
+    }
+
+    public MyPageResponse getMyInformation(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 유저가 존재하지 않습니다."));
+        return new MyPageResponse(member.getAlias(), member.getRegion().getValue(), member.getProfileImage().getProfileImageUrl());
     }
 }

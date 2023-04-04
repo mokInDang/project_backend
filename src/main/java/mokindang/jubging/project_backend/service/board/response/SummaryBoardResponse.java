@@ -4,11 +4,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
-
 @Getter
 @AllArgsConstructor
-public class BoardSelectResponse {
+public class SummaryBoardResponse {
 
     @Schema(description = "게시글 번호", example = "1")
     private Long boardId;
@@ -18,9 +16,6 @@ public class BoardSelectResponse {
 
     @Schema(description = "게시글 본문", example = "게시글 본문 입니다.")
     private String content;
-
-    @Schema(description = "게시글 작성 일시")
-    private LocalDateTime creatingDatetime;
 
     @Schema(description = "작성자", example = "작성자닉네임")
     private String writerAlias;
@@ -39,7 +34,4 @@ public class BoardSelectResponse {
 
     @Schema(description = "게시글 작성자의 이메일 앞 4글자")
     private String firstFourLettersOfEmail;
-
-    @Schema(description = "게시글 조회 회원이, 작성자인지에 대한 정보", allowableValues = {"true", "false"})
-    private boolean mine;
 }
