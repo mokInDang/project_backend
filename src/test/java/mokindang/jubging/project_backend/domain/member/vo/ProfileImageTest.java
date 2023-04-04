@@ -11,9 +11,9 @@ class ProfileImageTest {
 
     @Test
     @DisplayName("ProfileImage 생성 시, 내부 필드 값은 DEFAULT 값으로 생성된다.")
-    void createByNull(){
+    void createByDefaultValue(){
         //when
-        ProfileImage profileImage = ProfileImage.createByNull();
+        ProfileImage profileImage = ProfileImage.createByDefaultValue();
 
         //then
         assertThat(profileImage.getProfileImageUrl()).isEqualTo(DEFAULT_PROFILE_IMAGE_URL);
@@ -24,7 +24,7 @@ class ProfileImageTest {
     @DisplayName("ProfileImageUrl 과 ProfileImageName을 변경한다.")
     void updateProfileImage(){
         //given
-        ProfileImage profileImage = ProfileImage.createByNull();
+        ProfileImage profileImage = ProfileImage.createByDefaultValue();
 
         //when
         profileImage.updateProfileImage("https://testimage.png", "testimage");
