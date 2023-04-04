@@ -44,7 +44,7 @@ public class MemberController implements MemberControllerSwagger{
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<Object> uploadProfileImage(@Login Long memberId, @RequestPart(value = "file") MultipartFile multipartFile) {
+    public ResponseEntity<FileResponse> uploadProfileImage(@Login Long memberId, @RequestPart(value = "file") MultipartFile multipartFile) {
         Member member = memberService.findByMemberId(memberId);
 
         FileResponse fileResponse = fileService.uploadFile(multipartFile);
