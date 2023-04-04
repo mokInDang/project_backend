@@ -1,13 +1,16 @@
 package mokindang.jubging.project_backend.service.file;
 
-import lombok.Builder;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-@Builder
+@RequiredArgsConstructor
 public class FileResponse {
 
-    private String uploadFileUrl;
+    @Schema(description = "업로드 이미지 Url", example = "https://testimage.png")
+    private final String uploadFileUrl;
 
-    private String uploadFileName;
+    @Schema(description = "업로드 이미지 Name", example = "testimage.png")
+    private final String uploadFileName;
 }
