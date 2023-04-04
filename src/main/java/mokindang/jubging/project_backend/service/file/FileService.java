@@ -25,6 +25,10 @@ public class FileService {
 
     public FileResponse uploadFile(MultipartFile multipartFile) {
 
+        if (multipartFile.isEmpty()) {
+            throw new IllegalArgumentException("이미지가 선택되지 않았습니다.");
+        }
+
         String uploadFilePath = "profile_image";
 
         String originalFileName = multipartFile.getOriginalFilename();
@@ -49,10 +53,7 @@ public class FileService {
             log.error("Filed upload failed", e);
         }
 
-        return FileResponse.builder()
-                        .uploadFileName(uploadFileName)
-                        .uploadFileUrl(uploadFileUrl)
-                        .build();
+        return new FileResponse(uploadFileUrl, uploadFileName);
     }
 
     public void deleteFile(String uploadFileName) {
