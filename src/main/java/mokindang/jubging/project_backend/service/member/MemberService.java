@@ -42,10 +42,6 @@ public class MemberService {
     public MyPageResponse getMyInformation(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 유저가 존재하지 않습니다."));
-        return MyPageResponse.builder()
-                .alias(member.getAlias())
-                .region(member.getRegion().getValue())
-                .profileImageUrl(member.getProfileImage().getProfileImageUrl())
-                .build();
+        return new MyPageResponse(member.getAlias(), member.getRegion().getValue(), member.getProfileImage().getProfileImageUrl());
     }
 }
