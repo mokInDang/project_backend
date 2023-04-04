@@ -9,9 +9,9 @@ import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.region.vo.Region;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.repository.board.BoardRepository;
-import mokindang.jubging.project_backend.service.board.request.BoardCreateRequest;
+import mokindang.jubging.project_backend.service.board.request.BoardCreationRequest;
 import mokindang.jubging.project_backend.service.board.response.BoardIdResponse;
-import mokindang.jubging.project_backend.service.board.response.BoardSelectResponse;
+import mokindang.jubging.project_backend.service.board.response.BoardSelectionResponse;
 import mokindang.jubging.project_backend.service.member.MemberService;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
@@ -55,11 +55,11 @@ class BoardServiceTest {
         when(savedBoard.getId()).thenReturn(1L);
         when(boardRepository.save(any(Board.class))).thenReturn(savedBoard);
 
-        BoardCreateRequest boardCreateRequest = new BoardCreateRequest("제목", "본문내용", "달리기",
+        BoardCreationRequest boardCreationRequest = new BoardCreationRequest("제목", "본문내용", "달리기",
                 LocalDate.of(2025, 2, 12));
 
         //when
-        BoardIdResponse savedBoardId = boardService.write(1L, boardCreateRequest);
+        BoardIdResponse savedBoardId = boardService.write(1L, boardCreationRequest);
 
         //then
         assertThat(savedBoardId.getBoardId()).isEqualTo(1L);
@@ -72,11 +72,11 @@ class BoardServiceTest {
         //given
         when(memberService.findByMemberId(anyLong())).thenThrow(new IllegalArgumentException("해당하는 유저가 존재하지 않습니다."));
 
-        BoardCreateRequest boardCreateRequest = new BoardCreateRequest("제목", "본문내용", "달리기",
+        BoardCreationRequest boardCreationRequest = new BoardCreationRequest("제목", "본문내용", "달리기",
                 LocalDate.of(2023, 2, 12));
 
         //when, then
-        assertThatThrownBy(() -> boardService.write(1L, boardCreateRequest))
+        assertThatThrownBy(() -> boardService.write(1L, boardCreationRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("해당하는 유저가 존재하지 않습니다.");
     }
@@ -105,7 +105,7 @@ class BoardServiceTest {
         when(boardRepository.findById(1L)).thenReturn(Optional.of(board));
 
         //when
-        BoardSelectResponse actual = boardService.select(1L, 1L);
+        BoardSelectionResponse actual = boardService.select(1L, 1L);
 
         //then
         softly.assertThat(actual.getBoardId()).isEqualTo(1L);

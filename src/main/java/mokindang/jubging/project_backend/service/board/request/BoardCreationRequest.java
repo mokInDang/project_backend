@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Schema(description = "BoardCreateRequest")
 @Getter
 @RequiredArgsConstructor
-public class BoardCreateRequest {
+public class BoardCreationRequest {
 
     @NotNull
     @NotBlank

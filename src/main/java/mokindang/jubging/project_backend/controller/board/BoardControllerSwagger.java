@@ -9,9 +9,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import mokindang.jubging.project_backend.exception.ErrorResponse;
-import mokindang.jubging.project_backend.service.board.request.BoardCreateRequest;
+import mokindang.jubging.project_backend.service.board.request.BoardCreationRequest;
 import mokindang.jubging.project_backend.service.board.response.BoardIdResponse;
-import mokindang.jubging.project_backend.service.board.response.BoardSelectResponse;
+import mokindang.jubging.project_backend.service.board.response.BoardSelectionResponse;
 import mokindang.jubging.project_backend.web.argumentresolver.Login;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,7 +39,7 @@ public interface BoardControllerSwagger {
                     "유효하지 않은 활동 시작일", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @PostMapping
-    ResponseEntity<BoardIdResponse> write(@Parameter(hidden = true) @Login Long memberId, @Valid @RequestBody final BoardCreateRequest boardCreateRequest);
+    ResponseEntity<BoardIdResponse> write(@Parameter(hidden = true) @Login Long memberId, @Valid @RequestBody final BoardCreationRequest boardCreationRequest);
 
     @Operation(summary = "게시글 조회", parameters = {
             @Parameter(name = "boardId", description = "Board 의 id", in = ParameterIn.PATH),
@@ -53,5 +53,5 @@ public interface BoardControllerSwagger {
             }
     )
     @GetMapping("/{boardId}")
-    ResponseEntity<BoardSelectResponse> selectBoard(@Parameter(hidden = true) @Login Long memberId, @PathVariable final Long boardId);
+    ResponseEntity<BoardSelectionResponse> selectBoard(@Parameter(hidden = true) @Login Long memberId, @PathVariable final Long boardId);
 }
