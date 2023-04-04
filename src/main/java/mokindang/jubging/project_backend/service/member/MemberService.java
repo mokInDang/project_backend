@@ -40,7 +40,7 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateProfile(final Member member, final String newProfileImageUrl, final String newProfileImageName) {
+    public void updateProfileImage(final Member member, final String newProfileImageUrl, final String newProfileImageName) {
         member.updateProfileImage(newProfileImageUrl, newProfileImageName);
     }
 

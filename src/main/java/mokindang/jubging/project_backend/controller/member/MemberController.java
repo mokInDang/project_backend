@@ -55,7 +55,7 @@ public class MemberController implements MemberControllerSwagger{
             log.info("memberId = {}, alias = {} 의 이전 프로필 이미지 {} 삭제", member.getId(), member.getAlias(), member.getProfileImage().getProfileImageName());
         }
 
-        memberService.updateProfile(member, fileResponse.getUploadFileUrl(), fileResponse.getUploadFileName());
+        memberService.updateProfileImage(member, fileResponse.getUploadFileUrl(), fileResponse.getUploadFileName());
 
         return ResponseEntity.ok()
                 .body(fileResponse);
