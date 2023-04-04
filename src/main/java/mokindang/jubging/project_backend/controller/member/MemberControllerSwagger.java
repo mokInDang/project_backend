@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import mokindang.jubging.project_backend.exception.ErrorResponse;
 import mokindang.jubging.project_backend.service.member.request.RegionUpdateRequest;
+import mokindang.jubging.project_backend.service.member.response.MyPageResponse;
 import mokindang.jubging.project_backend.service.member.response.RegionUpdateResponse;
 import mokindang.jubging.project_backend.web.argumentresolver.Login;
 import org.springframework.http.ResponseEntity;
@@ -34,4 +35,12 @@ public interface MemberControllerSwagger {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     ResponseEntity<RegionUpdateResponse> updateRegion(@Parameter(hidden = true) @Login Long memberId, @Valid @RequestBody RegionUpdateRequest regionUpdateRequest);
+
+    @Operation(summary = "회원의 마이페이지 조회", parameters = {
+            @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true)
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회완료")
+    })
+    ResponseEntity<MyPageResponse> callMyPage(@Parameter(hidden = true) @Login Long memberId);
 }
