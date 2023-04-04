@@ -188,11 +188,25 @@ class BoardTest {
     @DisplayName("게시글 수정 요청 시, 활동 예정일, 활동 종류, 제목, 본문을 받아 변경을 한다.")
     void modify() {
         //given
-        Board board = createBoard();
+        SoftAssertions softly = new SoftAssertions();
+        LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
+        Member writer = new Member("test1@email.com", "test");
+        writer.updateRegion("동작구");
+        Board board = new Board(now, writer, LocalDate.of(2025, 2, 11), "달리기",
+                "제목", "본문내용");
 
+        String newActivityCategory = "산책";
+        String newTitleValue = "새로운 제목입니다.";
+        String newContentValue = "새로운 본문 내용입니다.";
+        LocalDate newStartingDate = LocalDate.parse("2023-11-13");
         //when
-
+        board.modify(newStartingDate, newActivityCategory, newTitleValue, newContentValue);
 
         //then
+        softly.assertThat(board.getStartingDate().getValue()).isEqualTo("2023-11-13");
+        softly.assertThat(board.getActivityCategory().getValue()).isEqualTo(newActivityCategory);
+        softly.assertThat(board.getTitle().getValue()).isEqualTo(newTitleValue);
+        softly.assertThat(board.getContent().getValue()).isEqualTo(newContentValue);
+        softly.assertAll();
     }
 }
