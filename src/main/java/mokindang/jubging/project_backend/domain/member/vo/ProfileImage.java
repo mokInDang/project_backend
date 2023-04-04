@@ -26,7 +26,7 @@ public class ProfileImage {
         this.profileImageName = profileImageName;
     }
 
-    public static ProfileImage createByNull() {
+    public static ProfileImage createByDefaultValue() {
         return new ProfileImage(DEFAULT_PROFILE_IMAGE_URL, DEFAULT_PROFILE_IMAGE_NAME);
     }
 

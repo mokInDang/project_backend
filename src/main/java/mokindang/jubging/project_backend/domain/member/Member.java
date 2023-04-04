@@ -33,7 +33,7 @@ public class Member {
         this.email = email;
         this.alias = alias;
         region = Region.createByDefaultValue();
-        profileImage = ProfileImage.createByNull();
+        profileImage = ProfileImage.createByDefaultValue();
     }
 
     public void updateRegion(final String region) {
