@@ -16,7 +16,7 @@ import java.util.Objects;
 
 @Getter
 @Entity
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Board {
 
     @Id
