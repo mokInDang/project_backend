@@ -61,4 +61,12 @@ public class BoardController implements BoardControllerSwagger {
         return ResponseEntity.ok()
                 .body(boardIdResponse);
     }
+
+    @PatchMapping("/{boardId}/recruitment")
+    public ResponseEntity<BoardIdResponse> closeRecruitment(@Login final Long memberId, @PathVariable final Long boardId) {
+        log.info("memberId = {} 의 게시글 모집 마감 요청, 게시글 번호 : {}", memberId, boardId);
+        BoardIdResponse boardIdResponse = boardService.closeRecruitment(memberId, boardId);
+        return ResponseEntity.ok()
+                .body(boardIdResponse);
+    }
 }
