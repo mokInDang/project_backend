@@ -21,12 +21,13 @@ public class Board {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "board_id")
+    @Column(name = "board_id", nullable = false)
     private Long id;
 
+    @Column(nullable = false)
     private LocalDateTime creatingDateTime;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member writer;
 
@@ -45,9 +46,11 @@ public class Board {
     @Embedded
     private Region writingRegion;
 
+    @Column(nullable = false)
     private boolean onRecruitment;
 
-    public Board(final LocalDateTime creatingDateTime, final Member writer, final LocalDate startingDate, final String activityCategory, final String title, final String content) { this.creatingDateTime = creatingDateTime;
+    public Board(final LocalDateTime creatingDateTime, final Member writer, final LocalDate startingDate, final String activityCategory, final String title, final String content) {
+        this.creatingDateTime = creatingDateTime;
         this.writer = writer;
         LocalDate creatingDate = creatingDateTime.toLocalDate();
         this.startingDate = new StartingDate(creatingDate, startingDate);

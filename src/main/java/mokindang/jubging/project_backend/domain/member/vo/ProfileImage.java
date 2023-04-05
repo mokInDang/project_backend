@@ -15,10 +15,10 @@ public class ProfileImage {
     public static final String DEFAULT_PROFILE_IMAGE_URL = "DEFAULT_PROFILE_IMAGE_URL";
     public static final String DEFAULT_PROFILE_IMAGE_NAME = "DEFAULT_PROFILE_IMAGE_NAME";
 
-    @Column(name = "profile_image_url")
+    @Column(name = "profile_image_url", nullable = false)
     private String profileImageUrl;
 
-    @Column(name = "profile_image_name")
+    @Column(name = "profile_image_name", nullable = false)
     private String profileImageName;
 
     public ProfileImage(String profileImageUrl, String profileImageName) {
