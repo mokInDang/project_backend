@@ -92,6 +92,16 @@ public class BoardService {
         validatePermission(board, loggedInMember, "글 작성자만 게시글을 수정할 수 있습니다.");
         board.modify(boardModificationRequest.getStartingDate(), boardModificationRequest.getActivityCategory(),
                 boardModificationRequest.getTitle(), boardModificationRequest.getContent());
-        return new BoardIdResponse(boardId);
+        return new BoardIdResponse(board.getId());
+    }
+
+    @Transactional
+    public BoardIdResponse closeRecruitment(final Long memberId, final Long boardId) {
+        Member loggedInMember = memberService.findByMemberId(memberId);
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
+        validatePermission(board, loggedInMember, "글 작성자만 모집 마감할 수 있습니다.");
+        board.closeRecruitment();
+        return new BoardIdResponse(board.getId());
     }
 }
