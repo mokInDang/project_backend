@@ -273,7 +273,7 @@ class BoardControllerTest {
     }
 
     @Test
-    @DisplayName("게시글 수정 요청 시, 존재하지 않는 게시글에 대한 수정을 요청할 시 예외를 담은 ErrorResponse 를 반환한다.")
+    @DisplayName("게시글 수정 요청 시, 존재하지 않는 게시글에 대한 수정을 요청할 시 HTTP 400 과 예외를 담은 ErrorResponse 를 반환한다.")
     void modifyFailedByNonexistentBoard() throws Exception {
         //given
         doThrow(new IllegalArgumentException("존재하지 않는 게시물입니다.")).when(boardService)
@@ -293,8 +293,8 @@ class BoardControllerTest {
     }
 
     @Test
-    @DisplayName("게시글 수정 요청 시, 존재하지 않는 게시글에 대한 수정을 요청할 시 예외를 담은 ErrorResponse 를 반환한다.")
-    void modifyFailedByNoneMatchingBoardWhitWritingMember() throws Exception {
+    @DisplayName("게시글 수정 요청 시, 게시글의 글작성자가 아닌 경우 HTTP 403 과 예외를 반환한다.")
+    void modifyFailedByNoneExistBoard() throws Exception {
         //given
         doThrow(new ForbiddenException("글 작성자만 게시글을 수정할 수 있습니다.")).when(boardService)
                 .modify(anyLong(), anyLong(), any(BoardModificationRequest.class));
@@ -310,5 +310,52 @@ class BoardControllerTest {
         //then
         actual.andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.error").value("글 작성자만 게시글을 수정할 수 있습니다."));
+    }
+
+    @Test
+    @DisplayName("게시글 모집 마감 요청 시, 게시글 모집 마감 완료 후 Http 200 과 마감 게시글 id 를 담은 BoardIdResponse 를 반환한다.")
+    void closeRecruitment() throws Exception {
+        //given
+        when(boardService.closeRecruitment(anyLong(), anyLong())).thenReturn(new BoardIdResponse(1L));
+
+        //when
+        ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}/recruitment", 1L)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        actual.andExpect(status().isOk())
+                .andExpect(jsonPath("$.boardId").value(1));
+    }
+
+    @Test
+    @DisplayName("게시글 마감 요청 시, 존재하지 않는 게시글에 대한 마감을 요청할 시 HTTP 400 과 예외를 담은 ErrorResponse 를 반환한다.")
+    void closeRecruitmentFailedByNoneExistBoard() throws Exception {
+        //given
+        doThrow(new IllegalArgumentException("존재하지 않는 게시물입니다.")).when(boardService)
+                .closeRecruitment(anyLong(), anyLong());
+
+        //when
+        ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}/recruitment", 1L)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        actual.andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("존재하지 않는 게시물입니다."));
+    }
+
+    @Test
+    @DisplayName("게시글 마감 요청 시, 글 작성자가 아닌 회원이 게시글 마감을 요청한 경우 HTTP 403 과 예외를 담은 ErrorResponse 를 반환한다.")
+    void closeRecruitmentFailedByNoneMatchingBoardWhitWritingMember() throws Exception {
+        //given
+        doThrow(new ForbiddenException("글 작성자만 모집 마감할 수 있습니다.")).when(boardService)
+                .closeRecruitment(anyLong(), anyLong());
+
+        //when
+        ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}/recruitment", 1L)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        actual.andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.error").value("글 작성자만 모집 마감할 수 있습니다."));
     }
 }
