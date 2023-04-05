@@ -44,6 +44,7 @@ class BoardRepositoryTest {
 
         //when
         boardRepository.updateOnRecruitmentByStartingDate(today);
+        entityManager.flush();
 
         //then
         entityManager.clear();

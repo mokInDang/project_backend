@@ -21,5 +21,7 @@ public class KakaoLoginResponse {
 
     private final String region;
 
+    private final String profileImageUrl;
+
     private final LoginState loginState;
 }

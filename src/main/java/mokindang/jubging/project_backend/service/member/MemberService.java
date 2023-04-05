@@ -2,7 +2,7 @@ package mokindang.jubging.project_backend.service.member;
 
 import lombok.RequiredArgsConstructor;
 import mokindang.jubging.project_backend.domain.member.Member;
-import mokindang.jubging.project_backend.domain.region.vo.Region;
+import mokindang.jubging.project_backend.domain.member.vo.Region;
 import mokindang.jubging.project_backend.repository.member.MemberRepository;
 import mokindang.jubging.project_backend.service.member.request.RegionUpdateRequest;
 import mokindang.jubging.project_backend.service.member.response.MyPageResponse;
@@ -37,6 +37,11 @@ public class MemberService {
         Member member = findByMemberId(memberId);
         member.updateRegion(kakaoLocalApi.switchCoordinateToRegion(regionUpdateRequest));
         return member.getRegion();
+    }
+
+    @Transactional
+    public void updateProfileImage(final Member member, final String newProfileImageUrl, final String newProfileImageName) {
+        member.updateProfileImage(newProfileImageUrl, newProfileImageName);
     }
 
     public MyPageResponse getMyInformation(Long memberId) {

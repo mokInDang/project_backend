@@ -12,4 +12,6 @@ public class LoginResponse {
     private final String alias;
 
     private final String region;
+
+    private final String profileImageUrl;
 }

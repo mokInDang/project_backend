@@ -32,7 +32,7 @@ public class AuthenticationController implements AuthenticationControllerSwagger
     @PostMapping("/join")
     public ResponseEntity<LoginResponse> kakaoLogin(@RequestBody AuthorizationCodeRequest authorizationCodeRequest) {
         KakaoLoginResponse kakaoLoginResponse = authenticationService.login(authorizationCodeRequest);
-        LoginResponse loginResponse = new LoginResponse(kakaoLoginResponse.getEmail(), kakaoLoginResponse.getAlias(), kakaoLoginResponse.getRegion());
+        LoginResponse loginResponse = new LoginResponse(kakaoLoginResponse.getEmail(), kakaoLoginResponse.getAlias(), kakaoLoginResponse.getRegion(), kakaoLoginResponse.getProfileImageUrl());
         HttpCookie httpCookie = createCookie(kakaoLoginResponse.getRefreshToken());
 
         if (kakaoLoginResponse.getLoginState() == LoginState.JOIN) {

@@ -1,7 +1,8 @@
 package mokindang.jubging.project_backend.controller.member;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import mokindang.jubging.project_backend.domain.region.vo.Region;
+import mokindang.jubging.project_backend.domain.member.vo.Region;
+import mokindang.jubging.project_backend.service.file.FileService;
 import mokindang.jubging.project_backend.service.member.MemberService;
 import mokindang.jubging.project_backend.service.member.request.RegionUpdateRequest;
 import mokindang.jubging.project_backend.service.member.response.MyPageResponse;
@@ -37,6 +38,9 @@ class MemberControllerTest {
 
     @MockBean
     private MemberService memberService;
+
+    @MockBean
+    private FileService fileService;
 
     @Test
     @DisplayName("대한민국 영토 범위 안의 위도와 경도 입력 시 이에 대응하는 Region을 반환한다.")
