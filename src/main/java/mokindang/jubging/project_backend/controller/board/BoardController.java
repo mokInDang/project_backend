@@ -55,9 +55,9 @@ public class BoardController implements BoardControllerSwagger {
     }
 
     @PatchMapping("/{boardId}")
-    public ResponseEntity<BoardIdResponse> modifyBoard(@Login final Long memberId, @PathVariable final Long boardId, final BoardModificationRequest modificationRequest) {
+    public ResponseEntity<BoardIdResponse> modifyBoard(@Login final Long memberId, @PathVariable final Long boardId, @RequestBody final BoardModificationRequest modificationRequest) {
         log.info("memberId = {} 의 게시글 수정 요청, 게시글 번호 : {}", memberId, boardId);
-        BoardIdResponse boardIdResponse = boardService.modifiy(memberId, boardId, modificationRequest);
+        BoardIdResponse boardIdResponse = boardService.modify(memberId, boardId, modificationRequest);
         return ResponseEntity.ok()
                 .body(boardIdResponse);
     }
