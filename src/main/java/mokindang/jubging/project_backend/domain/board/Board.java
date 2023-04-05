@@ -7,7 +7,7 @@ import mokindang.jubging.project_backend.domain.board.vo.Content;
 import mokindang.jubging.project_backend.domain.board.vo.StartingDate;
 import mokindang.jubging.project_backend.domain.board.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
-import mokindang.jubging.project_backend.domain.region.vo.Region;
+import mokindang.jubging.project_backend.domain.member.vo.Region;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -16,17 +16,18 @@ import java.util.Objects;
 
 @Getter
 @Entity
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Board {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "board_id")
+    @Column(name = "board_id", nullable = false)
     private Long id;
 
+    @Column(nullable = false)
     private LocalDateTime creatingDateTime;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member writer;
 
@@ -45,6 +46,7 @@ public class Board {
     @Embedded
     private Region writingRegion;
 
+    @Column(nullable = false)
     private boolean onRecruitment;
 
     public Board(final LocalDateTime creatingDateTime, final Member writer, final LocalDate startingDate,

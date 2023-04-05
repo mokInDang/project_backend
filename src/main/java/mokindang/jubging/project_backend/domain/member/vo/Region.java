@@ -1,4 +1,4 @@
-package mokindang.jubging.project_backend.domain.region.vo;
+package mokindang.jubging.project_backend.domain.member.vo;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -15,10 +15,10 @@ public class Region {
 
     private static final String DEFAULT_REGION = "DEFAULT_REGION";
 
-    @Column(name = "region")
+    @Column(name = "region", nullable = false)
     private String value;
 
-    public static Region createByDefaultValue(){
+    public static Region createByDefaultValue() {
         return new Region(DEFAULT_REGION);
     }
 

@@ -24,6 +24,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
 
+import static mokindang.jubging.project_backend.domain.member.vo.ProfileImage.DEFAULT_PROFILE_IMAGE_URL;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -54,7 +55,7 @@ class AuthenticationServiceTest {
     private final SoftAssertions softly = new SoftAssertions();
 
     @Test
-    @DisplayName("DB에 email이 없을 시 회원가입 flow를 진행한다. access token, refresh token, email 앞 4자리, alias, region, 로그인 상태 JOIN 을 반환한다.")
+    @DisplayName("DB에 email이 없을 시 회원가입 flow를 진행한다. access token, refresh token, email 앞 4자리, alias, region, profileImageUrl, 로그인 상태 JOIN 을 반환한다.")
     void authenticateJoin() {
         //given
         KakaoApiMemberResponse kakaoApiMemberResponse = new KakaoApiMemberResponse("dog123@test.com", "minho");
@@ -73,6 +74,7 @@ class AuthenticationServiceTest {
         softly.assertThat(kakaoLoginResponse.getEmail()).isEqualTo("dog1");
         softly.assertThat(kakaoLoginResponse.getAlias()).isEqualTo("minho");
         softly.assertThat(kakaoLoginResponse.getRegion()).isEqualTo("DEFAULT_REGION");
+        softly.assertThat(kakaoLoginResponse.getProfileImageUrl()).isEqualTo(DEFAULT_PROFILE_IMAGE_URL);
         softly.assertThat(kakaoLoginResponse.getLoginState()).isEqualTo(LoginState.JOIN);
         softly.assertAll();
         verify(refreshTokenRepository, times(1)).save(any());
@@ -80,11 +82,12 @@ class AuthenticationServiceTest {
     }
 
     @Test
-    @DisplayName("DB에 email 존재할 시 로그인 flow를 진행한다. access token, refresh token, email 앞 4자리, alias, region, 로그인 상태 LOGIN 을 반환한다.")
+    @DisplayName("DB에 email 존재할 시 로그인 flow를 진행한다. access token, refresh token, email 앞 4자리, alias, region, profileImageUrl, 로그인 상태 LOGIN 을 반환한다.")
     void authenticateLogin() {
         //given
         Member existMember = new Member("dog123@test.com", "minho");
         existMember.updateRegion("동작구");
+        existMember.updateProfileImage("https://testimage.png", "testimage");
         KakaoApiMemberResponse kakaoApiMemberResponse = new KakaoApiMemberResponse("dog123@test.com", "minho");
 
 
@@ -101,6 +104,7 @@ class AuthenticationServiceTest {
         softly.assertThat(kakaoLoginResponse.getEmail()).isEqualTo("dog1");
         softly.assertThat(kakaoLoginResponse.getAlias()).isEqualTo("minho");
         softly.assertThat(kakaoLoginResponse.getRegion()).isEqualTo("동작구");
+        softly.assertThat(kakaoLoginResponse.getProfileImageUrl()).isEqualTo("https://testimage.png");
         softly.assertThat(kakaoLoginResponse.getLoginState()).isEqualTo(LoginState.LOGIN);
         softly.assertAll();
         verify(refreshTokenRepository, times(1)).save(any());

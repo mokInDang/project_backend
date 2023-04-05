@@ -56,4 +56,18 @@ class MemberTest {
         //then
         assertThat(fourLengthEmail).isEqualTo("test");
     }
+
+    @Test
+    @DisplayName("ProfileImageUrl 과 ProfileImageName을 변경한다.")
+    void updateProfileImage(){
+        //given
+        Member member = new Member("test@mail.com", "test");
+
+        //when
+        member.updateProfileImage("http://testimage.png", "testimage");
+
+        //then
+        assertThat(member.getProfileImage().getProfileImageUrl()).isEqualTo("http://testimage.png");
+        assertThat(member.getProfileImage().getProfileImageName()).isEqualTo("testimage");
+    }
 }

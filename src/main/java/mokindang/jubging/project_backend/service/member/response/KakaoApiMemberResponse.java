@@ -14,5 +14,4 @@ public class KakaoApiMemberResponse {
 
     @JsonIgnore
     private final String alias;
-
 }
