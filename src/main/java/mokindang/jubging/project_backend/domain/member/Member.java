@@ -3,6 +3,7 @@ package mokindang.jubging.project_backend.domain.member;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import mokindang.jubging.project_backend.domain.member.vo.ProfileImage;
 import mokindang.jubging.project_backend.domain.region.vo.Region;
 
 import javax.persistence.*;
@@ -25,10 +26,14 @@ public class Member {
     @Embedded
     private Region region;
 
+    @Embedded
+    private ProfileImage profileImage;
+
     public Member(final String email, final String alias) {
         this.email = email;
         this.alias = alias;
         region = Region.createByDefaultValue();
+        profileImage = ProfileImage.createByDefaultValue();
     }
 
     public void updateRegion(final String region) {
