@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mokindang.jubging.project_backend.service.board.BoardService;
 import mokindang.jubging.project_backend.service.board.request.BoardCreationRequest;
+import mokindang.jubging.project_backend.service.board.request.BoardModificationRequest;
 import mokindang.jubging.project_backend.service.board.response.BoardIdResponse;
 import mokindang.jubging.project_backend.service.board.response.BoardSelectionResponse;
 import mokindang.jubging.project_backend.service.board.response.MultiBoardSelectResponse;
@@ -43,7 +44,8 @@ public class BoardController implements BoardControllerSwagger {
     public ResponseEntity<MultiBoardSelectResponse> selectBoards(final Pageable pageable) {
         MultiBoardSelectResponse multiBoardSelectResponse = boardService.selectAllBoards(pageable);
         return ResponseEntity.ok()
-                .body(multiBoardSelectResponse);}
+                .body(multiBoardSelectResponse);
+    }
 
     @DeleteMapping("/{boardId}")
     public ResponseEntity<BoardIdResponse> delete(@Login final Long memberId, @PathVariable final Long boardId) {
@@ -53,8 +55,10 @@ public class BoardController implements BoardControllerSwagger {
     }
 
     @PatchMapping("/{boardId}")
-    public ResponseEntity<BoardIdResponse> modifyBoard(@Login final Long memberId, @PathVariable final Long boardId) {
+    public ResponseEntity<BoardIdResponse> modifyBoard(@Login final Long memberId, @PathVariable final Long boardId, final BoardModificationRequest modificationRequest) {
         log.info("memberId = {} 의 게시글 수정 요청, 게시글 번호 : {}", memberId, boardId);
-        return null;
+        BoardIdResponse boardIdResponse = boardService.modifiy(memberId, boardId, modificationRequest);
+        return ResponseEntity.ok()
+                .body(boardIdResponse);
     }
 }
