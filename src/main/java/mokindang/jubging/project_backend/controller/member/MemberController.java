@@ -39,7 +39,7 @@ public class MemberController implements MemberControllerSwagger{
                 .body(myPageResponse);
     }
 
-    @PostMapping("/upload")
+    @PostMapping("/profile-image")
     public ResponseEntity<FileResponse> uploadProfileImage(@Login Long memberId, @RequestPart(value = "file") MultipartFile multipartFile) {
         FileResponse fileResponse = fileService.uploadFile(multipartFile, memberId);
         fileService.deleteFile(memberId);
