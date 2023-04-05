@@ -41,10 +41,14 @@ public class BoardService {
 
     public BoardSelectionResponse select(final Long memberId, final Long boardId) {
         Member loggedInMember = memberService.findByMemberId(memberId);
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
+        Board board = findById(boardId);
         board.checkRegion(loggedInMember.getRegion());
         return convertToBoardSelectResponse(loggedInMember, board);
+    }
+
+    private Board findById(final Long boardId) {
+        return boardRepository.findById(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
     }
 
     private BoardSelectionResponse convertToBoardSelectResponse(final Member logindMember, final Board board) {
@@ -71,8 +75,7 @@ public class BoardService {
     @Transactional
     public BoardIdResponse delete(final Long memberId, final Long boardId) {
         Member loggedInMember = memberService.findByMemberId(memberId);
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
+        Board board = findById(boardId);
         validatePermission(board, loggedInMember, "글 작성자만 게시글을 삭제할 수 있습니다.");
         boardRepository.delete(board);
         return new BoardIdResponse(board.getId());
@@ -87,8 +90,7 @@ public class BoardService {
     @Transactional
     public BoardIdResponse modify(final Long memberId, final Long boardId, final BoardModificationRequest boardModificationRequest) {
         Member loggedInMember = memberService.findByMemberId(memberId);
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
+        Board board = findById(boardId);
         validatePermission(board, loggedInMember, "글 작성자만 게시글을 수정할 수 있습니다.");
         board.modify(boardModificationRequest.getStartingDate(), boardModificationRequest.getActivityCategory(),
                 boardModificationRequest.getTitle(), boardModificationRequest.getContent());
@@ -98,8 +100,7 @@ public class BoardService {
     @Transactional
     public BoardIdResponse closeRecruitment(final Long memberId, final Long boardId) {
         Member loggedInMember = memberService.findByMemberId(memberId);
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
+        Board board = findById(boardId);
         validatePermission(board, loggedInMember, "글 작성자만 모집 마감할 수 있습니다.");
         board.closeRecruitment();
         return new BoardIdResponse(board.getId());
