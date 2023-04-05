@@ -10,6 +10,7 @@ import mokindang.jubging.project_backend.domain.region.vo.Region;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.repository.board.BoardRepository;
 import mokindang.jubging.project_backend.service.board.request.BoardCreationRequest;
+import mokindang.jubging.project_backend.service.board.request.BoardModificationRequest;
 import mokindang.jubging.project_backend.service.board.response.BoardIdResponse;
 import mokindang.jubging.project_backend.service.board.response.BoardSelectionResponse;
 import mokindang.jubging.project_backend.service.member.MemberService;
@@ -139,6 +140,7 @@ class BoardServiceTest {
 
         //then
         assertThat(deleteBoardIdResponse.getBoardId()).isEqualTo(boardId);
+        verify(boardRepository, times(1)).delete(any());
     }
 
     @Test
@@ -158,10 +160,10 @@ class BoardServiceTest {
     @DisplayName("게시글 삭제 요청 시, 삭제 요청 회원이 게시글 작성자가 아닌 경우 예외를 반환한다.")
     void deleteFailedByNoneMatchingBoardWhitWritingMember() {
         //given
-        Member writer = mock(Member.class);
-        when(memberService.findByMemberId(1L)).thenReturn(writer);
+        Member member = mock(Member.class);
+        when(memberService.findByMemberId(1L)).thenReturn(member);
         Board board = mock(Board.class);
-        when(board.isWriter(writer)).thenReturn(false);
+        when(board.isWriter(any(Member.class))).thenReturn(false);
         when(boardRepository.findById(anyLong())).thenReturn(Optional.of(board));
 
         //when, then
@@ -171,11 +173,24 @@ class BoardServiceTest {
 
     @Test
     @DisplayName("게시글을 수정한다.")
-    void modifiy() {
+    void modify() {
         //given
+        Member member = mock(Member.class);
+        when(memberService.findByMemberId(anyLong())).thenReturn(member);
+        Board board = mock(Board.class);
+        when(board.isWriter(any(Member.class))).thenReturn(true);
+        when(boardRepository.findById(anyLong())).thenReturn(Optional.of(board));
+
+        Long memberId = 1L;
+        Long boardId = 1L;
+        BoardModificationRequest boardModificationRequest = new BoardModificationRequest("변경 제목", "변경 본문",
+                "산책", LocalDate.of(2023, 12, 12));
 
         //when
+        BoardIdResponse actual = boardService.modifiy(memberId, boardId, boardModificationRequest);
 
         //then
+        assertThat(actual.getBoardId()).isEqualTo(1L);
+        verify(board, times(1)).modify(any(), any(), any(), any());
     }
 }
