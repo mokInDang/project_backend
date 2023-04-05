@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.service.board.BoardService;
 import mokindang.jubging.project_backend.service.board.request.BoardCreationRequest;
+import mokindang.jubging.project_backend.service.board.request.BoardModificationRequest;
 import mokindang.jubging.project_backend.service.board.response.BoardIdResponse;
 import mokindang.jubging.project_backend.service.board.response.BoardSelectionResponse;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
@@ -24,8 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -250,5 +250,53 @@ class BoardControllerTest {
         //then
         actual.andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("존재하지 않는 게시물입니다."));
+    }
+
+    @Test
+    @DisplayName("게시글 수정 요청 시, 요청 받은 게시글의 활동 시작일, 활동 종류, 제목, 본문을 변경한다.")
+    void modify() throws Exception {
+        //given
+        BoardIdResponse boardIdResponse = new BoardIdResponse(1L);
+        when(boardService.modifiy(anyLong(), anyLong(), any(BoardModificationRequest.class))).thenReturn(boardIdResponse);
+
+        //when
+        ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        actual.andExpect(status().isOk())
+                .andExpect(jsonPath("$.boardId").value(1));
+    }
+
+    @Test
+    @DisplayName("게시글 수정 요청 시, 존재하지 않는 게시글에 대한 수정을 요청할 시 예외를 담은 ErrorResponse 를 반환한다.")
+    void modifyFailedByNonexistentBoard() throws Exception {
+        //given
+        doThrow(new IllegalArgumentException("존재하지 않는 게시물입니다.")).when(boardService)
+                .modifiy(anyLong(), anyLong(), any(BoardModificationRequest.class));
+
+        //when
+        ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        actual.andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("존재하지 않는 게시물입니다."));
+    }
+
+    @Test
+    @DisplayName("게시글 수정 요청 시, 존재하지 않는 게시글에 대한 수정을 요청할 시 예외를 담은 ErrorResponse 를 반환한다.")
+    void modifyFailedByNoneMatchingBoardWhitWritingMember() throws Exception {
+        //given
+        doThrow(new ForbiddenException("글 작성자만 게시글을 수정할 수 있습니다.")).when(boardService)
+                .modifiy(anyLong(), anyLong(), any(BoardModificationRequest.class));
+
+        //when
+        ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        actual.andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.error").value("글 작성자만 게시글을 수정할 수 있습니다."));
     }
 }
