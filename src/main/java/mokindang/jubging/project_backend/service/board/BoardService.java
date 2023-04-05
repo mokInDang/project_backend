@@ -78,20 +78,20 @@ public class BoardService {
         return new BoardIdResponse(board.getId());
     }
 
-    private static void validatePermission(final Board board, final Member loggedInMember, final String message) {
+    private void validatePermission(final Board board, final Member loggedInMember, final String message) {
         if (!board.isWriter(loggedInMember)) {
             throw new ForbiddenException(message);
         }
     }
 
     @Transactional
-    public BoardIdResponse modifiy(final Long memberId, final Long boardId, final BoardModificationRequest boardModificationRequest) {
+    public BoardIdResponse modify(final Long memberId, final Long boardId, final BoardModificationRequest boardModificationRequest) {
         Member loggedInMember = memberService.findByMemberId(memberId);
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
         validatePermission(board, loggedInMember, "글 작성자만 게시글을 수정할 수 있습니다.");
         board.modify(boardModificationRequest.getStartingDate(), boardModificationRequest.getActivityCategory(),
-                boardModificationRequest.getTitle(),boardModificationRequest.getContent());
+                boardModificationRequest.getTitle(), boardModificationRequest.getContent());
         return new BoardIdResponse(boardId);
     }
 }
