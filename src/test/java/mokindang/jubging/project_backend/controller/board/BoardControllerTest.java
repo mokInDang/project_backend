@@ -257,11 +257,15 @@ class BoardControllerTest {
     void modify() throws Exception {
         //given
         BoardIdResponse boardIdResponse = new BoardIdResponse(1L);
-        when(boardService.modifiy(anyLong(), anyLong(), any(BoardModificationRequest.class))).thenReturn(boardIdResponse);
+        when(boardService.modify(anyLong(), anyLong(), any(BoardModificationRequest.class))).thenReturn(boardIdResponse);
+
+        BoardModificationRequest boardModificationRequest = new BoardModificationRequest("새로운 제목", "새로운 본문",
+                "산책", LocalDate.of(2023, 1, 1));
 
         //when
         ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}", 1L)
-                .contentType(MediaType.APPLICATION_JSON));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(boardModificationRequest)));
 
         //then
         actual.andExpect(status().isOk())
@@ -273,11 +277,15 @@ class BoardControllerTest {
     void modifyFailedByNonexistentBoard() throws Exception {
         //given
         doThrow(new IllegalArgumentException("존재하지 않는 게시물입니다.")).when(boardService)
-                .modifiy(anyLong(), anyLong(), any(BoardModificationRequest.class));
+                .modify(anyLong(), anyLong(), any(BoardModificationRequest.class));
+
+        BoardModificationRequest boardModificationRequest = new BoardModificationRequest("새로운 제목", "새로운 본문",
+                "산책", LocalDate.of(2023, 1, 1));
 
         //when
         ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}", 1L)
-                .contentType(MediaType.APPLICATION_JSON));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(boardModificationRequest)));
 
         //then
         actual.andExpect(status().isBadRequest())
@@ -289,11 +297,15 @@ class BoardControllerTest {
     void modifyFailedByNoneMatchingBoardWhitWritingMember() throws Exception {
         //given
         doThrow(new ForbiddenException("글 작성자만 게시글을 수정할 수 있습니다.")).when(boardService)
-                .modifiy(anyLong(), anyLong(), any(BoardModificationRequest.class));
+                .modify(anyLong(), anyLong(), any(BoardModificationRequest.class));
+
+        BoardModificationRequest boardModificationRequest = new BoardModificationRequest("새로운 제목", "새로운 본문",
+                "산책", LocalDate.of(2023, 1, 1));
 
         //when
         ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}", 1L)
-                .contentType(MediaType.APPLICATION_JSON));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(boardModificationRequest)));
 
         //then
         actual.andExpect(status().isForbidden())

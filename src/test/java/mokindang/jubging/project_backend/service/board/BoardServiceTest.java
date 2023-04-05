@@ -187,7 +187,7 @@ class BoardServiceTest {
                 "산책", LocalDate.of(2023, 12, 12));
 
         //when
-        BoardIdResponse actual = boardService.modifiy(memberId, boardId, boardModificationRequest);
+        BoardIdResponse actual = boardService.modify(memberId, boardId, boardModificationRequest);
 
         //then
         assertThat(actual.getBoardId()).isEqualTo(1L);
