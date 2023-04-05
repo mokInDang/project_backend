@@ -6,7 +6,6 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mokindang.jubging.project_backend.domain.member.Member;
-import mokindang.jubging.project_backend.service.member.MemberService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,9 +26,8 @@ public class FileService {
 
     private static final String PROFILE_IMAGE = "profile_image";
     private final AmazonS3Client amazonS3Client;
-    private final MemberService memberService;
 
-    public FileResponse uploadFile(MultipartFile multipartFile, Long memberId) {
+    public FileResponse uploadFile(MultipartFile multipartFile, Member member) {
         checkImageEmpty(multipartFile);
 
         String uploadFilePath = PROFILE_IMAGE;
@@ -49,10 +47,7 @@ public class FileService {
             log.error("Filed upload failed", e);
         }
 
-        Member member = memberService.findByMemberId(memberId);
         log.info("memberId = {}, alias = {} 의 프로필 이미지 {} 업로드", member.getId(), member.getAlias(), uploadFileName);
-        memberService.updateProfileImage(member, uploadFileUrl, uploadFileName);
-
         return new FileResponse(uploadFileUrl, uploadFileName);
     }
 
@@ -69,8 +64,7 @@ public class FileService {
         }
     }
 
-    public void deleteFile(Long memberId) {
-        Member member = memberService.findByMemberId(memberId);
+    public void deleteFile(Member member) {
         String uploadFileName = member.getProfileImage().getProfileImageName();
         String uploadFilePath = PROFILE_IMAGE;
 
