@@ -1,4 +1,4 @@
-package mokindang.jubging.project_backend.domain.region.vo;
+package mokindang.jubging.project_backend.domain.member.vo;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

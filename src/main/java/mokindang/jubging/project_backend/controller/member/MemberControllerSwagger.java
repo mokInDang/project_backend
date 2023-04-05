@@ -9,12 +9,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import mokindang.jubging.project_backend.exception.ErrorResponse;
+import mokindang.jubging.project_backend.service.file.FileResponse;
 import mokindang.jubging.project_backend.service.member.request.RegionUpdateRequest;
 import mokindang.jubging.project_backend.service.member.response.MyPageResponse;
 import mokindang.jubging.project_backend.service.member.response.RegionUpdateResponse;
 import mokindang.jubging.project_backend.web.argumentresolver.Login;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -43,4 +46,15 @@ public interface MemberControllerSwagger {
             @ApiResponse(responseCode = "200", description = "조회완료")
     })
     ResponseEntity<MyPageResponse> callMyPage(@Parameter(hidden = true) @Login Long memberId);
+
+    @Operation(summary = "회원 프로필 이미지 수정", parameters = {
+            @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true)
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "업로드 완료"),
+            @ApiResponse(responseCode = "400", description = "이미지가 선택되지 않았습니다.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    ResponseEntity<FileResponse> uploadProfileImage(@Parameter(hidden = true) @Login Long memberId, @RequestPart(value = "file") MultipartFile multipartFile);
+
 }

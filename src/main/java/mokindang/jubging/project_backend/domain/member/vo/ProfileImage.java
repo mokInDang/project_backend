@@ -29,4 +29,9 @@ public class ProfileImage {
     public static ProfileImage createByDefaultValue() {
         return new ProfileImage(DEFAULT_PROFILE_IMAGE_URL, DEFAULT_PROFILE_IMAGE_NAME);
     }
+
+    public void updateProfileImage(final String profileImageUrl, final String profileImageName) {
+        this.profileImageUrl = profileImageUrl;
+        this.profileImageName = profileImageName;
+    }
 }

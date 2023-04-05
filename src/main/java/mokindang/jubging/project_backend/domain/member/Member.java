@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mokindang.jubging.project_backend.domain.member.vo.ProfileImage;
-import mokindang.jubging.project_backend.domain.region.vo.Region;
+import mokindang.jubging.project_backend.domain.member.vo.Region;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -40,6 +40,10 @@ public class Member {
 
     public void updateRegion(final String region) {
         this.region.updateRegion(region);
+    }
+
+    public void updateProfileImage(final String profileImageUrl, final String profileImageName) {
+        this.profileImage.updateProfileImage(profileImageUrl, profileImageName);
     }
 
     public String getFourLengthEmail() {
