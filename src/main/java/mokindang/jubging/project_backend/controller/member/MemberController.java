@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mokindang.jubging.project_backend.domain.member.vo.Region;
 import mokindang.jubging.project_backend.service.file.FileResponse;
-import mokindang.jubging.project_backend.service.file.FileService;
 import mokindang.jubging.project_backend.service.member.MemberService;
 import mokindang.jubging.project_backend.service.member.request.RegionUpdateRequest;
 import mokindang.jubging.project_backend.service.member.response.MyPageResponse;
@@ -23,7 +22,6 @@ import javax.validation.Valid;
 public class MemberController implements MemberControllerSwagger{
 
     private final MemberService memberService;
-    private final FileService fileService;
 
     @PatchMapping("/region")
     public ResponseEntity<RegionUpdateResponse> updateRegion(@Login Long memberId, @Valid @RequestBody RegionUpdateRequest regionUpdateRequest) {
@@ -41,8 +39,7 @@ public class MemberController implements MemberControllerSwagger{
 
     @PostMapping("/profile-image")
     public ResponseEntity<FileResponse> uploadProfileImage(@Login Long memberId, @RequestPart(value = "file") MultipartFile multipartFile) {
-        FileResponse fileResponse = fileService.uploadFile(multipartFile, memberId);
-        fileService.deleteFile(memberId);
+        FileResponse fileResponse = memberService.updateProfileImage(memberId, multipartFile);
         return ResponseEntity.ok()
                 .body(fileResponse);
     }
