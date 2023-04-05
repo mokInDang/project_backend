@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
-public class BoardSelectResponse {
+public class BoardSelectionResponse {
 
     @Schema(description = "게시글 번호", example = "1")
     private Long boardId;

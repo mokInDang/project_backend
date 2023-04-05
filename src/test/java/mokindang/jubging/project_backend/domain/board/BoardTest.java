@@ -32,12 +32,7 @@ class BoardTest {
     @DisplayName("게시글 생성 시, 모집 여부는 상태는 항상 true 이다.")
     void defaultOfOnRecruitment() {
         //given
-        LocalDate today = LocalDate.of(2023, 11, 12);
-        LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
-        Member testMember = new Member("koho1047@naver.com", "민호");
-        testMember.updateRegion("동작구");
-        Board board = new Board(now, testMember, LocalDate.of(2025, 2, 11),
-                "달리기", "게시판 제목", "게시판 내용 작성 테스트");
+        Board board = createBoard();
 
         //when
         boolean onRecruitment = board.isOnRecruitment();
@@ -46,16 +41,19 @@ class BoardTest {
         assertThat(onRecruitment).isTrue();
     }
 
+    private Board createBoard() {
+        LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
+        Member writer = new Member("test1@email.com", "test");
+        writer.updateRegion("동작구");
+        return new Board(now, writer, LocalDate.of(2025, 2, 11), "달리기",
+                "제목", "본문내용");
+    }
+
     @Test
     @DisplayName("모집 여부를 마감한다.")
     void closeRecruitment() {
         //given
-        LocalDate today = LocalDate.of(2023, 11, 12);
-        LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
-        Member testMember = new Member("koho1047@naver.com", "민호");
-        testMember.updateRegion("동작구");
-        Board board = new Board(now, testMember, LocalDate.of(2025, 2, 11),
-                "달리기", "게시판 제목", "게시판 내용 작성 테스트");
+        Board board = createBoard();
 
         //when
         board.closeRecruitment();
@@ -69,7 +67,6 @@ class BoardTest {
     void getter() {
         //given
         SoftAssertions softly = new SoftAssertions();
-        LocalDate today = LocalDate.of(2023, 11, 12);
         LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
         Member testMember = new Member("koho1047@naver.com", "민호");
         testMember.updateRegion("동작구");
@@ -102,7 +99,6 @@ class BoardTest {
     void validateRegion() {
         //given
         Member member = new Member("Test@email.com", "test");
-        LocalDate today = LocalDate.of(2023, 11, 12);
         LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
 
         //when, then
@@ -116,12 +112,7 @@ class BoardTest {
     @DisplayName("지역을 입력 받아, 게시글의 지역과 다르면 예외를 반환한다.")
     void checkRegion() {
         //given
-        LocalDate today = LocalDate.of(2023, 11, 12);
-        LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
-        Member testMember = new Member("koho1047@naver.com", "민호");
-        testMember.updateRegion("동작구");
-        Board board = new Board(now, testMember, LocalDate.of(2025, 2, 11),
-                "달리기", "게시판 제목", "게시판 내용 작성 테스트");
+        Board board = createBoard();
 
         //when, then
         assertThatThrownBy(() -> board.checkRegion(Region.from("성동구")))
@@ -133,7 +124,6 @@ class BoardTest {
     @DisplayName("게시글 작성자의 별명을 반환한다.")
     void getWriterAlias() {
         //given
-        LocalDate today = LocalDate.of(2023, 11, 12);
         LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
         Member testMember = new Member("koho1047@naver.com", "민호");
         testMember.updateRegion("동작구");
@@ -151,7 +141,6 @@ class BoardTest {
     @DisplayName("게시글 작성자인지 확인한다. 작성자인경우 true 를 반환한다.")
     void isWriter() {
         //given
-        LocalDate today = LocalDate.of(2023, 11, 12);
         LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
         Member writer = new Member("test1@email.com", "test");
         writer.updateRegion("동작구");
@@ -174,7 +163,6 @@ class BoardTest {
     @DisplayName("게시글 작성자인지 확인한다. 작성자가 아닌경우 false 를 반환한다.")
     void isWriterWhenNoneWriter() {
         //given
-        LocalDate today = LocalDate.of(2023, 11, 12);
         LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
         Member writer = new Member("test1@email.com", "test");
         writer.updateRegion("동작구");
@@ -194,5 +182,31 @@ class BoardTest {
 
         //then
         assertThat(actual).isFalse();
+    }
+
+    @Test
+    @DisplayName("게시글 수정 요청 시, 활동 예정일, 활동 종류, 제목, 본문을 받아 변경을 한다.")
+    void modify() {
+        //given
+        SoftAssertions softly = new SoftAssertions();
+        LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
+        Member writer = new Member("test1@email.com", "test");
+        writer.updateRegion("동작구");
+        Board board = new Board(now, writer, LocalDate.of(2025, 2, 11), "달리기",
+                "제목", "본문내용");
+
+        String newActivityCategory = "산책";
+        String newTitleValue = "새로운 제목입니다.";
+        String newContentValue = "새로운 본문 내용입니다.";
+        LocalDate newStartingDate = LocalDate.parse("2023-11-13");
+        //when
+        board.modify(newStartingDate, newActivityCategory, newTitleValue, newContentValue);
+
+        //then
+        softly.assertThat(board.getStartingDate().getValue()).isEqualTo("2023-11-13");
+        softly.assertThat(board.getActivityCategory().getValue()).isEqualTo(newActivityCategory);
+        softly.assertThat(board.getTitle().getValue()).isEqualTo(newTitleValue);
+        softly.assertThat(board.getContent().getValue()).isEqualTo(newContentValue);
+        softly.assertAll();
     }
 }

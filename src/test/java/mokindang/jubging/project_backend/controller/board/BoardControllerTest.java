@@ -3,9 +3,10 @@ package mokindang.jubging.project_backend.controller.board;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.service.board.BoardService;
-import mokindang.jubging.project_backend.service.board.request.BoardCreateRequest;
+import mokindang.jubging.project_backend.service.board.request.BoardCreationRequest;
+import mokindang.jubging.project_backend.service.board.request.BoardModificationRequest;
 import mokindang.jubging.project_backend.service.board.response.BoardIdResponse;
-import mokindang.jubging.project_backend.service.board.response.BoardSelectResponse;
+import mokindang.jubging.project_backend.service.board.response.BoardSelectionResponse;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,8 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -48,15 +48,15 @@ class BoardControllerTest {
     @DisplayName("새 게시글을 작성한 후, 작성된 게시글의 id 값과 함께 HTTP 201 상태코드를 반환한다.")
     void write() throws Exception {
         //given
-        when(boardService.write(anyLong(), any(BoardCreateRequest.class))).thenReturn(new BoardIdResponse(1L));
+        when(boardService.write(anyLong(), any(BoardCreationRequest.class))).thenReturn(new BoardIdResponse(1L));
 
-        BoardCreateRequest boardCreateRequest = new BoardCreateRequest("제목", "본문", "달리기",
+        BoardCreationRequest boardCreationRequest = new BoardCreationRequest("제목", "본문", "달리기",
                 LocalDate.of(2023, 11, 11));
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(boardCreateRequest)));
+                .content(objectMapper.writeValueAsString(boardCreationRequest)));
 
         //then
         actual.andExpect(status().isCreated())
@@ -68,15 +68,15 @@ class BoardControllerTest {
     void writeFailedByNonexistentMember() throws Exception {
         //given
         doThrow(new IllegalArgumentException("해당하는 유저가 존재하지 않습니다.")).when(boardService)
-                .write(anyLong(), any(BoardCreateRequest.class));
+                .write(anyLong(), any(BoardCreationRequest.class));
 
-        BoardCreateRequest boardCreateRequest = new BoardCreateRequest("제목", "본문", "달리기",
+        BoardCreationRequest boardCreationRequest = new BoardCreationRequest("제목", "본문", "달리기",
                 LocalDate.of(2023, 11, 11));
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(boardCreateRequest)));
+                .content(objectMapper.writeValueAsString(boardCreationRequest)));
 
         //then
         actual.andExpect(status().isBadRequest())
@@ -88,9 +88,9 @@ class BoardControllerTest {
     void writeFailedByIncorrectTitle() throws Exception {
         //given
         doThrow(new IllegalArgumentException("글 제목은 1글자 이상 140자 이하야합니다.")).when(boardService)
-                .write(anyLong(), any(BoardCreateRequest.class));
+                .write(anyLong(), any(BoardCreationRequest.class));
 
-        BoardCreateRequest incorrectTitleRequest = new BoardCreateRequest("잘못된 제목", "본문", "달리기",
+        BoardCreationRequest incorrectTitleRequest = new BoardCreationRequest("잘못된 제목", "본문", "달리기",
                 LocalDate.of(2023, 11, 11));
 
         //when
@@ -108,9 +108,9 @@ class BoardControllerTest {
     void writeFailedByIncorrectContent() throws Exception {
         //given
         doThrow(new IllegalArgumentException("글 내용은 최소 1자 이상, 최대 4000자 입니다.")).when(boardService)
-                .write(anyLong(), any(BoardCreateRequest.class));
+                .write(anyLong(), any(BoardCreationRequest.class));
 
-        BoardCreateRequest incorrectContentRequest = new BoardCreateRequest("제목", "잘못된 본문", "달리기",
+        BoardCreationRequest incorrectContentRequest = new BoardCreationRequest("제목", "잘못된 본문", "달리기",
                 LocalDate.of(2023, 11, 11));
 
         //when
@@ -128,9 +128,9 @@ class BoardControllerTest {
     void writeFailedByIncorrectStartingDate() throws Exception {
         //given
         doThrow(new IllegalArgumentException("이미 지난 날짜는 활동 시작일로 할 수 없습니다.")).when(boardService)
-                .write(anyLong(), any(BoardCreateRequest.class));
+                .write(anyLong(), any(BoardCreationRequest.class));
 
-        BoardCreateRequest incorrectContentRequest = new BoardCreateRequest("제목", "잘못된 본문", "달리기",
+        BoardCreationRequest incorrectContentRequest = new BoardCreationRequest("제목", "잘못된 본문", "달리기",
                 LocalDate.of(2023, 11, 11));
 
         //when
@@ -149,9 +149,9 @@ class BoardControllerTest {
     void select() throws Exception {
         //given
         LocalDateTime now = LocalDateTime.of(2023, 3, 30, 11, 11);
-        BoardSelectResponse boardSelectResponse = new BoardSelectResponse(1L, "제목", "본문", now, "작성자",
+        BoardSelectionResponse boardSelectionResponse = new BoardSelectionResponse(1L, "제목", "본문", now, "작성자",
                 "2023-03-10", "동작구", "달리기", true, "test", true);
-        when(boardService.select(anyLong(), anyLong())).thenReturn(boardSelectResponse);
+        when(boardService.select(anyLong(), anyLong())).thenReturn(boardSelectionResponse);
 
         //when
         ResultActions actual = mockMvc.perform(get("/api/boards/{boardId}", 1L)
@@ -250,5 +250,65 @@ class BoardControllerTest {
         //then
         actual.andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("존재하지 않는 게시물입니다."));
+    }
+
+    @Test
+    @DisplayName("게시글 수정 요청 시, 요청 받은 게시글의 활동 시작일, 활동 종류, 제목, 본문을 변경한다.")
+    void modify() throws Exception {
+        //given
+        BoardIdResponse boardIdResponse = new BoardIdResponse(1L);
+        when(boardService.modify(anyLong(), anyLong(), any(BoardModificationRequest.class))).thenReturn(boardIdResponse);
+
+        BoardModificationRequest boardModificationRequest = new BoardModificationRequest("새로운 제목", "새로운 본문",
+                "산책", LocalDate.of(2023, 1, 1));
+
+        //when
+        ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(boardModificationRequest)));
+
+        //then
+        actual.andExpect(status().isOk())
+                .andExpect(jsonPath("$.boardId").value(1));
+    }
+
+    @Test
+    @DisplayName("게시글 수정 요청 시, 존재하지 않는 게시글에 대한 수정을 요청할 시 예외를 담은 ErrorResponse 를 반환한다.")
+    void modifyFailedByNonexistentBoard() throws Exception {
+        //given
+        doThrow(new IllegalArgumentException("존재하지 않는 게시물입니다.")).when(boardService)
+                .modify(anyLong(), anyLong(), any(BoardModificationRequest.class));
+
+        BoardModificationRequest boardModificationRequest = new BoardModificationRequest("새로운 제목", "새로운 본문",
+                "산책", LocalDate.of(2023, 1, 1));
+
+        //when
+        ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(boardModificationRequest)));
+
+        //then
+        actual.andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("존재하지 않는 게시물입니다."));
+    }
+
+    @Test
+    @DisplayName("게시글 수정 요청 시, 존재하지 않는 게시글에 대한 수정을 요청할 시 예외를 담은 ErrorResponse 를 반환한다.")
+    void modifyFailedByNoneMatchingBoardWhitWritingMember() throws Exception {
+        //given
+        doThrow(new ForbiddenException("글 작성자만 게시글을 수정할 수 있습니다.")).when(boardService)
+                .modify(anyLong(), anyLong(), any(BoardModificationRequest.class));
+
+        BoardModificationRequest boardModificationRequest = new BoardModificationRequest("새로운 제목", "새로운 본문",
+                "산책", LocalDate.of(2023, 1, 1));
+
+        //when
+        ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(boardModificationRequest)));
+
+        //then
+        actual.andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.error").value("글 작성자만 게시글을 수정할 수 있습니다."));
     }
 }

@@ -49,7 +49,8 @@ public class Board {
     @Column(nullable = false)
     private boolean onRecruitment;
 
-    public Board(final LocalDateTime creatingDateTime, final Member writer, final LocalDate startingDate, final String activityCategory, final String title, final String content) {
+    public Board(final LocalDateTime creatingDateTime, final Member writer, final LocalDate startingDate,
+                 final String activityCategory, final String title, final String content) {
         this.creatingDateTime = creatingDateTime;
         this.writer = writer;
         LocalDate creatingDate = creatingDateTime.toLocalDate();
@@ -79,6 +80,14 @@ public class Board {
         }
     }
 
+    public void modify(final LocalDate startingDate, final String activityCategoryValue, final String titleValue, final String contentValue) {
+        LocalDate today = LocalDate.now();
+        this.startingDate = new StartingDate(today, startingDate);
+        this.activityCategory = ActivityCategory.from(activityCategoryValue);
+        this.title = new Title(titleValue);
+        this.content = new Content(contentValue);
+    }
+
     public boolean isWriter(final Member member) {
         return this.writer.equals(member);
     }
@@ -87,9 +96,7 @@ public class Board {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         final Board board = (Board) o;
-
         return Objects.equals(id, board.id);
     }
 
