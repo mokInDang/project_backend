@@ -50,7 +50,7 @@
     </appender>
 
     <springProfile name="deploy">
-        <logger name="mokindang.jubging" level="INFO" appender-ref="ASYNC_INFO_LOG_FILE"/>
+        <logger name="org.springframework.web" level="INFO" appender-ref="ASYNC_INFO_LOG_FILE"/>
         <root level="INFO">
             <appender-ref ref="ASYNC_INFO_LOG_FILE"/>
         </root>
