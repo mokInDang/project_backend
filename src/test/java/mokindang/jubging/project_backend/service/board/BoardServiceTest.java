@@ -178,6 +178,7 @@ class BoardServiceTest {
         Member member = mock(Member.class);
         when(memberService.findByMemberId(anyLong())).thenReturn(member);
         Board board = mock(Board.class);
+        when(board.getId()).thenReturn(1L);
         when(board.isWriter(any(Member.class))).thenReturn(true);
         when(boardRepository.findById(anyLong())).thenReturn(Optional.of(board));
 
@@ -192,5 +193,62 @@ class BoardServiceTest {
         //then
         assertThat(actual.getBoardId()).isEqualTo(1L);
         verify(board, times(1)).modify(any(), any(), any(), any());
+    }
+
+    @Test
+    @DisplayName("게시글의 모집을 마감한다.")
+    void closeRecruitment() {
+        //given
+        Member member = mock(Member.class);
+        when(memberService.findByMemberId(anyLong())).thenReturn(member);
+        Board board = mock(Board.class);
+        when(board.getId()).thenReturn(1L);
+        when(board.isWriter(any(Member.class))).thenReturn(true);
+        when(boardRepository.findById(anyLong())).thenReturn(Optional.of(board));
+
+        Long memberId = 1L;
+        Long boardId = 1L;
+
+        //when
+        BoardIdResponse boardIdResponse = boardService.closeRecruitment(memberId, boardId);
+
+        //then
+        assertThat(boardIdResponse.getBoardId()).isEqualTo(1L);
+        verify(board, times(1)).closeRecruitment();
+    }
+
+    @Test
+    @DisplayName("게시글 모집 마감 요청 시, 입력 받은 memberId 를 가진 회원이 작성한 게시글이 아닌 경우 예외를 반환한다.")
+    void closeRecruitmentFailedByNoneMatchingBoardWhitWritingMember() {
+        //given
+        Member member = mock(Member.class);
+        when(memberService.findByMemberId(anyLong())).thenReturn(member);
+        Board board = mock(Board.class);
+        when(boardRepository.findById(anyLong())).thenReturn(Optional.of(board));
+        when(board.isWriter(any(Member.class))).thenReturn(false);
+
+        Long memberId = 1L;
+        Long boardId = 1L;
+
+        //when, then
+        assertThatThrownBy(() -> boardService.closeRecruitment(memberId, boardId)).isInstanceOf(ForbiddenException.class)
+                .hasMessage("글 작성자만 모집 마감할 수 있습니다.");
+    }
+
+    @Test
+    @DisplayName("게시글 모집 마감 요청 시, 입력 받은 boardId 를 가진 게시글이 존재하지 않는다면 예외를 반환한다.")
+    void closeRecruitmentFailedByNoneExistBoard() {
+        //given
+        Member member = mock(Member.class);
+        when(memberService.findByMemberId(anyLong())).thenReturn(member);
+        Board board = mock(Board.class);
+        when(boardRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        Long memberId = 1L;
+        Long boardId = 1L;
+
+        //when, then
+        assertThatThrownBy(() -> boardService.closeRecruitment(memberId, boardId)).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("존재하지 않는 게시물입니다.");
     }
 }
