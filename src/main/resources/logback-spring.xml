@@ -42,15 +42,9 @@
         </rollingPolicy>
     </appender>
 
-    <appender name="ASYNC_INFO_LOG_FILE" class="ch.qos.logback.classic.AsyncAppender">
-        <queueSize>10000</queueSize>
-        <maxFlushTime>0</maxFlushTime>
-        <appender-ref ref="INFO_LOG_FILE"/>
-    </appender>
-
     <springProfile name="deploy">
         <root level="INFO">
-            <appender-ref ref="ASYNC_INFO_LOG_FILE"/>
+            <appender-ref ref="INFO_LOG_FILE"/>
         </root>
     </springProfile>
 </configuration>
