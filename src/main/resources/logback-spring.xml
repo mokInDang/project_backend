@@ -49,7 +49,7 @@
             <appender-ref ref="INFO_LOG_FILE"/>
         </appender>
         <root level="INFO">
-            <appender-ref ref="INFO_LOG_FILE"/>
+            <appender-ref ref="ASYNC_INFO_LOG_FILE"/>
         </root>
     </springProfile>
 </configuration>
