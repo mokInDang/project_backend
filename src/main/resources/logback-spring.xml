@@ -45,6 +45,7 @@
 
     <springProfile name="deploy">
         <appender name="ASYNC_INFO_LOG_FILE" class="ch.qos.logback.classic.AsyncAppender">
+            <queueSize>10000</queueSize>
             <maxFlushTime>0</maxFlushTime>
             <appender-ref ref="INFO_LOG_FILE"/>
         </appender>
