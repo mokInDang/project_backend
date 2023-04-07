@@ -6,6 +6,7 @@ import mokindang.jubging.project_backend.domain.board.vo.Content;
 import mokindang.jubging.project_backend.domain.board.vo.StartingDate;
 import mokindang.jubging.project_backend.domain.board.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
+import mokindang.jubging.project_backend.domain.member.vo.ProfileImage;
 import mokindang.jubging.project_backend.domain.member.vo.Region;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.repository.board.BoardRepository;
@@ -88,6 +89,7 @@ class BoardServiceTest {
         //given
         SoftAssertions softly = new SoftAssertions();
         Member member = mock(Member.class);
+        when(member.getProfileImage()).thenReturn(new ProfileImage("test_url", "test_name"));
         when(memberService.findByMemberId(anyLong())).thenReturn(member);
 
         Board board = mock(Board.class);
@@ -116,6 +118,7 @@ class BoardServiceTest {
         softly.assertThat(actual.getStartingDate()).isEqualTo("2023-03-11");
         softly.assertThat(actual.getActivityCategory()).isEqualTo("달리기");
         softly.assertThat(actual.isOnRecruitment()).isEqualTo(true);
+        softly.assertThat(actual.getWriterProfileImage()).isEqualTo("test_url");
         softly.assertThat(actual.getFirstFourLettersOfEmail()).isEqualTo("test");
         softly.assertThat(actual.isMine()).isEqualTo(true);
         softly.assertAll();
