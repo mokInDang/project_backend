@@ -209,4 +209,24 @@ class BoardTest {
         softly.assertThat(board.getContent().getValue()).isEqualTo(newContentValue);
         softly.assertAll();
     }
+
+    @Test
+    @DisplayName("게시글 작성자의 프로필 이미지 url 을 불러온다.")
+    void getWriterProfileImageUrl() {
+        //given
+        String testUrl = "test_url";
+
+        LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
+        Member writer = new Member("test1@email.com", "test");
+        writer.updateRegion("동작구");
+        writer.updateProfileImage(testUrl, "test_Image");
+        Board board = new Board(now, writer, LocalDate.of(2025, 2, 11), "달리기",
+                "제목", "본문내용");
+
+        //when
+        String writerProfileImageUrl = board.getWriterProfileImageUrl();
+
+        //then
+        assertThat(writerProfileImageUrl).isEqualTo(testUrl);
+    }
 }

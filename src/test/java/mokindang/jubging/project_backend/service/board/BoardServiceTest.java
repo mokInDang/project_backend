@@ -6,6 +6,7 @@ import mokindang.jubging.project_backend.domain.board.vo.Content;
 import mokindang.jubging.project_backend.domain.board.vo.StartingDate;
 import mokindang.jubging.project_backend.domain.board.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
+import mokindang.jubging.project_backend.domain.member.vo.ProfileImage;
 import mokindang.jubging.project_backend.domain.member.vo.Region;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.repository.board.BoardRepository;
@@ -102,6 +103,7 @@ class BoardServiceTest {
         LocalDate now = LocalDate.of(2023, 3, 10);
         when(board.getStartingDate()).thenReturn(new StartingDate(now, LocalDate.of(2023, 3, 11)));
         when(board.getWriter().getFourLengthEmail()).thenReturn("test");
+        when(board.getWriterProfileImageUrl()).thenReturn("test_url");
         when(board.isWriter(member)).thenReturn(true);
         when(boardRepository.findById(1L)).thenReturn(Optional.of(board));
 
@@ -116,6 +118,7 @@ class BoardServiceTest {
         softly.assertThat(actual.getStartingDate()).isEqualTo("2023-03-11");
         softly.assertThat(actual.getActivityCategory()).isEqualTo("달리기");
         softly.assertThat(actual.isOnRecruitment()).isEqualTo(true);
+        softly.assertThat(actual.getWriterProfileImage()).isEqualTo("test_url");
         softly.assertThat(actual.getFirstFourLettersOfEmail()).isEqualTo("test");
         softly.assertThat(actual.isMine()).isEqualTo(true);
         softly.assertAll();

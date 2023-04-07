@@ -55,7 +55,7 @@ public class BoardService {
         return new BoardSelectionResponse(board.getId(), board.getTitle().getValue(), board.getContent().getValue(),
                 board.getCreatingDateTime(), board.getWriter().getAlias(), board.getStartingDate().getValue(),
                 board.getWritingRegion().getValue(), board.getActivityCategory().getValue(), board.isOnRecruitment(),
-                board.getWriter().getFourLengthEmail(), board.isWriter(logindMember));
+                board.getWriter().getFourLengthEmail(), board.getWriterProfileImageUrl(), board.isWriter(logindMember));
     }
 
     public MultiBoardSelectResponse selectAllBoards(final Pageable pageable) {

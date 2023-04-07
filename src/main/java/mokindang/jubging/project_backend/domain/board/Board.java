@@ -92,6 +92,11 @@ public class Board {
         return this.writer.equals(member);
     }
 
+    public String getWriterProfileImageUrl() {
+        return writer.getProfileImage()
+                .getProfileImageUrl();
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
