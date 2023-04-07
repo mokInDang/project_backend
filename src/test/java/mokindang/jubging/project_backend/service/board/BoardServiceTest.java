@@ -89,7 +89,6 @@ class BoardServiceTest {
         //given
         SoftAssertions softly = new SoftAssertions();
         Member member = mock(Member.class);
-        when(member.getProfileImage()).thenReturn(new ProfileImage("test_url", "test_name"));
         when(memberService.findByMemberId(anyLong())).thenReturn(member);
 
         Board board = mock(Board.class);
@@ -104,6 +103,7 @@ class BoardServiceTest {
         LocalDate now = LocalDate.of(2023, 3, 10);
         when(board.getStartingDate()).thenReturn(new StartingDate(now, LocalDate.of(2023, 3, 11)));
         when(board.getWriter().getFourLengthEmail()).thenReturn("test");
+        when(board.getWriterProfileImageUrl()).thenReturn("test_url");
         when(board.isWriter(member)).thenReturn(true);
         when(boardRepository.findById(1L)).thenReturn(Optional.of(board));
 
