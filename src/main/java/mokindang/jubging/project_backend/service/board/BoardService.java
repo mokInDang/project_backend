@@ -68,8 +68,9 @@ public class BoardService {
 
     private SummaryBoardResponse convertToSummaryBoard(final Board board) {
         return new SummaryBoardResponse(board.getId(), board.getTitle().getValue(), board.getContent().getValue(),
-                board.getWriter().getAlias(), board.getStartingDate().getValue(), board.getWritingRegion().getValue(),
-                board.getActivityCategory().getValue(), board.isOnRecruitment(), board.getWriter().getFourLengthEmail());
+                board.getWriter().getAlias(), board.getWriterProfileImageUrl(), board.getStartingDate().getValue(),
+                board.getWritingRegion().getValue(), board.getActivityCategory().getValue(),
+                board.isOnRecruitment(), board.getWriter().getFourLengthEmail());
     }
 
     @Transactional
