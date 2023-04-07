@@ -6,7 +6,6 @@ import mokindang.jubging.project_backend.domain.board.vo.Content;
 import mokindang.jubging.project_backend.domain.board.vo.StartingDate;
 import mokindang.jubging.project_backend.domain.board.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
-import mokindang.jubging.project_backend.domain.member.vo.ProfileImage;
 import mokindang.jubging.project_backend.domain.member.vo.Region;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.repository.board.BoardRepository;

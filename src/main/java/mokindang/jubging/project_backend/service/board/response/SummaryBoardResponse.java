@@ -20,6 +20,9 @@ public class SummaryBoardResponse {
     @Schema(description = "작성자", example = "작성자닉네임")
     private String writerAlias;
 
+    @Schema(description = "작성자 프로필 url")
+    private String writerProfileUrl;
+
     @Schema(description = "활동 예정일", example = "2023-12-11")
     private String startingDate;
 
