@@ -55,6 +55,13 @@ public class MemberService {
     public MyPageResponse getMyInformation(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 유저가 존재하지 않습니다."));
-        return new MyPageResponse(member.getAlias(), member.getRegion().getValue(), member.getProfileImage().getProfileImageUrl());
+        return new MyPageResponse(member.getProfileImage().getProfileImageUrl(), member.getAlias(), member.getRegion().getValue());
+    }
+
+    @Transactional
+    public String updateAlias(final Long memberId, final String alias){
+        Member member = findByMemberId(memberId);
+        member.updateAlias(alias);
+        return member.getAlias();
     }
 }
