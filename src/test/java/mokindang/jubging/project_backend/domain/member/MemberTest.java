@@ -70,4 +70,17 @@ class MemberTest {
         assertThat(member.getProfileImage().getProfileImageUrl()).isEqualTo("http://testimage.png");
         assertThat(member.getProfileImage().getProfileImageName()).isEqualTo("testimage");
     }
+
+    @Test
+    @DisplayName("Member의 Alias를 변경한다.")
+    void updateAlias(){
+        //given
+        Member member = new Member("test@mail.com", "test");
+
+        //when
+        member.updateAlias("newAlias");
+
+        //then
+        assertThat(member.getAlias()).isEqualTo("newAlias");
+    }
 }
