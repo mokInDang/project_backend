@@ -14,14 +14,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-class ContentTest {
+class BoardContentBodyTest {
 
     @ParameterizedTest
     @DisplayName("본문 내용을 입력받아 객체를 생성한다.")
     @ValueSource(strings = {"안녕하세요", "1111123", "hello~~~~~"})
     void create(final String input) {
         //when, then
-        assertThatCode(() -> new Content(input)).doesNotThrowAnyException();
+        assertThatCode(() -> new BoardContentBody(input)).doesNotThrowAnyException();
     }
 
     @ParameterizedTest
@@ -46,10 +46,10 @@ class ContentTest {
     void getValue() {
         //given
         String testContent = "테스트용 샘플 글 내용입니다.";
-        Content content = new Content(testContent);
+        BoardContentBody boardContentBody = new BoardContentBody(testContent);
 
         //when
-        String actual = content.getValue();
+        String actual = boardContentBody.getValue();
 
         //then
         assertThat(actual).isEqualTo(testContent);

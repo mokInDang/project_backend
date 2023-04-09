@@ -17,7 +17,7 @@ public class BoardSelectionResponse {
     private String title;
 
     @Schema(description = "게시글 본문", example = "게시글 본문 입니다.")
-    private String content;
+    private String boardContentBody;
 
     @Schema(description = "게시글 작성 일시")
     private LocalDateTime creatingDatetime;

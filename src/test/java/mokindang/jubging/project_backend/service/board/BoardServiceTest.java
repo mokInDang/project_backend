@@ -2,7 +2,7 @@ package mokindang.jubging.project_backend.service.board;
 
 import mokindang.jubging.project_backend.domain.board.ActivityCategory;
 import mokindang.jubging.project_backend.domain.board.Board;
-import mokindang.jubging.project_backend.domain.board.vo.Content;
+import mokindang.jubging.project_backend.domain.board.vo.BoardContentBody;
 import mokindang.jubging.project_backend.domain.board.vo.StartingDate;
 import mokindang.jubging.project_backend.domain.board.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
@@ -93,7 +93,7 @@ class BoardServiceTest {
         Board board = mock(Board.class);
         when(board.getId()).thenReturn(1L);
         when(board.getTitle()).thenReturn(new Title("제목입니다."));
-        when(board.getContent()).thenReturn(new Content("본문내용입니다."));
+        when(board.getBoardContentBody()).thenReturn(new BoardContentBody("본문내용입니다."));
         when(board.getWriter()).thenReturn(mock(Member.class));
         when(board.getWriter().getAlias()).thenReturn("글작성자");
         when(board.getWritingRegion()).thenReturn(Region.from("동작구"));
@@ -112,7 +112,7 @@ class BoardServiceTest {
         //then
         softly.assertThat(actual.getBoardId()).isEqualTo(1L);
         softly.assertThat(actual.getTitle()).isEqualTo("제목입니다.");
-        softly.assertThat(actual.getContent()).isEqualTo("본문내용입니다.");
+        softly.assertThat(actual.getBoardContentBody()).isEqualTo("본문내용입니다.");
         softly.assertThat(actual.getWriterAlias()).isEqualTo("글작성자");
         softly.assertThat(actual.getStartingDate()).isEqualTo("2023-03-11");
         softly.assertThat(actual.getActivityCategory()).isEqualTo("달리기");

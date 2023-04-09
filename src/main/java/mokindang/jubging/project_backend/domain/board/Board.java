@@ -3,7 +3,7 @@ package mokindang.jubging.project_backend.domain.board;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import mokindang.jubging.project_backend.domain.board.vo.Content;
+import mokindang.jubging.project_backend.domain.board.vo.BoardContentBody;
 import mokindang.jubging.project_backend.domain.board.vo.StartingDate;
 import mokindang.jubging.project_backend.domain.board.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
@@ -41,7 +41,7 @@ public class Board {
     private Title title;
 
     @Embedded
-    private Content content;
+    private BoardContentBody boardContentBody;
 
     @Embedded
     private Region writingRegion;
@@ -57,7 +57,7 @@ public class Board {
         this.startingDate = new StartingDate(creatingDate, startingDate);
         this.activityCategory = ActivityCategory.from(activityCategory);
         this.title = new Title(title);
-        this.content = new Content(content);
+        this.boardContentBody = new BoardContentBody(content);
         Region region = writer.getRegion();
         validateRegion(region);
         this.writingRegion = region;
@@ -85,7 +85,7 @@ public class Board {
         this.startingDate = new StartingDate(today, startingDate);
         this.activityCategory = ActivityCategory.from(activityCategoryValue);
         this.title = new Title(titleValue);
-        this.content = new Content(contentValue);
+        this.boardContentBody = new BoardContentBody(contentValue);
     }
 
     public boolean isWriter(final Member member) {

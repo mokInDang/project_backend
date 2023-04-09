@@ -34,7 +34,7 @@ public class BoardService {
         Member member = memberService.findByMemberId(memberId);
         LocalDateTime now = LocalDateTime.now();
         Board board = new Board(now, member, boardCreationRequest.getStartingDate(), boardCreationRequest.getActivityCategory(),
-                boardCreationRequest.getTitle(), boardCreationRequest.getContent());
+                boardCreationRequest.getTitle(), boardCreationRequest.getBoardContentBody());
         Board savedBoard = boardRepository.save(board);
         return new BoardIdResponse(savedBoard.getId());
     }
@@ -52,7 +52,7 @@ public class BoardService {
     }
 
     private BoardSelectionResponse convertToBoardSelectResponse(final Member logindMember, final Board board) {
-        return new BoardSelectionResponse(board.getId(), board.getTitle().getValue(), board.getContent().getValue(),
+        return new BoardSelectionResponse(board.getId(), board.getTitle().getValue(), board.getBoardContentBody().getValue(),
                 board.getCreatingDateTime(), board.getWriter().getAlias(), board.getStartingDate().getValue(),
                 board.getWritingRegion().getValue(), board.getActivityCategory().getValue(), board.isOnRecruitment(),
                 board.getWriter().getFourLengthEmail(), board.getWriterProfileImageUrl(), board.isWriter(logindMember));
@@ -67,7 +67,7 @@ public class BoardService {
     }
 
     private SummaryBoardResponse convertToSummaryBoard(final Board board) {
-        return new SummaryBoardResponse(board.getId(), board.getTitle().getValue(), board.getContent().getValue(),
+        return new SummaryBoardResponse(board.getId(), board.getTitle().getValue(), board.getBoardContentBody().getValue(),
                 board.getWriter().getAlias(), board.getWriterProfileImageUrl(), board.getStartingDate().getValue(),
                 board.getWritingRegion().getValue(), board.getActivityCategory().getValue(),
                 board.isOnRecruitment(), board.getWriter().getFourLengthEmail());

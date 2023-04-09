@@ -22,7 +22,7 @@ public class BoardCreationRequest {
     @NotNull
     @NotBlank
     @Schema(description = "게시글 본문", example = "예시 본문 입니다.")
-    private final String content;
+    private final String boardContentBody;
 
     @NotNull
     @NotBlank

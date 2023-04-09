@@ -161,7 +161,7 @@ class BoardControllerTest {
         actual.andExpect(status().isOk())
                 .andExpect(jsonPath("boardId").value(1L))
                 .andExpect(jsonPath("$.title").value("제목"))
-                .andExpect(jsonPath("$.content").value("본문"))
+                .andExpect(jsonPath("$.boardContentBody").value("본문"))
                 .andExpect(jsonPath("$.writerAlias").value("작성자"))
                 .andExpect(jsonPath("$.startingDate").value("2023-03-10"))
                 .andExpect(jsonPath("$.region").value("동작구"))
