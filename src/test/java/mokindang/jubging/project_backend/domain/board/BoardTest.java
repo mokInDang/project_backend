@@ -138,8 +138,8 @@ class BoardTest {
     }
 
     @Test
-    @DisplayName("게시글 작성자인지 확인한다. 작성자인경우 true 를 반환한다.")
-    void isWriter() {
+    @DisplayName("회원 Id 를 입력받아 게시글 작성자인지 확인한다. 작성자인경우 true 를 반환한다.")
+    void isSameWriterId() {
         //given
         LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
         Member writer = new Member("test1@email.com", "test");
@@ -152,16 +152,18 @@ class BoardTest {
         em.flush();
         em.clear();
 
+        Long writerId = writer.getId();
+
         //when
-        boolean actual = board.isWriter(writer);
+        boolean actual = board.isSameWriterId(writerId);
 
         //then
         assertThat(actual).isTrue();
     }
 
     @Test
-    @DisplayName("게시글 작성자인지 확인한다. 작성자가 아닌경우 false 를 반환한다.")
-    void isWriterWhenNoneWriter() {
+    @DisplayName("회원 ID 를 입력받아 게시글 작성자인지 확인한다. 작성자가 아닌경우 false 를 반환한다.")
+    void isSameWriterIdFailedByNoneWriter() {
         //given
         LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
         Member writer = new Member("test1@email.com", "test");
@@ -178,7 +180,7 @@ class BoardTest {
         em.clear();
 
         //when
-        boolean actual = board.isWriter(noneWriter);
+        boolean actual = board.isSameWriterId(noneWriter.getId());
 
         //then
         assertThat(actual).isFalse();
