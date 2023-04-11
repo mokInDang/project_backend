@@ -8,6 +8,7 @@ import mokindang.jubging.project_backend.domain.board.vo.StartingDate;
 import mokindang.jubging.project_backend.domain.board.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.member.vo.Region;
+import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -70,7 +71,8 @@ public class Board {
         }
     }
 
-    public void closeRecruitment() {
+    public void closeRecruitment(final Long memberId) {
+        validatePermission(memberId);
         this.onRecruitment = false;
     }
 
@@ -80,7 +82,9 @@ public class Board {
         }
     }
 
-    public void modify(final LocalDate startingDate, final String activityCategoryValue, final String titleValue, final String contentValue) {
+    public void modify(final Long memberId, final LocalDate startingDate, final String activityCategoryValue,
+                       final String titleValue, final String contentValue) {
+        validatePermission(memberId);
         LocalDate today = LocalDate.now();
         this.startingDate = new StartingDate(today, startingDate);
         this.activityCategory = ActivityCategory.from(activityCategoryValue);
@@ -88,9 +92,15 @@ public class Board {
         this.content = new Content(contentValue);
     }
 
-    public boolean isSameWriterId(final Long writerId) {
+    public boolean isSameWriterId(final Long memberId) {
         return writer.getId()
-                .equals(writerId);
+                .equals(memberId);
+    }
+
+    public void validatePermission(final Long memberId) {
+        if (!isSameWriterId(memberId)) {
+            throw new ForbiddenException("작성자 권한이 없습니다.");
+        }
     }
 
     public String getWriterProfileImageUrl() {
