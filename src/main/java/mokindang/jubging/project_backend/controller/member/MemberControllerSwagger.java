@@ -51,15 +51,6 @@ public interface MemberControllerSwagger {
     @GetMapping("/mypage")
     ResponseEntity<MyPageResponse> callMyPage(@Parameter(hidden = true) @Login Long memberId);
 
-    @Operation(summary = "회원의 내 정보 수정페이지 조회", parameters = {
-            @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true)
-    })
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "조회완료")
-    })
-    @GetMapping("/edit-mypage")
-    ResponseEntity<MyPageResponse> callEditMyPage(@Parameter(hidden = true) @Login Long memberId);
-
     @Operation(summary = "회원의 내 정보 수정", parameters = {
             @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true)
     })

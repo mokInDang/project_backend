@@ -2,9 +2,7 @@ package mokindang.jubging.project_backend.controller.member;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.member.vo.Region;
-import mokindang.jubging.project_backend.service.file.FileResponse;
 import mokindang.jubging.project_backend.service.member.MemberService;
 import mokindang.jubging.project_backend.service.member.request.MyPageEditRequest;
 import mokindang.jubging.project_backend.service.member.request.RegionUpdateRequest;
@@ -38,20 +36,10 @@ public class MemberController implements MemberControllerSwagger{
         return ResponseEntity.ok()
                 .body(myPageResponse);
     }
-
-    @GetMapping("/edit-mypage")
-    public ResponseEntity<MyPageResponse> callEditMyPage(@Login Long memberId) {
-        MyPageResponse myPageResponse = memberService.getMyInformation(memberId);
-        return ResponseEntity.ok()
-                .body(myPageResponse);
-    }
-
     @PatchMapping(value = "/edit-mypage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<MyPageResponse> editMyPage(@Login Long memberId, @ModelAttribute MyPageEditRequest myPageEditRequest){
-        Member member = memberService.findByMemberId(memberId);
-        FileResponse fileResponse = memberService.updateProfileImage(memberId, myPageEditRequest.getProfileImage());
-        String newAlias = memberService.updateAlias(memberId, myPageEditRequest.getAlias());
+        MyPageResponse myPageResponse = memberService.editMypage(memberId, myPageEditRequest);
         return ResponseEntity.ok()
-                .body(new MyPageResponse(fileResponse.getUploadFileUrl(), newAlias, member.getRegion().getValue()));
+                .body(myPageResponse);
     }
 }
