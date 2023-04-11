@@ -7,12 +7,15 @@ import mokindang.jubging.project_backend.service.board.request.BoardCreationRequ
 import mokindang.jubging.project_backend.service.board.request.BoardModificationRequest;
 import mokindang.jubging.project_backend.service.board.response.BoardIdResponse;
 import mokindang.jubging.project_backend.service.board.response.BoardSelectionResponse;
+import mokindang.jubging.project_backend.service.board.response.MultiBoardSelectResponse;
+import mokindang.jubging.project_backend.service.board.response.SummaryBoardResponse;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -20,6 +23,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -358,5 +362,28 @@ class BoardControllerTest {
         //then
         actual.andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.error").value("글 작성자만 모집 마감할 수 있습니다."));
+    }
+
+    @Test
+    @DisplayName("지역 게시글 조회 시, HTTP 200 코드와 함께 요청 회원 지역에 해당하는 게시글 리스트를 반환한다.")
+    void selectRegionBoards() throws Exception {
+        //given
+        List<SummaryBoardResponse> summaryBoardResponses = List.of(new SummaryBoardResponse(1L, "제목", "본문", "작성자이름",
+                        "2023-11-11", "동작구", "산책", true,
+                        "four"),
+                new SummaryBoardResponse(1L, "제목2", "본문2", "작성자이름2",
+                        "2023-11-11", "동작구", "산책", true,
+                        "note"));
+        when(boardService.selectRegionBoards(anyLong(), any(Pageable.class)))
+                .thenReturn(new MultiBoardSelectResponse(summaryBoardResponses, false));
+
+        //when
+        ResultActions actual = mockMvc.perform(get("/api/boards/my-region").param("page", "3")
+                .param("size", "2"));
+
+        //then
+        actual.andExpect(status().isOk())
+                .andExpect(jsonPath("$.boards").exists())
+                .andExpect(jsonPath("$.hasNext").value(false));
     }
 }

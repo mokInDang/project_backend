@@ -13,6 +13,7 @@ import mokindang.jubging.project_backend.service.board.request.BoardCreationRequ
 import mokindang.jubging.project_backend.service.board.request.BoardModificationRequest;
 import mokindang.jubging.project_backend.service.board.response.BoardIdResponse;
 import mokindang.jubging.project_backend.service.board.response.BoardSelectionResponse;
+import mokindang.jubging.project_backend.service.board.response.MultiBoardSelectResponse;
 import mokindang.jubging.project_backend.service.member.MemberService;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
@@ -21,9 +22,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -249,8 +256,35 @@ class BoardServiceTest {
         Long memberId = 1L;
         Long boardId = 1L;
 
-        //when, then
         assertThatThrownBy(() -> boardService.closeRecruitment(memberId, boardId)).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하지 않는 게시물입니다.");
+    }
+
+    @Test
+    @DisplayName("요청 회원의 지역에 해당하는 게시글 리스트를 반환한다.")
+    void selectRegionBoards() {
+        //given
+        LocalDateTime now = LocalDateTime.of(2023, 3, 25, 1, 1);
+        Member dongJackMember = new Member("test@mail.com", "동작이");
+        dongJackMember.updateRegion("동작구");
+        Board dongJackBoard1 = new Board(now.plusDays(1), dongJackMember, LocalDate.of(2023, 3, 27), "달리기", "제목1", "본문1");
+        Board dongJackBoard2 = new Board(now, dongJackMember, LocalDate.of(2023, 3, 27), "산책", "제목2", "본문2");
+        Slice<Board> slice = new SliceImpl<>(List.of(dongJackBoard1,dongJackBoard2));
+
+        Member member = mock(Member.class);
+        when(member.getRegion()).thenReturn(Region.from("동작구"));
+        when(memberService.findByMemberId(1L)).thenReturn(member);
+        when(boardRepository.selectRegionBoards(any(Region.class), any(Pageable.class)))
+                .thenReturn(slice);
+
+        Long memberId = 1L;
+        Pageable pageable = PageRequest.of(0, 2);
+
+        //when
+        MultiBoardSelectResponse multiBoardSelectResponse = boardService.selectRegionBoards(1L, pageable);
+
+        //then
+        assertThat(multiBoardSelectResponse.getBoards()).hasSize(2);
+        verify(boardRepository, times(1)).selectRegionBoards(any(Region.class), any(Pageable.class));
     }
 }
