@@ -154,7 +154,7 @@ class BoardControllerTest {
         //given
         LocalDateTime now = LocalDateTime.of(2023, 3, 30, 11, 11);
         BoardSelectionResponse boardSelectionResponse = new BoardSelectionResponse(1L, "제목", "본문", now, "작성자",
-                "2023-03-10", "동작구", "달리기", true, "test", "test_profile_url",true);
+                "2023-03-10", "동작구", "달리기", true, "test", "test_profile_url", true);
         when(boardService.select(anyLong(), anyLong())).thenReturn(boardSelectionResponse);
 
         //when
@@ -368,11 +368,11 @@ class BoardControllerTest {
     @DisplayName("지역 게시글 조회 시, HTTP 200 코드와 함께 요청 회원 지역에 해당하는 게시글 리스트를 반환한다.")
     void selectRegionBoards() throws Exception {
         //given
-        List<SummaryBoardResponse> summaryBoardResponses = List.of(new SummaryBoardResponse(1L, "제목", "본문", "작성자이름",
-                        "2023-11-11", "동작구", "산책", true,
+        List<SummaryBoardResponse> summaryBoardResponses = List.of(new SummaryBoardResponse(1L, "제목", "본문", "작성자이름"
+                        , "test_profile_url", "2023-11-11", "동작구", "산책", true,
                         "four"),
                 new SummaryBoardResponse(1L, "제목2", "본문2", "작성자이름2",
-                        "2023-11-11", "동작구", "산책", true,
+                        "test_profile_url","2023-11-11", "동작구", "산책", true,
                         "note"));
         when(boardService.selectRegionBoards(anyLong(), any(Pageable.class)))
                 .thenReturn(new MultiBoardSelectResponse(summaryBoardResponses, false));
