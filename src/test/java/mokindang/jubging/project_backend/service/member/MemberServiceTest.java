@@ -3,7 +3,7 @@ package mokindang.jubging.project_backend.service.member;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.member.vo.Region;
 import mokindang.jubging.project_backend.repository.member.MemberRepository;
-import mokindang.jubging.project_backend.service.member.request.MyPageEditRequest;
+import mokindang.jubging.project_backend.service.file.FileService;
 import mokindang.jubging.project_backend.service.member.request.RegionUpdateRequest;
 import mokindang.jubging.project_backend.service.member.response.MyPageResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -12,7 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Optional;
 
@@ -32,6 +32,9 @@ class MemberServiceTest {
 
     @InjectMocks
     private MemberService memberService;
+
+    @MockBean
+    private FileService fileService;
 
     @Test
     @DisplayName("Member 를 저장한다.")
@@ -103,20 +106,5 @@ class MemberServiceTest {
         assertThat(myInformation.getAlias()).isEqualTo("test");
         assertThat(myInformation.getRegion()).isEqualTo("부천시");
         assertThat(myInformation.getProfileImageUrl()).isEqualTo("DEFAULT_PROFILE_IMAGE_URL");
-    }
-
-    @Test
-    @DisplayName("새롭게 입력받은 값으로 alias를 업데이트한다.")
-    void updateAlias(){
-        //given
-        Member member = new Member("test@email.com", "test");
-        MyPageEditRequest myPageEditRequest = new MyPageEditRequest(new MockMultipartFile("test", "png".getBytes()), "newAlias");
-        when(memberRepository.findById(1L)).thenReturn(Optional.of(member));
-
-        //when
-        String newAlias = memberService.updateAlias(1L, String.valueOf(myPageEditRequest));
-
-        //then
-        assertThat(member.getAlias()).isEqualTo(newAlias);
     }
 }

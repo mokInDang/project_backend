@@ -3,8 +3,6 @@ package mokindang.jubging.project_backend.controller.member;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.member.vo.Region;
-import mokindang.jubging.project_backend.service.file.FileResponse;
-import mokindang.jubging.project_backend.service.file.FileService;
 import mokindang.jubging.project_backend.service.member.MemberService;
 import mokindang.jubging.project_backend.service.member.request.RegionUpdateRequest;
 import mokindang.jubging.project_backend.service.member.response.MyPageResponse;
@@ -41,8 +39,6 @@ class MemberControllerTest {
     @MockBean
     private MemberService memberService;
 
-    @MockBean
-    private FileService fileService;
 
     @Test
     @DisplayName("대한민국 영토 범위 안의 위도와 경도 입력 시 이에 대응하는 Region을 반환한다.")
@@ -118,32 +114,13 @@ class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("내정보수정 조회 시 profileImageUrl, alias, region을 반환한다")
-    void callEditMyPage() throws Exception {
-        //given
-        MyPageResponse mypageResponse = new MyPageResponse("https://test.png", "minho", "동작구");
-        when(memberService.getMyInformation(any())).thenReturn(mypageResponse);
-
-        //when
-        ResultActions resultActions = mockMvc.perform(get("/api/member/edit-mypage"));
-
-        //then
-        resultActions.andExpect(status().isOk())
-                .andExpect(jsonPath("$.alias").value("minho"))
-                .andExpect(jsonPath("$.region").value("동작구"))
-                .andExpect(jsonPath("$.profileImageUrl").value("https://test.png"));
-    }
-
-    @Test
     @DisplayName("내정보수정 시 입력 된 이미지, 별칭으로 멤버를 업데이트한 후 업로드된 이미지의 url, 업데이트된 별칭, 멤버의 지역을 반환한다.")
     void editMyPage() throws Exception {
         //given
         Member member = new Member("test123@test.com", "minho");
         member.updateRegion("동작구");
-        FileResponse fileResponse = new FileResponse("https://test.png", "test.png");
-        when(memberService.findByMemberId(any())).thenReturn(member);
-        when(memberService.updateProfileImage(any(), any())).thenReturn(fileResponse);
-        when(memberService.updateAlias(any(), any())).thenReturn("newAlias");
+        MyPageResponse myPageResponse = new MyPageResponse("https://test.png", "newAlias", "동작구");
+        when(memberService.editMypage(any(), any())).thenReturn(myPageResponse);
 
         //when
         ResultActions resultActions = mockMvc.perform(patch("/api/member/edit-mypage")
