@@ -61,7 +61,8 @@ public class FileService {
     }
 
     public void deleteFile(Member member) {
-        String uploadFileName = member.getProfileImage().getProfileImageName();
+        String uploadFileName = member.getProfileImage()
+                .getProfileImageName();
         String uploadFilePath = PROFILE_IMAGE;
 
         if (checkNameDefault(uploadFileName)) return;
