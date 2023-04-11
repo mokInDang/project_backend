@@ -88,8 +88,9 @@ public class Board {
         this.content = new Content(contentValue);
     }
 
-    public boolean isWriter(final Member member) {
-        return this.writer.equals(member);
+    public boolean isSameWriterId(final Long writerId) {
+        return writer.getId()
+                .equals(writerId);
     }
 
     public String getWriterProfileImageUrl() {
