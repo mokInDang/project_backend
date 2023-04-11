@@ -7,7 +7,6 @@ import mokindang.jubging.project_backend.domain.board.vo.StartingDate;
 import mokindang.jubging.project_backend.domain.board.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.member.vo.Region;
-import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.repository.board.BoardRepository;
 import mokindang.jubging.project_backend.service.board.request.BoardCreationRequest;
 import mokindang.jubging.project_backend.service.board.request.BoardModificationRequest;
@@ -103,7 +102,7 @@ class BoardServiceTest {
         when(board.getStartingDate()).thenReturn(new StartingDate(now, LocalDate.of(2023, 3, 11)));
         when(board.getWriter().getFourLengthEmail()).thenReturn("test");
         when(board.getWriterProfileImageUrl()).thenReturn("test_url");
-        when(board.isWriter(member)).thenReturn(true);
+        when(board.isSameWriterId(anyLong())).thenReturn(true);
         when(boardRepository.findById(1L)).thenReturn(Optional.of(board));
 
         //when
@@ -128,13 +127,11 @@ class BoardServiceTest {
             " 삭제 후 삭제된 게시글 Id를 가진 BoardIdResponse 를 반환한다.")
     void delete() {
         //given
-        Member writer = mock(Member.class);
-        when(memberService.findByMemberId(1L)).thenReturn(writer);
         Board board = mock(Board.class);
-        when(board.isWriter(writer)).thenReturn(true);
+        when(boardRepository.findById(anyLong())).thenReturn(Optional.of(board));
         Long boardId = 1L;
-        when(boardRepository.findById(boardId)).thenReturn(Optional.of(board));
         when(board.getId()).thenReturn(boardId);
+
 
         Long writerId = 1L;
         //when
@@ -149,8 +146,6 @@ class BoardServiceTest {
     @DisplayName("게시글 삭제 요청 시, 존재하지 않는 게시물에 대한 접근이면 예외를 발생한다.")
     void deleteFailedByNonexistentBoard() {
         //given
-        Member writer = mock(Member.class);
-        when(memberService.findByMemberId(1L)).thenReturn(writer);
         when(boardRepository.findById(anyLong())).thenThrow(new IllegalArgumentException("존재하지 않는 게시물 입니다."));
 
         //when, then
@@ -159,30 +154,12 @@ class BoardServiceTest {
     }
 
     @Test
-    @DisplayName("게시글 삭제 요청 시, 삭제 요청 회원이 게시글 작성자가 아닌 경우 예외를 반환한다.")
-    void deleteFailedByNoneMatchingBoardWhitWritingMember() {
-        //given
-        Member member = mock(Member.class);
-        when(memberService.findByMemberId(1L)).thenReturn(member);
-        Board board = mock(Board.class);
-        when(board.isWriter(any(Member.class))).thenReturn(false);
-        when(boardRepository.findById(anyLong())).thenReturn(Optional.of(board));
-
-        //when, then
-        assertThatThrownBy(() -> boardService.delete(1L, 1L)).isInstanceOf(ForbiddenException.class)
-                .hasMessage("글 작성자만 게시글을 삭제할 수 있습니다.");
-    }
-
-    @Test
     @DisplayName("게시글을 수정한다.")
     void modify() {
         //given
-        Member member = mock(Member.class);
-        when(memberService.findByMemberId(anyLong())).thenReturn(member);
         Board board = mock(Board.class);
-        when(board.getId()).thenReturn(1L);
-        when(board.isWriter(any(Member.class))).thenReturn(true);
         when(boardRepository.findById(anyLong())).thenReturn(Optional.of(board));
+        when(board.getId()).thenReturn(1L);
 
         Long memberId = 1L;
         Long boardId = 1L;
@@ -194,18 +171,15 @@ class BoardServiceTest {
 
         //then
         assertThat(actual.getBoardId()).isEqualTo(1L);
-        verify(board, times(1)).modify(any(), any(), any(), any());
+        verify(board, times(1)).modify(anyLong(), any(), any(), any(), any());
     }
 
     @Test
     @DisplayName("게시글의 모집을 마감한다.")
     void closeRecruitment() {
         //given
-        Member member = mock(Member.class);
-        when(memberService.findByMemberId(anyLong())).thenReturn(member);
         Board board = mock(Board.class);
         when(board.getId()).thenReturn(1L);
-        when(board.isWriter(any(Member.class))).thenReturn(true);
         when(boardRepository.findById(anyLong())).thenReturn(Optional.of(board));
 
         Long memberId = 1L;
@@ -216,33 +190,13 @@ class BoardServiceTest {
 
         //then
         assertThat(boardIdResponse.getBoardId()).isEqualTo(1L);
-        verify(board, times(1)).closeRecruitment();
-    }
-
-    @Test
-    @DisplayName("게시글 모집 마감 요청 시, 입력 받은 memberId 를 가진 회원이 작성한 게시글이 아닌 경우 예외를 반환한다.")
-    void closeRecruitmentFailedByNoneMatchingBoardWhitWritingMember() {
-        //given
-        Member member = mock(Member.class);
-        when(memberService.findByMemberId(anyLong())).thenReturn(member);
-        Board board = mock(Board.class);
-        when(boardRepository.findById(anyLong())).thenReturn(Optional.of(board));
-        when(board.isWriter(any(Member.class))).thenReturn(false);
-
-        Long memberId = 1L;
-        Long boardId = 1L;
-
-        //when, then
-        assertThatThrownBy(() -> boardService.closeRecruitment(memberId, boardId)).isInstanceOf(ForbiddenException.class)
-                .hasMessage("글 작성자만 모집 마감할 수 있습니다.");
+        verify(board, times(1)).closeRecruitment(memberId);
     }
 
     @Test
     @DisplayName("게시글 모집 마감 요청 시, 입력 받은 boardId 를 가진 게시글이 존재하지 않는다면 예외를 반환한다.")
     void closeRecruitmentFailedByNoneExistBoard() {
         //given
-        Member member = mock(Member.class);
-        when(memberService.findByMemberId(anyLong())).thenReturn(member);
         Board board = mock(Board.class);
         when(boardRepository.findById(anyLong())).thenReturn(Optional.empty());
 
