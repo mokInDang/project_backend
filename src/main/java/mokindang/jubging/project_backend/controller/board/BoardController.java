@@ -69,11 +69,4 @@ public class BoardController implements BoardControllerSwagger {
         return ResponseEntity.ok()
                 .body(boardIdResponse);
     }
-
-    @GetMapping("/my-region")
-    public ResponseEntity<MultiBoardSelectResponse> selectRegionBoards(@Login final Long memberId, final Pageable pageable) {
-        MultiBoardSelectResponse multiBoardSelectResponse = boardService.selectRegionBoards(memberId, pageable);
-        return ResponseEntity.ok()
-                .body(multiBoardSelectResponse);
-    }
 }

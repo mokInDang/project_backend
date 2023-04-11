@@ -1,7 +1,6 @@
 package mokindang.jubging.project_backend.repository.board;
 
 import mokindang.jubging.project_backend.domain.board.Board;
-import mokindang.jubging.project_backend.domain.member.vo.Region;
 import org.hibernate.annotations.BatchSize;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -20,8 +19,4 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     @BatchSize(size = 1000)
     @Query("SELECT b FROM Board b")
     Slice<Board> selectBoards(final Pageable pageable);
-
-    @BatchSize(size = 1000)
-    @Query("SELECT b FROM Board b WHERE b.writingRegion = :region ORDER BY b.creatingDateTime DESC")
-    Slice<Board> selectRegionBoards(final Region region, final Pageable pageable);
 }
