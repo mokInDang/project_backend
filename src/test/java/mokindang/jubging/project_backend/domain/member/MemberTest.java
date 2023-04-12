@@ -51,7 +51,7 @@ class MemberTest {
         Member member = new Member("testfourlength123@mail.com", "test");
 
         //when
-        String fourLengthEmail = member.getFourLengthEmail();
+        String fourLengthEmail = member.getFirstFourDigitsOfWriterEmail();
 
         //then
         assertThat(fourLengthEmail).isEqualTo("test");

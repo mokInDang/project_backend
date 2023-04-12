@@ -46,7 +46,7 @@ public class Member {
         this.profileImage.updateProfileImage(profileImageUrl, profileImageName);
     }
 
-    public String getFourLengthEmail() {
+    public String getFirstFourDigitsOfWriterEmail() {
         return this.email.substring(0, 4);
     }
 

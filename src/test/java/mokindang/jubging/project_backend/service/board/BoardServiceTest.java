@@ -88,19 +88,17 @@ class BoardServiceTest {
         SoftAssertions softly = new SoftAssertions();
         Member member = mock(Member.class);
         when(memberService.findByMemberId(anyLong())).thenReturn(member);
-
         Board board = mock(Board.class);
         when(board.getId()).thenReturn(1L);
         when(board.getTitle()).thenReturn(new Title("제목입니다."));
         when(board.getContent()).thenReturn(new Content("본문내용입니다."));
-        when(board.getWriter()).thenReturn(mock(Member.class));
-        when(board.getWriter().getAlias()).thenReturn("글작성자");
+        when(board.getWriterAlias()).thenReturn("글작성자");
         when(board.getWritingRegion()).thenReturn(Region.from("동작구"));
         when(board.getActivityCategory()).thenReturn(ActivityCategory.RUNNING);
         when(board.isOnRecruitment()).thenReturn(true);
         LocalDate now = LocalDate.of(2023, 3, 10);
         when(board.getStartingDate()).thenReturn(new StartingDate(now, LocalDate.of(2023, 3, 11)));
-        when(board.getWriter().getFourLengthEmail()).thenReturn("test");
+        when(board.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
         when(board.getWriterProfileImageUrl()).thenReturn("test_url");
         when(board.isSameWriterId(anyLong())).thenReturn(true);
         when(boardRepository.findById(1L)).thenReturn(Optional.of(board));
