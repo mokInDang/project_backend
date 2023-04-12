@@ -61,10 +61,10 @@ class BoardTest {
     @DisplayName("회원 Id 를 받아 모집 여부를 마감한다.")
     void closeRecruitment() {
         //given
-
         Board board = createBoardWithTestWriter();
         Long memberId = board.getWriter()
                 .getId();
+
         //when
         board.closeRecruitment(memberId);
 
@@ -154,28 +154,32 @@ class BoardTest {
                 "달리기", "게시판 제목", "게시판 내용 작성 테스트");
 
         //when
-        String actual = board
-                .getWriter()
-                .getAlias();
+        String actual = board.getWriterAlias();
 
         //then
         assertThat(actual).isEqualTo("민호");
     }
 
     @Test
+    @DisplayName("게시글 작성자의 이메일 앞 4글자를 반환한다.")
+    void getFirstFourDigitsOfWriterEmail() {
+        //given
+        Board board = createBoardWithTestWriter();
+        String expect = "test";
+
+        //when
+        String actual = board.getFirstFourDigitsOfWriterEmail();
+
+        //then
+        assertThat(actual).isEqualTo(expect);
+    }
+
+    @Test
     @DisplayName("회원 Id 를 입력받아 게시글 작성자인지 확인한다. 작성자인경우 true 를 반환한다.")
     void isSameWriterId() {
         //given
-        LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
-        Member writer = new Member("test1@email.com", "test");
-        writer.updateRegion("동작구");
-        Board board = new Board(now, writer, LocalDate.of(2025, 2, 11), "달리기",
-                "제목", "본문내용");
-
-        em.persist(writer);
-        em.persist(board);
-        em.flush();
-        em.clear();
+        Board board = createBoardWithTestWriter();
+        Member writer = board.getWriter();
 
         Long writerId = writer.getId();
 
@@ -190,22 +194,12 @@ class BoardTest {
     @DisplayName("회원 ID 를 입력받아 게시글 작성자인지 확인한다. 작성자가 아닌경우 false 를 반환한다.")
     void isSameWriterIdFailed() {
         //given
-        LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
-        Member writer = new Member("test1@email.com", "test");
-        writer.updateRegion("동작구");
-        Board board = new Board(now, writer, LocalDate.of(2025, 2, 11), "달리기",
-                "제목", "본문내용");
-
-        Member noneWriter = new Member("noneWriter@test.com", "noneWriter");
-
-        em.persist(writer);
-        em.persist(board);
-        em.persist(noneWriter);
-        em.flush();
-        em.clear();
+        Board board = createBoardWithTestWriter();
+        long noneWriterId = board.getWriter()
+                .getId() + 1;
 
         //when
-        boolean actual = board.isSameWriterId(noneWriter.getId());
+        boolean actual = board.isSameWriterId(noneWriterId);
 
         //then
         assertThat(actual).isFalse();
@@ -229,24 +223,19 @@ class BoardTest {
     void modify() {
         //given
         SoftAssertions softly = new SoftAssertions();
-        LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
-        Member writer = new Member("test1@email.com", "test");
-        writer.updateRegion("동작구");
-        Board board = new Board(now, writer, LocalDate.of(2025, 2, 11), "달리기",
-                "제목", "본문내용");
+
+        Board board = createBoardWithTestWriter();
+        Long writerId = board.getWriter()
+                .getId();
 
         String newActivityCategory = "산책";
         String newTitleValue = "새로운 제목입니다.";
         String newContentValue = "새로운 본문 내용입니다.";
         LocalDate newStartingDate = LocalDate.parse("2023-11-13");
 
-        em.persist(writer);
-        em.persist(board);
-        em.flush();
-        em.clear();
 
         //when
-        board.modify(writer.getId(), newStartingDate, newActivityCategory, newTitleValue, newContentValue);
+        board.modify(writerId, newStartingDate, newActivityCategory, newTitleValue, newContentValue);
 
         //then
         softly.assertThat(board.getStartingDate().getValue()).isEqualTo("2023-11-13");
