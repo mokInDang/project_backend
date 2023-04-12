@@ -108,6 +108,14 @@ public class Board {
                 .getProfileImageUrl();
     }
 
+    public String getWriterAlias() {
+        return writer.getAlias();
+    }
+
+    public String getFirstFourDigitsOfWriterEmail() {
+        return writer.getFirstFourDigitsOfWriterEmail();
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
