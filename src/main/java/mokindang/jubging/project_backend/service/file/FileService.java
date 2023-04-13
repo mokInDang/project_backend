@@ -28,7 +28,9 @@ public class FileService {
     private final AmazonS3Client amazonS3Client;
 
     public FileResponse uploadFile(MultipartFile multipartFile, Member member) {
-        checkImageEmpty(multipartFile);
+        if(multipartFile.isEmpty()){
+            return new FileResponse(member.getProfileImage().getProfileImageUrl(), member.getProfileImage().getProfileImageName());
+        }
 
         String uploadFilePath = PROFILE_IMAGE;
         String originalFileName = multipartFile.getOriginalFilename();
@@ -58,14 +60,9 @@ public class FileService {
         return objectMetadata;
     }
 
-    private static void checkImageEmpty(MultipartFile multipartFile) {
-        if (multipartFile.isEmpty()) {
-            throw new IllegalArgumentException("이미지가 선택되지 않았습니다.");
-        }
-    }
-
     public void deleteFile(Member member) {
-        String uploadFileName = member.getProfileImage().getProfileImageName();
+        String uploadFileName = member.getProfileImage()
+                .getProfileImageName();
         String uploadFilePath = PROFILE_IMAGE;
 
         if (checkNameDefault(uploadFileName)) return;

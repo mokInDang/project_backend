@@ -55,7 +55,7 @@ public interface BoardControllerSwagger {
     @GetMapping("/{boardId}")
     ResponseEntity<BoardSelectionResponse> selectBoard(@Parameter(hidden = true) @Login Long memberId, @PathVariable final Long boardId);
 
-    @Operation(description = "전체 게시글 리스트 조회")
+    @Operation(summary = "전체 게시글 리스트 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "전체 게시글 리스트 조회 완료"),
     })
@@ -92,4 +92,11 @@ public interface BoardControllerSwagger {
     @PatchMapping("/{boardId}")
     ResponseEntity<BoardIdResponse> modifyBoard(@Parameter(hidden = true) @Login final Long memberId, @PathVariable final Long boardId,
                                                 @RequestBody final BoardModificationRequest modificationRequest);
+
+    @Operation(summary = "지역 게시글 리스트 게시글 조회", parameters = {
+            @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true),
+            @Parameter(name = SET_COOKIE, description = "refreshToken", in = ParameterIn.COOKIE, required = true)}
+    )
+    @GetMapping("/my-region")
+    ResponseEntity<MultiBoardSelectResponse> selectRegionBoards(@Login final Long memberId, final Pageable pageable);
 }

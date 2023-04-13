@@ -46,6 +46,10 @@ public class Member {
         this.profileImage.updateProfileImage(profileImageUrl, profileImageName);
     }
 
+    public void updateAlias(final String alias){
+        this.alias = alias;
+    }
+
     public String getFirstFourDigitsOfWriterEmail() {
         return this.email.substring(0, 4);
     }

@@ -3,6 +3,7 @@ package mokindang.jubging.project_backend.service.board;
 import lombok.RequiredArgsConstructor;
 import mokindang.jubging.project_backend.domain.board.Board;
 import mokindang.jubging.project_backend.domain.member.Member;
+import mokindang.jubging.project_backend.domain.member.vo.Region;
 import mokindang.jubging.project_backend.repository.board.BoardRepository;
 import mokindang.jubging.project_backend.service.board.request.BoardCreationRequest;
 import mokindang.jubging.project_backend.service.board.request.BoardModificationRequest;
@@ -83,5 +84,16 @@ public class BoardService {
         Board board = findById(boardId);
         board.closeRecruitment(memberId);
         return new BoardIdResponse(board.getId());
+    }
+
+    @Transactional
+    public MultiBoardSelectResponse selectRegionBoards(final Long memberId, final Pageable pageable) {
+        Member loggedInMember = memberService.findByMemberId(memberId);
+        Region targetRegion = loggedInMember.getRegion();
+        Slice<Board> boards = boardRepository.selectRegionBoards(targetRegion, pageable);
+        List<SummaryBoardResponse> summaryBoards = boards.stream()
+                .map(this::convertToSummaryBoard)
+                .collect(Collectors.toUnmodifiableList());
+        return new MultiBoardSelectResponse(summaryBoards, boards.hasNext());
     }
 }
