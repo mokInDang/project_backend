@@ -3,7 +3,6 @@ package mokindang.jubging.project_backend.service.board;
 import lombok.RequiredArgsConstructor;
 import mokindang.jubging.project_backend.domain.board.Board;
 import mokindang.jubging.project_backend.domain.member.Member;
-import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.repository.board.BoardRepository;
 import mokindang.jubging.project_backend.service.board.request.BoardCreationRequest;
 import mokindang.jubging.project_backend.service.board.request.BoardModificationRequest;
@@ -43,19 +42,12 @@ public class BoardService {
         Member loggedInMember = memberService.findByMemberId(memberId);
         Board board = findById(boardId);
         board.checkRegion(loggedInMember.getRegion());
-        return convertToBoardSelectResponse(loggedInMember, board);
+        return new BoardSelectionResponse(board, board.isSameWriterId(memberId));
     }
 
     private Board findById(final Long boardId) {
         return boardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
-    }
-
-    private BoardSelectionResponse convertToBoardSelectResponse(final Member logindMember, final Board board) {
-        return new BoardSelectionResponse(board.getId(), board.getTitle().getValue(), board.getContent().getValue(),
-                board.getCreatingDateTime(), board.getWriter().getAlias(), board.getStartingDate().getValue(),
-                board.getWritingRegion().getValue(), board.getActivityCategory().getValue(), board.isOnRecruitment(),
-                board.getWriter().getFourLengthEmail(), board.getWriterProfileImageUrl(), board.isWriter(logindMember));
     }
 
     public MultiBoardSelectResponse selectAllBoards(final Pageable pageable) {
@@ -70,40 +62,29 @@ public class BoardService {
         return new SummaryBoardResponse(board.getId(), board.getTitle().getValue(), board.getContent().getValue(),
                 board.getWriter().getAlias(), board.getWriterProfileImageUrl(), board.getStartingDate().getValue(),
                 board.getWritingRegion().getValue(), board.getActivityCategory().getValue(),
-                board.isOnRecruitment(), board.getWriter().getFourLengthEmail());
+                board.isOnRecruitment(), board.getWriter().getFirstFourDigitsOfWriterEmail());
     }
 
     @Transactional
     public BoardIdResponse delete(final Long memberId, final Long boardId) {
-        Member loggedInMember = memberService.findByMemberId(memberId);
         Board board = findById(boardId);
-        validatePermission(board, loggedInMember, "글 작성자만 게시글을 삭제할 수 있습니다.");
+        board.validatePermission(memberId);
         boardRepository.delete(board);
         return new BoardIdResponse(board.getId());
     }
 
-    private void validatePermission(final Board board, final Member loggedInMember, final String message) {
-        if (!board.isWriter(loggedInMember)) {
-            throw new ForbiddenException(message);
-        }
-    }
-
     @Transactional
     public BoardIdResponse modify(final Long memberId, final Long boardId, final BoardModificationRequest boardModificationRequest) {
-        Member loggedInMember = memberService.findByMemberId(memberId);
         Board board = findById(boardId);
-        validatePermission(board, loggedInMember, "글 작성자만 게시글을 수정할 수 있습니다.");
-        board.modify(boardModificationRequest.getStartingDate(), boardModificationRequest.getActivityCategory(),
+        board.modify(memberId, boardModificationRequest.getStartingDate(), boardModificationRequest.getActivityCategory(),
                 boardModificationRequest.getTitle(), boardModificationRequest.getContent());
         return new BoardIdResponse(board.getId());
     }
 
     @Transactional
     public BoardIdResponse closeRecruitment(final Long memberId, final Long boardId) {
-        Member loggedInMember = memberService.findByMemberId(memberId);
         Board board = findById(boardId);
-        validatePermission(board, loggedInMember, "글 작성자만 모집 마감할 수 있습니다.");
-        board.closeRecruitment();
+        board.closeRecruitment(memberId);
         return new BoardIdResponse(board.getId());
     }
 }
