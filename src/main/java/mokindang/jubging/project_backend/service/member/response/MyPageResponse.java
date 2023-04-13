@@ -8,12 +8,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MyPageResponse {
 
+    @Schema(description = "마이페이지 프로필 URL", example = "DEFAULT_PROFILE_IMAGE_URL")
+    private final String profileImageUrl;
+
     @Schema(description = "마이페이지 닉네임", example = "민호")
     private final String alias;
 
     @Schema(description = "마이페이지 지역명", example = "부천시")
     private final String region;
-
-    @Schema(description = "마이페이지 프로필 URL", example = "DEFAULT_PROFILE_IMAGE_URL")
-    private final String profileImageUrl;
 }
