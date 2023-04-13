@@ -38,7 +38,6 @@ class BoardSelectionResponseTest {
         BoardSelectionResponse boardSelectionResponse = new BoardSelectionResponse(board, mine);
 
         //when
-        Long boardId = boardSelectionResponse.getBoardId();
         String activityCategory = boardSelectionResponse.getActivityCategory();
         String region = boardSelectionResponse.getRegion();
         String title = boardSelectionResponse.getTitle();
@@ -52,7 +51,6 @@ class BoardSelectionResponseTest {
         boolean isMine = boardSelectionResponse.isMine();
 
         //then
-        softly.assertThat(boardId).isEqualTo(null);
         softly.assertThat(activityCategory).isEqualTo("달리기");
         softly.assertThat(region).isEqualTo("동작구");
         softly.assertThat(title).isEqualTo("제목");
