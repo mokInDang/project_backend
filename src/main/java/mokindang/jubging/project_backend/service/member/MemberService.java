@@ -54,8 +54,8 @@ public class MemberService {
     public MyPageResponse editMypage(final Long memberId, final MyPageEditRequest myPageEditRequest) {
         Member member = findByMemberId(memberId);
         FileResponse fileResponse = updateProfileImage(member, myPageEditRequest.getProfileImage());
-        String newAlias = updateAlias(member, myPageEditRequest.getAlias());
-        return new MyPageResponse(fileResponse.getUploadFileUrl(), newAlias, member.getRegion().getValue());
+        member.updateAlias(myPageEditRequest.getAlias());
+        return new MyPageResponse(fileResponse.getUploadFileUrl(), member.getAlias(), member.getRegion().getValue());
     }
 
     private FileResponse updateProfileImage(final Member member, final MultipartFile multipartFile) {
@@ -63,10 +63,5 @@ public class MemberService {
         fileService.deleteFile(member);
         member.updateProfileImage(fileResponse.getUploadFileUrl(), fileResponse.getUploadFileName());
         return fileResponse;
-    }
-
-    private String updateAlias(final Member member, final String alias){
-        member.updateAlias(alias);
-        return member.getAlias();
     }
 }
