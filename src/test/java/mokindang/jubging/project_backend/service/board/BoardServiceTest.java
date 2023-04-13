@@ -114,7 +114,7 @@ class BoardServiceTest {
         softly.assertThat(actual.getStartingDate()).isEqualTo("2023-03-11");
         softly.assertThat(actual.getActivityCategory()).isEqualTo("달리기");
         softly.assertThat(actual.isOnRecruitment()).isEqualTo(true);
-        softly.assertThat(actual.getWriterProfileImage()).isEqualTo("test_url");
+        softly.assertThat(actual.getWriterProfileImageUrl()).isEqualTo("test_url");
         softly.assertThat(actual.getFirstFourLettersOfEmail()).isEqualTo("test");
         softly.assertThat(actual.isMine()).isEqualTo(true);
         softly.assertAll();
