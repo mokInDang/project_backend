@@ -1,6 +1,8 @@
 package mokindang.jubging.project_backend.controller.board;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import mokindang.jubging.project_backend.domain.board.Board;
+import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.service.board.BoardService;
 import mokindang.jubging.project_backend.service.board.request.BoardCreationRequest;
@@ -148,9 +150,14 @@ class BoardControllerTest {
             " 게시글 제목, 본문, 작성자, 활동 지역, 활동 예정일 활동 종류, 모집 여부 를 담은 BoardSelectResponse 를 반환한다.")
     void select() throws Exception {
         //given
-        LocalDateTime now = LocalDateTime.of(2023, 3, 30, 11, 11);
-        BoardSelectionResponse boardSelectionResponse = new BoardSelectionResponse(1L, "제목", "본문", now, "작성자",
-                "2023-03-10", "동작구", "달리기", true, "test", "test_profile_url",true);
+        LocalDateTime now = LocalDateTime.of(2023, 3, 30,11,11,0,0);
+        Member testMember = new Member("test@email.com", "test");
+        testMember.updateRegion("동작구");
+        testMember.updateProfileImage("test_profile_url","test_profile");
+        Board board = new Board(now, testMember, LocalDate.of(2025, 2, 11),
+                "달리기", "게시판 제목", "게시판 내용 작성 테스트");
+        boolean isMine = true;
+        BoardSelectionResponse boardSelectionResponse = new BoardSelectionResponse(board, isMine);
         when(boardService.select(anyLong(), anyLong())).thenReturn(boardSelectionResponse);
 
         //when
@@ -159,15 +166,14 @@ class BoardControllerTest {
 
         //then
         actual.andExpect(status().isOk())
-                .andExpect(jsonPath("boardId").value(1L))
-                .andExpect(jsonPath("$.title").value("제목"))
-                .andExpect(jsonPath("$.content").value("본문"))
-                .andExpect(jsonPath("$.writerAlias").value("작성자"))
-                .andExpect(jsonPath("$.startingDate").value("2023-03-10"))
+                .andExpect(jsonPath("$.title").value("게시판 제목"))
+                .andExpect(jsonPath("$.content").value("게시판 내용 작성 테스트"))
+                .andExpect(jsonPath("$.writerAlias").value("test"))
+                .andExpect(jsonPath("$.startingDate").value("2025-02-11"))
                 .andExpect(jsonPath("$.region").value("동작구"))
                 .andExpect(jsonPath("$.activityCategory").value("달리기"))
                 .andExpect(jsonPath("$.onRecruitment").value(true))
-                .andExpect(jsonPath("$.writerProfileImage").value("test_profile_url"))
+                .andExpect(jsonPath("$.writerProfileImageUrl").value("test_profile_url"))
                 .andExpect(jsonPath("$.firstFourLettersOfEmail").value("test"))
                 .andExpect(jsonPath("$.mine").value(true))
                 .andExpect(jsonPath("$.creatingDatetime").value("2023-03-30T11:11:00"));
