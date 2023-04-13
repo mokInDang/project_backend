@@ -3,6 +3,7 @@ package mokindang.jubging.project_backend.service.board.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import mokindang.jubging.project_backend.domain.board.Board;
 
 import java.time.LocalDateTime;
 
@@ -41,8 +42,28 @@ public class BoardSelectionResponse {
     private String firstFourLettersOfEmail;
 
     @Schema(description = "게시글 작성자의 프로필 경로")
-    private String writerProfileImage;
+    private String writerProfileImageUrl;
 
     @Schema(description = "게시글 조회 회원이, 작성자인지에 대한 정보", allowableValues = {"true", "false"})
     private boolean mine;
+
+    public BoardSelectionResponse(final Board board, final boolean mine) {
+        this.boardId = board.getId();
+        this.title = board.getTitle()
+                .getValue();
+        this.content = board.getContent()
+                .getValue();
+        this.creatingDatetime = board.getCreatingDateTime();
+        this.writerAlias = board.getWriterAlias();
+        this.startingDate = board.getStartingDate()
+                .getValue();
+        this.region = board.getWritingRegion()
+                .getValue();
+        this.activityCategory = board.getActivityCategory()
+                .getValue();
+        this.onRecruitment = board.isOnRecruitment();
+        this.firstFourLettersOfEmail = board.getFirstFourDigitsOfWriterEmail();
+        this.writerProfileImageUrl = board.getWriterProfileImageUrl();
+        this.mine = mine;
+    }
 }
