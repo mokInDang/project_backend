@@ -23,7 +23,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Rollback
 @DataJpaTest
-class BoardTest {
+class RecruitmentBoardTest {
 
     @PersistenceContext
     private EntityManager em;
@@ -32,20 +32,20 @@ class BoardTest {
     @DisplayName("게시글 생성 시, 모집 여부는 상태는 항상 true 이다.")
     void defaultOfOnRecruitment() {
         //given
-        Board board = createBoard();
+        RecruitmentBoard recruitmentBoard = createBoard();
 
         //when
-        boolean onRecruitment = board.isOnRecruitment();
+        boolean onRecruitment = recruitmentBoard.isOnRecruitment();
 
         //then
         assertThat(onRecruitment).isTrue();
     }
 
-    private Board createBoard() {
+    private RecruitmentBoard createBoard() {
         LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
         Member writer = new Member("test1@email.com", "test");
         writer.updateRegion("동작구");
-        return new Board(now, writer, LocalDate.of(2025, 2, 11), "달리기",
+        return new RecruitmentBoard(now, writer, LocalDate.of(2025, 2, 11), "달리기",
                 "제목", "본문내용");
     }
 
@@ -53,13 +53,13 @@ class BoardTest {
     @DisplayName("모집 여부를 마감한다.")
     void closeRecruitment() {
         //given
-        Board board = createBoard();
+        RecruitmentBoard recruitmentBoard = createBoard();
 
         //when
-        board.closeRecruitment();
+        recruitmentBoard.closeRecruitment();
 
         //then
-        assertThat(board.isOnRecruitment()).isFalse();
+        assertThat(recruitmentBoard.isOnRecruitment()).isFalse();
     }
 
     @Test
@@ -70,17 +70,17 @@ class BoardTest {
         LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
         Member testMember = new Member("koho1047@naver.com", "민호");
         testMember.updateRegion("동작구");
-        Board board = new Board(now, testMember, LocalDate.of(2025, 2, 11),
+        RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, testMember, LocalDate.of(2025, 2, 11),
                 "달리기", "게시판 제목", "게시판 내용 작성 테스트");
 
         //when
-        Member member = board.getWriter();
-        Title title = board.getTitle();
-        Content content = board.getContent();
-        ActivityCategory activityCategory = board.getActivityCategory();
-        StartingDate startingDate = board.getStartingDate();
-        Region region = board.getWritingRegion();
-        boolean onRecruitment = board.isOnRecruitment();
+        Member member = recruitmentBoard.getWriter();
+        Title title = recruitmentBoard.getTitle();
+        Content content = recruitmentBoard.getContent();
+        ActivityCategory activityCategory = recruitmentBoard.getActivityCategory();
+        StartingDate startingDate = recruitmentBoard.getStartingDate();
+        Region region = recruitmentBoard.getWritingRegion();
+        boolean onRecruitment = recruitmentBoard.isOnRecruitment();
 
         //then
         softly.assertThat(member).isEqualTo(testMember);
@@ -102,7 +102,7 @@ class BoardTest {
         LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
 
         //when, then
-        assertThatThrownBy(() -> new Board(now, member, LocalDate.of(2025, 2, 11),
+        assertThatThrownBy(() -> new RecruitmentBoard(now, member, LocalDate.of(2025, 2, 11),
                 "달리기", "게시판 제목", "게시판 내용 작성 테스트"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("지역 인증이 되지 않아, 게시글을 생성할 수 없습니다.");
@@ -112,10 +112,10 @@ class BoardTest {
     @DisplayName("지역을 입력 받아, 게시글의 지역과 다르면 예외를 반환한다.")
     void checkRegion() {
         //given
-        Board board = createBoard();
+        RecruitmentBoard recruitmentBoard = createBoard();
 
         //when, then
-        assertThatThrownBy(() -> board.checkRegion(Region.from("성동구")))
+        assertThatThrownBy(() -> recruitmentBoard.checkRegion(Region.from("성동구")))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("지역이 다른 유저는 게시글에 접근 할 수 없습니다.");
     }
@@ -127,11 +127,11 @@ class BoardTest {
         LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
         Member testMember = new Member("koho1047@naver.com", "민호");
         testMember.updateRegion("동작구");
-        Board board = new Board(now, testMember, LocalDate.of(2025, 2, 11),
+        RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, testMember, LocalDate.of(2025, 2, 11),
                 "달리기", "게시판 제목", "게시판 내용 작성 테스트");
 
         //when
-        String actual = board.getWriter().getAlias();
+        String actual = recruitmentBoard.getWriter().getAlias();
 
         //then
         assertThat(actual).isEqualTo("민호");
@@ -144,16 +144,16 @@ class BoardTest {
         LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
         Member writer = new Member("test1@email.com", "test");
         writer.updateRegion("동작구");
-        Board board = new Board(now, writer, LocalDate.of(2025, 2, 11), "달리기",
+        RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, writer, LocalDate.of(2025, 2, 11), "달리기",
                 "제목", "본문내용");
 
         em.persist(writer);
-        em.persist(board);
+        em.persist(recruitmentBoard);
         em.flush();
         em.clear();
 
         //when
-        boolean actual = board.isWriter(writer);
+        boolean actual = recruitmentBoard.isWriter(writer);
 
         //then
         assertThat(actual).isTrue();
@@ -166,19 +166,19 @@ class BoardTest {
         LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
         Member writer = new Member("test1@email.com", "test");
         writer.updateRegion("동작구");
-        Board board = new Board(now, writer, LocalDate.of(2025, 2, 11), "달리기",
+        RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, writer, LocalDate.of(2025, 2, 11), "달리기",
                 "제목", "본문내용");
 
         Member noneWriter = new Member("noneWriter@test.com", "noneWriter");
 
         em.persist(writer);
-        em.persist(board);
+        em.persist(recruitmentBoard);
         em.persist(noneWriter);
         em.flush();
         em.clear();
 
         //when
-        boolean actual = board.isWriter(noneWriter);
+        boolean actual = recruitmentBoard.isWriter(noneWriter);
 
         //then
         assertThat(actual).isFalse();
@@ -192,7 +192,7 @@ class BoardTest {
         LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
         Member writer = new Member("test1@email.com", "test");
         writer.updateRegion("동작구");
-        Board board = new Board(now, writer, LocalDate.of(2025, 2, 11), "달리기",
+        RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, writer, LocalDate.of(2025, 2, 11), "달리기",
                 "제목", "본문내용");
 
         String newActivityCategory = "산책";
@@ -200,13 +200,13 @@ class BoardTest {
         String newContentValue = "새로운 본문 내용입니다.";
         LocalDate newStartingDate = LocalDate.parse("2023-11-13");
         //when
-        board.modify(newStartingDate, newActivityCategory, newTitleValue, newContentValue);
+        recruitmentBoard.modify(newStartingDate, newActivityCategory, newTitleValue, newContentValue);
 
         //then
-        softly.assertThat(board.getStartingDate().getValue()).isEqualTo("2023-11-13");
-        softly.assertThat(board.getActivityCategory().getValue()).isEqualTo(newActivityCategory);
-        softly.assertThat(board.getTitle().getValue()).isEqualTo(newTitleValue);
-        softly.assertThat(board.getContent().getValue()).isEqualTo(newContentValue);
+        softly.assertThat(recruitmentBoard.getStartingDate().getValue()).isEqualTo("2023-11-13");
+        softly.assertThat(recruitmentBoard.getActivityCategory().getValue()).isEqualTo(newActivityCategory);
+        softly.assertThat(recruitmentBoard.getTitle().getValue()).isEqualTo(newTitleValue);
+        softly.assertThat(recruitmentBoard.getContent().getValue()).isEqualTo(newContentValue);
         softly.assertAll();
     }
 
@@ -220,11 +220,11 @@ class BoardTest {
         Member writer = new Member("test1@email.com", "test");
         writer.updateRegion("동작구");
         writer.updateProfileImage(testUrl, "test_Image");
-        Board board = new Board(now, writer, LocalDate.of(2025, 2, 11), "달리기",
+        RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, writer, LocalDate.of(2025, 2, 11), "달리기",
                 "제목", "본문내용");
 
         //when
-        String writerProfileImageUrl = board.getWriterProfileImageUrl();
+        String writerProfileImageUrl = recruitmentBoard.getWriterProfileImageUrl();
 
         //then
         assertThat(writerProfileImageUrl).isEqualTo(testUrl);

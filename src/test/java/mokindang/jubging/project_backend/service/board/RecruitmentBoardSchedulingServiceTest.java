@@ -11,7 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class BoardSchedulingServiceTest {
+class RecruitmentBoardSchedulingServiceTest {
 
     @Mock
     private BoardRepository boardRepository;
