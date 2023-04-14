@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 
-public interface BoardRepository extends JpaRepository<RecruitmentBoard, Long> {
+public interface RecruitmentBoardRepository extends JpaRepository<RecruitmentBoard, Long> {
 
     @Modifying
     @Query("UPDATE RecruitmentBoard b SET b.onRecruitment = false WHERE b.onRecruitment IS true AND b.startingDate.startingDate < :today")

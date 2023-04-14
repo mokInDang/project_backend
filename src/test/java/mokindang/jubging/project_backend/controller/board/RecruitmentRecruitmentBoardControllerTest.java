@@ -2,11 +2,11 @@ package mokindang.jubging.project_backend.controller.board;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
-import mokindang.jubging.project_backend.service.board.BoardService;
-import mokindang.jubging.project_backend.service.board.request.BoardCreationRequest;
+import mokindang.jubging.project_backend.service.board.RecruitmentBoardService;
+import mokindang.jubging.project_backend.service.board.request.RecruitmentBoardCreationRequest;
 import mokindang.jubging.project_backend.service.board.request.BoardModificationRequest;
-import mokindang.jubging.project_backend.service.board.response.BoardIdResponse;
-import mokindang.jubging.project_backend.service.board.response.BoardSelectionResponse;
+import mokindang.jubging.project_backend.service.board.response.RecruitmentBoardIdResponse;
+import mokindang.jubging.project_backend.service.board.response.RecruitmentBoardSelectionResponse;
 import mokindang.jubging.project_backend.service.board.response.MultiBoardSelectResponse;
 import mokindang.jubging.project_backend.service.board.response.SummaryBoardResponse;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
@@ -33,8 +33,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(BoardController.class)
-class RecruitmentBoardControllerTest {
+@WebMvcTest(RecruitmentBoardController.class)
+class RecruitmentRecruitmentBoardControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -43,7 +43,7 @@ class RecruitmentBoardControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private BoardService boardService;
+    private RecruitmentBoardService recruitmentBoardService;
 
     @MockBean
     private TokenManager tokenManager;
@@ -52,15 +52,15 @@ class RecruitmentBoardControllerTest {
     @DisplayName("새 게시글을 작성한 후, 작성된 게시글의 id 값과 함께 HTTP 201 상태코드를 반환한다.")
     void write() throws Exception {
         //given
-        when(boardService.write(anyLong(), any(BoardCreationRequest.class))).thenReturn(new BoardIdResponse(1L));
+        when(recruitmentBoardService.write(anyLong(), any(RecruitmentBoardCreationRequest.class))).thenReturn(new RecruitmentBoardIdResponse(1L));
 
-        BoardCreationRequest boardCreationRequest = new BoardCreationRequest("제목", "본문", "달리기",
+        RecruitmentBoardCreationRequest recruitmentBoardCreationRequest = new RecruitmentBoardCreationRequest("제목", "본문", "달리기",
                 LocalDate.of(2023, 11, 11));
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(boardCreationRequest)));
+                .content(objectMapper.writeValueAsString(recruitmentBoardCreationRequest)));
 
         //then
         actual.andExpect(status().isCreated())
@@ -71,16 +71,16 @@ class RecruitmentBoardControllerTest {
     @DisplayName("새 게시글 작성 시, 유저가 존재하지 않으면 HTTP 400 을 반환한다.")
     void writeFailedByNonexistentMember() throws Exception {
         //given
-        doThrow(new IllegalArgumentException("해당하는 유저가 존재하지 않습니다.")).when(boardService)
-                .write(anyLong(), any(BoardCreationRequest.class));
+        doThrow(new IllegalArgumentException("해당하는 유저가 존재하지 않습니다.")).when(recruitmentBoardService)
+                .write(anyLong(), any(RecruitmentBoardCreationRequest.class));
 
-        BoardCreationRequest boardCreationRequest = new BoardCreationRequest("제목", "본문", "달리기",
+        RecruitmentBoardCreationRequest recruitmentBoardCreationRequest = new RecruitmentBoardCreationRequest("제목", "본문", "달리기",
                 LocalDate.of(2023, 11, 11));
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(boardCreationRequest)));
+                .content(objectMapper.writeValueAsString(recruitmentBoardCreationRequest)));
 
         //then
         actual.andExpect(status().isBadRequest())
@@ -91,10 +91,10 @@ class RecruitmentBoardControllerTest {
     @DisplayName("새 게시글 작성 시, 입력 받은 제목이 유효하지 않으면 HTTP 400 을 반환한다.")
     void writeFailedByIncorrectTitle() throws Exception {
         //given
-        doThrow(new IllegalArgumentException("글 제목은 1글자 이상 140자 이하야합니다.")).when(boardService)
-                .write(anyLong(), any(BoardCreationRequest.class));
+        doThrow(new IllegalArgumentException("글 제목은 1글자 이상 140자 이하야합니다.")).when(recruitmentBoardService)
+                .write(anyLong(), any(RecruitmentBoardCreationRequest.class));
 
-        BoardCreationRequest incorrectTitleRequest = new BoardCreationRequest("잘못된 제목", "본문", "달리기",
+        RecruitmentBoardCreationRequest incorrectTitleRequest = new RecruitmentBoardCreationRequest("잘못된 제목", "본문", "달리기",
                 LocalDate.of(2023, 11, 11));
 
         //when
@@ -111,10 +111,10 @@ class RecruitmentBoardControllerTest {
     @DisplayName("새 게시글 작성 시, 입력받은 본문이 유효하지 않으면 HTTP 400 을 반환한다.")
     void writeFailedByIncorrectContent() throws Exception {
         //given
-        doThrow(new IllegalArgumentException("글 내용은 최소 1자 이상, 최대 4000자 입니다.")).when(boardService)
-                .write(anyLong(), any(BoardCreationRequest.class));
+        doThrow(new IllegalArgumentException("글 내용은 최소 1자 이상, 최대 4000자 입니다.")).when(recruitmentBoardService)
+                .write(anyLong(), any(RecruitmentBoardCreationRequest.class));
 
-        BoardCreationRequest incorrectContentRequest = new BoardCreationRequest("제목", "잘못된 본문", "달리기",
+        RecruitmentBoardCreationRequest incorrectContentRequest = new RecruitmentBoardCreationRequest("제목", "잘못된 본문", "달리기",
                 LocalDate.of(2023, 11, 11));
 
         //when
@@ -131,10 +131,10 @@ class RecruitmentBoardControllerTest {
     @DisplayName("새 게시글 작성 시, 입력받은 활동 날짜가 유효하지 않으면 HTTP 400 을 반환한다.")
     void writeFailedByIncorrectStartingDate() throws Exception {
         //given
-        doThrow(new IllegalArgumentException("이미 지난 날짜는 활동 시작일로 할 수 없습니다.")).when(boardService)
-                .write(anyLong(), any(BoardCreationRequest.class));
+        doThrow(new IllegalArgumentException("이미 지난 날짜는 활동 시작일로 할 수 없습니다.")).when(recruitmentBoardService)
+                .write(anyLong(), any(RecruitmentBoardCreationRequest.class));
 
-        BoardCreationRequest incorrectContentRequest = new BoardCreationRequest("제목", "잘못된 본문", "달리기",
+        RecruitmentBoardCreationRequest incorrectContentRequest = new RecruitmentBoardCreationRequest("제목", "잘못된 본문", "달리기",
                 LocalDate.of(2023, 11, 11));
 
         //when
@@ -153,9 +153,9 @@ class RecruitmentBoardControllerTest {
     void select() throws Exception {
         //given
         LocalDateTime now = LocalDateTime.of(2023, 3, 30, 11, 11);
-        BoardSelectionResponse boardSelectionResponse = new BoardSelectionResponse(1L, "제목", "본문", now, "작성자",
+        RecruitmentBoardSelectionResponse recruitmentBoardSelectionResponse = new RecruitmentBoardSelectionResponse(1L, "제목", "본문", now, "작성자",
                 "2023-03-10", "동작구", "달리기", true, "test", "test_profile_url", true);
-        when(boardService.select(anyLong(), anyLong())).thenReturn(boardSelectionResponse);
+        when(recruitmentBoardService.select(anyLong(), anyLong())).thenReturn(recruitmentBoardSelectionResponse);
 
         //when
         ResultActions actual = mockMvc.perform(get("/api/boards/{boardId}", 1L)
@@ -181,7 +181,7 @@ class RecruitmentBoardControllerTest {
     @DisplayName("게시글 식별 번호를 입력받아 게시글 조회 시, 유저의 지역과 게시글의 지역이 일치하지 않으면 HTTP 400 상태코드와 함께 예외를 반환한다.")
     void failedToMatchMemberRegionAndBoardArea() throws Exception {
         //given
-        doThrow(new IllegalArgumentException("지역이 다른 유저는 게시글에 접근 할 수 없습니다.")).when(boardService)
+        doThrow(new IllegalArgumentException("지역이 다른 유저는 게시글에 접근 할 수 없습니다.")).when(recruitmentBoardService)
                 .select(anyLong(), anyLong());
 
         //when
@@ -197,7 +197,7 @@ class RecruitmentBoardControllerTest {
     @DisplayName("게시글 식별 번호를 입력받아 게시글 조회 시, 존재하지 않는 게시글이면 400 상태코드와 함께 예외를 반환한다.")
     void failedByNonexistentBoard() throws Exception {
         //given
-        doThrow(new IllegalArgumentException("존재하지 않는 게시물입니다.")).when(boardService)
+        doThrow(new IllegalArgumentException("존재하지 않는 게시물입니다.")).when(recruitmentBoardService)
                 .select(anyLong(), anyLong());
 
         //when
@@ -214,7 +214,7 @@ class RecruitmentBoardControllerTest {
             "삭제 후 Http 200 코드와 삭제된 게시글 id 를 담은 BoardIdResponse 를 반환한다.")
     void delete() throws Exception {
         //given
-        when(boardService.delete(anyLong(), anyLong())).thenReturn(new BoardIdResponse(1L));
+        when(recruitmentBoardService.delete(anyLong(), anyLong())).thenReturn(new RecruitmentBoardIdResponse(1L));
 
         //when
         ResultActions actual = mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/{boardId}", 1L)
@@ -229,7 +229,7 @@ class RecruitmentBoardControllerTest {
     @DisplayName("게시글 삭제 요청 시, 요청 회원이 작성자가 아닌경우 예외를 반환하고, Http 401을 반환한다.")
     void deleteFailedByNoneMatchingBoardWhitWritingMember() throws Exception {
         //given
-        doThrow(new ForbiddenException("글 작성자만 게시글을 삭제할 수 있습니다.")).when(boardService)
+        doThrow(new ForbiddenException("글 작성자만 게시글을 삭제할 수 있습니다.")).when(recruitmentBoardService)
                 .delete(anyLong(), anyLong());
 
         //when
@@ -245,7 +245,7 @@ class RecruitmentBoardControllerTest {
     @DisplayName("존재하지 않는 게시글에 대한 삭제 요청일 경우, Http 400 상태코드와 에러 메세지를 반환한다.")
     void deleteFailedByNonexistentBoard() throws Exception {
         //given
-        doThrow(new IllegalArgumentException("존재하지 않는 게시물입니다.")).when(boardService)
+        doThrow(new IllegalArgumentException("존재하지 않는 게시물입니다.")).when(recruitmentBoardService)
                 .delete(anyLong(), anyLong());
 
         //when
@@ -261,8 +261,8 @@ class RecruitmentBoardControllerTest {
     @DisplayName("게시글 수정 요청 시, 요청 받은 게시글의 활동 시작일, 활동 종류, 제목, 본문을 변경한다.")
     void modify() throws Exception {
         //given
-        BoardIdResponse boardIdResponse = new BoardIdResponse(1L);
-        when(boardService.modify(anyLong(), anyLong(), any(BoardModificationRequest.class))).thenReturn(boardIdResponse);
+        RecruitmentBoardIdResponse recruitmentBoardIdResponse = new RecruitmentBoardIdResponse(1L);
+        when(recruitmentBoardService.modify(anyLong(), anyLong(), any(BoardModificationRequest.class))).thenReturn(recruitmentBoardIdResponse);
 
         BoardModificationRequest boardModificationRequest = new BoardModificationRequest("새로운 제목", "새로운 본문",
                 "산책", LocalDate.of(2023, 1, 1));
@@ -281,7 +281,7 @@ class RecruitmentBoardControllerTest {
     @DisplayName("게시글 수정 요청 시, 존재하지 않는 게시글에 대한 수정을 요청할 시 HTTP 400 과 예외를 담은 ErrorResponse 를 반환한다.")
     void modifyFailedByNonexistentBoard() throws Exception {
         //given
-        doThrow(new IllegalArgumentException("존재하지 않는 게시물입니다.")).when(boardService)
+        doThrow(new IllegalArgumentException("존재하지 않는 게시물입니다.")).when(recruitmentBoardService)
                 .modify(anyLong(), anyLong(), any(BoardModificationRequest.class));
 
         BoardModificationRequest boardModificationRequest = new BoardModificationRequest("새로운 제목", "새로운 본문",
@@ -301,7 +301,7 @@ class RecruitmentBoardControllerTest {
     @DisplayName("게시글 수정 요청 시, 게시글의 글작성자가 아닌 경우 HTTP 403 과 예외를 반환한다.")
     void modifyFailedByNoneExistBoard() throws Exception {
         //given
-        doThrow(new ForbiddenException("글 작성자만 게시글을 수정할 수 있습니다.")).when(boardService)
+        doThrow(new ForbiddenException("글 작성자만 게시글을 수정할 수 있습니다.")).when(recruitmentBoardService)
                 .modify(anyLong(), anyLong(), any(BoardModificationRequest.class));
 
         BoardModificationRequest boardModificationRequest = new BoardModificationRequest("새로운 제목", "새로운 본문",
@@ -321,7 +321,7 @@ class RecruitmentBoardControllerTest {
     @DisplayName("게시글 모집 마감 요청 시, 게시글 모집 마감 완료 후 Http 200 과 마감 게시글 id 를 담은 BoardIdResponse 를 반환한다.")
     void closeRecruitment() throws Exception {
         //given
-        when(boardService.closeRecruitment(anyLong(), anyLong())).thenReturn(new BoardIdResponse(1L));
+        when(recruitmentBoardService.closeRecruitment(anyLong(), anyLong())).thenReturn(new RecruitmentBoardIdResponse(1L));
 
         //when
         ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}/recruitment", 1L)
@@ -336,7 +336,7 @@ class RecruitmentBoardControllerTest {
     @DisplayName("게시글 마감 요청 시, 존재하지 않는 게시글에 대한 마감을 요청할 시 HTTP 400 과 예외를 담은 ErrorResponse 를 반환한다.")
     void closeRecruitmentFailedByNoneExistBoard() throws Exception {
         //given
-        doThrow(new IllegalArgumentException("존재하지 않는 게시물입니다.")).when(boardService)
+        doThrow(new IllegalArgumentException("존재하지 않는 게시물입니다.")).when(recruitmentBoardService)
                 .closeRecruitment(anyLong(), anyLong());
 
         //when
@@ -352,7 +352,7 @@ class RecruitmentBoardControllerTest {
     @DisplayName("게시글 마감 요청 시, 글 작성자가 아닌 회원이 게시글 마감을 요청한 경우 HTTP 403 과 예외를 담은 ErrorResponse 를 반환한다.")
     void closeRecruitmentFailedByNoneMatchingBoardWhitWritingMember() throws Exception {
         //given
-        doThrow(new ForbiddenException("글 작성자만 모집 마감할 수 있습니다.")).when(boardService)
+        doThrow(new ForbiddenException("글 작성자만 모집 마감할 수 있습니다.")).when(recruitmentBoardService)
                 .closeRecruitment(anyLong(), anyLong());
 
         //when
@@ -374,7 +374,7 @@ class RecruitmentBoardControllerTest {
                 new SummaryBoardResponse(1L, "제목2", "본문2", "작성자이름2",
                         "test_profile_url","2023-11-11", "동작구", "산책", true,
                         "note"));
-        when(boardService.selectRegionBoards(anyLong(), any(Pageable.class)))
+        when(recruitmentBoardService.selectRegionBoards(anyLong(), any(Pageable.class)))
                 .thenReturn(new MultiBoardSelectResponse(summaryBoardResponses, false));
 
         //when

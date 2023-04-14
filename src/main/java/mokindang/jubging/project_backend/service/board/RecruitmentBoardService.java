@@ -5,11 +5,11 @@ import mokindang.jubging.project_backend.domain.board.RecruitmentBoard;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.member.vo.Region;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
-import mokindang.jubging.project_backend.repository.board.BoardRepository;
-import mokindang.jubging.project_backend.service.board.request.BoardCreationRequest;
+import mokindang.jubging.project_backend.repository.board.RecruitmentBoardRepository;
+import mokindang.jubging.project_backend.service.board.request.RecruitmentBoardCreationRequest;
 import mokindang.jubging.project_backend.service.board.request.BoardModificationRequest;
-import mokindang.jubging.project_backend.service.board.response.BoardIdResponse;
-import mokindang.jubging.project_backend.service.board.response.BoardSelectionResponse;
+import mokindang.jubging.project_backend.service.board.response.RecruitmentBoardIdResponse;
+import mokindang.jubging.project_backend.service.board.response.RecruitmentBoardSelectionResponse;
 import mokindang.jubging.project_backend.service.board.response.MultiBoardSelectResponse;
 import mokindang.jubging.project_backend.service.board.response.SummaryBoardResponse;
 import mokindang.jubging.project_backend.service.member.MemberService;
@@ -25,22 +25,22 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class BoardService {
+public class RecruitmentBoardService {
 
     private final MemberService memberService;
-    private final BoardRepository boardRepository;
+    private final RecruitmentBoardRepository recruitmentBoardRepository;
 
     @Transactional
-    public BoardIdResponse write(final Long memberId, final BoardCreationRequest boardCreationRequest) {
+    public RecruitmentBoardIdResponse write(final Long memberId, final RecruitmentBoardCreationRequest recruitmentBoardCreationRequest) {
         Member member = memberService.findByMemberId(memberId);
         LocalDateTime now = LocalDateTime.now();
-        RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, member, boardCreationRequest.getStartingDate(), boardCreationRequest.getActivityCategory(),
-                boardCreationRequest.getTitle(), boardCreationRequest.getContent());
-        RecruitmentBoard savedRecruitmentBoard = boardRepository.save(recruitmentBoard);
-        return new BoardIdResponse(savedRecruitmentBoard.getId());
+        RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, member, recruitmentBoardCreationRequest.getStartingDate(), recruitmentBoardCreationRequest.getActivityCategory(),
+                recruitmentBoardCreationRequest.getTitle(), recruitmentBoardCreationRequest.getContent());
+        RecruitmentBoard savedRecruitmentBoard = recruitmentBoardRepository.save(recruitmentBoard);
+        return new RecruitmentBoardIdResponse(savedRecruitmentBoard.getId());
     }
 
-    public BoardSelectionResponse select(final Long memberId, final Long boardId) {
+    public RecruitmentBoardSelectionResponse select(final Long memberId, final Long boardId) {
         Member loggedInMember = memberService.findByMemberId(memberId);
         RecruitmentBoard recruitmentBoard = findById(boardId);
         recruitmentBoard.checkRegion(loggedInMember.getRegion());
@@ -48,26 +48,26 @@ public class BoardService {
     }
 
     private RecruitmentBoard findById(final Long boardId) {
-        return boardRepository.findById(boardId)
+        return recruitmentBoardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
     }
 
-    private BoardSelectionResponse convertToBoardSelectResponse(final Member logindMember, final RecruitmentBoard recruitmentBoard) {
-        return new BoardSelectionResponse(recruitmentBoard.getId(), recruitmentBoard.getTitle().getValue(), recruitmentBoard.getContent().getValue(),
+    private RecruitmentBoardSelectionResponse convertToBoardSelectResponse(final Member logindMember, final RecruitmentBoard recruitmentBoard) {
+        return new RecruitmentBoardSelectionResponse(recruitmentBoard.getId(), recruitmentBoard.getTitle().getValue(), recruitmentBoard.getContent().getValue(),
                 recruitmentBoard.getCreatingDateTime(), recruitmentBoard.getWriter().getAlias(), recruitmentBoard.getStartingDate().getValue(),
                 recruitmentBoard.getWritingRegion().getValue(), recruitmentBoard.getActivityCategory().getValue(), recruitmentBoard.isOnRecruitment(),
                 recruitmentBoard.getWriter().getFourLengthEmail(), recruitmentBoard.getWriterProfileImageUrl(), recruitmentBoard.isWriter(logindMember));
     }
 
     public MultiBoardSelectResponse selectAllBoards(final Pageable pageable) {
-        Slice<RecruitmentBoard> boards = boardRepository.selectBoards(pageable);
-        List<SummaryBoardResponse> summaryBoards = boards.stream()
-                .map(this::convertToSummaryBoard)
+        Slice<RecruitmentBoard> recruitmentBoards = recruitmentBoardRepository.selectBoards(pageable);
+        List<SummaryBoardResponse> summaryRecruitmentBoards = recruitmentBoards.stream()
+                .map(this::convertToSummaryRecruitmentBoard)
                 .collect(Collectors.toUnmodifiableList());
-        return new MultiBoardSelectResponse(summaryBoards, boards.hasNext());
+        return new MultiBoardSelectResponse(summaryRecruitmentBoards, recruitmentBoards.hasNext());
     }
 
-    private SummaryBoardResponse convertToSummaryBoard(final RecruitmentBoard recruitmentBoard) {
+    private SummaryBoardResponse convertToSummaryRecruitmentBoard(final RecruitmentBoard recruitmentBoard) {
         return new SummaryBoardResponse(recruitmentBoard.getId(), recruitmentBoard.getTitle().getValue(), recruitmentBoard.getContent().getValue(),
                 recruitmentBoard.getWriter().getAlias(), recruitmentBoard.getWriterProfileImageUrl(), recruitmentBoard.getStartingDate().getValue(),
                 recruitmentBoard.getWritingRegion().getValue(), recruitmentBoard.getActivityCategory().getValue(),
@@ -75,12 +75,12 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardIdResponse delete(final Long memberId, final Long boardId) {
+    public RecruitmentBoardIdResponse delete(final Long memberId, final Long boardId) {
         Member loggedInMember = memberService.findByMemberId(memberId);
         RecruitmentBoard recruitmentBoard = findById(boardId);
         validatePermission(recruitmentBoard, loggedInMember, "글 작성자만 게시글을 삭제할 수 있습니다.");
-        boardRepository.delete(recruitmentBoard);
-        return new BoardIdResponse(recruitmentBoard.getId());
+        recruitmentBoardRepository.delete(recruitmentBoard);
+        return new RecruitmentBoardIdResponse(recruitmentBoard.getId());
     }
 
     private void validatePermission(final RecruitmentBoard recruitmentBoard, final Member loggedInMember, final String message) {
@@ -90,31 +90,31 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardIdResponse modify(final Long memberId, final Long boardId, final BoardModificationRequest boardModificationRequest) {
+    public RecruitmentBoardIdResponse modify(final Long memberId, final Long boardId, final BoardModificationRequest boardModificationRequest) {
         Member loggedInMember = memberService.findByMemberId(memberId);
         RecruitmentBoard recruitmentBoard = findById(boardId);
         validatePermission(recruitmentBoard, loggedInMember, "글 작성자만 게시글을 수정할 수 있습니다.");
         recruitmentBoard.modify(boardModificationRequest.getStartingDate(), boardModificationRequest.getActivityCategory(),
                 boardModificationRequest.getTitle(), boardModificationRequest.getContent());
-        return new BoardIdResponse(recruitmentBoard.getId());
+        return new RecruitmentBoardIdResponse(recruitmentBoard.getId());
     }
 
     @Transactional
-    public BoardIdResponse closeRecruitment(final Long memberId, final Long boardId) {
+    public RecruitmentBoardIdResponse closeRecruitment(final Long memberId, final Long boardId) {
         Member loggedInMember = memberService.findByMemberId(memberId);
         RecruitmentBoard recruitmentBoard = findById(boardId);
         validatePermission(recruitmentBoard, loggedInMember, "글 작성자만 모집 마감할 수 있습니다.");
         recruitmentBoard.closeRecruitment();
-        return new BoardIdResponse(recruitmentBoard.getId());
+        return new RecruitmentBoardIdResponse(recruitmentBoard.getId());
     }
 
     @Transactional
     public MultiBoardSelectResponse selectRegionBoards(final Long memberId, final Pageable pageable) {
         Member loggedInMember = memberService.findByMemberId(memberId);
         Region targetRegion = loggedInMember.getRegion();
-        Slice<RecruitmentBoard> boards = boardRepository.selectRegionBoards(targetRegion, pageable);
+        Slice<RecruitmentBoard> boards = recruitmentBoardRepository.selectRegionBoards(targetRegion, pageable);
         List<SummaryBoardResponse> summaryBoards = boards.stream()
-                .map(this::convertToSummaryBoard)
+                .map(this::convertToSummaryRecruitmentBoard)
                 .collect(Collectors.toUnmodifiableList());
         return new MultiBoardSelectResponse(summaryBoards, boards.hasNext());
     }
