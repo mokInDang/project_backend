@@ -151,7 +151,7 @@ class BoardControllerTest {
 
     @Test
     @DisplayName("게시글 식별 번호를 입력받아 게시글 조회 시, 유저의 지역과 게시글의 지역이 일치한 경우 HTTP 200 과" +
-            " 게시글 제목, 본문, 작성자, 활동 지역, 활동 예정일 활동 종류, 모집 여부 를 담은 BoardSelectResponse 를 반환한다.")
+            "게시글 조회 정보를 담은 BoardSelectResponse 를 반환한다.")
     void select() throws Exception {
         //given
 

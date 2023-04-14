@@ -1,7 +1,12 @@
 package mokindang.jubging.project_backend.service.board.response;
 
+import mokindang.jubging.project_backend.domain.board.ActivityCategory;
 import mokindang.jubging.project_backend.domain.board.Board;
+import mokindang.jubging.project_backend.domain.board.vo.Content;
+import mokindang.jubging.project_backend.domain.board.vo.StartingDate;
+import mokindang.jubging.project_backend.domain.board.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
+import mokindang.jubging.project_backend.domain.member.vo.Region;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,6 +15,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class SummaryBoardResponseTest {
 
@@ -37,7 +44,7 @@ class SummaryBoardResponseTest {
     void getter() {
         //given
         SoftAssertions softly = new SoftAssertions();
-        Board board = createBoard();
+        Board board = createMockedBoard();
         SummaryBoardResponse summaryBoardResponse = new SummaryBoardResponse(board);
 
         //when
@@ -62,5 +69,22 @@ class SummaryBoardResponseTest {
         softly.assertThat(writerAlias).isEqualTo("test");
         softly.assertThat(firstFourLettersOfEmail).isEqualTo("test");
         softly.assertAll();
+    }
+
+    private Board createMockedBoard() {
+        LocalDate today = LocalDate.of(2023, 3, 14);
+        Board board = mock(Board.class);
+        when(board.getId()).thenReturn(1L);
+        when(board.getTitle()).thenReturn(new Title("제목"));
+        when(board.getContent()).thenReturn(new Content("본문내용"));
+        when(board.getWritingRegion()).thenReturn(Region.from("동작구"));
+        when(board.getActivityCategory()).thenReturn(ActivityCategory.RUNNING);
+        when(board.isOnRecruitment()).thenReturn(true);
+        when(board.getCreatingDateTime()).thenReturn(LocalDateTime.of(2023, 11, 12, 0, 0, 0));
+        when(board.getStartingDate()).thenReturn(new StartingDate(today, LocalDate.of(2025, 2, 11)));
+        when(board.getWriterAlias()).thenReturn("test");
+        when(board.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
+        when(board.getWriterProfileImageUrl()).thenReturn("test_url");
+        return board;
     }
 }
