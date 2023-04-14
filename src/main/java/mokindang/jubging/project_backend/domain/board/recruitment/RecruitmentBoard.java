@@ -1,11 +1,11 @@
-package mokindang.jubging.project_backend.domain.board;
+package mokindang.jubging.project_backend.domain.board.recruitment;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import mokindang.jubging.project_backend.domain.board.vo.Content;
-import mokindang.jubging.project_backend.domain.board.vo.StartingDate;
-import mokindang.jubging.project_backend.domain.board.vo.Title;
+import mokindang.jubging.project_backend.domain.board.recruitment.vo.Content;
+import mokindang.jubging.project_backend.domain.board.recruitment.vo.StartingDate;
+import mokindang.jubging.project_backend.domain.board.recruitment.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.member.vo.Region;
 

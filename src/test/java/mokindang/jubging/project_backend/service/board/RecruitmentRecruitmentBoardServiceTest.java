@@ -1,10 +1,10 @@
 package mokindang.jubging.project_backend.service.board;
 
-import mokindang.jubging.project_backend.domain.board.ActivityCategory;
-import mokindang.jubging.project_backend.domain.board.RecruitmentBoard;
-import mokindang.jubging.project_backend.domain.board.vo.Content;
-import mokindang.jubging.project_backend.domain.board.vo.StartingDate;
-import mokindang.jubging.project_backend.domain.board.vo.Title;
+import mokindang.jubging.project_backend.domain.board.recruitment.ActivityCategory;
+import mokindang.jubging.project_backend.domain.board.recruitment.RecruitmentBoard;
+import mokindang.jubging.project_backend.domain.board.recruitment.vo.Content;
+import mokindang.jubging.project_backend.domain.board.recruitment.vo.StartingDate;
+import mokindang.jubging.project_backend.domain.board.recruitment.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.member.vo.Region;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;

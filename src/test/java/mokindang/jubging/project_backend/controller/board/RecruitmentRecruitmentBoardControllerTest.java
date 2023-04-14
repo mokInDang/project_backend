@@ -1,6 +1,7 @@
 package mokindang.jubging.project_backend.controller.board;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import mokindang.jubging.project_backend.controller.board.recruitment.RecruitmentBoardController;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.service.board.RecruitmentBoardService;
 import mokindang.jubging.project_backend.service.board.request.RecruitmentBoardCreationRequest;

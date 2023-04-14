@@ -1,6 +1,6 @@
 package mokindang.jubging.project_backend.repository.board;
 
-import mokindang.jubging.project_backend.domain.board.RecruitmentBoard;
+import mokindang.jubging.project_backend.domain.board.recruitment.RecruitmentBoard;
 import mokindang.jubging.project_backend.domain.member.vo.Region;
 import org.hibernate.annotations.BatchSize;
 import org.springframework.data.domain.Pageable;

@@ -1,7 +1,7 @@
 package mokindang.jubging.project_backend.service.board;
 
 import lombok.RequiredArgsConstructor;
-import mokindang.jubging.project_backend.domain.board.RecruitmentBoard;
+import mokindang.jubging.project_backend.domain.board.recruitment.RecruitmentBoard;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.member.vo.Region;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;

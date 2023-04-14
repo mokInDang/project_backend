@@ -1,4 +1,4 @@
-package mokindang.jubging.project_backend.controller.board;
+package mokindang.jubging.project_backend.controller.board.recruitment;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
