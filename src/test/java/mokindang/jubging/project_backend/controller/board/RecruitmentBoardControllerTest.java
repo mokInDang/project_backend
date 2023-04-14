@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(RecruitmentBoardController.class)
-class RecruitmentRecruitmentBoardControllerTest {
+class RecruitmentBoardControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -59,7 +59,7 @@ class RecruitmentRecruitmentBoardControllerTest {
                 LocalDate.of(2023, 11, 11));
 
         //when
-        ResultActions actual = mockMvc.perform(post("/api/boards")
+        ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(recruitmentBoardCreationRequest)));
 
@@ -79,7 +79,7 @@ class RecruitmentRecruitmentBoardControllerTest {
                 LocalDate.of(2023, 11, 11));
 
         //when
-        ResultActions actual = mockMvc.perform(post("/api/boards")
+        ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(recruitmentBoardCreationRequest)));
 
@@ -99,7 +99,7 @@ class RecruitmentRecruitmentBoardControllerTest {
                 LocalDate.of(2023, 11, 11));
 
         //when
-        ResultActions actual = mockMvc.perform(post("/api/boards")
+        ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(incorrectTitleRequest)));
 
@@ -119,7 +119,7 @@ class RecruitmentRecruitmentBoardControllerTest {
                 LocalDate.of(2023, 11, 11));
 
         //when
-        ResultActions actual = mockMvc.perform(post("/api/boards")
+        ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(incorrectContentRequest)));
 
@@ -139,7 +139,7 @@ class RecruitmentRecruitmentBoardControllerTest {
                 LocalDate.of(2023, 11, 11));
 
         //when
-        ResultActions actual = mockMvc.perform(post("/api/boards")
+        ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(incorrectContentRequest)));
 
@@ -159,7 +159,7 @@ class RecruitmentRecruitmentBoardControllerTest {
         when(recruitmentBoardService.select(anyLong(), anyLong())).thenReturn(recruitmentBoardSelectionResponse);
 
         //when
-        ResultActions actual = mockMvc.perform(get("/api/boards/{boardId}", 1L)
+        ResultActions actual = mockMvc.perform(get("/api/boards/recruitment/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -186,7 +186,7 @@ class RecruitmentRecruitmentBoardControllerTest {
                 .select(anyLong(), anyLong());
 
         //when
-        ResultActions actual = mockMvc.perform(get("/api/boards/{boardId}", 1L)
+        ResultActions actual = mockMvc.perform(get("/api/boards/recruitment/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -202,7 +202,7 @@ class RecruitmentRecruitmentBoardControllerTest {
                 .select(anyLong(), anyLong());
 
         //when
-        ResultActions actual = mockMvc.perform(get("/api/boards/{boardId}", 1L)
+        ResultActions actual = mockMvc.perform(get("/api/boards/recruitment/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -218,7 +218,7 @@ class RecruitmentRecruitmentBoardControllerTest {
         when(recruitmentBoardService.delete(anyLong(), anyLong())).thenReturn(new RecruitmentBoardIdResponse(1L));
 
         //when
-        ResultActions actual = mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/{boardId}", 1L)
+        ResultActions actual = mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/recruitment/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -234,7 +234,7 @@ class RecruitmentRecruitmentBoardControllerTest {
                 .delete(anyLong(), anyLong());
 
         //when
-        ResultActions actual = mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/{boardId}", 1L)
+        ResultActions actual = mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/recruitment/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -250,7 +250,7 @@ class RecruitmentRecruitmentBoardControllerTest {
                 .delete(anyLong(), anyLong());
 
         //when
-        ResultActions actual = mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/{boardId}", 1L)
+        ResultActions actual = mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/recruitment/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -269,7 +269,7 @@ class RecruitmentRecruitmentBoardControllerTest {
                 "산책", LocalDate.of(2023, 1, 1));
 
         //when
-        ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}", 1L)
+        ResultActions actual = mockMvc.perform(patch("/api/boards/recruitment/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(boardModificationRequest)));
 
@@ -289,7 +289,7 @@ class RecruitmentRecruitmentBoardControllerTest {
                 "산책", LocalDate.of(2023, 1, 1));
 
         //when
-        ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}", 1L)
+        ResultActions actual = mockMvc.perform(patch("/api/boards/recruitment/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(boardModificationRequest)));
 
@@ -309,7 +309,7 @@ class RecruitmentRecruitmentBoardControllerTest {
                 "산책", LocalDate.of(2023, 1, 1));
 
         //when
-        ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}", 1L)
+        ResultActions actual = mockMvc.perform(patch("/api/boards/recruitment/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(boardModificationRequest)));
 
@@ -325,7 +325,7 @@ class RecruitmentRecruitmentBoardControllerTest {
         when(recruitmentBoardService.closeRecruitment(anyLong(), anyLong())).thenReturn(new RecruitmentBoardIdResponse(1L));
 
         //when
-        ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}/recruitment", 1L)
+        ResultActions actual = mockMvc.perform(patch("/api/boards/recruitment/{boardId}/recruitment-status", 1L)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -341,7 +341,7 @@ class RecruitmentRecruitmentBoardControllerTest {
                 .closeRecruitment(anyLong(), anyLong());
 
         //when
-        ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}/recruitment", 1L)
+        ResultActions actual = mockMvc.perform(patch("/api/boards/recruitment/{boardId}/recruitment-status", 1L)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -357,7 +357,7 @@ class RecruitmentRecruitmentBoardControllerTest {
                 .closeRecruitment(anyLong(), anyLong());
 
         //when
-        ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}/recruitment", 1L)
+        ResultActions actual = mockMvc.perform(patch("/api/boards/recruitment/{boardId}/recruitment-status", 1L)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -379,7 +379,7 @@ class RecruitmentRecruitmentBoardControllerTest {
                 .thenReturn(new MultiBoardSelectResponse(summaryBoardResponses, false));
 
         //when
-        ResultActions actual = mockMvc.perform(get("/api/boards/my-region").param("page", "3")
+        ResultActions actual = mockMvc.perform(get("/api/boards/recruitment/region").param("page", "3")
                 .param("size", "2"));
 
         //then

@@ -62,7 +62,7 @@ public class RecruitmentBoardController implements BoardControllerSwagger {
                 .body(recruitmentBoardIdResponse);
     }
 
-    @PatchMapping("/{boardId}/recruitment")
+    @PatchMapping("/{boardId}/recruitment-status")
     public ResponseEntity<RecruitmentBoardIdResponse> closeRecruitment(@Login final Long memberId, @PathVariable final Long boardId) {
         log.info("memberId = {} 의 게시글 모집 마감 요청, 게시글 번호 : {}", memberId, boardId);
         RecruitmentBoardIdResponse recruitmentBoardIdResponse = recruitmentBoardService.closeRecruitment(memberId, boardId);
@@ -70,7 +70,7 @@ public class RecruitmentBoardController implements BoardControllerSwagger {
                 .body(recruitmentBoardIdResponse);
     }
 
-    @GetMapping("/my-region")
+    @GetMapping("/region")
     public ResponseEntity<MultiBoardSelectResponse> selectRegionBoards(@Login final Long memberId, final Pageable pageable) {
         MultiBoardSelectResponse multiBoardSelectResponse = recruitmentBoardService.selectRegionBoards(memberId, pageable);
         return ResponseEntity.ok()
