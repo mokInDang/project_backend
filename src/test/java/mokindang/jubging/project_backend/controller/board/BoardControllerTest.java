@@ -60,7 +60,7 @@ class BoardControllerTest {
                 LocalDate.of(2023, 11, 11));
 
         //when
-        ResultActions actual = mockMvc.perform(post("/api/boards")
+        ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(boardCreationRequest)));
 
@@ -80,7 +80,7 @@ class BoardControllerTest {
                 LocalDate.of(2023, 11, 11));
 
         //when
-        ResultActions actual = mockMvc.perform(post("/api/boards")
+        ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(boardCreationRequest)));
 
@@ -100,7 +100,7 @@ class BoardControllerTest {
                 LocalDate.of(2023, 11, 11));
 
         //when
-        ResultActions actual = mockMvc.perform(post("/api/boards")
+        ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(incorrectTitleRequest)));
 
@@ -120,7 +120,7 @@ class BoardControllerTest {
                 LocalDate.of(2023, 11, 11));
 
         //when
-        ResultActions actual = mockMvc.perform(post("/api/boards")
+        ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(incorrectContentRequest)));
 
@@ -140,7 +140,7 @@ class BoardControllerTest {
                 LocalDate.of(2023, 11, 11));
 
         //when
-        ResultActions actual = mockMvc.perform(post("/api/boards")
+        ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(incorrectContentRequest)));
 
@@ -160,7 +160,7 @@ class BoardControllerTest {
         when(boardService.select(anyLong(), anyLong())).thenReturn(boardSelectionResponse);
 
         //when
-        ResultActions actual = mockMvc.perform(get("/api/boards/{boardId}", 1L)
+        ResultActions actual = mockMvc.perform(get("/api/boards/recruitment/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -195,7 +195,7 @@ class BoardControllerTest {
                 .select(anyLong(), anyLong());
 
         //when
-        ResultActions actual = mockMvc.perform(get("/api/boards/{boardId}", 1L)
+        ResultActions actual = mockMvc.perform(get("/api/boards/recruitment/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -211,7 +211,7 @@ class BoardControllerTest {
                 .select(anyLong(), anyLong());
 
         //when
-        ResultActions actual = mockMvc.perform(get("/api/boards/{boardId}", 1L)
+        ResultActions actual = mockMvc.perform(get("/api/boards/recruitment/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -227,7 +227,7 @@ class BoardControllerTest {
         when(boardService.delete(anyLong(), anyLong())).thenReturn(new BoardIdResponse(1L));
 
         //when
-        ResultActions actual = mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/{boardId}", 1L)
+        ResultActions actual = mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/recruitment/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -243,7 +243,7 @@ class BoardControllerTest {
                 .delete(anyLong(), anyLong());
 
         //when
-        ResultActions actual = mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/{boardId}", 1L)
+        ResultActions actual = mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/recruitment/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -259,7 +259,7 @@ class BoardControllerTest {
                 .delete(anyLong(), anyLong());
 
         //when
-        ResultActions actual = mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/{boardId}", 1L)
+        ResultActions actual = mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/recruitment/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -278,7 +278,7 @@ class BoardControllerTest {
                 "산책", LocalDate.of(2023, 1, 1));
 
         //when
-        ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}", 1L)
+        ResultActions actual = mockMvc.perform(patch("/api/boards/recruitment/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(boardModificationRequest)));
 
@@ -298,7 +298,7 @@ class BoardControllerTest {
                 "산책", LocalDate.of(2023, 1, 1));
 
         //when
-        ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}", 1L)
+        ResultActions actual = mockMvc.perform(patch("/api/boards/recruitment/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(boardModificationRequest)));
 
@@ -318,7 +318,7 @@ class BoardControllerTest {
                 "산책", LocalDate.of(2023, 1, 1));
 
         //when
-        ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}", 1L)
+        ResultActions actual = mockMvc.perform(patch("/api/boards/recruitment/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(boardModificationRequest)));
 
@@ -334,7 +334,7 @@ class BoardControllerTest {
         when(boardService.closeRecruitment(anyLong(), anyLong())).thenReturn(new BoardIdResponse(1L));
 
         //when
-        ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}/recruitment", 1L)
+        ResultActions actual = mockMvc.perform(patch("/api/boards/recruitment/{boardId}/recruitment-status", 1L)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -350,7 +350,7 @@ class BoardControllerTest {
                 .closeRecruitment(anyLong(), anyLong());
 
         //when
-        ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}/recruitment", 1L)
+        ResultActions actual = mockMvc.perform(patch("/api/boards/recruitment/{boardId}/recruitment-status", 1L)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -366,7 +366,7 @@ class BoardControllerTest {
                 .closeRecruitment(anyLong(), anyLong());
 
         //when
-        ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}/recruitment", 1L)
+        ResultActions actual = mockMvc.perform(patch("/api/boards/recruitment/{boardId}/recruitment-status", 1L)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -384,7 +384,7 @@ class BoardControllerTest {
                 .thenReturn(new MultiBoardSelectResponse(summaryBoardResponses, false));
 
         //when
-        ResultActions actual = mockMvc.perform(get("/api/boards/my-region").param("page", "3")
+        ResultActions actual = mockMvc.perform(get("/api/boards/recruitment/region").param("page", "3")
                 .param("size", "2"));
 
         //then

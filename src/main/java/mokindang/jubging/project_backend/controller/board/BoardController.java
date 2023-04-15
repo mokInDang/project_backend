@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @Slf4j
-@RequestMapping("/api/boards")
+@RequestMapping("/api/boards/recruitment")
 @RestController
 @RequiredArgsConstructor
 public class BoardController implements BoardControllerSwagger {
@@ -62,7 +62,7 @@ public class BoardController implements BoardControllerSwagger {
                 .body(boardIdResponse);
     }
 
-    @PatchMapping("/{boardId}/recruitment")
+    @PatchMapping("/{boardId}/recruitment-status")
     public ResponseEntity<BoardIdResponse> closeRecruitment(@Login final Long memberId, @PathVariable final Long boardId) {
         log.info("memberId = {} 의 게시글 모집 마감 요청, 게시글 번호 : {}", memberId, boardId);
         BoardIdResponse boardIdResponse = boardService.closeRecruitment(memberId, boardId);
@@ -70,7 +70,7 @@ public class BoardController implements BoardControllerSwagger {
                 .body(boardIdResponse);
     }
 
-    @GetMapping("/my-region")
+    @GetMapping("/region")
     public ResponseEntity<MultiBoardSelectResponse> selectRegionBoards(@Login final Long memberId, final Pageable pageable) {
         MultiBoardSelectResponse multiBoardSelectResponse = boardService.selectRegionBoards(memberId, pageable);
         return ResponseEntity.ok()
