@@ -51,7 +51,7 @@ class MemberTest {
         Member member = new Member("testfourlength123@mail.com", "test");
 
         //when
-        String fourLengthEmail = member.getFourLengthEmail();
+        String fourLengthEmail = member.getFirstFourDigitsOfWriterEmail();
 
         //then
         assertThat(fourLengthEmail).isEqualTo("test");
@@ -69,5 +69,18 @@ class MemberTest {
         //then
         assertThat(member.getProfileImage().getProfileImageUrl()).isEqualTo("http://testimage.png");
         assertThat(member.getProfileImage().getProfileImageName()).isEqualTo("testimage");
+    }
+
+    @Test
+    @DisplayName("Member의 Alias를 변경한다.")
+    void updateAlias(){
+        //given
+        Member member = new Member("test@mail.com", "test");
+
+        //when
+        member.updateAlias("newAlias");
+
+        //then
+        assertThat(member.getAlias()).isEqualTo("newAlias");
     }
 }

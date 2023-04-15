@@ -1,18 +1,23 @@
 package mokindang.jubging.project_backend.controller.board;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import mokindang.jubging.project_backend.domain.board.Board;
+import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.service.board.BoardService;
 import mokindang.jubging.project_backend.service.board.request.BoardCreationRequest;
 import mokindang.jubging.project_backend.service.board.request.BoardModificationRequest;
 import mokindang.jubging.project_backend.service.board.response.BoardIdResponse;
 import mokindang.jubging.project_backend.service.board.response.BoardSelectionResponse;
+import mokindang.jubging.project_backend.service.board.response.MultiBoardSelectResponse;
+import mokindang.jubging.project_backend.service.board.response.SummaryBoardResponse;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -20,6 +25,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -145,12 +151,12 @@ class BoardControllerTest {
 
     @Test
     @DisplayName("게시글 식별 번호를 입력받아 게시글 조회 시, 유저의 지역과 게시글의 지역이 일치한 경우 HTTP 200 과" +
-            " 게시글 제목, 본문, 작성자, 활동 지역, 활동 예정일 활동 종류, 모집 여부 를 담은 BoardSelectResponse 를 반환한다.")
+            "게시글 조회 정보를 담은 BoardSelectResponse 를 반환한다.")
     void select() throws Exception {
         //given
-        LocalDateTime now = LocalDateTime.of(2023, 3, 30, 11, 11);
-        BoardSelectionResponse boardSelectionResponse = new BoardSelectionResponse(1L, "제목", "본문", now, "작성자",
-                "2023-03-10", "동작구", "달리기", true, "test", "test_profile_url",true);
+
+        boolean isMine = true;
+        BoardSelectionResponse boardSelectionResponse = new BoardSelectionResponse(createBoard(), isMine);
         when(boardService.select(anyLong(), anyLong())).thenReturn(boardSelectionResponse);
 
         //when
@@ -159,18 +165,26 @@ class BoardControllerTest {
 
         //then
         actual.andExpect(status().isOk())
-                .andExpect(jsonPath("boardId").value(1L))
-                .andExpect(jsonPath("$.title").value("제목"))
-                .andExpect(jsonPath("$.boardContentBody").value("본문"))
-                .andExpect(jsonPath("$.writerAlias").value("작성자"))
-                .andExpect(jsonPath("$.startingDate").value("2023-03-10"))
+                .andExpect(jsonPath("$.title").value("게시판 제목"))
+                .andExpect(jsonPath("$.content").value("게시판 내용 작성 테스트"))
+                .andExpect(jsonPath("$.writerAlias").value("test"))
+                .andExpect(jsonPath("$.startingDate").value("2025-02-11"))
                 .andExpect(jsonPath("$.region").value("동작구"))
                 .andExpect(jsonPath("$.activityCategory").value("달리기"))
                 .andExpect(jsonPath("$.onRecruitment").value(true))
-                .andExpect(jsonPath("$.writerProfileImage").value("test_profile_url"))
+                .andExpect(jsonPath("$.writerProfileImageUrl").value("test_profile_url"))
                 .andExpect(jsonPath("$.firstFourLettersOfEmail").value("test"))
                 .andExpect(jsonPath("$.mine").value(true))
                 .andExpect(jsonPath("$.creatingDatetime").value("2023-03-30T11:11:00"));
+    }
+
+    private Board createBoard() {
+        LocalDateTime now = LocalDateTime.of(2023, 3, 30, 11, 11, 0, 0);
+        Member testMember = new Member("test@email.com", "test");
+        testMember.updateRegion("동작구");
+        testMember.updateProfileImage("test_profile_url", "test_profile");
+        return new Board(now, testMember, LocalDate.of(2025, 2, 11),
+                "달리기", "게시판 제목", "게시판 내용 작성 테스트");
     }
 
     @Test
@@ -358,5 +372,24 @@ class BoardControllerTest {
         //then
         actual.andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.error").value("글 작성자만 모집 마감할 수 있습니다."));
+    }
+
+    @Test
+    @DisplayName("지역 게시글 조회 시, HTTP 200 코드와 함께 요청 회원 지역에 해당하는 게시글 리스트를 반환한다.")
+    void selectRegionBoards() throws Exception {
+        //given
+        List<SummaryBoardResponse> summaryBoardResponses = List.of(new SummaryBoardResponse(createBoard()),
+                new SummaryBoardResponse(createBoard()));
+        when(boardService.selectRegionBoards(anyLong(), any(Pageable.class)))
+                .thenReturn(new MultiBoardSelectResponse(summaryBoardResponses, false));
+
+        //when
+        ResultActions actual = mockMvc.perform(get("/api/boards/my-region").param("page", "3")
+                .param("size", "2"));
+
+        //then
+        actual.andExpect(status().isOk())
+                .andExpect(jsonPath("$.boards").exists())
+                .andExpect(jsonPath("$.hasNext").value(false));
     }
 }

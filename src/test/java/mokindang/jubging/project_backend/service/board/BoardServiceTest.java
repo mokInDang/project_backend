@@ -2,17 +2,17 @@ package mokindang.jubging.project_backend.service.board;
 
 import mokindang.jubging.project_backend.domain.board.ActivityCategory;
 import mokindang.jubging.project_backend.domain.board.Board;
-import mokindang.jubging.project_backend.domain.board.vo.BoardContentBody;
+import mokindang.jubging.project_backend.domain.board.vo.Content;
 import mokindang.jubging.project_backend.domain.board.vo.StartingDate;
 import mokindang.jubging.project_backend.domain.board.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.member.vo.Region;
-import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.repository.board.BoardRepository;
 import mokindang.jubging.project_backend.service.board.request.BoardCreationRequest;
 import mokindang.jubging.project_backend.service.board.request.BoardModificationRequest;
 import mokindang.jubging.project_backend.service.board.response.BoardIdResponse;
 import mokindang.jubging.project_backend.service.board.response.BoardSelectionResponse;
+import mokindang.jubging.project_backend.service.board.response.MultiBoardSelectResponse;
 import mokindang.jubging.project_backend.service.member.MemberService;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
@@ -21,9 +21,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -89,21 +95,19 @@ class BoardServiceTest {
         SoftAssertions softly = new SoftAssertions();
         Member member = mock(Member.class);
         when(memberService.findByMemberId(anyLong())).thenReturn(member);
-
         Board board = mock(Board.class);
         when(board.getId()).thenReturn(1L);
         when(board.getTitle()).thenReturn(new Title("제목입니다."));
-        when(board.getBoardContentBody()).thenReturn(new BoardContentBody("본문내용입니다."));
-        when(board.getWriter()).thenReturn(mock(Member.class));
-        when(board.getWriter().getAlias()).thenReturn("글작성자");
+        when(board.getContent()).thenReturn(new Content("본문내용입니다."));
+        when(board.getWriterAlias()).thenReturn("글작성자");
         when(board.getWritingRegion()).thenReturn(Region.from("동작구"));
         when(board.getActivityCategory()).thenReturn(ActivityCategory.RUNNING);
         when(board.isOnRecruitment()).thenReturn(true);
         LocalDate now = LocalDate.of(2023, 3, 10);
         when(board.getStartingDate()).thenReturn(new StartingDate(now, LocalDate.of(2023, 3, 11)));
-        when(board.getWriter().getFourLengthEmail()).thenReturn("test");
+        when(board.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
         when(board.getWriterProfileImageUrl()).thenReturn("test_url");
-        when(board.isWriter(member)).thenReturn(true);
+        when(board.isSameWriterId(anyLong())).thenReturn(true);
         when(boardRepository.findById(1L)).thenReturn(Optional.of(board));
 
         //when
@@ -112,12 +116,12 @@ class BoardServiceTest {
         //then
         softly.assertThat(actual.getBoardId()).isEqualTo(1L);
         softly.assertThat(actual.getTitle()).isEqualTo("제목입니다.");
-        softly.assertThat(actual.getBoardContentBody()).isEqualTo("본문내용입니다.");
+        softly.assertThat(actual.getContent()).isEqualTo("본문내용입니다.");
         softly.assertThat(actual.getWriterAlias()).isEqualTo("글작성자");
         softly.assertThat(actual.getStartingDate()).isEqualTo("2023-03-11");
         softly.assertThat(actual.getActivityCategory()).isEqualTo("달리기");
         softly.assertThat(actual.isOnRecruitment()).isEqualTo(true);
-        softly.assertThat(actual.getWriterProfileImage()).isEqualTo("test_url");
+        softly.assertThat(actual.getWriterProfileImageUrl()).isEqualTo("test_url");
         softly.assertThat(actual.getFirstFourLettersOfEmail()).isEqualTo("test");
         softly.assertThat(actual.isMine()).isEqualTo(true);
         softly.assertAll();
@@ -128,13 +132,11 @@ class BoardServiceTest {
             " 삭제 후 삭제된 게시글 Id를 가진 BoardIdResponse 를 반환한다.")
     void delete() {
         //given
-        Member writer = mock(Member.class);
-        when(memberService.findByMemberId(1L)).thenReturn(writer);
         Board board = mock(Board.class);
-        when(board.isWriter(writer)).thenReturn(true);
+        when(boardRepository.findById(anyLong())).thenReturn(Optional.of(board));
         Long boardId = 1L;
-        when(boardRepository.findById(boardId)).thenReturn(Optional.of(board));
         when(board.getId()).thenReturn(boardId);
+
 
         Long writerId = 1L;
         //when
@@ -149,8 +151,6 @@ class BoardServiceTest {
     @DisplayName("게시글 삭제 요청 시, 존재하지 않는 게시물에 대한 접근이면 예외를 발생한다.")
     void deleteFailedByNonexistentBoard() {
         //given
-        Member writer = mock(Member.class);
-        when(memberService.findByMemberId(1L)).thenReturn(writer);
         when(boardRepository.findById(anyLong())).thenThrow(new IllegalArgumentException("존재하지 않는 게시물 입니다."));
 
         //when, then
@@ -159,30 +159,12 @@ class BoardServiceTest {
     }
 
     @Test
-    @DisplayName("게시글 삭제 요청 시, 삭제 요청 회원이 게시글 작성자가 아닌 경우 예외를 반환한다.")
-    void deleteFailedByNoneMatchingBoardWhitWritingMember() {
-        //given
-        Member member = mock(Member.class);
-        when(memberService.findByMemberId(1L)).thenReturn(member);
-        Board board = mock(Board.class);
-        when(board.isWriter(any(Member.class))).thenReturn(false);
-        when(boardRepository.findById(anyLong())).thenReturn(Optional.of(board));
-
-        //when, then
-        assertThatThrownBy(() -> boardService.delete(1L, 1L)).isInstanceOf(ForbiddenException.class)
-                .hasMessage("글 작성자만 게시글을 삭제할 수 있습니다.");
-    }
-
-    @Test
     @DisplayName("게시글을 수정한다.")
     void modify() {
         //given
-        Member member = mock(Member.class);
-        when(memberService.findByMemberId(anyLong())).thenReturn(member);
         Board board = mock(Board.class);
-        when(board.getId()).thenReturn(1L);
-        when(board.isWriter(any(Member.class))).thenReturn(true);
         when(boardRepository.findById(anyLong())).thenReturn(Optional.of(board));
+        when(board.getId()).thenReturn(1L);
 
         Long memberId = 1L;
         Long boardId = 1L;
@@ -194,18 +176,15 @@ class BoardServiceTest {
 
         //then
         assertThat(actual.getBoardId()).isEqualTo(1L);
-        verify(board, times(1)).modify(any(), any(), any(), any());
+        verify(board, times(1)).modify(anyLong(), any(), any(), any(), any());
     }
 
     @Test
     @DisplayName("게시글의 모집을 마감한다.")
     void closeRecruitment() {
         //given
-        Member member = mock(Member.class);
-        when(memberService.findByMemberId(anyLong())).thenReturn(member);
         Board board = mock(Board.class);
         when(board.getId()).thenReturn(1L);
-        when(board.isWriter(any(Member.class))).thenReturn(true);
         when(boardRepository.findById(anyLong())).thenReturn(Optional.of(board));
 
         Long memberId = 1L;
@@ -216,41 +195,48 @@ class BoardServiceTest {
 
         //then
         assertThat(boardIdResponse.getBoardId()).isEqualTo(1L);
-        verify(board, times(1)).closeRecruitment();
-    }
-
-    @Test
-    @DisplayName("게시글 모집 마감 요청 시, 입력 받은 memberId 를 가진 회원이 작성한 게시글이 아닌 경우 예외를 반환한다.")
-    void closeRecruitmentFailedByNoneMatchingBoardWhitWritingMember() {
-        //given
-        Member member = mock(Member.class);
-        when(memberService.findByMemberId(anyLong())).thenReturn(member);
-        Board board = mock(Board.class);
-        when(boardRepository.findById(anyLong())).thenReturn(Optional.of(board));
-        when(board.isWriter(any(Member.class))).thenReturn(false);
-
-        Long memberId = 1L;
-        Long boardId = 1L;
-
-        //when, then
-        assertThatThrownBy(() -> boardService.closeRecruitment(memberId, boardId)).isInstanceOf(ForbiddenException.class)
-                .hasMessage("글 작성자만 모집 마감할 수 있습니다.");
+        verify(board, times(1)).closeRecruitment(memberId);
     }
 
     @Test
     @DisplayName("게시글 모집 마감 요청 시, 입력 받은 boardId 를 가진 게시글이 존재하지 않는다면 예외를 반환한다.")
     void closeRecruitmentFailedByNoneExistBoard() {
         //given
-        Member member = mock(Member.class);
-        when(memberService.findByMemberId(anyLong())).thenReturn(member);
         Board board = mock(Board.class);
         when(boardRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         Long memberId = 1L;
         Long boardId = 1L;
 
-        //when, then
         assertThatThrownBy(() -> boardService.closeRecruitment(memberId, boardId)).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하지 않는 게시물입니다.");
+    }
+
+    @Test
+    @DisplayName("요청 회원의 지역에 해당하는 게시글 리스트를 반환한다.")
+    void selectRegionBoards() {
+        //given
+        LocalDateTime now = LocalDateTime.of(2023, 3, 25, 1, 1);
+        Member dongJackMember = new Member("test@mail.com", "동작이");
+        dongJackMember.updateRegion("동작구");
+        Board dongJackBoard1 = new Board(now.plusDays(1), dongJackMember, LocalDate.of(2023, 3, 27), "달리기", "제목1", "본문1");
+        Board dongJackBoard2 = new Board(now, dongJackMember, LocalDate.of(2023, 3, 27), "산책", "제목2", "본문2");
+        Slice<Board> slice = new SliceImpl<>(List.of(dongJackBoard1,dongJackBoard2));
+
+        Member member = mock(Member.class);
+        when(member.getRegion()).thenReturn(Region.from("동작구"));
+        when(memberService.findByMemberId(1L)).thenReturn(member);
+        when(boardRepository.selectRegionBoards(any(Region.class), any(Pageable.class)))
+                .thenReturn(slice);
+
+        Long memberId = 1L;
+        Pageable pageable = PageRequest.of(0, 2);
+
+        //when
+        MultiBoardSelectResponse multiBoardSelectResponse = boardService.selectRegionBoards(1L, pageable);
+
+        //then
+        assertThat(multiBoardSelectResponse.getBoards()).hasSize(2);
+        verify(boardRepository, times(1)).selectRegionBoards(any(Region.class), any(Pageable.class));
     }
 }

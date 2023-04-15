@@ -1,10 +1,11 @@
 package mokindang.jubging.project_backend.domain.board;
 
-import mokindang.jubging.project_backend.domain.board.vo.BoardContentBody;
+import mokindang.jubging.project_backend.domain.board.vo.Content;
 import mokindang.jubging.project_backend.domain.board.vo.StartingDate;
 import mokindang.jubging.project_backend.domain.board.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.member.vo.Region;
+import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,7 @@ class BoardTest {
     @DisplayName("게시글 생성 시, 모집 여부는 상태는 항상 true 이다.")
     void defaultOfOnRecruitment() {
         //given
-        Board board = createBoard();
+        Board board = createBoardWithTestWriter();
 
         //when
         boolean onRecruitment = board.isOnRecruitment();
@@ -41,29 +42,51 @@ class BoardTest {
         assertThat(onRecruitment).isTrue();
     }
 
-    private Board createBoard() {
+    private Board createBoardWithTestWriter() {
         LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
         Member writer = new Member("test1@email.com", "test");
         writer.updateRegion("동작구");
-        return new Board(now, writer, LocalDate.of(2025, 2, 11), "달리기",
+        Board board = new Board(now, writer, LocalDate.of(2025, 2, 11), "달리기",
                 "제목", "본문내용");
+
+        em.persist(writer);
+        em.persist(board);
+        em.flush();
+        em.clear();
+
+        return board;
     }
 
     @Test
-    @DisplayName("모집 여부를 마감한다.")
+    @DisplayName("회원 Id 를 받아 모집 여부를 마감한다.")
     void closeRecruitment() {
         //given
-        Board board = createBoard();
+        Board board = createBoardWithTestWriter();
+        Long memberId = board.getWriter()
+                .getId();
 
         //when
-        board.closeRecruitment();
+        board.closeRecruitment(memberId);
 
         //then
         assertThat(board.isOnRecruitment()).isFalse();
     }
 
     @Test
-    @DisplayName("게시글의 member(작성자), title, boardContentBody, 활동 종류, 활동 시작일, 모집 여부, 작성 지역을 반환한다.")
+    @DisplayName("회원 Id 를 받아 권환을 확인 후 모집 여부를 마감한다. 이때 작성자가 아닌 회원이면 예외를 반환한다.")
+    void closeRecruitmentWhenNoneWriterId() {
+        //given
+        Board board = createBoardWithTestWriter();
+        Long memberId = board.getWriter()
+                .getId() + 1;
+
+        //when, then
+        assertThatThrownBy(() -> board.closeRecruitment(memberId)).isInstanceOf(ForbiddenException.class)
+                .hasMessage("작성자 권한이 없습니다.");
+    }
+
+    @Test
+    @DisplayName("게시글의 member(작성자), title, content, 활동 종류, 활동 시작일, 모집 여부, 작성 지역을 반환한다.")
     void getter() {
         //given
         SoftAssertions softly = new SoftAssertions();
@@ -76,7 +99,7 @@ class BoardTest {
         //when
         Member member = board.getWriter();
         Title title = board.getTitle();
-        BoardContentBody boardContentBody = board.getBoardContentBody();
+        Content content = board.getContent();
         ActivityCategory activityCategory = board.getActivityCategory();
         StartingDate startingDate = board.getStartingDate();
         Region region = board.getWritingRegion();
@@ -88,7 +111,7 @@ class BoardTest {
         softly.assertThat(startingDate).isEqualTo(new StartingDate(LocalDate.of(2023, 11, 11),
                 LocalDate.of(2025, 2, 11)));
         softly.assertThat(title).isEqualTo(new Title("게시판 제목"));
-        softly.assertThat(boardContentBody).isEqualTo(new BoardContentBody("게시판 내용 작성 테스트"));
+        softly.assertThat(content).isEqualTo(new Content("게시판 내용 작성 테스트"));
         softly.assertThat(region).isEqualTo(member.getRegion());
         softly.assertThat(onRecruitment).isEqualTo(true);
         softly.assertAll();
@@ -112,7 +135,7 @@ class BoardTest {
     @DisplayName("지역을 입력 받아, 게시글의 지역과 다르면 예외를 반환한다.")
     void checkRegion() {
         //given
-        Board board = createBoard();
+        Board board = createBoardWithTestWriter();
 
         //when, then
         assertThatThrownBy(() -> board.checkRegion(Region.from("성동구")))
@@ -131,57 +154,68 @@ class BoardTest {
                 "달리기", "게시판 제목", "게시판 내용 작성 테스트");
 
         //when
-        String actual = board.getWriter().getAlias();
+        String actual = board.getWriterAlias();
 
         //then
         assertThat(actual).isEqualTo("민호");
     }
 
     @Test
-    @DisplayName("게시글 작성자인지 확인한다. 작성자인경우 true 를 반환한다.")
-    void isWriter() {
+    @DisplayName("게시글 작성자의 이메일 앞 4글자를 반환한다.")
+    void getFirstFourDigitsOfWriterEmail() {
         //given
-        LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
-        Member writer = new Member("test1@email.com", "test");
-        writer.updateRegion("동작구");
-        Board board = new Board(now, writer, LocalDate.of(2025, 2, 11), "달리기",
-                "제목", "본문내용");
-
-        em.persist(writer);
-        em.persist(board);
-        em.flush();
-        em.clear();
+        Board board = createBoardWithTestWriter();
+        String expect = "test";
 
         //when
-        boolean actual = board.isWriter(writer);
+        String actual = board.getFirstFourDigitsOfWriterEmail();
+
+        //then
+        assertThat(actual).isEqualTo(expect);
+    }
+
+    @Test
+    @DisplayName("회원 Id 를 입력받아 게시글 작성자인지 확인한다. 작성자인경우 true 를 반환한다.")
+    void isSameWriterId() {
+        //given
+        Board board = createBoardWithTestWriter();
+        Member writer = board.getWriter();
+
+        Long writerId = writer.getId();
+
+        //when
+        boolean actual = board.isSameWriterId(writerId);
 
         //then
         assertThat(actual).isTrue();
     }
 
     @Test
-    @DisplayName("게시글 작성자인지 확인한다. 작성자가 아닌경우 false 를 반환한다.")
-    void isWriterWhenNoneWriter() {
+    @DisplayName("회원 ID 를 입력받아 게시글 작성자인지 확인한다. 작성자가 아닌경우 false 를 반환한다.")
+    void isSameWriterIdFailed() {
         //given
-        LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
-        Member writer = new Member("test1@email.com", "test");
-        writer.updateRegion("동작구");
-        Board board = new Board(now, writer, LocalDate.of(2025, 2, 11), "달리기",
-                "제목", "본문내용");
-
-        Member noneWriter = new Member("noneWriter@test.com", "noneWriter");
-
-        em.persist(writer);
-        em.persist(board);
-        em.persist(noneWriter);
-        em.flush();
-        em.clear();
+        Board board = createBoardWithTestWriter();
+        long noneWriterId = board.getWriter()
+                .getId() + 1;
 
         //when
-        boolean actual = board.isWriter(noneWriter);
+        boolean actual = board.isSameWriterId(noneWriterId);
 
         //then
         assertThat(actual).isFalse();
+    }
+
+    @Test
+    @DisplayName("회원 Id 를 입력받아, 게시글 작성자가 아닌경우 예외를 반환한다.")
+    void validatePermission() {
+        //given
+        Board board = createBoardWithTestWriter();
+        Long noneWriterId = board.getWriter()
+                .getId() + 1;
+
+        //when, then
+        assertThatThrownBy(() -> board.validatePermission(noneWriterId)).isInstanceOf(ForbiddenException.class)
+                .hasMessage("작성자 권한이 없습니다.");
     }
 
     @Test
@@ -189,25 +223,43 @@ class BoardTest {
     void modify() {
         //given
         SoftAssertions softly = new SoftAssertions();
-        LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
-        Member writer = new Member("test1@email.com", "test");
-        writer.updateRegion("동작구");
-        Board board = new Board(now, writer, LocalDate.of(2025, 2, 11), "달리기",
-                "제목", "본문내용");
+
+        Board board = createBoardWithTestWriter();
+        Long writerId = board.getWriter()
+                .getId();
 
         String newActivityCategory = "산책";
         String newTitleValue = "새로운 제목입니다.";
         String newContentValue = "새로운 본문 내용입니다.";
         LocalDate newStartingDate = LocalDate.parse("2023-11-13");
+
+
         //when
-        board.modify(newStartingDate, newActivityCategory, newTitleValue, newContentValue);
+        board.modify(writerId, newStartingDate, newActivityCategory, newTitleValue, newContentValue);
 
         //then
         softly.assertThat(board.getStartingDate().getValue()).isEqualTo("2023-11-13");
         softly.assertThat(board.getActivityCategory().getValue()).isEqualTo(newActivityCategory);
         softly.assertThat(board.getTitle().getValue()).isEqualTo(newTitleValue);
-        softly.assertThat(board.getBoardContentBody().getValue()).isEqualTo(newContentValue);
+        softly.assertThat(board.getContent().getValue()).isEqualTo(newContentValue);
         softly.assertAll();
+    }
+
+    @Test
+    @DisplayName("게시글 수정 요청 시, 요청 회원의 id 가 작성자 id 가 아닌 경우 예외를 반환한다.")
+    void modifyFailedWhenNoneWriterId() {
+        //given
+        Board board = createBoardWithTestWriter();
+        Long noneWriterId = 10L;
+        String newActivityCategory = "산책";
+        String newTitleValue = "새로운 제목입니다.";
+        String newContentValue = "새로운 본문 내용입니다.";
+        LocalDate newStartingDate = LocalDate.parse("2023-11-13");
+
+        //when, then
+        assertThatThrownBy(() -> board.modify(noneWriterId, newStartingDate, newActivityCategory, newTitleValue, newContentValue))
+                .isInstanceOf(ForbiddenException.class)
+                .hasMessage("작성자 권한이 없습니다.");
     }
 
     @Test

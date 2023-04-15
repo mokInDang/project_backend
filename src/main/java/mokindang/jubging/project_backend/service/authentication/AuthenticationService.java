@@ -48,7 +48,7 @@ public class AuthenticationService {
         log.info("memberId = {}, email = {}, alias = {} 의 로그인", existMember.getId(), kakaoApiMemberResponse.getEmail(), kakaoApiMemberResponse.getAlias());
         JwtResponse jwtResponse = issueJwtToken(existMember);
         return new KakaoLoginResponse(jwtResponse.getAccessToken(),
-                jwtResponse.getRefreshToken(), existMember.getFourLengthEmail(), existMember.getAlias(), existMember.getRegion().getValue(), existMember.getProfileImage().getProfileImageUrl(), LOGIN);
+                jwtResponse.getRefreshToken(), existMember.getFirstFourDigitsOfWriterEmail(), existMember.getAlias(), existMember.getRegion().getValue(), existMember.getProfileImage().getProfileImageUrl(), LOGIN);
     }
 
     private KakaoLoginResponse join(final KakaoApiMemberResponse kakaoApiMemberResponse) {
@@ -56,7 +56,7 @@ public class AuthenticationService {
         Member newMember = memberService.saveMember(new Member(kakaoApiMemberResponse.getEmail(), kakaoApiMemberResponse.getAlias()));
         JwtResponse jwtResponse = issueJwtToken(newMember);
         return new KakaoLoginResponse(jwtResponse.getAccessToken(),
-                jwtResponse.getRefreshToken(), newMember.getFourLengthEmail(), newMember.getAlias(), newMember.getRegion().getValue(), newMember.getProfileImage().getProfileImageUrl(), JOIN);
+                jwtResponse.getRefreshToken(), newMember.getFirstFourDigitsOfWriterEmail(), newMember.getAlias(), newMember.getRegion().getValue(), newMember.getProfileImage().getProfileImageUrl(), JOIN);
     }
 
     private JwtResponse issueJwtToken(final Member member) {
