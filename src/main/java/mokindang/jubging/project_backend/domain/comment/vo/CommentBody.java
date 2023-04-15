@@ -1,19 +1,13 @@
 package mokindang.jubging.project_backend.domain.comment.vo;
 
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import javax.persistence.Embeddable;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@Embeddable
 public class CommentBody {
 
     private static final int MAXIMUM_COMMENT_BODY_SIZE = 1000;
 
-    private  String content;
+    private final String content;
 
     public CommentBody(final String content) {
         validateComment(content);
