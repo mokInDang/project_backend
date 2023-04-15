@@ -1,11 +1,11 @@
-package mokindang.jubging.project_backend.domain.board;
+package mokindang.jubging.project_backend.domain.board.recruitment;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import mokindang.jubging.project_backend.domain.board.vo.Content;
-import mokindang.jubging.project_backend.domain.board.vo.StartingDate;
-import mokindang.jubging.project_backend.domain.board.vo.Title;
+import mokindang.jubging.project_backend.domain.board.recruitment.vo.Content;
+import mokindang.jubging.project_backend.domain.board.recruitment.vo.StartingDate;
+import mokindang.jubging.project_backend.domain.board.recruitment.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.member.vo.Region;
 
@@ -17,11 +17,11 @@ import java.util.Objects;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Board {
+public class RecruitmentBoard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "board_id", nullable = false)
+    @Column(name = "recruitment_board_id", nullable = false)
     private Long id;
 
     @Column(nullable = false)
@@ -49,8 +49,8 @@ public class Board {
     @Column(nullable = false)
     private boolean onRecruitment;
 
-    public Board(final LocalDateTime creatingDateTime, final Member writer, final LocalDate startingDate,
-                 final String activityCategory, final String title, final String content) {
+    public RecruitmentBoard(final LocalDateTime creatingDateTime, final Member writer, final LocalDate startingDate,
+                            final String activityCategory, final String title, final String content) {
         this.creatingDateTime = creatingDateTime;
         this.writer = writer;
         LocalDate creatingDate = creatingDateTime.toLocalDate();
@@ -101,8 +101,8 @@ public class Board {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final Board board = (Board) o;
-        return Objects.equals(id, board.id);
+        final RecruitmentBoard recruitmentBoard = (RecruitmentBoard) o;
+        return Objects.equals(id, recruitmentBoard.id);
     }
 
     @Override

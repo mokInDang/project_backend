@@ -1,4 +1,4 @@
-package mokindang.jubging.project_backend.domain.board.vo;
+package mokindang.jubging.project_backend.domain.board.recruitment.vo;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
