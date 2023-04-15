@@ -1,7 +1,7 @@
 package mokindang.jubging.project_backend.service.board;
 
 import lombok.RequiredArgsConstructor;
-import mokindang.jubging.project_backend.repository.board.BoardRepository;
+import mokindang.jubging.project_backend.repository.board.RecruitmentBoardRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,13 +9,13 @@ import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
-public class BoardSchedulingService {
+public class RecruitmentBoardSchedulingService {
 
-    private final BoardRepository boardRepository;
+    private final RecruitmentBoardRepository recruitmentBoardRepository;
 
     @Transactional
     public void updateOnRecruitmentByStartingDate() {
         LocalDate today = LocalDate.now();
-        boardRepository.updateOnRecruitmentByStartingDate(today);
+        recruitmentBoardRepository.updateOnRecruitmentByStartingDate(today);
     }
 }

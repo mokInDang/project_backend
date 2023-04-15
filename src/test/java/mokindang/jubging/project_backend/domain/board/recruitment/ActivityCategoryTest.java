@@ -1,4 +1,4 @@
-package mokindang.jubging.project_backend.domain.board;
+package mokindang.jubging.project_backend.domain.board.recruitment;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

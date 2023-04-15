@@ -1,4 +1,4 @@
-package mokindang.jubging.project_backend.domain.board;
+package mokindang.jubging.project_backend.domain.board.recruitment;
 
 import java.util.Arrays;
 

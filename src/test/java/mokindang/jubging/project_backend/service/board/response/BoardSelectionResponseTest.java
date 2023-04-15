@@ -1,10 +1,10 @@
 package mokindang.jubging.project_backend.service.board.response;
 
-import mokindang.jubging.project_backend.domain.board.ActivityCategory;
-import mokindang.jubging.project_backend.domain.board.Board;
-import mokindang.jubging.project_backend.domain.board.vo.Content;
-import mokindang.jubging.project_backend.domain.board.vo.StartingDate;
-import mokindang.jubging.project_backend.domain.board.vo.Title;
+import mokindang.jubging.project_backend.domain.board.recruitment.ActivityCategory;
+import mokindang.jubging.project_backend.domain.board.recruitment.RecruitmentBoard;
+import mokindang.jubging.project_backend.domain.board.recruitment.vo.BoardContentBody;
+import mokindang.jubging.project_backend.domain.board.recruitment.vo.StartingDate;
+import mokindang.jubging.project_backend.domain.board.recruitment.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.member.vo.Region;
 import org.assertj.core.api.SoftAssertions;
@@ -28,11 +28,11 @@ class BoardSelectionResponseTest {
         LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
         Member writer = new Member("test1@email.com", "test");
         writer.updateRegion("동작구");
-        Board board = new Board(now, writer, LocalDate.of(2025, 2, 11), "달리기",
+        RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, writer, LocalDate.of(2025, 2, 11), "달리기",
                 "제목", "본문내용");
 
         //when, then
-        assertThatCode(() -> new BoardSelectionResponse(board, mine)).doesNotThrowAnyException();
+        assertThatCode(() -> new RecruitmentBoardSelectionResponse(recruitmentBoard, mine)).doesNotThrowAnyException();
     }
 
     @Test
@@ -40,23 +40,23 @@ class BoardSelectionResponseTest {
     void getter() {
         //given
         SoftAssertions softly = new SoftAssertions();
-        Board board = createMockedBoard();
+        RecruitmentBoard recruitmentBoard = createMockedBoard();
         boolean mine = true;
-        BoardSelectionResponse boardSelectionResponse = new BoardSelectionResponse(board, mine);
+        RecruitmentBoardSelectionResponse selectionResponse = new RecruitmentBoardSelectionResponse(recruitmentBoard, mine);
 
         //when
-        Long boardId = boardSelectionResponse.getBoardId();
-        String activityCategory = boardSelectionResponse.getActivityCategory();
-        String region = boardSelectionResponse.getRegion();
-        String title = boardSelectionResponse.getTitle();
-        String content = boardSelectionResponse.getContent();
-        boolean onRecruitment = boardSelectionResponse.isOnRecruitment();
-        LocalDateTime creatingDatetime = boardSelectionResponse.getCreatingDatetime();
-        String startingDate = boardSelectionResponse.getStartingDate();
-        String writerAlias = boardSelectionResponse.getWriterAlias();
-        String firstFourLettersOfEmail = boardSelectionResponse.getFirstFourLettersOfEmail();
-        String writerProfileImageUrl = boardSelectionResponse.getWriterProfileImageUrl();
-        boolean isMine = boardSelectionResponse.isMine();
+        Long boardId = selectionResponse.getBoardId();
+        String activityCategory = selectionResponse.getActivityCategory();
+        String region = selectionResponse.getRegion();
+        String title = selectionResponse.getTitle();
+        String content = selectionResponse.getContentBody();
+        boolean onRecruitment = selectionResponse.isOnRecruitment();
+        LocalDateTime creatingDatetime = selectionResponse.getCreatingDatetime();
+        String startingDate = selectionResponse.getStartingDate();
+        String writerAlias = selectionResponse.getWriterAlias();
+        String firstFourLettersOfEmail = selectionResponse.getFirstFourLettersOfEmail();
+        String writerProfileImageUrl = selectionResponse.getWriterProfileImageUrl();
+        boolean isMine = selectionResponse.isMine();
 
         //then
         softly.assertThat(boardId).isEqualTo(1L);
@@ -74,20 +74,20 @@ class BoardSelectionResponseTest {
         softly.assertAll();
     }
 
-    private Board createMockedBoard() {
+    private RecruitmentBoard createMockedBoard() {
         LocalDate today = LocalDate.of(2023, 3, 14);
-        Board board = mock(Board.class);
-        when(board.getId()).thenReturn(1L);
-        when(board.getTitle()).thenReturn(new Title("제목"));
-        when(board.getContent()).thenReturn(new Content("본문내용"));
-        when(board.getWritingRegion()).thenReturn(Region.from("동작구"));
-        when(board.getActivityCategory()).thenReturn(ActivityCategory.RUNNING);
-        when(board.isOnRecruitment()).thenReturn(true);
-        when(board.getCreatingDateTime()).thenReturn(LocalDateTime.of(2023, 11, 12, 0, 0, 0));
-        when(board.getStartingDate()).thenReturn(new StartingDate(today, LocalDate.of(2025, 2, 11)));
-        when(board.getWriterAlias()).thenReturn("test");
-        when(board.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
-        when(board.getWriterProfileImageUrl()).thenReturn("test_url");
-        return board;
+        RecruitmentBoard recruitmentBoard = mock(RecruitmentBoard.class);
+        when(recruitmentBoard.getId()).thenReturn(1L);
+        when(recruitmentBoard.getTitle()).thenReturn(new Title("제목"));
+        when(recruitmentBoard.getBoardContentBody()).thenReturn(new BoardContentBody("본문내용"));
+        when(recruitmentBoard.getWritingRegion()).thenReturn(Region.from("동작구"));
+        when(recruitmentBoard.getActivityCategory()).thenReturn(ActivityCategory.RUNNING);
+        when(recruitmentBoard.isOnRecruitment()).thenReturn(true);
+        when(recruitmentBoard.getCreatingDateTime()).thenReturn(LocalDateTime.of(2023, 11, 12, 0, 0, 0));
+        when(recruitmentBoard.getStartingDate()).thenReturn(new StartingDate(today, LocalDate.of(2025, 2, 11)));
+        when(recruitmentBoard.getWriterAlias()).thenReturn("test");
+        when(recruitmentBoard.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
+        when(recruitmentBoard.getWriterProfileImageUrl()).thenReturn("test_url");
+        return recruitmentBoard;
     }
 }

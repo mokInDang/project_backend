@@ -1,6 +1,6 @@
 package mokindang.jubging.project_backend.repository.board;
 
-import mokindang.jubging.project_backend.domain.board.Board;
+import mokindang.jubging.project_backend.domain.board.recruitment.RecruitmentBoard;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.member.vo.Region;
 import mokindang.jubging.project_backend.repository.member.MemberRepository;
@@ -22,10 +22,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class BoardRepositoryTest {
+class RecruitmentRecruitmentBoardRepositoryTest {
 
     @Autowired
-    private BoardRepository boardRepository;
+    private RecruitmentBoardRepository recruitmentBoardRepository;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -41,18 +41,18 @@ class BoardRepositoryTest {
         member.updateRegion("동작구");
         memberRepository.save(member);
         LocalDateTime now = LocalDateTime.of(2023, 3, 25, 1, 1);
-        Board recruitingBoardWithPastStartingDate = new Board(now, member, LocalDate.of(2023, 3, 27), "달리기", "제목", "본문");
-        Board save = boardRepository.save(recruitingBoardWithPastStartingDate);
+        RecruitmentBoard recruitingRecruitmentBoardWithPastStartingDate = new RecruitmentBoard(now, member, LocalDate.of(2023, 3, 27), "달리기", "제목", "본문");
+        RecruitmentBoard save = recruitmentBoardRepository.save(recruitingRecruitmentBoardWithPastStartingDate);
 
         LocalDate today = LocalDate.of(2023, 3, 28);
 
         //when
-        boardRepository.updateOnRecruitmentByStartingDate(today);
+        recruitmentBoardRepository.updateOnRecruitmentByStartingDate(today);
         entityManager.flush();
 
         //then
         entityManager.clear();
-        assertThat(boardRepository.findById(save.getId()).get().isOnRecruitment()).isFalse();
+        assertThat(recruitmentBoardRepository.findById(save.getId()).get().isOnRecruitment()).isFalse();
     }
 
     @Test
@@ -64,24 +64,24 @@ class BoardRepositoryTest {
         Member dongJackMember = new Member("test@mail.com", "동작이");
         dongJackMember.updateRegion("동작구");
         memberRepository.save(dongJackMember);
-        Board dongJackBoard1 = new Board(now.plusDays(1), dongJackMember, LocalDate.of(2023, 3, 27), "달리기", "제목1", "본문1");
-        Board dongJackBoard2 = new Board(now, dongJackMember, LocalDate.of(2023, 3, 27), "산책", "제목2", "본문2");
-        boardRepository.save(dongJackBoard1);
-        boardRepository.save(dongJackBoard2);
+        RecruitmentBoard dongJackRecruitmentBoard1 = new RecruitmentBoard(now.plusDays(1), dongJackMember, LocalDate.of(2023, 3, 27), "달리기", "제목1", "본문1");
+        RecruitmentBoard dongJackRecruitmentBoard2 = new RecruitmentBoard(now, dongJackMember, LocalDate.of(2023, 3, 27), "산책", "제목2", "본문2");
+        recruitmentBoardRepository.save(dongJackRecruitmentBoard1);
+        recruitmentBoardRepository.save(dongJackRecruitmentBoard2);
 
         Member sungDongMember = new Member("test2@maill.com", "성동이");
         sungDongMember.updateRegion("성동구");
         memberRepository.save(sungDongMember);
-        Board sungDongBoard1 = new Board(now, sungDongMember, LocalDate.of(2023, 3, 27), "달리기", "제목1", "본문1");
-        boardRepository.save(sungDongBoard1);
+        RecruitmentBoard sungDongRecruitmentBoard1 = new RecruitmentBoard(now, sungDongMember, LocalDate.of(2023, 3, 27), "달리기", "제목1", "본문1");
+        recruitmentBoardRepository.save(sungDongRecruitmentBoard1);
 
         Region targetRegion = Region.from("동작구");
         PageRequest input = PageRequest.of(0, 2);
 
         //when
-        Slice<Board> boards = boardRepository.selectRegionBoards(targetRegion, input);
+        Slice<RecruitmentBoard> boards = recruitmentBoardRepository.selectRegionBoards(targetRegion, input);
 
         //then
-        assertThat(boards.getContent()).isEqualTo(List.of(dongJackBoard1, dongJackBoard2));
+        assertThat(boards.getContent()).isEqualTo(List.of(dongJackRecruitmentBoard1, dongJackRecruitmentBoard2));
     }
 }

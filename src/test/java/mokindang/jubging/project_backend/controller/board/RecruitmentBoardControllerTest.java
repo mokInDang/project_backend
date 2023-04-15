@@ -1,16 +1,14 @@
 package mokindang.jubging.project_backend.controller.board;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import mokindang.jubging.project_backend.domain.board.Board;
+import mokindang.jubging.project_backend.controller.board.recruitment.RecruitmentBoardController;
+import mokindang.jubging.project_backend.domain.board.recruitment.RecruitmentBoard;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
-import mokindang.jubging.project_backend.service.board.BoardService;
-import mokindang.jubging.project_backend.service.board.request.BoardCreationRequest;
+import mokindang.jubging.project_backend.service.board.RecruitmentBoardService;
 import mokindang.jubging.project_backend.service.board.request.BoardModificationRequest;
-import mokindang.jubging.project_backend.service.board.response.BoardIdResponse;
-import mokindang.jubging.project_backend.service.board.response.BoardSelectionResponse;
-import mokindang.jubging.project_backend.service.board.response.MultiBoardSelectResponse;
-import mokindang.jubging.project_backend.service.board.response.SummaryBoardResponse;
+import mokindang.jubging.project_backend.service.board.request.RecruitmentBoardCreationRequest;
+import mokindang.jubging.project_backend.service.board.response.*;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,8 +33,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(BoardController.class)
-class BoardControllerTest {
+@WebMvcTest(RecruitmentBoardController.class)
+class RecruitmentBoardControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -45,7 +43,7 @@ class BoardControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private BoardService boardService;
+    private RecruitmentBoardService boardService;
 
     @MockBean
     private TokenManager tokenManager;
@@ -54,13 +52,13 @@ class BoardControllerTest {
     @DisplayName("새 게시글을 작성한 후, 작성된 게시글의 id 값과 함께 HTTP 201 상태코드를 반환한다.")
     void write() throws Exception {
         //given
-        when(boardService.write(anyLong(), any(BoardCreationRequest.class))).thenReturn(new BoardIdResponse(1L));
+        when(boardService.write(anyLong(), any(RecruitmentBoardCreationRequest.class))).thenReturn(new RecruitmentBoardIdResponse(1L));
 
-        BoardCreationRequest boardCreationRequest = new BoardCreationRequest("제목", "본문", "달리기",
+        RecruitmentBoardCreationRequest boardCreationRequest = new RecruitmentBoardCreationRequest("제목", "본문", "달리기",
                 LocalDate.of(2023, 11, 11));
 
         //when
-        ResultActions actual = mockMvc.perform(post("/api/boards")
+        ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(boardCreationRequest)));
 
@@ -74,13 +72,13 @@ class BoardControllerTest {
     void writeFailedByNonexistentMember() throws Exception {
         //given
         doThrow(new IllegalArgumentException("해당하는 유저가 존재하지 않습니다.")).when(boardService)
-                .write(anyLong(), any(BoardCreationRequest.class));
+                .write(anyLong(), any(RecruitmentBoardCreationRequest.class));
 
-        BoardCreationRequest boardCreationRequest = new BoardCreationRequest("제목", "본문", "달리기",
+        RecruitmentBoardCreationRequest boardCreationRequest = new RecruitmentBoardCreationRequest("제목", "본문", "달리기",
                 LocalDate.of(2023, 11, 11));
 
         //when
-        ResultActions actual = mockMvc.perform(post("/api/boards")
+        ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(boardCreationRequest)));
 
@@ -94,13 +92,13 @@ class BoardControllerTest {
     void writeFailedByIncorrectTitle() throws Exception {
         //given
         doThrow(new IllegalArgumentException("글 제목은 1글자 이상 140자 이하야합니다.")).when(boardService)
-                .write(anyLong(), any(BoardCreationRequest.class));
+                .write(anyLong(), any(RecruitmentBoardCreationRequest.class));
 
-        BoardCreationRequest incorrectTitleRequest = new BoardCreationRequest("잘못된 제목", "본문", "달리기",
+        RecruitmentBoardCreationRequest incorrectTitleRequest = new RecruitmentBoardCreationRequest("잘못된 제목", "본문", "달리기",
                 LocalDate.of(2023, 11, 11));
 
         //when
-        ResultActions actual = mockMvc.perform(post("/api/boards")
+        ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(incorrectTitleRequest)));
 
@@ -114,13 +112,13 @@ class BoardControllerTest {
     void writeFailedByIncorrectContent() throws Exception {
         //given
         doThrow(new IllegalArgumentException("글 내용은 최소 1자 이상, 최대 4000자 입니다.")).when(boardService)
-                .write(anyLong(), any(BoardCreationRequest.class));
+                .write(anyLong(), any(RecruitmentBoardCreationRequest.class));
 
-        BoardCreationRequest incorrectContentRequest = new BoardCreationRequest("제목", "잘못된 본문", "달리기",
+        RecruitmentBoardCreationRequest incorrectContentRequest = new RecruitmentBoardCreationRequest("제목", "잘못된 본문", "달리기",
                 LocalDate.of(2023, 11, 11));
 
         //when
-        ResultActions actual = mockMvc.perform(post("/api/boards")
+        ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(incorrectContentRequest)));
 
@@ -134,13 +132,13 @@ class BoardControllerTest {
     void writeFailedByIncorrectStartingDate() throws Exception {
         //given
         doThrow(new IllegalArgumentException("이미 지난 날짜는 활동 시작일로 할 수 없습니다.")).when(boardService)
-                .write(anyLong(), any(BoardCreationRequest.class));
+                .write(anyLong(), any(RecruitmentBoardCreationRequest.class));
 
-        BoardCreationRequest incorrectContentRequest = new BoardCreationRequest("제목", "잘못된 본문", "달리기",
+        RecruitmentBoardCreationRequest incorrectContentRequest = new RecruitmentBoardCreationRequest("제목", "잘못된 본문", "달리기",
                 LocalDate.of(2023, 11, 11));
 
         //when
-        ResultActions actual = mockMvc.perform(post("/api/boards")
+        ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(incorrectContentRequest)));
 
@@ -156,17 +154,17 @@ class BoardControllerTest {
         //given
 
         boolean isMine = true;
-        BoardSelectionResponse boardSelectionResponse = new BoardSelectionResponse(createBoard(), isMine);
+        RecruitmentBoardSelectionResponse boardSelectionResponse = new RecruitmentBoardSelectionResponse(createRecruitmentBoard(), isMine);
         when(boardService.select(anyLong(), anyLong())).thenReturn(boardSelectionResponse);
 
         //when
-        ResultActions actual = mockMvc.perform(get("/api/boards/{boardId}", 1L)
+        ResultActions actual = mockMvc.perform(get("/api/boards/recruitment/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
         actual.andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value("게시판 제목"))
-                .andExpect(jsonPath("$.content").value("게시판 내용 작성 테스트"))
+                .andExpect(jsonPath("$.contentBody").value("게시판 내용 작성 테스트"))
                 .andExpect(jsonPath("$.writerAlias").value("test"))
                 .andExpect(jsonPath("$.startingDate").value("2025-02-11"))
                 .andExpect(jsonPath("$.region").value("동작구"))
@@ -178,12 +176,12 @@ class BoardControllerTest {
                 .andExpect(jsonPath("$.creatingDatetime").value("2023-03-30T11:11:00"));
     }
 
-    private Board createBoard() {
+    private RecruitmentBoard createRecruitmentBoard() {
         LocalDateTime now = LocalDateTime.of(2023, 3, 30, 11, 11, 0, 0);
         Member testMember = new Member("test@email.com", "test");
         testMember.updateRegion("동작구");
         testMember.updateProfileImage("test_profile_url", "test_profile");
-        return new Board(now, testMember, LocalDate.of(2025, 2, 11),
+        return new RecruitmentBoard(now, testMember, LocalDate.of(2025, 2, 11),
                 "달리기", "게시판 제목", "게시판 내용 작성 테스트");
     }
 
@@ -195,7 +193,7 @@ class BoardControllerTest {
                 .select(anyLong(), anyLong());
 
         //when
-        ResultActions actual = mockMvc.perform(get("/api/boards/{boardId}", 1L)
+        ResultActions actual = mockMvc.perform(get("/api/boards/recruitment/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -211,7 +209,7 @@ class BoardControllerTest {
                 .select(anyLong(), anyLong());
 
         //when
-        ResultActions actual = mockMvc.perform(get("/api/boards/{boardId}", 1L)
+        ResultActions actual = mockMvc.perform(get("/api/boards/recruitment/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -224,10 +222,10 @@ class BoardControllerTest {
             "삭제 후 Http 200 코드와 삭제된 게시글 id 를 담은 BoardIdResponse 를 반환한다.")
     void delete() throws Exception {
         //given
-        when(boardService.delete(anyLong(), anyLong())).thenReturn(new BoardIdResponse(1L));
+        when(boardService.delete(anyLong(), anyLong())).thenReturn(new RecruitmentBoardIdResponse(1L));
 
         //when
-        ResultActions actual = mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/{boardId}", 1L)
+        ResultActions actual = mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/recruitment/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -243,7 +241,7 @@ class BoardControllerTest {
                 .delete(anyLong(), anyLong());
 
         //when
-        ResultActions actual = mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/{boardId}", 1L)
+        ResultActions actual = mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/recruitment/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -259,7 +257,7 @@ class BoardControllerTest {
                 .delete(anyLong(), anyLong());
 
         //when
-        ResultActions actual = mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/{boardId}", 1L)
+        ResultActions actual = mockMvc.perform(MockMvcRequestBuilders.delete("/api/boards/recruitment/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -271,14 +269,14 @@ class BoardControllerTest {
     @DisplayName("게시글 수정 요청 시, 요청 받은 게시글의 활동 시작일, 활동 종류, 제목, 본문을 변경한다.")
     void modify() throws Exception {
         //given
-        BoardIdResponse boardIdResponse = new BoardIdResponse(1L);
+        RecruitmentBoardIdResponse boardIdResponse = new RecruitmentBoardIdResponse(1L);
         when(boardService.modify(anyLong(), anyLong(), any(BoardModificationRequest.class))).thenReturn(boardIdResponse);
 
         BoardModificationRequest boardModificationRequest = new BoardModificationRequest("새로운 제목", "새로운 본문",
                 "산책", LocalDate.of(2023, 1, 1));
 
         //when
-        ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}", 1L)
+        ResultActions actual = mockMvc.perform(patch("/api/boards/recruitment/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(boardModificationRequest)));
 
@@ -298,7 +296,7 @@ class BoardControllerTest {
                 "산책", LocalDate.of(2023, 1, 1));
 
         //when
-        ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}", 1L)
+        ResultActions actual = mockMvc.perform(patch("/api/boards/recruitment/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(boardModificationRequest)));
 
@@ -318,7 +316,7 @@ class BoardControllerTest {
                 "산책", LocalDate.of(2023, 1, 1));
 
         //when
-        ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}", 1L)
+        ResultActions actual = mockMvc.perform(patch("/api/boards/recruitment/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(boardModificationRequest)));
 
@@ -331,10 +329,10 @@ class BoardControllerTest {
     @DisplayName("게시글 모집 마감 요청 시, 게시글 모집 마감 완료 후 Http 200 과 마감 게시글 id 를 담은 BoardIdResponse 를 반환한다.")
     void closeRecruitment() throws Exception {
         //given
-        when(boardService.closeRecruitment(anyLong(), anyLong())).thenReturn(new BoardIdResponse(1L));
+        when(boardService.closeRecruitment(anyLong(), anyLong())).thenReturn(new RecruitmentBoardIdResponse(1L));
 
         //when
-        ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}/recruitment", 1L)
+        ResultActions actual = mockMvc.perform(patch("/api/boards/recruitment/{boardId}/recruitment-status", 1L)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -350,7 +348,7 @@ class BoardControllerTest {
                 .closeRecruitment(anyLong(), anyLong());
 
         //when
-        ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}/recruitment", 1L)
+        ResultActions actual = mockMvc.perform(patch("/api/boards/recruitment/{boardId}/recruitment-status", 1L)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -366,7 +364,7 @@ class BoardControllerTest {
                 .closeRecruitment(anyLong(), anyLong());
 
         //when
-        ResultActions actual = mockMvc.perform(patch("/api/boards/{boardId}/recruitment", 1L)
+        ResultActions actual = mockMvc.perform(patch("/api/boards/recruitment/{boardId}/recruitment-status", 1L)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -378,13 +376,13 @@ class BoardControllerTest {
     @DisplayName("지역 게시글 조회 시, HTTP 200 코드와 함께 요청 회원 지역에 해당하는 게시글 리스트를 반환한다.")
     void selectRegionBoards() throws Exception {
         //given
-        List<SummaryBoardResponse> summaryBoardResponses = List.of(new SummaryBoardResponse(createBoard()),
-                new SummaryBoardResponse(createBoard()));
+        List<SummaryBoardResponse> summaryBoardResponses = List.of(new SummaryBoardResponse(createRecruitmentBoard()),
+                new SummaryBoardResponse(createRecruitmentBoard()));
         when(boardService.selectRegionBoards(anyLong(), any(Pageable.class)))
                 .thenReturn(new MultiBoardSelectResponse(summaryBoardResponses, false));
 
         //when
-        ResultActions actual = mockMvc.perform(get("/api/boards/my-region").param("page", "3")
+        ResultActions actual = mockMvc.perform(get("/api/boards/recruitment/region").param("page", "3")
                 .param("size", "2"));
 
         //then

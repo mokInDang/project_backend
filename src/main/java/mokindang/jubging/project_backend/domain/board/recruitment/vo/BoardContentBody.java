@@ -1,4 +1,4 @@
-package mokindang.jubging.project_backend.domain.board.vo;
+package mokindang.jubging.project_backend.domain.board.recruitment.vo;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -16,7 +16,7 @@ public class BoardContentBody {
     private static final int MAXIMUM_CONTENT_SIZE = 4000;
 
     @Lob
-    @Column(name = "BoardContentBody", nullable = false)
+    @Column(name = "board_content_body", nullable = false)
     private String value;
 
     public BoardContentBody(final String value) {

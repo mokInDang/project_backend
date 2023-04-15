@@ -2,7 +2,7 @@ package mokindang.jubging.project_backend.service.board.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
-import mokindang.jubging.project_backend.domain.board.Board;
+import mokindang.jubging.project_backend.domain.board.recruitment.RecruitmentBoard;
 
 @Getter
 public class SummaryBoardResponse {
@@ -37,21 +37,21 @@ public class SummaryBoardResponse {
     @Schema(description = "게시글 작성자의 이메일 앞 4글자")
     private final String firstFourLettersOfEmail;
 
-    public SummaryBoardResponse(final Board board) {
-        this.boardId = board.getId();
-        this.title = board.getTitle()
+    public SummaryBoardResponse(final RecruitmentBoard recruitmentBoard) {
+        this.boardId = recruitmentBoard.getId();
+        this.title = recruitmentBoard.getTitle()
                 .getValue();
-        this.content = board.getContent()
+        this.content = recruitmentBoard.getBoardContentBody()
                 .getValue();
-        this.writerAlias = board.getWriterAlias();
-        this.writerProfileUrl = board.getWriterProfileImageUrl();
-        this.startingDate = board.getStartingDate()
+        this.writerAlias = recruitmentBoard.getWriterAlias();
+        this.writerProfileUrl = recruitmentBoard.getWriterProfileImageUrl();
+        this.startingDate = recruitmentBoard.getStartingDate()
                 .getValue();
-        this.region = board.getWritingRegion()
+        this.region = recruitmentBoard.getWritingRegion()
                 .getValue();
-        this.activityCategory = board.getActivityCategory()
+        this.activityCategory = recruitmentBoard.getActivityCategory()
                 .getValue();
-        this.onRecruitment = board.isOnRecruitment();
-        this.firstFourLettersOfEmail = board.getFirstFourDigitsOfWriterEmail();
+        this.onRecruitment = recruitmentBoard.isOnRecruitment();
+        this.firstFourLettersOfEmail = recruitmentBoard.getFirstFourDigitsOfWriterEmail();
     }
 }
