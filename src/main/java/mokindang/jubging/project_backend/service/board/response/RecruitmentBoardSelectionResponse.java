@@ -2,12 +2,12 @@ package mokindang.jubging.project_backend.service.board.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
-import mokindang.jubging.project_backend.domain.board.Board;
+import mokindang.jubging.project_backend.domain.board.recruitment.RecruitmentBoard;
 
 import java.time.LocalDateTime;
 
 @Getter
-public class BoardSelectionResponse {
+public class RecruitmentBoardSelectionResponse {
 
     @Schema(description = "게시글 번호", example = "1")
     private final Long boardId;
@@ -45,7 +45,7 @@ public class BoardSelectionResponse {
     @Schema(description = "게시글 조회 회원이, 작성자인지에 대한 정보", allowableValues = {"true", "false"})
     private final boolean mine;
 
-    public BoardSelectionResponse(final Board board, final boolean mine) {
+    public RecruitmentBoardSelectionResponse(final RecruitmentBoard board, final boolean mine) {
         this.boardId = board.getId();
         this.title = board.getTitle()
                 .getValue();

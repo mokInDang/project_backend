@@ -1,4 +1,4 @@
-package mokindang.jubging.project_backend.domain.board.vo;
+package mokindang.jubging.project_backend.domain.board.recruitment.vo;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -6,27 +6,27 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Lob;
 import java.util.Objects;
-
 
 @Getter
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class Title {
+public class Content {
+    private static final int MAXIMUM_CONTENT_SIZE = 4000;
 
-    private static final int MAXIMUM_TITLE_SIZE = 140;
-
-    @Column(name = "title", nullable = false)
+    @Lob
+    @Column(name = "content", nullable = false)
     private String value;
 
-    public Title(final String value) {
+    public Content(final String value) {
         validateSize(value);
         this.value = value;
     }
 
-    private void validateSize(final String title) {
-        if (title.isBlank() || title.length() > MAXIMUM_TITLE_SIZE) {
-            throw new IllegalArgumentException("글 제목은 1글자 이상 140자 이하야합니다.");
+    private void validateSize(final String content) {
+        if (content.isBlank() || content.length() > MAXIMUM_CONTENT_SIZE) {
+            throw new IllegalArgumentException("글 내용은 최소 1자 이상, 최대 4000자 입니다.");
         }
     }
 
@@ -35,9 +35,9 @@ public class Title {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        final Title title = (Title) o;
+        final Content content = (Content) o;
 
-        return Objects.equals(value, title.value);
+        return Objects.equals(value, content.value);
     }
 
     @Override

@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class BoardIdResponse {
+public class RecruitmentBoardIdResponse {
 
     @Schema(description = "게시글 Id", example = "1")
     private Long boardId;

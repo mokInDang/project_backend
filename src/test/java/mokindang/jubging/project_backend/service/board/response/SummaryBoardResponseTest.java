@@ -1,10 +1,10 @@
 package mokindang.jubging.project_backend.service.board.response;
 
-import mokindang.jubging.project_backend.domain.board.ActivityCategory;
-import mokindang.jubging.project_backend.domain.board.Board;
-import mokindang.jubging.project_backend.domain.board.vo.Content;
-import mokindang.jubging.project_backend.domain.board.vo.StartingDate;
-import mokindang.jubging.project_backend.domain.board.vo.Title;
+import mokindang.jubging.project_backend.domain.board.recruitment.ActivityCategory;
+import mokindang.jubging.project_backend.domain.board.recruitment.RecruitmentBoard;
+import mokindang.jubging.project_backend.domain.board.recruitment.vo.Content;
+import mokindang.jubging.project_backend.domain.board.recruitment.vo.StartingDate;
+import mokindang.jubging.project_backend.domain.board.recruitment.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.member.vo.Region;
 import org.assertj.core.api.SoftAssertions;
@@ -24,18 +24,18 @@ class SummaryBoardResponseTest {
     @DisplayName("Board 객체를 입력받아 SummaryBoardResponse 를 생성한다.")
     void create() {
         //given
-        Board board = createBoard();
+        RecruitmentBoard recruitmentBoard = createRecruitmentBoard();
 
         //when, then
-        assertThatCode(() -> new SummaryBoardResponse(board)).doesNotThrowAnyException();
+        assertThatCode(() -> new SummaryBoardResponse(recruitmentBoard)).doesNotThrowAnyException();
     }
 
-    private Board createBoard() {
+    private RecruitmentBoard createRecruitmentBoard() {
         LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
         Member writer = new Member("test1@email.com", "test");
         writer.updateProfileImage("test_url", "image");
         writer.updateRegion("동작구");
-        return new Board(now, writer, LocalDate.of(2025, 2, 11), "달리기",
+        return new RecruitmentBoard(now, writer, LocalDate.of(2025, 2, 11), "달리기",
                 "제목", "본문내용");
     }
 
@@ -44,8 +44,8 @@ class SummaryBoardResponseTest {
     void getter() {
         //given
         SoftAssertions softly = new SoftAssertions();
-        Board board = createMockedBoard();
-        SummaryBoardResponse summaryBoardResponse = new SummaryBoardResponse(board);
+        RecruitmentBoard recruitmentBoard = createMockedBoard();
+        SummaryBoardResponse summaryBoardResponse = new SummaryBoardResponse(recruitmentBoard);
 
         //when
         Long boardId = summaryBoardResponse.getBoardId();
@@ -71,20 +71,20 @@ class SummaryBoardResponseTest {
         softly.assertAll();
     }
 
-    private Board createMockedBoard() {
+    private RecruitmentBoard createMockedBoard() {
         LocalDate today = LocalDate.of(2023, 3, 14);
-        Board board = mock(Board.class);
-        when(board.getId()).thenReturn(1L);
-        when(board.getTitle()).thenReturn(new Title("제목"));
-        when(board.getContent()).thenReturn(new Content("본문내용"));
-        when(board.getWritingRegion()).thenReturn(Region.from("동작구"));
-        when(board.getActivityCategory()).thenReturn(ActivityCategory.RUNNING);
-        when(board.isOnRecruitment()).thenReturn(true);
-        when(board.getCreatingDateTime()).thenReturn(LocalDateTime.of(2023, 11, 12, 0, 0, 0));
-        when(board.getStartingDate()).thenReturn(new StartingDate(today, LocalDate.of(2025, 2, 11)));
-        when(board.getWriterAlias()).thenReturn("test");
-        when(board.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
-        when(board.getWriterProfileImageUrl()).thenReturn("test_url");
-        return board;
+        RecruitmentBoard recruitmentBoard = mock(RecruitmentBoard.class);
+        when(recruitmentBoard.getId()).thenReturn(1L);
+        when(recruitmentBoard.getTitle()).thenReturn(new Title("제목"));
+        when(recruitmentBoard.getContent()).thenReturn(new Content("본문내용"));
+        when(recruitmentBoard.getWritingRegion()).thenReturn(Region.from("동작구"));
+        when(recruitmentBoard.getActivityCategory()).thenReturn(ActivityCategory.RUNNING);
+        when(recruitmentBoard.isOnRecruitment()).thenReturn(true);
+        when(recruitmentBoard.getCreatingDateTime()).thenReturn(LocalDateTime.of(2023, 11, 12, 0, 0, 0));
+        when(recruitmentBoard.getStartingDate()).thenReturn(new StartingDate(today, LocalDate.of(2025, 2, 11)));
+        when(recruitmentBoard.getWriterAlias()).thenReturn("test");
+        when(recruitmentBoard.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
+        when(recruitmentBoard.getWriterProfileImageUrl()).thenReturn("test_url");
+        return recruitmentBoard;
     }
 }

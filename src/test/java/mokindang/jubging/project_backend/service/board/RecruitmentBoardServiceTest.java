@@ -1,18 +1,18 @@
 package mokindang.jubging.project_backend.service.board;
 
-import mokindang.jubging.project_backend.domain.board.ActivityCategory;
-import mokindang.jubging.project_backend.domain.board.Board;
-import mokindang.jubging.project_backend.domain.board.vo.Content;
-import mokindang.jubging.project_backend.domain.board.vo.StartingDate;
-import mokindang.jubging.project_backend.domain.board.vo.Title;
+import mokindang.jubging.project_backend.domain.board.recruitment.ActivityCategory;
+import mokindang.jubging.project_backend.domain.board.recruitment.RecruitmentBoard;
+import mokindang.jubging.project_backend.domain.board.recruitment.vo.Content;
+import mokindang.jubging.project_backend.domain.board.recruitment.vo.StartingDate;
+import mokindang.jubging.project_backend.domain.board.recruitment.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.member.vo.Region;
-import mokindang.jubging.project_backend.repository.board.BoardRepository;
-import mokindang.jubging.project_backend.service.board.request.BoardCreationRequest;
+import mokindang.jubging.project_backend.repository.board.RecruitmentBoardRepository;
 import mokindang.jubging.project_backend.service.board.request.BoardModificationRequest;
-import mokindang.jubging.project_backend.service.board.response.BoardIdResponse;
-import mokindang.jubging.project_backend.service.board.response.BoardSelectionResponse;
+import mokindang.jubging.project_backend.service.board.request.RecruitmentBoardCreationRequest;
 import mokindang.jubging.project_backend.service.board.response.MultiBoardSelectResponse;
+import mokindang.jubging.project_backend.service.board.response.RecruitmentBoardIdResponse;
+import mokindang.jubging.project_backend.service.board.response.RecruitmentBoardSelectionResponse;
 import mokindang.jubging.project_backend.service.member.MemberService;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
@@ -37,16 +37,16 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class BoardServiceTest {
+class RecruitmentBoardServiceTest {
 
     @Mock
     private MemberService memberService;
 
     @Mock
-    private BoardRepository boardRepository;
+    private RecruitmentBoardRepository boardRepository;
 
     @InjectMocks
-    private BoardService boardService;
+    private RecruitmentBoardService boardService;
 
     @Test
     @Transactional
@@ -58,15 +58,15 @@ class BoardServiceTest {
         when(member.getRegion()).thenReturn(region);
         when(region.isDefault()).thenReturn(false);
         when(memberService.findByMemberId(anyLong())).thenReturn(member);
-        Board savedBoard = mock(Board.class);
+        RecruitmentBoard savedBoard = mock(RecruitmentBoard.class);
         when(savedBoard.getId()).thenReturn(1L);
-        when(boardRepository.save(any(Board.class))).thenReturn(savedBoard);
+        when(boardRepository.save(any(RecruitmentBoard.class))).thenReturn(savedBoard);
 
-        BoardCreationRequest boardCreationRequest = new BoardCreationRequest("제목", "본문내용", "달리기",
+        RecruitmentBoardCreationRequest recruitmentBoardCreationRequest = new RecruitmentBoardCreationRequest("제목", "본문내용", "달리기",
                 LocalDate.of(2025, 2, 12));
 
         //when
-        BoardIdResponse savedBoardId = boardService.write(1L, boardCreationRequest);
+        RecruitmentBoardIdResponse savedBoardId = boardService.write(1L, recruitmentBoardCreationRequest);
 
         //then
         assertThat(savedBoardId.getBoardId()).isEqualTo(1L);
@@ -79,7 +79,7 @@ class BoardServiceTest {
         //given
         when(memberService.findByMemberId(anyLong())).thenThrow(new IllegalArgumentException("해당하는 유저가 존재하지 않습니다."));
 
-        BoardCreationRequest boardCreationRequest = new BoardCreationRequest("제목", "본문내용", "달리기",
+        RecruitmentBoardCreationRequest boardCreationRequest = new RecruitmentBoardCreationRequest("제목", "본문내용", "달리기",
                 LocalDate.of(2023, 2, 12));
 
         //when, then
@@ -95,23 +95,23 @@ class BoardServiceTest {
         SoftAssertions softly = new SoftAssertions();
         Member member = mock(Member.class);
         when(memberService.findByMemberId(anyLong())).thenReturn(member);
-        Board board = mock(Board.class);
-        when(board.getId()).thenReturn(1L);
-        when(board.getTitle()).thenReturn(new Title("제목입니다."));
-        when(board.getContent()).thenReturn(new Content("본문내용입니다."));
-        when(board.getWriterAlias()).thenReturn("글작성자");
-        when(board.getWritingRegion()).thenReturn(Region.from("동작구"));
-        when(board.getActivityCategory()).thenReturn(ActivityCategory.RUNNING);
-        when(board.isOnRecruitment()).thenReturn(true);
+        RecruitmentBoard recruitmentBoard = mock(RecruitmentBoard.class);
+        when(recruitmentBoard.getId()).thenReturn(1L);
+        when(recruitmentBoard.getTitle()).thenReturn(new Title("제목입니다."));
+        when(recruitmentBoard.getContent()).thenReturn(new Content("본문내용입니다."));
+        when(recruitmentBoard.getWriterAlias()).thenReturn("글작성자");
+        when(recruitmentBoard.getWritingRegion()).thenReturn(Region.from("동작구"));
+        when(recruitmentBoard.getActivityCategory()).thenReturn(ActivityCategory.RUNNING);
+        when(recruitmentBoard.isOnRecruitment()).thenReturn(true);
         LocalDate now = LocalDate.of(2023, 3, 10);
-        when(board.getStartingDate()).thenReturn(new StartingDate(now, LocalDate.of(2023, 3, 11)));
-        when(board.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
-        when(board.getWriterProfileImageUrl()).thenReturn("test_url");
-        when(board.isSameWriterId(anyLong())).thenReturn(true);
-        when(boardRepository.findById(1L)).thenReturn(Optional.of(board));
+        when(recruitmentBoard.getStartingDate()).thenReturn(new StartingDate(now, LocalDate.of(2023, 3, 11)));
+        when(recruitmentBoard.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
+        when(recruitmentBoard.getWriterProfileImageUrl()).thenReturn("test_url");
+        when(recruitmentBoard.isSameWriterId(anyLong())).thenReturn(true);
+        when(boardRepository.findById(1L)).thenReturn(Optional.of(recruitmentBoard));
 
         //when
-        BoardSelectionResponse actual = boardService.select(1L, 1L);
+        RecruitmentBoardSelectionResponse actual = boardService.select(1L, 1L);
 
         //then
         softly.assertThat(actual.getBoardId()).isEqualTo(1L);
@@ -132,15 +132,14 @@ class BoardServiceTest {
             " 삭제 후 삭제된 게시글 Id를 가진 BoardIdResponse 를 반환한다.")
     void delete() {
         //given
-        Board board = mock(Board.class);
-        when(boardRepository.findById(anyLong())).thenReturn(Optional.of(board));
+        RecruitmentBoard recruitmentBoard = mock(RecruitmentBoard.class);
+        when(boardRepository.findById(anyLong())).thenReturn(Optional.of(recruitmentBoard));
         Long boardId = 1L;
-        when(board.getId()).thenReturn(boardId);
-
-
+        when(recruitmentBoard.getId()).thenReturn(boardId);
         Long writerId = 1L;
+
         //when
-        BoardIdResponse deleteBoardIdResponse = boardService.delete(writerId, boardId);
+        RecruitmentBoardIdResponse deleteBoardIdResponse = boardService.delete(writerId, boardId);
 
         //then
         assertThat(deleteBoardIdResponse.getBoardId()).isEqualTo(boardId);
@@ -162,9 +161,9 @@ class BoardServiceTest {
     @DisplayName("게시글을 수정한다.")
     void modify() {
         //given
-        Board board = mock(Board.class);
-        when(boardRepository.findById(anyLong())).thenReturn(Optional.of(board));
-        when(board.getId()).thenReturn(1L);
+        RecruitmentBoard recruitmentBoard = mock(RecruitmentBoard.class);
+        when(boardRepository.findById(anyLong())).thenReturn(Optional.of(recruitmentBoard));
+        when(recruitmentBoard.getId()).thenReturn(1L);
 
         Long memberId = 1L;
         Long boardId = 1L;
@@ -172,37 +171,37 @@ class BoardServiceTest {
                 "산책", LocalDate.of(2023, 12, 12));
 
         //when
-        BoardIdResponse actual = boardService.modify(memberId, boardId, boardModificationRequest);
+        RecruitmentBoardIdResponse actual = boardService.modify(memberId, boardId, boardModificationRequest);
 
         //then
         assertThat(actual.getBoardId()).isEqualTo(1L);
-        verify(board, times(1)).modify(anyLong(), any(), any(), any(), any());
+        verify(recruitmentBoard, times(1)).modify(anyLong(), any(), any(), any(), any());
     }
 
     @Test
     @DisplayName("게시글의 모집을 마감한다.")
     void closeRecruitment() {
         //given
-        Board board = mock(Board.class);
-        when(board.getId()).thenReturn(1L);
-        when(boardRepository.findById(anyLong())).thenReturn(Optional.of(board));
+        RecruitmentBoard recruitmentBoard = mock(RecruitmentBoard.class);
+        when(recruitmentBoard.getId()).thenReturn(1L);
+        when(boardRepository.findById(anyLong())).thenReturn(Optional.of(recruitmentBoard));
 
         Long memberId = 1L;
         Long boardId = 1L;
 
         //when
-        BoardIdResponse boardIdResponse = boardService.closeRecruitment(memberId, boardId);
+        RecruitmentBoardIdResponse boardIdResponse = boardService.closeRecruitment(memberId, boardId);
 
         //then
         assertThat(boardIdResponse.getBoardId()).isEqualTo(1L);
-        verify(board, times(1)).closeRecruitment(memberId);
+        verify(recruitmentBoard, times(1)).closeRecruitment(memberId);
     }
 
     @Test
     @DisplayName("게시글 모집 마감 요청 시, 입력 받은 boardId 를 가진 게시글이 존재하지 않는다면 예외를 반환한다.")
     void closeRecruitmentFailedByNoneExistBoard() {
         //given
-        Board board = mock(Board.class);
+        RecruitmentBoard recruitmentBoard = mock(RecruitmentBoard.class);
         when(boardRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         Long memberId = 1L;
@@ -219,9 +218,9 @@ class BoardServiceTest {
         LocalDateTime now = LocalDateTime.of(2023, 3, 25, 1, 1);
         Member dongJackMember = new Member("test@mail.com", "동작이");
         dongJackMember.updateRegion("동작구");
-        Board dongJackBoard1 = new Board(now.plusDays(1), dongJackMember, LocalDate.of(2023, 3, 27), "달리기", "제목1", "본문1");
-        Board dongJackBoard2 = new Board(now, dongJackMember, LocalDate.of(2023, 3, 27), "산책", "제목2", "본문2");
-        Slice<Board> slice = new SliceImpl<>(List.of(dongJackBoard1,dongJackBoard2));
+        RecruitmentBoard dongJackBoard1 = new RecruitmentBoard(now.plusDays(1), dongJackMember, LocalDate.of(2023, 3, 27), "달리기", "제목1", "본문1");
+        RecruitmentBoard dongJackBoard2 = new RecruitmentBoard(now, dongJackMember, LocalDate.of(2023, 3, 27), "산책", "제목2", "본문2");
+        Slice<RecruitmentBoard> slice = new SliceImpl<>(List.of(dongJackBoard1, dongJackBoard2));
 
         Member member = mock(Member.class);
         when(member.getRegion()).thenReturn(Region.from("동작구"));
