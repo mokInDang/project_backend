@@ -25,7 +25,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
 @Tag(name = "구인 게시판", description = "구인 게시판 관련 api")
-public interface BoardControllerSwagger {
+public interface RecruitmentBoardControllerSwagger {
 
     @Operation(summary = "새글작성", parameters = {
             @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true),

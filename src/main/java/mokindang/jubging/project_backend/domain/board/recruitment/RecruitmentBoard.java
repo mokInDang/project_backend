@@ -8,6 +8,7 @@ import mokindang.jubging.project_backend.domain.board.recruitment.vo.StartingDat
 import mokindang.jubging.project_backend.domain.board.recruitment.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.member.vo.Region;
+import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -70,7 +71,8 @@ public class RecruitmentBoard {
         }
     }
 
-    public void closeRecruitment() {
+    public void closeRecruitment(final Long memberId) {
+        validatePermission(memberId);
         this.onRecruitment = false;
     }
 
@@ -80,7 +82,9 @@ public class RecruitmentBoard {
         }
     }
 
-    public void modify(final LocalDate startingDate, final String activityCategoryValue, final String titleValue, final String contentValue) {
+    public void modify(final Long memberId, final LocalDate startingDate, final String activityCategoryValue,
+                       final String titleValue, final String contentValue) {
+        validatePermission(memberId);
         LocalDate today = LocalDate.now();
         this.startingDate = new StartingDate(today, startingDate);
         this.activityCategory = ActivityCategory.from(activityCategoryValue);
@@ -88,13 +92,28 @@ public class RecruitmentBoard {
         this.content = new Content(contentValue);
     }
 
-    public boolean isWriter(final Member member) {
-        return this.writer.equals(member);
+    public boolean isSameWriterId(final Long memberId) {
+        return writer.getId()
+                .equals(memberId);
+    }
+
+    public void validatePermission(final Long memberId) {
+        if (!isSameWriterId(memberId)) {
+            throw new ForbiddenException("작성자 권한이 없습니다.");
+        }
     }
 
     public String getWriterProfileImageUrl() {
         return writer.getProfileImage()
                 .getProfileImageUrl();
+    }
+
+    public String getWriterAlias() {
+        return writer.getAlias();
+    }
+
+    public String getFirstFourDigitsOfWriterEmail() {
+        return writer.getFirstFourDigitsOfWriterEmail();
     }
 
     @Override

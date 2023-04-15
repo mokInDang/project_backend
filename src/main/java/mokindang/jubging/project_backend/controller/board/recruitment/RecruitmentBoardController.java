@@ -20,7 +20,7 @@ import javax.validation.Valid;
 @RequestMapping("/api/boards/recruitment")
 @RestController
 @RequiredArgsConstructor
-public class RecruitmentBoardController implements BoardControllerSwagger {
+public class RecruitmentBoardController implements RecruitmentBoardControllerSwagger {
 
     private final RecruitmentBoardService recruitmentBoardService;
 

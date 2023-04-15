@@ -1,6 +1,5 @@
-package mokindang.jubging.project_backend.domain.board.vo;
+package mokindang.jubging.project_backend.domain.board.recruitment.vo;
 
-import mokindang.jubging.project_backend.domain.board.recruitment.vo.Title;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

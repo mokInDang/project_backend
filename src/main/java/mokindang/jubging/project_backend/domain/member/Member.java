@@ -50,7 +50,7 @@ public class Member {
         this.alias = alias;
     }
 
-    public String getFourLengthEmail() {
+    public String getFirstFourDigitsOfWriterEmail() {
         return this.email.substring(0, 4);
     }
 
