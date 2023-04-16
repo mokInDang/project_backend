@@ -5,13 +5,17 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import mokindang.jubging.project_backend.domain.board.certificationboard.CertificationBoard;
+import mokindang.jubging.project_backend.domain.image.Image;
 import mokindang.jubging.project_backend.domain.member.Member;
+import mokindang.jubging.project_backend.repository.image.ImageRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.UUID;
 
 import static mokindang.jubging.project_backend.domain.member.vo.ProfileImage.DEFAULT_PROFILE_IMAGE_NAME;
@@ -25,7 +29,9 @@ public class FileService {
     private String bucket;
 
     private static final String PROFILE_IMAGE = "profile_image";
+    private static final String CERTIFICATION_BOARD_IMAGE = "certificationBoard_image";
     private final AmazonS3Client amazonS3Client;
+    private final ImageRepository imageRepository;
 
     public FileResponse uploadFile(MultipartFile multipartFile, Member member) {
         if(multipartFile.isEmpty()){
@@ -51,6 +57,33 @@ public class FileService {
 
         log.info("memberId = {}, alias = {} 의 프로필 이미지 {} 업로드", member.getId(), member.getAlias(), uploadFileName);
         return new FileResponse(uploadFileUrl, uploadFileName);
+    }
+
+    public void uploadFiles(List<MultipartFile> multipartFiles, Member member, CertificationBoard certificationBoard) {
+
+        String uploadFilePath = CERTIFICATION_BOARD_IMAGE;
+
+        for (MultipartFile multipartFile : multipartFiles) {
+            String originalFileName = multipartFile.getOriginalFilename();
+            String uploadFileName = getUuidFileName(originalFileName);
+            String uploadFileUrl = "";
+
+            ObjectMetadata objectMetadata = getObjectMetadata(multipartFile);
+
+            try (InputStream inputStream = multipartFile.getInputStream()) {
+                String keyName = uploadFilePath + "/" + uploadFileName;
+                amazonS3Client.putObject(
+                        new PutObjectRequest(bucket, keyName, inputStream, objectMetadata));
+                uploadFileUrl = amazonS3Client.getUrl(bucket, keyName).toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+                log.error("Filed upload failed", e);
+            }
+
+            log.info("memberId = {}, alias = {} 의 프로필 이미지 {} 업로드", member.getId(), member.getAlias(), uploadFileName);
+            FileResponse fileResponse = new FileResponse(uploadFileUrl, uploadFileName);
+            imageRepository.save(new Image(certificationBoard, fileResponse.getUploadFileName(), fileResponse.getUploadFileUrl()));
+        }
     }
 
     private static ObjectMetadata getObjectMetadata(MultipartFile multipartFile) {
