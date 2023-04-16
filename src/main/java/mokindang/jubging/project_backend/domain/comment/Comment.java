@@ -5,10 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mokindang.jubging.project_backend.domain.comment.vo.CommentBody;
 import mokindang.jubging.project_backend.domain.member.Member;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
+
+import static org.hibernate.annotations.CascadeType.*;
 
 @Entity
 @Getter
@@ -27,6 +31,10 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member writer;
+
+    @OneToMany
+    @Cascade(value = DELETE)
+    private List<ReplyComment> replyComments;
 
     @Column(nullable = false)
     private LocalDateTime createdDateTime;
