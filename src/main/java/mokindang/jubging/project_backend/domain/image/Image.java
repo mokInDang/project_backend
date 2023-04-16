@@ -18,7 +18,7 @@ public class Image {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "image_board_id")
+    @JoinColumn(name = "certification_board_id")
     private CertificationBoard certificationBoard;
 
     private String storeName;
