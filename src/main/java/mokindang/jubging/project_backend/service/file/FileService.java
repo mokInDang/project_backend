@@ -80,7 +80,7 @@ public class FileService {
                 log.error("Filed upload failed", e);
             }
 
-            log.info("memberId = {}, alias = {} 의 프로필 이미지 {} 업로드", member.getId(), member.getAlias(), uploadFileName);
+            log.info("memberId = {}, alias = {} 의 인증 게시판 이미지 {} 업로드", member.getId(), member.getAlias(), uploadFileName);
             FileResponse fileResponse = new FileResponse(uploadFileUrl, uploadFileName);
             imageRepository.save(new Image(certificationBoard, fileResponse.getUploadFileName(), fileResponse.getUploadFileUrl()));
         }
