@@ -44,16 +44,7 @@ public class FileService {
         String uploadFileUrl = "";
 
         ObjectMetadata objectMetadata = getObjectMetadata(multipartFile);
-
-        try (InputStream inputStream = multipartFile.getInputStream()) {
-            String keyName = uploadFilePath + "/" + uploadFileName;
-            amazonS3Client.putObject(
-                    new PutObjectRequest(bucket, keyName, inputStream, objectMetadata));
-            uploadFileUrl = amazonS3Client.getUrl(bucket, keyName).toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-            log.error("Filed upload failed", e);
-        }
+        uploadFileUrl = uploadToS3(multipartFile, uploadFilePath, uploadFileName, uploadFileUrl, objectMetadata);
 
         log.info("memberId = {}, alias = {} 의 프로필 이미지 {} 업로드", member.getId(), member.getAlias(), uploadFileName);
         return new FileResponse(uploadFileUrl, uploadFileName);
@@ -69,21 +60,24 @@ public class FileService {
             String uploadFileUrl = "";
 
             ObjectMetadata objectMetadata = getObjectMetadata(multipartFile);
-
-            try (InputStream inputStream = multipartFile.getInputStream()) {
-                String keyName = uploadFilePath + "/" + uploadFileName;
-                amazonS3Client.putObject(
-                        new PutObjectRequest(bucket, keyName, inputStream, objectMetadata));
-                uploadFileUrl = amazonS3Client.getUrl(bucket, keyName).toString();
-            } catch (IOException e) {
-                e.printStackTrace();
-                log.error("Filed upload failed", e);
-            }
+            uploadFileUrl = uploadToS3(multipartFile, uploadFilePath, uploadFileName, uploadFileUrl, objectMetadata);
 
             log.info("memberId = {}, alias = {} 의 boardId = {} 인증 게시판 이미지 {} 업로드", member.getId(), member.getAlias(), certificationBoard.getId(), uploadFileName);
             FileResponse fileResponse = new FileResponse(uploadFileUrl, uploadFileName);
             imageRepository.save(new Image(certificationBoard, fileResponse.getUploadFileName(), fileResponse.getUploadFileUrl()));
         }
+    }
+
+    private String uploadToS3(MultipartFile multipartFile, String uploadFilePath, String uploadFileName, String uploadFileUrl, ObjectMetadata objectMetadata) {
+        try (InputStream inputStream = multipartFile.getInputStream()) {
+            String keyName = uploadFilePath + "/" + uploadFileName;
+            amazonS3Client.putObject(new PutObjectRequest(bucket, keyName, inputStream, objectMetadata));
+            uploadFileUrl = amazonS3Client.getUrl(bucket, keyName).toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.error("S3로 파일 업로드가 실패했습니다.", e);
+        }
+        return uploadFileUrl;
     }
 
     private static ObjectMetadata getObjectMetadata(MultipartFile multipartFile) {
