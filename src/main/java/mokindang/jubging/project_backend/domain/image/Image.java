@@ -1,5 +1,6 @@
 package mokindang.jubging.project_backend.domain.image;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mokindang.jubging.project_backend.domain.board.certificationboard.CertificationBoard;
@@ -9,7 +10,7 @@ import java.util.Objects;
 
 @Getter
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Image {
 
     @Id
