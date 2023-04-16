@@ -1,6 +1,7 @@
 package mokindang.jubging.project_backend.exception;
 
 import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.io.IOException;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +44,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleMethodArgumentValidation(final MethodArgumentNotValidException e) {
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse(getDefaultErrorMessage(e)));
+    }
+
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<ErrorResponse> handleIOException(final RuntimeException e) {
+        return ResponseEntity.internalServerError()
+                .body(new ErrorResponse(e.getMessage()));
     }
 
     private String getDefaultErrorMessage(final MethodArgumentNotValidException e) {
