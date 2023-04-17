@@ -93,8 +93,6 @@ class RecruitmentBoardServiceTest {
     void selectBoardId() {
         //given
         SoftAssertions softly = new SoftAssertions();
-        Member member = mock(Member.class);
-        when(memberService.findByMemberId(anyLong())).thenReturn(member);
         RecruitmentBoard recruitmentBoard = mock(RecruitmentBoard.class);
         when(recruitmentBoard.getId()).thenReturn(1L);
         when(recruitmentBoard.getTitle()).thenReturn(new Title("제목입니다."));
