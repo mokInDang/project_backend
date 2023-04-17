@@ -49,7 +49,7 @@ public class RecruitmentBoardSelectionResponse {
         this.boardId = board.getId();
         this.title = board.getTitle()
                 .getValue();
-        this.contentBody = board.getBoardContentBody()
+        this.contentBody = board.getContentBody()
                 .getValue();
         this.creatingDatetime = board.getCreatingDateTime();
         this.writerAlias = board.getWriterAlias();

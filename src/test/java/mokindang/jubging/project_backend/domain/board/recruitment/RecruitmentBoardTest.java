@@ -1,8 +1,6 @@
 package mokindang.jubging.project_backend.domain.board.recruitment;
 
-import mokindang.jubging.project_backend.domain.board.recruitment.ActivityCategory;
-import mokindang.jubging.project_backend.domain.board.recruitment.RecruitmentBoard;
-import mokindang.jubging.project_backend.domain.board.recruitment.vo.BoardContentBody;
+import mokindang.jubging.project_backend.domain.board.recruitment.vo.ContentBody;
 import mokindang.jubging.project_backend.domain.board.recruitment.vo.StartingDate;
 import mokindang.jubging.project_backend.domain.board.recruitment.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
@@ -101,7 +99,7 @@ class RecruitmentBoardTest {
         //when
         Member member = recruitmentBoard.getWriter();
         Title title = recruitmentBoard.getTitle();
-        BoardContentBody boardContentBody = recruitmentBoard.getBoardContentBody();
+        ContentBody contentBody = recruitmentBoard.getContentBody();
         ActivityCategory activityCategory = recruitmentBoard.getActivityCategory();
         StartingDate startingDate = recruitmentBoard.getStartingDate();
         Region region = recruitmentBoard.getWritingRegion();
@@ -113,7 +111,7 @@ class RecruitmentBoardTest {
         softly.assertThat(startingDate).isEqualTo(new StartingDate(LocalDate.of(2023, 11, 11),
                 LocalDate.of(2025, 2, 11)));
         softly.assertThat(title).isEqualTo(new Title("게시판 제목"));
-        softly.assertThat(boardContentBody).isEqualTo(new BoardContentBody("게시판 내용 작성 테스트"));
+        softly.assertThat(contentBody).isEqualTo(new ContentBody("게시판 내용 작성 테스트"));
         softly.assertThat(region).isEqualTo(member.getRegion());
         softly.assertThat(onRecruitment).isEqualTo(true);
         softly.assertAll();
@@ -243,7 +241,7 @@ class RecruitmentBoardTest {
         softly.assertThat(recruitmentBoard.getStartingDate().getValue()).isEqualTo("2023-11-13");
         softly.assertThat(recruitmentBoard.getActivityCategory().getValue()).isEqualTo(newActivityCategory);
         softly.assertThat(recruitmentBoard.getTitle().getValue()).isEqualTo(newTitleValue);
-        softly.assertThat(recruitmentBoard.getBoardContentBody().getValue()).isEqualTo(newContentValue);
+        softly.assertThat(recruitmentBoard.getContentBody().getValue()).isEqualTo(newContentValue);
         softly.assertAll();
     }
 
