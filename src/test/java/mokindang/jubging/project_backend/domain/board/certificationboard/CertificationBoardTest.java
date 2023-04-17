@@ -1,6 +1,6 @@
 package mokindang.jubging.project_backend.domain.board.certificationboard;
 
-import mokindang.jubging.project_backend.domain.board.recruitment.vo.Content;
+import mokindang.jubging.project_backend.domain.board.recruitment.vo.BoardContentBody;
 import mokindang.jubging.project_backend.domain.board.recruitment.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
 import org.assertj.core.api.SoftAssertions;
@@ -26,15 +26,14 @@ class CertificationBoardTest {
         LocalDateTime modifiedTime = certificationBoard.getModifiedTIme();
         Member findWriter = certificationBoard.getWriter();
         Title title = certificationBoard.getTitle();
-        Content content = certificationBoard.getContent();
+        BoardContentBody content = certificationBoard.getBoardContentBody();
 
         //then
         softly.assertThat(createdDateTime).isEqualTo(now);
         softly.assertThat(modifiedTime).isEqualTo(now);
         softly.assertThat(findWriter).isEqualTo(writer);
         softly.assertThat(title).isEqualTo(new Title("게시판 제목"));
-        softly.assertThat(content).isEqualTo(new Content("게시판 내용"));
+        softly.assertThat(content).isEqualTo(new BoardContentBody("게시판 내용"));
         softly.assertAll();
     }
-
 }
