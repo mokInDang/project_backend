@@ -2,7 +2,7 @@ package mokindang.jubging.project_backend.service.board;
 
 import mokindang.jubging.project_backend.domain.board.recruitment.ActivityCategory;
 import mokindang.jubging.project_backend.domain.board.recruitment.RecruitmentBoard;
-import mokindang.jubging.project_backend.domain.board.recruitment.vo.BoardContentBody;
+import mokindang.jubging.project_backend.domain.board.recruitment.vo.ContentBody;
 import mokindang.jubging.project_backend.domain.board.recruitment.vo.StartingDate;
 import mokindang.jubging.project_backend.domain.board.recruitment.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
@@ -107,7 +107,7 @@ class RecruitmentBoardServiceTest {
         when(recruitmentBoard.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
         when(recruitmentBoard.getWriterProfileImageUrl()).thenReturn("test_url");
         when(recruitmentBoard.isSameWriterId(anyLong())).thenReturn(true);
-        when(recruitmentBoard.getBoardContentBody()).thenReturn(new BoardContentBody("본문내용입니다."));
+        when(recruitmentBoard.getContentBody()).thenReturn(new ContentBody("본문내용입니다."));
         when(boardRepository.findById(1L)).thenReturn(Optional.of(recruitmentBoard));
 
         //when

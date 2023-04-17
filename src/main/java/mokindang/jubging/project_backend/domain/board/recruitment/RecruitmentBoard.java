@@ -3,7 +3,7 @@ package mokindang.jubging.project_backend.domain.board.recruitment;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import mokindang.jubging.project_backend.domain.board.recruitment.vo.BoardContentBody;
+import mokindang.jubging.project_backend.domain.board.recruitment.vo.ContentBody;
 import mokindang.jubging.project_backend.domain.board.recruitment.vo.StartingDate;
 import mokindang.jubging.project_backend.domain.board.recruitment.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
@@ -42,7 +42,8 @@ public class RecruitmentBoard {
     private Title title;
 
     @Embedded
-    private BoardContentBody boardContentBody;
+    @Column(name = "content_body")
+    private ContentBody contentBody;
 
     @Embedded
     private Region writingRegion;
@@ -58,7 +59,7 @@ public class RecruitmentBoard {
         this.startingDate = new StartingDate(creatingDate, startingDate);
         this.activityCategory = ActivityCategory.from(activityCategory);
         this.title = new Title(title);
-        this.boardContentBody = new BoardContentBody(content);
+        this.contentBody = new ContentBody(content);
         Region region = writer.getRegion();
         validateRegion(region);
         this.writingRegion = region;
@@ -89,7 +90,7 @@ public class RecruitmentBoard {
         this.startingDate = new StartingDate(today, startingDate);
         this.activityCategory = ActivityCategory.from(activityCategoryValue);
         this.title = new Title(titleValue);
-        this.boardContentBody = new BoardContentBody(contentValue);
+        this.contentBody = new ContentBody(contentValue);
     }
 
     public boolean isSameWriterId(final Long memberId) {

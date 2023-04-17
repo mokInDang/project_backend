@@ -2,7 +2,7 @@ package mokindang.jubging.project_backend.service.board.response;
 
 import mokindang.jubging.project_backend.domain.board.recruitment.ActivityCategory;
 import mokindang.jubging.project_backend.domain.board.recruitment.RecruitmentBoard;
-import mokindang.jubging.project_backend.domain.board.recruitment.vo.BoardContentBody;
+import mokindang.jubging.project_backend.domain.board.recruitment.vo.ContentBody;
 import mokindang.jubging.project_backend.domain.board.recruitment.vo.StartingDate;
 import mokindang.jubging.project_backend.domain.board.recruitment.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
@@ -76,7 +76,7 @@ class SummaryBoardResponseTest {
         RecruitmentBoard recruitmentBoard = mock(RecruitmentBoard.class);
         when(recruitmentBoard.getId()).thenReturn(1L);
         when(recruitmentBoard.getTitle()).thenReturn(new Title("제목"));
-        when(recruitmentBoard.getBoardContentBody()).thenReturn(new BoardContentBody("본문내용"));
+        when(recruitmentBoard.getContentBody()).thenReturn(new ContentBody("본문내용"));
         when(recruitmentBoard.getWritingRegion()).thenReturn(Region.from("동작구"));
         when(recruitmentBoard.getActivityCategory()).thenReturn(ActivityCategory.RUNNING);
         when(recruitmentBoard.isOnRecruitment()).thenReturn(true);
