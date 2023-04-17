@@ -34,7 +34,7 @@ public class RecruitmentBoardService {
         Member member = memberService.findByMemberId(memberId);
         LocalDateTime now = LocalDateTime.now();
         RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, member, recruitmentBoardCreationRequest.getStartingDate(), recruitmentBoardCreationRequest.getActivityCategory(),
-                recruitmentBoardCreationRequest.getTitle(), recruitmentBoardCreationRequest.getBoardContentBody());
+                recruitmentBoardCreationRequest.getTitle(), recruitmentBoardCreationRequest.getContentBody());
         RecruitmentBoard savedRecruitmentBoard = recruitmentBoardRepository.save(recruitmentBoard);
         return new RecruitmentBoardIdResponse(savedRecruitmentBoard.getId());
     }

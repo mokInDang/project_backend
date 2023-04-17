@@ -22,7 +22,7 @@ public class RecruitmentBoardCreationRequest {
     @NotNull
     @NotBlank
     @Schema(description = "게시글 본문", example = "예시 본문 입니다.")
-    private final String boardContentBody;
+    private final String contentBody;
 
     @NotNull
     @NotBlank

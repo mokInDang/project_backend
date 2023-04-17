@@ -14,7 +14,7 @@ public class SummaryBoardResponse {
     private final String title;
 
     @Schema(description = "게시글 본문", example = "게시글 본문 입니다.")
-    private final String content;
+    private final String contentBody;
 
     @Schema(description = "작성자", example = "작성자닉네임")
     private final String writerAlias;
@@ -41,7 +41,7 @@ public class SummaryBoardResponse {
         this.boardId = recruitmentBoard.getId();
         this.title = recruitmentBoard.getTitle()
                 .getValue();
-        this.content = recruitmentBoard.getContentBody()
+        this.contentBody = recruitmentBoard.getContentBody()
                 .getValue();
         this.writerAlias = recruitmentBoard.getWriterAlias();
         this.writerProfileUrl = recruitmentBoard.getWriterProfileImageUrl();
