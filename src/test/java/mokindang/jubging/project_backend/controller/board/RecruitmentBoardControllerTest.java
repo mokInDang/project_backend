@@ -164,7 +164,7 @@ class RecruitmentBoardControllerTest {
         //then
         actual.andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value("게시판 제목"))
-                .andExpect(jsonPath("$.content").value("게시판 내용 작성 테스트"))
+                .andExpect(jsonPath("$.contentBody").value("게시판 내용 작성 테스트"))
                 .andExpect(jsonPath("$.writerAlias").value("test"))
                 .andExpect(jsonPath("$.startingDate").value("2025-02-11"))
                 .andExpect(jsonPath("$.region").value("동작구"))

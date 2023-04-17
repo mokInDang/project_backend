@@ -2,7 +2,7 @@ package mokindang.jubging.project_backend.service.board;
 
 import mokindang.jubging.project_backend.domain.board.recruitment.ActivityCategory;
 import mokindang.jubging.project_backend.domain.board.recruitment.RecruitmentBoard;
-import mokindang.jubging.project_backend.domain.board.recruitment.vo.Content;
+import mokindang.jubging.project_backend.domain.board.recruitment.vo.BoardContentBody;
 import mokindang.jubging.project_backend.domain.board.recruitment.vo.StartingDate;
 import mokindang.jubging.project_backend.domain.board.recruitment.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
@@ -98,7 +98,6 @@ class RecruitmentBoardServiceTest {
         RecruitmentBoard recruitmentBoard = mock(RecruitmentBoard.class);
         when(recruitmentBoard.getId()).thenReturn(1L);
         when(recruitmentBoard.getTitle()).thenReturn(new Title("제목입니다."));
-        when(recruitmentBoard.getContent()).thenReturn(new Content("본문내용입니다."));
         when(recruitmentBoard.getWriterAlias()).thenReturn("글작성자");
         when(recruitmentBoard.getWritingRegion()).thenReturn(Region.from("동작구"));
         when(recruitmentBoard.getActivityCategory()).thenReturn(ActivityCategory.RUNNING);
@@ -108,6 +107,7 @@ class RecruitmentBoardServiceTest {
         when(recruitmentBoard.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
         when(recruitmentBoard.getWriterProfileImageUrl()).thenReturn("test_url");
         when(recruitmentBoard.isSameWriterId(anyLong())).thenReturn(true);
+        when(recruitmentBoard.getBoardContentBody()).thenReturn(new BoardContentBody("본문내용입니다."));
         when(boardRepository.findById(1L)).thenReturn(Optional.of(recruitmentBoard));
 
         //when
@@ -116,7 +116,7 @@ class RecruitmentBoardServiceTest {
         //then
         softly.assertThat(actual.getBoardId()).isEqualTo(1L);
         softly.assertThat(actual.getTitle()).isEqualTo("제목입니다.");
-        softly.assertThat(actual.getContent()).isEqualTo("본문내용입니다.");
+        softly.assertThat(actual.getContentBody()).isEqualTo("본문내용입니다.");
         softly.assertThat(actual.getWriterAlias()).isEqualTo("글작성자");
         softly.assertThat(actual.getStartingDate()).isEqualTo("2023-03-11");
         softly.assertThat(actual.getActivityCategory()).isEqualTo("달리기");

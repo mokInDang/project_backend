@@ -12,20 +12,20 @@ import java.util.Objects;
 @Getter
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class Content {
+public class BoardContentBody {
     private static final int MAXIMUM_CONTENT_SIZE = 4000;
 
     @Lob
-    @Column(name = "content", nullable = false)
+    @Column(name = "board_content_body", nullable = false)
     private String value;
 
-    public Content(final String value) {
+    public BoardContentBody(final String value) {
         validateSize(value);
         this.value = value;
     }
 
-    private void validateSize(final String content) {
-        if (content.isBlank() || content.length() > MAXIMUM_CONTENT_SIZE) {
+    private void validateSize(final String boardContentBody) {
+        if (boardContentBody.isBlank() || boardContentBody.length() > MAXIMUM_CONTENT_SIZE) {
             throw new IllegalArgumentException("글 내용은 최소 1자 이상, 최대 4000자 입니다.");
         }
     }
@@ -35,9 +35,9 @@ public class Content {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        final Content content = (Content) o;
+        final BoardContentBody boardContentBody = (BoardContentBody) o;
 
-        return Objects.equals(value, content.value);
+        return Objects.equals(value, boardContentBody.value);
     }
 
     @Override

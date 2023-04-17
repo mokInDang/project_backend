@@ -1,17 +1,24 @@
 package mokindang.jubging.project_backend.domain.comment.vo;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.Embeddable;
+import java.util.Objects;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Embeddable
 public class CommentBody {
 
     private static final int MAXIMUM_COMMENT_BODY_SIZE = 1000;
 
-    private final String content;
+    private String body;
 
-    public CommentBody(final String content) {
-        validateComment(content);
-        this.content = content;
+    public CommentBody(final String body) {
+        validateComment(body);
+        this.body = body;
     }
 
     private void validateComment(final String commentBody) {
@@ -29,5 +36,20 @@ public class CommentBody {
         if (commentBody.length() >= MAXIMUM_COMMENT_BODY_SIZE) {
             throw new IllegalArgumentException("댓글 본문은 1000자 이상이 될 수 없습니다.");
         }
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final CommentBody that = (CommentBody) o;
+
+        return Objects.equals(body, that.body);
+    }
+
+    @Override
+    public int hashCode() {
+        return body != null ? body.hashCode() : 0;
     }
 }
