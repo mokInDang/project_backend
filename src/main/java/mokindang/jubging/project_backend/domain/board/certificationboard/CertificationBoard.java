@@ -3,7 +3,7 @@ package mokindang.jubging.project_backend.domain.board.certificationboard;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import mokindang.jubging.project_backend.domain.board.recruitment.vo.BoardContentBody;
+import mokindang.jubging.project_backend.domain.board.recruitment.vo.ContentBody;
 import mokindang.jubging.project_backend.domain.board.recruitment.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
 
@@ -35,7 +35,7 @@ public class CertificationBoard {
     private Title title;
 
     @Embedded
-    private BoardContentBody boardContentBody;
+    private ContentBody contentBody;
 
     public CertificationBoard(final LocalDateTime createdDateTime, final LocalDateTime modifiedTIme,
                               final Member writer, final String title, final String boardContentBody) {
@@ -43,7 +43,7 @@ public class CertificationBoard {
         this.modifiedTIme = modifiedTIme;
         this.writer = writer;
         this.title = new Title(title);
-        this.boardContentBody = new BoardContentBody(boardContentBody);
+        this.contentBody = new ContentBody(boardContentBody);
     }
 
     @Override

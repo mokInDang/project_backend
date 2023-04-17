@@ -1,6 +1,6 @@
 package mokindang.jubging.project_backend.domain.board.recruitment;
 
-import mokindang.jubging.project_backend.domain.board.recruitment.vo.BoardContentBody;
+import mokindang.jubging.project_backend.domain.board.recruitment.vo.ContentBody;
 import mokindang.jubging.project_backend.domain.board.recruitment.vo.StartingDate;
 import mokindang.jubging.project_backend.domain.board.recruitment.vo.Title;
 import mokindang.jubging.project_backend.domain.comment.Comment;
@@ -100,7 +100,7 @@ class RecruitmentBoardTest {
         //when
         Member member = recruitmentBoard.getWriter();
         Title title = recruitmentBoard.getTitle();
-        BoardContentBody boardContentBody = recruitmentBoard.getBoardContentBody();
+        ContentBody contentBody = recruitmentBoard.getContentBody();
         ActivityCategory activityCategory = recruitmentBoard.getActivityCategory();
         StartingDate startingDate = recruitmentBoard.getStartingDate();
         Region region = recruitmentBoard.getWritingRegion();
@@ -112,7 +112,7 @@ class RecruitmentBoardTest {
         softly.assertThat(startingDate).isEqualTo(new StartingDate(LocalDate.of(2023, 11, 11),
                 LocalDate.of(2025, 2, 11)));
         softly.assertThat(title).isEqualTo(new Title("게시판 제목"));
-        softly.assertThat(boardContentBody).isEqualTo(new BoardContentBody("게시판 내용 작성 테스트"));
+        softly.assertThat(contentBody).isEqualTo(new ContentBody("게시판 내용 작성 테스트"));
         softly.assertThat(region).isEqualTo(member.getRegion());
         softly.assertThat(onRecruitment).isEqualTo(true);
         softly.assertAll();
@@ -242,7 +242,7 @@ class RecruitmentBoardTest {
         softly.assertThat(recruitmentBoard.getStartingDate().getValue()).isEqualTo("2023-11-13");
         softly.assertThat(recruitmentBoard.getActivityCategory().getValue()).isEqualTo(newActivityCategory);
         softly.assertThat(recruitmentBoard.getTitle().getValue()).isEqualTo(newTitleValue);
-        softly.assertThat(recruitmentBoard.getBoardContentBody().getValue()).isEqualTo(newContentValue);
+        softly.assertThat(recruitmentBoard.getContentBody().getValue()).isEqualTo(newContentValue);
         softly.assertAll();
     }
 
@@ -288,7 +288,7 @@ class RecruitmentBoardTest {
     void postComment() {
         //given
         RecruitmentBoard recruitmentBoard = createRecruitmentBoardWithTestWriter();
-        Comment comment = createComment();
+        Comment comment = createCommentBody();
 
         //when
         recruitmentBoard.addComment(comment);
@@ -297,7 +297,7 @@ class RecruitmentBoardTest {
         assertThat(recruitmentBoard.getComments().get(0)).isEqualTo(comment);
     }
 
-    private Comment createComment() {
+    private Comment createCommentBody() {
         String commentValue = "댓글입니다.";
         LocalDateTime now = LocalDateTime.of(2023, 4, 3, 11, 10, 11);
         Member commentWriter = new Member("writer1@test.com", "댓글작성자");

@@ -12,14 +12,14 @@ import java.util.Objects;
 @Getter
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class BoardContentBody {
+public class ContentBody {
     private static final int MAXIMUM_CONTENT_SIZE = 4000;
 
     @Lob
-    @Column(name = "board_content_body", nullable = false)
+    @Column(name = "content_body", nullable = false)
     private String value;
 
-    public BoardContentBody(final String value) {
+    public ContentBody(final String value) {
         validateSize(value);
         this.value = value;
     }
@@ -35,9 +35,9 @@ public class BoardContentBody {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        final BoardContentBody boardContentBody = (BoardContentBody) o;
+        final ContentBody contentBody = (ContentBody) o;
 
-        return Objects.equals(value, boardContentBody.value);
+        return Objects.equals(value, contentBody.value);
     }
 
     @Override

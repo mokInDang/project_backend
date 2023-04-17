@@ -41,7 +41,7 @@ public class SummaryBoardResponse {
         this.boardId = recruitmentBoard.getId();
         this.title = recruitmentBoard.getTitle()
                 .getValue();
-        this.content = recruitmentBoard.getBoardContentBody()
+        this.content = recruitmentBoard.getContentBody()
                 .getValue();
         this.writerAlias = recruitmentBoard.getWriterAlias();
         this.writerProfileUrl = recruitmentBoard.getWriterProfileImageUrl();

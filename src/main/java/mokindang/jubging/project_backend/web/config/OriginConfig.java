@@ -5,6 +5,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpHeaders.LOCATION;
 
 @Configuration
 public class OriginConfig implements WebMvcConfigurer {
@@ -27,6 +28,6 @@ public class OriginConfig implements WebMvcConfigurer {
                 .allowedMethods(ALLOWED_METHOD_NAMES.split(","))
                 .allowedHeaders("*")
                 .allowCredentials(true)
-                .exposedHeaders(AUTHORIZATION);
+                .exposedHeaders(AUTHORIZATION, LOCATION);
     }
 }

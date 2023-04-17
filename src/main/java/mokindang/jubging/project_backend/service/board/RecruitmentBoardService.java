@@ -40,9 +40,7 @@ public class RecruitmentBoardService {
     }
 
     public RecruitmentBoardSelectionResponse select(final Long memberId, final Long boardId) {
-        Member loggedInMember = memberService.findByMemberId(memberId);
         RecruitmentBoard recruitmentBoard = findById(boardId);
-        recruitmentBoard.checkRegion(loggedInMember.getRegion());
         return new RecruitmentBoardSelectionResponse(recruitmentBoard, recruitmentBoard.isSameWriterId(memberId));
     }
 
