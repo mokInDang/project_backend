@@ -2,7 +2,7 @@ package mokindang.jubging.project_backend.service.board.response;
 
 import mokindang.jubging.project_backend.domain.board.recruitment.ActivityCategory;
 import mokindang.jubging.project_backend.domain.board.recruitment.RecruitmentBoard;
-import mokindang.jubging.project_backend.domain.board.recruitment.vo.Content;
+import mokindang.jubging.project_backend.domain.board.recruitment.vo.BoardContentBody;
 import mokindang.jubging.project_backend.domain.board.recruitment.vo.StartingDate;
 import mokindang.jubging.project_backend.domain.board.recruitment.vo.Title;
 import mokindang.jubging.project_backend.domain.member.Member;
@@ -49,7 +49,7 @@ class BoardSelectionResponseTest {
         String activityCategory = selectionResponse.getActivityCategory();
         String region = selectionResponse.getRegion();
         String title = selectionResponse.getTitle();
-        String content = selectionResponse.getContent();
+        String content = selectionResponse.getContentBody();
         boolean onRecruitment = selectionResponse.isOnRecruitment();
         LocalDateTime creatingDatetime = selectionResponse.getCreatingDatetime();
         String startingDate = selectionResponse.getStartingDate();
@@ -79,7 +79,7 @@ class BoardSelectionResponseTest {
         RecruitmentBoard recruitmentBoard = mock(RecruitmentBoard.class);
         when(recruitmentBoard.getId()).thenReturn(1L);
         when(recruitmentBoard.getTitle()).thenReturn(new Title("제목"));
-        when(recruitmentBoard.getContent()).thenReturn(new Content("본문내용"));
+        when(recruitmentBoard.getBoardContentBody()).thenReturn(new BoardContentBody("본문내용"));
         when(recruitmentBoard.getWritingRegion()).thenReturn(Region.from("동작구"));
         when(recruitmentBoard.getActivityCategory()).thenReturn(ActivityCategory.RUNNING);
         when(recruitmentBoard.isOnRecruitment()).thenReturn(true);

@@ -4,13 +4,12 @@ import lombok.RequiredArgsConstructor;
 import mokindang.jubging.project_backend.domain.board.recruitment.RecruitmentBoard;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.member.vo.Region;
-import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.repository.board.RecruitmentBoardRepository;
-import mokindang.jubging.project_backend.service.board.request.RecruitmentBoardCreationRequest;
 import mokindang.jubging.project_backend.service.board.request.BoardModificationRequest;
+import mokindang.jubging.project_backend.service.board.request.RecruitmentBoardCreationRequest;
+import mokindang.jubging.project_backend.service.board.response.MultiBoardSelectResponse;
 import mokindang.jubging.project_backend.service.board.response.RecruitmentBoardIdResponse;
 import mokindang.jubging.project_backend.service.board.response.RecruitmentBoardSelectionResponse;
-import mokindang.jubging.project_backend.service.board.response.MultiBoardSelectResponse;
 import mokindang.jubging.project_backend.service.board.response.SummaryBoardResponse;
 import mokindang.jubging.project_backend.service.member.MemberService;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +34,7 @@ public class RecruitmentBoardService {
         Member member = memberService.findByMemberId(memberId);
         LocalDateTime now = LocalDateTime.now();
         RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, member, recruitmentBoardCreationRequest.getStartingDate(), recruitmentBoardCreationRequest.getActivityCategory(),
-                recruitmentBoardCreationRequest.getTitle(), recruitmentBoardCreationRequest.getContent());
+                recruitmentBoardCreationRequest.getTitle(), recruitmentBoardCreationRequest.getBoardContentBody());
         RecruitmentBoard savedRecruitmentBoard = recruitmentBoardRepository.save(recruitmentBoard);
         return new RecruitmentBoardIdResponse(savedRecruitmentBoard.getId());
     }
@@ -71,7 +70,7 @@ public class RecruitmentBoardService {
     @Transactional
     public RecruitmentBoardIdResponse modify(final Long memberId, final Long boardId, final BoardModificationRequest boardModificationRequest) {
         RecruitmentBoard recruitmentBoard = findById(boardId);
-        recruitmentBoard.modify(memberId,boardModificationRequest.getStartingDate(), boardModificationRequest.getActivityCategory(),
+        recruitmentBoard.modify(memberId, boardModificationRequest.getStartingDate(), boardModificationRequest.getActivityCategory(),
                 boardModificationRequest.getTitle(), boardModificationRequest.getContent());
         return new RecruitmentBoardIdResponse(recruitmentBoard.getId());
     }

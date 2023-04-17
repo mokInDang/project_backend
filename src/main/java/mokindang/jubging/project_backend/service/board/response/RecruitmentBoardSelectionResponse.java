@@ -16,7 +16,7 @@ public class RecruitmentBoardSelectionResponse {
     private final String title;
 
     @Schema(description = "게시글 본문", example = "게시글 본문 입니다.")
-    private final String content;
+    private final String contentBody;
 
     @Schema(description = "게시글 작성 일시")
     private final LocalDateTime creatingDatetime;
@@ -49,7 +49,7 @@ public class RecruitmentBoardSelectionResponse {
         this.boardId = board.getId();
         this.title = board.getTitle()
                 .getValue();
-        this.content = board.getContent()
+        this.contentBody = board.getBoardContentBody()
                 .getValue();
         this.creatingDatetime = board.getCreatingDateTime();
         this.writerAlias = board.getWriterAlias();
