@@ -50,7 +50,7 @@ class SummaryBoardResponseTest {
         //when
         Long boardId = summaryBoardResponse.getBoardId();
         String title = summaryBoardResponse.getTitle();
-        String content = summaryBoardResponse.getContent();
+        String content = summaryBoardResponse.getContentBody();
         String startingDate = summaryBoardResponse.getStartingDate();
         boolean onRecruitment = summaryBoardResponse.isOnRecruitment();
         String activityCategory = summaryBoardResponse.getActivityCategory();

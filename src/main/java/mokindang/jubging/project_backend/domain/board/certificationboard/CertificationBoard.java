@@ -38,12 +38,12 @@ public class CertificationBoard {
     private ContentBody contentBody;
 
     public CertificationBoard(final LocalDateTime createdDateTime, final LocalDateTime modifiedTIme,
-                              final Member writer, final String title, final String boardContentBody) {
+                              final Member writer, final String title, final String contentBody) {
         this.createdDateTime = createdDateTime;
         this.modifiedTIme = modifiedTIme;
         this.writer = writer;
         this.title = new Title(title);
-        this.contentBody = new ContentBody(boardContentBody);
+        this.contentBody = new ContentBody(contentBody);
     }
 
     @Override
