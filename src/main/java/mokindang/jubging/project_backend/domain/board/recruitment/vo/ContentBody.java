@@ -24,8 +24,8 @@ public class ContentBody {
         this.value = value;
     }
 
-    private void validateSize(final String boardContentBody) {
-        if (boardContentBody.isBlank() || boardContentBody.length() > MAXIMUM_CONTENT_SIZE) {
+    private void validateSize(final String contentBody) {
+        if (contentBody.isBlank() || contentBody.length() > MAXIMUM_CONTENT_SIZE) {
             throw new IllegalArgumentException("글 내용은 최소 1자 이상, 최대 4000자 입니다.");
         }
     }

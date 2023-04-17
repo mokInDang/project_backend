@@ -49,7 +49,7 @@ class BoardSelectionResponseTest {
         String activityCategory = selectionResponse.getActivityCategory();
         String region = selectionResponse.getRegion();
         String title = selectionResponse.getTitle();
-        String content = selectionResponse.getContentBody();
+        String contentBody = selectionResponse.getContentBody();
         boolean onRecruitment = selectionResponse.isOnRecruitment();
         LocalDateTime creatingDatetime = selectionResponse.getCreatingDatetime();
         String startingDate = selectionResponse.getStartingDate();
@@ -63,7 +63,7 @@ class BoardSelectionResponseTest {
         softly.assertThat(activityCategory).isEqualTo("달리기");
         softly.assertThat(region).isEqualTo("동작구");
         softly.assertThat(title).isEqualTo("제목");
-        softly.assertThat(content).isEqualTo("본문내용");
+        softly.assertThat(contentBody).isEqualTo("본문내용");
         softly.assertThat(onRecruitment).isTrue();
         softly.assertThat(creatingDatetime).isEqualTo(LocalDateTime.of(2023, 11, 12, 0, 0, 0));
         softly.assertThat(startingDate).isEqualTo("2025-02-11");
