@@ -1,10 +1,9 @@
 package mokindang.jubging.project_backend.domain.board.recruitment;
 
-import mokindang.jubging.project_backend.domain.board.recruitment.ActivityCategory;
-import mokindang.jubging.project_backend.domain.board.recruitment.RecruitmentBoard;
 import mokindang.jubging.project_backend.domain.board.recruitment.vo.BoardContentBody;
 import mokindang.jubging.project_backend.domain.board.recruitment.vo.StartingDate;
 import mokindang.jubging.project_backend.domain.board.recruitment.vo.Title;
+import mokindang.jubging.project_backend.domain.comment.Comment;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.member.vo.Region;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
@@ -282,5 +281,26 @@ class RecruitmentBoardTest {
 
         //then
         assertThat(writerProfileImageUrl).isEqualTo(testUrl);
+    }
+
+    @Test
+    @DisplayName("댓글을 추가하여 작성한다.")
+    void postComment() {
+        //given
+        RecruitmentBoard recruitmentBoard = createRecruitmentBoardWithTestWriter();
+        Comment comment = createComment();
+
+        //when
+        recruitmentBoard.addComment(comment);
+
+        //then
+        assertThat(recruitmentBoard.getComments().get(0)).isEqualTo(comment);
+    }
+
+    private Comment createComment() {
+        String commentValue = "댓글입니다.";
+        LocalDateTime now = LocalDateTime.of(2023, 4, 3, 11, 10, 11);
+        Member commentWriter = new Member("writer1@test.com", "댓글작성자");
+        return new Comment(commentValue, commentWriter, now);
     }
 }
