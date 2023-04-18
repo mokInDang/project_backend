@@ -34,7 +34,7 @@ public class CertificationBoardController implements CertificationBoardControlle
 
     @GetMapping("/{boardId}")
     public ResponseEntity<CertificationBoardSelectionResponse> selectBoard(@Login final Long memberId, @PathVariable final Long boardId) {
-        log.info("memberId = {} 의 게시글 조회 요청, 게시글 번호 : {}", memberId, boardId);
+        log.info("memberId = {} 의 인증 게시글 조회 요청, 인증 게시글 번호 : {}", memberId, boardId);
         CertificationBoardSelectionResponse certificationBoardSelectionResponse = certificationBoardService.select(memberId, boardId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(certificationBoardSelectionResponse);
