@@ -63,8 +63,7 @@ public class FileService {
             uploadFileUrl = uploadToS3(multipartFile, uploadFilePath, uploadFileName, uploadFileUrl, objectMetadata);
 
             log.info("memberId = {}, alias = {} 의 boardId = {} 인증 게시판 이미지 {} 업로드", member.getId(), member.getAlias(), certificationBoard.getId(), uploadFileName);
-            FileResponse fileResponse = new FileResponse(uploadFileUrl, uploadFileName);
-            imageRepository.save(new Image(certificationBoard, fileResponse.getUploadFileName(), fileResponse.getUploadFileUrl()));
+            imageRepository.save(new Image(certificationBoard, uploadFileName, uploadFileUrl));
         }
     }
 
@@ -108,7 +107,7 @@ public class FileService {
         log.info("memberId = {}, alias = {} 의 이전 프로필 이미지 {} 삭제", member.getId(), member.getAlias(), member.getProfileImage().getProfileImageName());
     }
 
-    private static boolean checkNameDefault(String uploadFileName) {
+    private boolean checkNameDefault(String uploadFileName) {
         if(uploadFileName.equals(DEFAULT_PROFILE_IMAGE_NAME)){
             log.info("기본이미지로 삭제되지 않았습니다.");
             return true;
