@@ -5,14 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import mokindang.jubging.project_backend.service.board.certificationboard.CertificationBoardService;
 import mokindang.jubging.project_backend.service.board.certificationboard.request.CertificationBoardCreationRequest;
 import mokindang.jubging.project_backend.service.board.certificationboard.response.CertificationBoardIdResponse;
+import mokindang.jubging.project_backend.service.board.certificationboard.response.CertificationBoardSelectionResponse;
+import mokindang.jubging.project_backend.service.board.certificationboard.response.MultiCertificationBoardSelectResponse;
 import mokindang.jubging.project_backend.web.argumentresolver.Login;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -30,5 +30,20 @@ public class CertificationBoardController implements CertificationBoardControlle
         CertificationBoardIdResponse certificationBoardIdResponse = certificationBoardService.write(memberId, certificationBoardCreationRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(certificationBoardIdResponse);
+    }
+
+    @GetMapping("/{boardId}")
+    public ResponseEntity<CertificationBoardSelectionResponse> selectBoard(@Login final Long memberId, @PathVariable final Long boardId) {
+        log.info("memberId = {} 의 게시글 조회 요청, 게시글 번호 : {}", memberId, boardId);
+        CertificationBoardSelectionResponse certificationBoardSelectionResponse = certificationBoardService.select(memberId, boardId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(certificationBoardSelectionResponse);
+    }
+
+    @GetMapping
+    public ResponseEntity<MultiCertificationBoardSelectResponse> selectBoards(final Pageable pageable) {
+        MultiCertificationBoardSelectResponse multiCertificationBoardSelectResponse = certificationBoardService.selectAllBoards(pageable);
+        return ResponseEntity.ok()
+                .body(multiCertificationBoardSelectResponse);
     }
 }
