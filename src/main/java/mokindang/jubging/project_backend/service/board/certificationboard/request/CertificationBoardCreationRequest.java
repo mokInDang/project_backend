@@ -18,7 +18,7 @@ public class CertificationBoardCreationRequest {
 
     @NotNull
     @NotBlank
-    private final String content;
+    private final String contentBody;
 
     private final List<MultipartFile> files;
 }
