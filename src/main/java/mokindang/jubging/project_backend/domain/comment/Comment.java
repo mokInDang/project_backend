@@ -44,11 +44,17 @@ public class Comment {
     @Column(nullable = false)
     private LocalDateTime lastModifiedDateTime;
 
-    public Comment(final String commentBody, final Member writer, final LocalDateTime now) {
+    public Comment(final RecruitmentBoard board, final String commentBody, final Member writer, final LocalDateTime now) {
         this.commentBody = new CommentBody(commentBody);
         this.writer = writer;
         this.createdDateTime = now;
         this.lastModifiedDateTime = createdDateTime;
+        setRecruitmentBoard(board);
+    }
+
+    private void setRecruitmentBoard(final RecruitmentBoard recruitmentBoard) {
+        this.recruitmentBoard = recruitmentBoard;
+        recruitmentBoard.addComment(this);
     }
 
     public void modify(final String commentBody, final LocalDateTime now) {
