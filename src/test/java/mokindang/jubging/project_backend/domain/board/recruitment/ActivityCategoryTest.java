@@ -1,5 +1,6 @@
 package mokindang.jubging.project_backend.domain.board.recruitment;
 
+import mokindang.jubging.project_backend.recruitment_board.domain.ActivityCategory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

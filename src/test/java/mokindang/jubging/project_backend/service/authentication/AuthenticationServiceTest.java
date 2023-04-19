@@ -1,15 +1,17 @@
 package mokindang.jubging.project_backend.service.authentication;
 
 import io.jsonwebtoken.JwtException;
-import mokindang.jubging.project_backend.domain.member.LoginState;
-import mokindang.jubging.project_backend.domain.member.Member;
-import mokindang.jubging.project_backend.domain.token.RefreshToken;
-import mokindang.jubging.project_backend.repository.token.RefreshTokenRepository;
-import mokindang.jubging.project_backend.service.member.MemberService;
-import mokindang.jubging.project_backend.service.member.request.AuthorizationCodeRequest;
-import mokindang.jubging.project_backend.service.member.response.JwtResponse;
-import mokindang.jubging.project_backend.service.member.response.KakaoApiMemberResponse;
-import mokindang.jubging.project_backend.service.member.response.KakaoLoginResponse;
+import mokindang.jubging.project_backend.authentication.service.AuthenticationService;
+import mokindang.jubging.project_backend.authentication.service.KaKaoOAuth2;
+import mokindang.jubging.project_backend.member.domain.LoginState;
+import mokindang.jubging.project_backend.member.domain.Member;
+import mokindang.jubging.project_backend.authentication.domain.token.RefreshToken;
+import mokindang.jubging.project_backend.authentication.repository.RefreshTokenRepository;
+import mokindang.jubging.project_backend.member.service.MemberService;
+import mokindang.jubging.project_backend.member.service.request.AuthorizationCodeRequest;
+import mokindang.jubging.project_backend.member.service.response.JwtResponse;
+import mokindang.jubging.project_backend.member.service.response.KakaoApiMemberResponse;
+import mokindang.jubging.project_backend.member.service.response.KakaoLoginResponse;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
@@ -24,7 +26,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
 
-import static mokindang.jubging.project_backend.domain.member.vo.ProfileImage.DEFAULT_PROFILE_IMAGE_URL;
+import static mokindang.jubging.project_backend.member.domain.vo.ProfileImage.DEFAULT_PROFILE_IMAGE_URL;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 

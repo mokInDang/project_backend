@@ -2,11 +2,12 @@ package mokindang.jubging.project_backend.controller.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.JwtException;
-import mokindang.jubging.project_backend.domain.member.LoginState;
-import mokindang.jubging.project_backend.service.authentication.AuthenticationService;
-import mokindang.jubging.project_backend.service.member.request.AuthorizationCodeRequest;
-import mokindang.jubging.project_backend.service.member.response.JwtResponse;
-import mokindang.jubging.project_backend.service.member.response.KakaoLoginResponse;
+import mokindang.jubging.project_backend.authentication.controller.AuthenticationController;
+import mokindang.jubging.project_backend.member.domain.LoginState;
+import mokindang.jubging.project_backend.authentication.service.AuthenticationService;
+import mokindang.jubging.project_backend.member.service.request.AuthorizationCodeRequest;
+import mokindang.jubging.project_backend.member.service.response.JwtResponse;
+import mokindang.jubging.project_backend.member.service.response.KakaoLoginResponse;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

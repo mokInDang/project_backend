@@ -1,6 +1,7 @@
 package mokindang.jubging.project_backend.service.board;
 
-import mokindang.jubging.project_backend.repository.board.RecruitmentBoardRepository;
+import mokindang.jubging.project_backend.recruitment_board.repository.RecruitmentBoardRepository;
+import mokindang.jubging.project_backend.recruitment_board.scheduler.RecruitmentBoardSchedulingService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
