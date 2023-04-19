@@ -26,6 +26,7 @@ public class CommentService {
     private final RecruitmentBoardService recruitmentBoardService;
     private final MemberService memberService;
 
+    @Transactional
     public RecruitmentBoardIdResponse addCommentToRecruitmentBoard(final Long memberId, final Long boardId,
                                                                    final CommentCreationRequest commentCreationRequest) {
         Member writer = memberService.findByMemberId(memberId);
