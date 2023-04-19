@@ -1,9 +1,10 @@
 package mokindang.jubging.project_backend.recruitment_board.service;
 
 import lombok.RequiredArgsConstructor;
-import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
+import mokindang.jubging.project_backend.member.service.MemberService;
+import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 import mokindang.jubging.project_backend.recruitment_board.repository.RecruitmentBoardRepository;
 import mokindang.jubging.project_backend.recruitment_board.service.request.BoardModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
@@ -11,7 +12,6 @@ import mokindang.jubging.project_backend.recruitment_board.service.response.Mult
 import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardSelectionResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.SummaryBoardResponse;
-import mokindang.jubging.project_backend.member.service.MemberService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -44,7 +44,7 @@ public class RecruitmentBoardService {
         return new RecruitmentBoardSelectionResponse(recruitmentBoard, recruitmentBoard.isSameWriterId(memberId));
     }
 
-    private RecruitmentBoard findById(final Long boardId) {
+    public RecruitmentBoard findById(final Long boardId) {
         return recruitmentBoardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
     }
