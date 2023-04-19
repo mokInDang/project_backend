@@ -21,7 +21,7 @@ public class BoardModificationRequest {
     @NotNull
     @NotBlank
     @Schema(description = "변경될 게시글 본문", example = "예시 본문 입니다.")
-    private final String content;
+    private final String contentBody;
 
     @NotNull
     @NotBlank

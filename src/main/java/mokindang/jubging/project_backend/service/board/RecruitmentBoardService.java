@@ -69,7 +69,7 @@ public class RecruitmentBoardService {
     public RecruitmentBoardIdResponse modify(final Long memberId, final Long boardId, final BoardModificationRequest boardModificationRequest) {
         RecruitmentBoard recruitmentBoard = findById(boardId);
         recruitmentBoard.modify(memberId, boardModificationRequest.getStartingDate(), boardModificationRequest.getActivityCategory(),
-                boardModificationRequest.getTitle(), boardModificationRequest.getContent());
+                boardModificationRequest.getTitle(), boardModificationRequest.getContentBody());
         return new RecruitmentBoardIdResponse(recruitmentBoard.getId());
     }
 
