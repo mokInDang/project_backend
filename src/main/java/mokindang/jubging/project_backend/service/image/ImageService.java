@@ -21,10 +21,13 @@ public class ImageService {
         List<String> imagesUrl = new ArrayList<>();
         List<Image> images = imageRepository.findByCertificationBoard(board)
                 .orElseThrow(() -> new IllegalArgumentException("인증 게시판 id로 저장된 이미지가 존재하지 않습니다."));
+        setImagesUrl(imagesUrl, images);
+        return imagesUrl;
+    }
 
+    private void setImagesUrl(List<String> imagesUrl, List<Image> images) {
         for (Image image : images) {
             imagesUrl.add(image.getFilePath());
         }
-        return imagesUrl;
     }
 }
