@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import mokindang.jubging.project_backend.domain.board.recruitment.vo.ContentBody;
 import mokindang.jubging.project_backend.domain.board.recruitment.vo.StartingDate;
 import mokindang.jubging.project_backend.domain.board.recruitment.vo.Title;
+import mokindang.jubging.project_backend.domain.comment.Comment;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.member.vo.Region;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
@@ -13,6 +14,8 @@ import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -50,6 +53,9 @@ public class RecruitmentBoard {
 
     @Column(nullable = false)
     private boolean onRecruitment;
+
+    @OneToMany(mappedBy = "recruitmentBoard", cascade = CascadeType.REMOVE)
+    List<Comment> comments = new ArrayList<>();
 
     public RecruitmentBoard(final LocalDateTime creatingDateTime, final Member writer, final LocalDate startingDate,
                             final String activityCategory, final String title, final String content) {
@@ -115,6 +121,10 @@ public class RecruitmentBoard {
 
     public String getFirstFourDigitsOfWriterEmail() {
         return writer.getFirstFourDigitsOfWriterEmail();
+    }
+
+    public void addComment(final Comment comment) {
+        this.comments.add(comment);
     }
 
     @Override

@@ -17,7 +17,7 @@ public class ReplyComment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
+    @Column(name = "reply_comment_id", nullable = false)
     Long id;
 
     @Embedded
@@ -27,6 +27,10 @@ public class ReplyComment {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member writer;
+
+    @ManyToOne
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
 
     @Column(nullable = false)
     private LocalDateTime createdDateTime;
