@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mokindang.jubging.project_backend.service.board.certificationboard.CertificationBoardService;
 import mokindang.jubging.project_backend.service.board.certificationboard.request.CertificationBoardCreationRequest;
+import mokindang.jubging.project_backend.service.board.certificationboard.request.CertificationBoardModificationRequest;
 import mokindang.jubging.project_backend.service.board.certificationboard.response.CertificationBoardIdResponse;
 import mokindang.jubging.project_backend.service.board.certificationboard.response.CertificationBoardSelectionResponse;
 import mokindang.jubging.project_backend.service.board.certificationboard.response.MultiCertificationBoardSelectResponse;
@@ -45,5 +46,20 @@ public class CertificationBoardController implements CertificationBoardControlle
         MultiCertificationBoardSelectResponse multiCertificationBoardSelectResponse = certificationBoardService.selectAllBoards(pageable);
         return ResponseEntity.ok()
                 .body(multiCertificationBoardSelectResponse);
+    }
+
+    @DeleteMapping("/{boardId}")
+    public ResponseEntity<CertificationBoardIdResponse> delete(@Login final Long memberId, @PathVariable final Long boardId) {
+        log.info("memberId = {} 의 인증 게시글 삭제 요청, 게시글 번호 : {}", memberId, boardId);
+        CertificationBoardIdResponse deletedCertificationBoardId = certificationBoardService.delete(memberId, boardId);
+        return ResponseEntity.ok(deletedCertificationBoardId);
+    }
+
+    @PatchMapping("/{boardId}")
+    public ResponseEntity<CertificationBoardIdResponse> modifyBoard(@Login final Long memberId, @PathVariable final Long boardId, @ModelAttribute final CertificationBoardModificationRequest certificationBoardModificationRequest) {
+        log.info("memberId = {} 의 게시글 수정 요청, 게시글 번호 : {}", memberId, boardId);
+        CertificationBoardIdResponse certificationBoardIdResponse = certificationBoardService.modify(memberId, boardId, certificationBoardModificationRequest);
+        return ResponseEntity.ok()
+                .body(certificationBoardIdResponse);
     }
 }

@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import mokindang.jubging.project_backend.domain.board.certificationboard.CertificationBoard;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.repository.board.certificationboard.CertificationBoardRepository;
+import mokindang.jubging.project_backend.repository.image.ImageRepository;
 import mokindang.jubging.project_backend.service.board.certificationboard.request.CertificationBoardCreationRequest;
+import mokindang.jubging.project_backend.service.board.certificationboard.request.CertificationBoardModificationRequest;
 import mokindang.jubging.project_backend.service.board.certificationboard.response.CertificationBoardIdResponse;
 import mokindang.jubging.project_backend.service.board.certificationboard.response.CertificationBoardResponse;
 import mokindang.jubging.project_backend.service.board.certificationboard.response.CertificationBoardSelectionResponse;
@@ -22,12 +24,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static mokindang.jubging.project_backend.service.file.FileService.CERTIFICATION_BOARD_IMAGE;
+
 @Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class CertificationBoardService {
 
+    private final ImageRepository imageRepository;
     private final MemberService memberService;
     private final FileService fileService;
     private final ImageService imageService;
@@ -60,5 +65,32 @@ public class CertificationBoardService {
                 .map(CertificationBoardResponse::new)
                 .collect(Collectors.toUnmodifiableList());
         return new MultiCertificationBoardSelectResponse(certificationBoardResponses, certificationBoards.hasNext());
+    }
+
+    @Transactional
+    public CertificationBoardIdResponse delete(final Long memberId, final Long boardId) {
+        CertificationBoard certificationBoard = findById(boardId);
+        certificationBoard.validatePermission(memberId);
+        deleteImage(certificationBoard);
+        certificationBoardRepository.delete(certificationBoard);
+        return new CertificationBoardIdResponse(certificationBoard.getId());
+    }
+
+    private void deleteImage(CertificationBoard certificationBoard) {
+        List<String> imagesName = imageService.findImagesName(certificationBoard);
+        for (String imageName : imagesName) {
+            fileService.deleteFile(imageName, CERTIFICATION_BOARD_IMAGE);
+            imageRepository.deleteByStoreName(imageName);
+        }
+    }
+
+    @Transactional
+    public CertificationBoardIdResponse modify(final Long memberId, final Long boardId, final CertificationBoardModificationRequest certificationBoardModificationRequest) {
+        Member writer = memberService.findByMemberId(memberId);
+        CertificationBoard certificationBoard = findById(boardId);
+        deleteImage(certificationBoard);
+        fileService.uploadFiles(certificationBoardModificationRequest.getFiles(), writer, certificationBoard);
+        certificationBoard.modify(memberId, certificationBoardModificationRequest.getTitle(), certificationBoardModificationRequest.getContentBody());
+        return new CertificationBoardIdResponse(certificationBoard.getId());
     }
 }

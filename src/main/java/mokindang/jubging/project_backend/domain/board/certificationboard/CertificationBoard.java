@@ -7,6 +7,7 @@ import mokindang.jubging.project_backend.domain.board.recruitment.vo.ContentBody
 import mokindang.jubging.project_backend.domain.board.recruitment.vo.Title;
 import mokindang.jubging.project_backend.domain.image.Image;
 import mokindang.jubging.project_backend.domain.member.Member;
+import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -72,6 +73,19 @@ public class CertificationBoard {
 
     public String getMainImageUrl(){
         return images.get(0).getFilePath();
+    }
+
+    public void validatePermission(final Long memberId) {
+        if (!isSameWriterId(memberId)) {
+            throw new ForbiddenException("작성자 권한이 없습니다.");
+        }
+    }
+
+    public void modify(final Long memberId, final String titleValue, final String contentBody) {
+        validatePermission(memberId);
+        this.modifiedTIme = LocalDateTime.now();
+        this.title = new Title(titleValue);
+        this.contentBody = new ContentBody(contentBody);
     }
 
     @Override

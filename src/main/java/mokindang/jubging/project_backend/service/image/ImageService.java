@@ -30,4 +30,19 @@ public class ImageService {
             imagesUrl.add(image.getFilePath());
         }
     }
+
+    public List<String> findImagesName(final CertificationBoard board) {
+        List<String> imagesName = new ArrayList<>();
+        List<Image> images = imageRepository.findByCertificationBoard(board)
+                .orElseThrow(() -> new IllegalArgumentException("인증 게시판 id로 저장된 이미지가 존재하지 않습니다."));
+
+        setImagesName(imagesName, images);
+        return imagesName;
+    }
+
+    private void setImagesName(List<String> imagesName, List<Image> images) {
+        for (Image image : images) {
+            imagesName.add(image.getStoreName());
+        }
+    }
 }

@@ -1,6 +1,7 @@
 package mokindang.jubging.project_backend.service.member;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import mokindang.jubging.project_backend.domain.member.Member;
 import mokindang.jubging.project_backend.domain.member.vo.Region;
 import mokindang.jubging.project_backend.repository.member.MemberRepository;
@@ -15,6 +16,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
+import static mokindang.jubging.project_backend.service.file.FileService.PROFILE_IMAGE;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -60,7 +64,8 @@ public class MemberService {
 
     private FileResponse updateProfileImage(final Member member, final MultipartFile multipartFile) {
         FileResponse fileResponse = fileService.uploadFile(multipartFile, member);
-        fileService.deleteFile(member);
+        fileService.deleteFile(member.getProfileImage().getProfileImageName(), PROFILE_IMAGE);
+        log.info("memberId = {}, alias = {} 의 이전 프로필 이미지 {} 삭제", member.getId(), member.getAlias(), member.getProfileImage().getProfileImageName());
         member.updateProfileImage(fileResponse.getUploadFileUrl(), fileResponse.getUploadFileName());
         return fileResponse;
     }
