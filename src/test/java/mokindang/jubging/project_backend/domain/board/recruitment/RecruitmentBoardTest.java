@@ -282,25 +282,4 @@ class RecruitmentBoardTest {
         //then
         assertThat(writerProfileImageUrl).isEqualTo(testUrl);
     }
-
-    @Test
-    @DisplayName("댓글을 추가하여 작성한다.")
-    void postComment() {
-        //given
-        RecruitmentBoard recruitmentBoard = createRecruitmentBoardWithTestWriter();
-        Comment comment = createCommentBody();
-
-        //when
-        recruitmentBoard.addComment(comment);
-
-        //then
-        assertThat(recruitmentBoard.getComments().get(0)).isEqualTo(comment);
-    }
-
-    private Comment createCommentBody() {
-        String commentValue = "댓글입니다.";
-        LocalDateTime now = LocalDateTime.of(2023, 4, 3, 11, 10, 11);
-        Member commentWriter = new Member("writer1@test.com", "댓글작성자");
-        return new Comment(commentValue, commentWriter, now);
-    }
 }
