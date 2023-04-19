@@ -23,6 +23,7 @@ public class CommentController {
     @PostMapping("/recruitment-board/{boardId}/comments")
     public ResponseEntity<RecruitmentBoardIdResponse> addCommentToRecruitmentBoard(@Login final Long memberId, @PathVariable final Long boardId,
                                                                                    @Valid @RequestBody final CommentCreationRequest commentCreationRequest) {
+        log.info("memberId ={} 의 RecruitmentBoardId = {} 에 대한 댓글 작성 요청", memberId, boardId);
         RecruitmentBoardIdResponse recruitmentBoardIdResponse = commentService.addCommentToRecruitmentBoard(memberId, boardId, commentCreationRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(recruitmentBoardIdResponse);
