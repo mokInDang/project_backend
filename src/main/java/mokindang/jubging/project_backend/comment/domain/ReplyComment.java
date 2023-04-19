@@ -1,9 +1,9 @@
-package mokindang.jubging.project_backend.comment;
+package mokindang.jubging.project_backend.comment.domain;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import mokindang.jubging.project_backend.comment.vo.CommentBody;
+import mokindang.jubging.project_backend.comment.domain.vo.CommentBody;
 import mokindang.jubging.project_backend.member.domain.Member;
 
 import javax.persistence.*;
