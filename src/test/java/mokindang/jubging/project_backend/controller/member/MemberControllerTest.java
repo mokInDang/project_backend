@@ -1,11 +1,12 @@
 package mokindang.jubging.project_backend.controller.member;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import mokindang.jubging.project_backend.domain.member.Member;
-import mokindang.jubging.project_backend.domain.member.vo.Region;
-import mokindang.jubging.project_backend.service.member.MemberService;
-import mokindang.jubging.project_backend.service.member.request.RegionUpdateRequest;
-import mokindang.jubging.project_backend.service.member.response.MyPageResponse;
+import mokindang.jubging.project_backend.member.domain.Member;
+import mokindang.jubging.project_backend.member.domain.vo.Region;
+import mokindang.jubging.project_backend.member.controller.MemberController;
+import mokindang.jubging.project_backend.member.service.MemberService;
+import mokindang.jubging.project_backend.member.service.request.RegionUpdateRequest;
+import mokindang.jubging.project_backend.member.service.response.MyPageResponse;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

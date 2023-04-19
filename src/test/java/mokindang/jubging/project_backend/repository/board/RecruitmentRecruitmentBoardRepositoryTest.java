@@ -1,9 +1,10 @@
 package mokindang.jubging.project_backend.repository.board;
 
-import mokindang.jubging.project_backend.domain.board.recruitment.RecruitmentBoard;
-import mokindang.jubging.project_backend.domain.member.Member;
-import mokindang.jubging.project_backend.domain.member.vo.Region;
-import mokindang.jubging.project_backend.repository.member.MemberRepository;
+import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
+import mokindang.jubging.project_backend.member.domain.Member;
+import mokindang.jubging.project_backend.member.domain.vo.Region;
+import mokindang.jubging.project_backend.member.repository.MemberRepository;
+import mokindang.jubging.project_backend.recruitment_board.repository.RecruitmentBoardRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

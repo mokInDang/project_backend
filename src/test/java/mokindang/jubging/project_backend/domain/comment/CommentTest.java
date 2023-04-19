@@ -1,7 +1,8 @@
 package mokindang.jubging.project_backend.domain.comment;
 
-import mokindang.jubging.project_backend.domain.board.recruitment.RecruitmentBoard;
-import mokindang.jubging.project_backend.domain.member.Member;
+import mokindang.jubging.project_backend.comment.Comment;
+import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
+import mokindang.jubging.project_backend.member.domain.Member;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

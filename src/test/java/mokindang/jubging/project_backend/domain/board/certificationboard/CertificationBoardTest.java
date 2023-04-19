@@ -1,8 +1,9 @@
 package mokindang.jubging.project_backend.domain.board.certificationboard;
 
-import mokindang.jubging.project_backend.domain.board.recruitment.vo.ContentBody;
-import mokindang.jubging.project_backend.domain.board.recruitment.vo.Title;
-import mokindang.jubging.project_backend.domain.member.Member;
+import mokindang.jubging.project_backend.certification_board.domain.CertificationBoard;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.ContentBody;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.Title;
+import mokindang.jubging.project_backend.member.domain.Member;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,14 +1,17 @@
 package mokindang.jubging.project_backend.controller.board;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import mokindang.jubging.project_backend.controller.board.recruitment.RecruitmentBoardController;
-import mokindang.jubging.project_backend.domain.board.recruitment.RecruitmentBoard;
-import mokindang.jubging.project_backend.domain.member.Member;
+import mokindang.jubging.project_backend.recruitment_board.controller.RecruitmentBoardController;
+import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
+import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
-import mokindang.jubging.project_backend.service.board.RecruitmentBoardService;
-import mokindang.jubging.project_backend.service.board.request.BoardModificationRequest;
-import mokindang.jubging.project_backend.service.board.request.RecruitmentBoardCreationRequest;
-import mokindang.jubging.project_backend.service.board.response.*;
+import mokindang.jubging.project_backend.recruitment_board.service.RecruitmentBoardService;
+import mokindang.jubging.project_backend.recruitment_board.service.request.BoardModificationRequest;
+import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
+import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardSelectResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardSelectionResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.response.SummaryBoardResponse;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

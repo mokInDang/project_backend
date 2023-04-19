@@ -1,12 +1,13 @@
 package mokindang.jubging.project_backend.service.board.response;
 
-import mokindang.jubging.project_backend.domain.board.recruitment.ActivityCategory;
-import mokindang.jubging.project_backend.domain.board.recruitment.RecruitmentBoard;
-import mokindang.jubging.project_backend.domain.board.recruitment.vo.ContentBody;
-import mokindang.jubging.project_backend.domain.board.recruitment.vo.StartingDate;
-import mokindang.jubging.project_backend.domain.board.recruitment.vo.Title;
-import mokindang.jubging.project_backend.domain.member.Member;
-import mokindang.jubging.project_backend.domain.member.vo.Region;
+import mokindang.jubging.project_backend.recruitment_board.domain.ActivityCategory;
+import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.ContentBody;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.StartingDate;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.Title;
+import mokindang.jubging.project_backend.member.domain.Member;
+import mokindang.jubging.project_backend.member.domain.vo.Region;
+import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardSelectionResponse;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
