@@ -28,8 +28,8 @@ public class FileService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    private static final String PROFILE_IMAGE = "profile_image";
-    private static final String CERTIFICATION_BOARD_IMAGE = "certificationBoard_image";
+    public static final String PROFILE_IMAGE = "profile_image";
+    public static final String CERTIFICATION_BOARD_IMAGE = "certificationBoard_image";
     private final AmazonS3Client amazonS3Client;
     private final ImageRepository imageRepository;
 
@@ -86,10 +86,9 @@ public class FileService {
         return objectMetadata;
     }
 
-    public void deleteFile(Member member) {
-        String uploadFileName = member.getProfileImage()
-                .getProfileImageName();
-        String uploadFilePath = PROFILE_IMAGE;
+    public void deleteFile(String fileName, String filePath) {
+        String uploadFileName = fileName;
+        String uploadFilePath = filePath;
 
         if (checkNameDefault(uploadFileName)) return;
 
@@ -104,7 +103,6 @@ public class FileService {
         } catch (Exception e) {
             log.info("Delete File failed", e);
         }
-        log.info("memberId = {}, alias = {} 의 이전 프로필 이미지 {} 삭제", member.getId(), member.getAlias(), member.getProfileImage().getProfileImageName());
     }
 
     private boolean checkNameDefault(String uploadFileName) {
