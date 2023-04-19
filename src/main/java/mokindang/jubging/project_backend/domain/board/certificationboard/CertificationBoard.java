@@ -5,10 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mokindang.jubging.project_backend.domain.board.recruitment.vo.ContentBody;
 import mokindang.jubging.project_backend.domain.board.recruitment.vo.Title;
+import mokindang.jubging.project_backend.domain.image.Image;
 import mokindang.jubging.project_backend.domain.member.Member;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -37,6 +40,9 @@ public class CertificationBoard {
     @Embedded
     private ContentBody contentBody;
 
+    @OneToMany(mappedBy = "certificationBoard")
+    private List<Image> images = new ArrayList<>();
+
     public CertificationBoard(final LocalDateTime createdDateTime, final LocalDateTime modifiedTIme,
                               final Member writer, final String title, final String contentBody) {
         this.createdDateTime = createdDateTime;
@@ -44,6 +50,28 @@ public class CertificationBoard {
         this.writer = writer;
         this.title = new Title(title);
         this.contentBody = new ContentBody(contentBody);
+    }
+
+    public boolean isSameWriterId(final Long memberId) {
+        return writer.getId()
+                .equals(memberId);
+    }
+
+    public String getWriterProfileImageUrl() {
+        return writer.getProfileImage()
+                .getProfileImageUrl();
+    }
+
+    public String getWriterAlias() {
+        return writer.getAlias();
+    }
+
+    public String getFirstFourDigitsOfWriterEmail() {
+        return writer.getFirstFourDigitsOfWriterEmail();
+    }
+
+    public String getMainImageUrl(){
+        return images.get(0).getFilePath();
     }
 
     @Override
