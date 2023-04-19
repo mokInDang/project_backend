@@ -54,7 +54,7 @@ public class RecruitmentBoard {
     @Column(nullable = false)
     private boolean onRecruitment;
 
-    @OneToMany
+    @OneToMany(mappedBy = "recruitmentBoard", cascade = CascadeType.REMOVE)
     List<Comment> comments = new ArrayList<>();
 
     public RecruitmentBoard(final LocalDateTime creatingDateTime, final Member writer, final LocalDate startingDate,
