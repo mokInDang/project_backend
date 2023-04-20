@@ -1,6 +1,6 @@
 package mokindang.jubging.project_backend.domain.comment;
 
-import mokindang.jubging.project_backend.comment.Comment;
+import mokindang.jubging.project_backend.comment.domain.Comment;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 import mokindang.jubging.project_backend.member.domain.Member;
 import org.assertj.core.api.SoftAssertions;

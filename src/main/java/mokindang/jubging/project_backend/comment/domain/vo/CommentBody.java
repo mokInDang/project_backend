@@ -1,4 +1,4 @@
-package mokindang.jubging.project_backend.comment.vo;
+package mokindang.jubging.project_backend.comment.domain.vo;
 
 import lombok.AccessLevel;
 import lombok.Getter;
