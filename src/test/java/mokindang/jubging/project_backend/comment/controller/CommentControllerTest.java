@@ -1,10 +1,10 @@
 package mokindang.jubging.project_backend.comment.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import mokindang.jubging.project_backend.comment.service.BoardType;
 import mokindang.jubging.project_backend.comment.service.CommentService;
 import mokindang.jubging.project_backend.comment.service.request.CommentCreationRequest;
-import mokindang.jubging.project_backend.recruitment_board.service.RecruitmentBoardService;
-import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
+import mokindang.jubging.project_backend.comment.service.response.BoardIdResponse;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,9 +32,6 @@ class CommentControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private RecruitmentBoardService recruitmentBoardService;
-
-    @MockBean
     private CommentService commentService;
 
     @MockBean
@@ -44,12 +41,14 @@ class CommentControllerTest {
     @DisplayName("입력받은 boardId 에 해당하는 recruitmentBoard 에 새 댓글을 추가한다.")
     void addCommentToRecruitmentBoard() throws Exception {
         //given
-        when(commentService.addCommentToRecruitmentBoard(anyLong(), anyLong(), any(CommentCreationRequest.class))).thenReturn(new RecruitmentBoardIdResponse(1L));
+        when(commentService.addComment(anyLong(), any(BoardType.class), anyLong(), any(CommentCreationRequest.class)))
+                .thenReturn(new BoardIdResponse(1L));
 
         CommentCreationRequest commentCreationRequest = new CommentCreationRequest("댓글 예시입니다.");
 
         //when
-        ResultActions actual = mockMvc.perform(post("/api/recruitment-board/{boardId}/comments", 1L)
+        ResultActions actual = mockMvc.perform(post("/api/{board-type}/{boardId}/comments",
+                "recruitment-board", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(commentCreationRequest)));
 
