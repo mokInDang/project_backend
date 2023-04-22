@@ -1,7 +1,10 @@
 package mokindang.jubging.project_backend.comment.service;
 
+import mokindang.jubging.project_backend.comment.domain.Comment;
+import mokindang.jubging.project_backend.comment.domain.vo.CommentBody;
 import mokindang.jubging.project_backend.comment.repository.CommentRepository;
 import mokindang.jubging.project_backend.comment.service.request.CommentCreationRequest;
+import mokindang.jubging.project_backend.comment.service.response.MultiCommentSelectionResponse;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.service.MemberService;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
@@ -13,6 +16,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -44,7 +51,7 @@ class CommentServiceTest {
         CommentCreationRequest commentCreateRequest = createCommentCreateRequest();
 
         //when
-        commentService.addComment(1L, BoardType.RECRUITMENT_BOARD,1L, commentCreateRequest);
+        commentService.addComment(1L, BoardType.RECRUITMENT_BOARD, 1L, commentCreateRequest);
 
         //then
         verify(commentRepository, times(1)).save(any());
@@ -54,4 +61,31 @@ class CommentServiceTest {
         return new CommentCreationRequest("댓글 예시 입니다.");
     }
 
+    @Test
+    @DisplayName("입력 받은 게시물의 댓글 리스트를 반환한다.")
+    void selectComments() {
+        //given
+        Comment comment1 = createMockedComment(1L);
+        Comment comment2 = createMockedComment(2L);
+
+        when(commentRepository.findCommentsByRecruitmentBoard(anyLong())).thenReturn(List.of(comment1, comment2));
+
+        //when
+        MultiCommentSelectionResponse multiCommentSelectionResponse = commentService.selectComments(1L, BoardType.RECRUITMENT_BOARD, 1L);
+
+        //then
+        assertThat(multiCommentSelectionResponse.getComments()).hasSize(2);
+    }
+
+    private Comment createMockedComment(final Long commentId) {
+        Comment comment = mock(Comment.class);
+        when(comment.getId()).thenReturn(commentId);
+        when(comment.getCommentBody()).thenReturn(new CommentBody("본문내용"));
+        when(comment.isSameWriterId(any())).thenReturn(true);
+        when(comment.getCreatedDateTime()).thenReturn(LocalDateTime.of(2023, 11, 11, 11, 11, 1));
+        when(comment.getWriterAlias()).thenReturn("댓글작성자");
+        when(comment.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
+        when(comment.getWriterProfileImageUrl()).thenReturn("test_url");
+        return comment;
+    }
 }
