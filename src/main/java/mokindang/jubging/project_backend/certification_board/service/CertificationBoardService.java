@@ -54,7 +54,7 @@ public class CertificationBoardService {
         return new CertificationBoardSelectionResponse(certificationBoard, findImagesUrl, certificationBoard.isSameWriterId(memberId));
     }
 
-    private CertificationBoard findById(final Long boardId) {
+    public CertificationBoard findById(final Long boardId) {
         return certificationBoardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
     }
