@@ -1,8 +1,8 @@
 package mokindang.jubging.project_backend.domain.comment;
 
 import mokindang.jubging.project_backend.comment.domain.Comment;
-import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 import mokindang.jubging.project_backend.member.domain.Member;
+import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ class CommentTest {
         String commentBodyValue = "안녕하세요.";
 
         //when, then
-        assertThatCode(() -> new Comment(recruitmentBoard, commentBodyValue, writer, now)).doesNotThrowAnyException();
+        assertThatCode(() -> Comment.createOnRecruitmentBoardWith(recruitmentBoard, commentBodyValue, writer, now)).doesNotThrowAnyException();
     }
 
     private RecruitmentBoard createRecruitmentBoard() {
@@ -46,7 +46,7 @@ class CommentTest {
         String commentBodyValue = "안녕하세요.";
 
         //when
-        Comment comment = new Comment(recruitmentBoard, commentBodyValue, writer, now);
+        Comment comment = Comment.createOnRecruitmentBoardWith(recruitmentBoard, commentBodyValue, writer, now);
 
         //then
         softly.assertThat(comment.getCommentBody().getBody()).isEqualTo("안녕하세요.");
@@ -65,7 +65,7 @@ class CommentTest {
         LocalDateTime createdTime = LocalDateTime.of(2023, 4, 8, 16, 48);
         Member writer = new Member("test@email.com", "test");
         String commentBodyValue = "안녕하세요.";
-        Comment comment = new Comment(recruitmentBoard, commentBodyValue, writer, createdTime);
+        Comment comment = Comment.createOnRecruitmentBoardWith(recruitmentBoard, commentBodyValue, writer, createdTime);
         String newCommentBody = "하이~~";
         LocalDateTime now = LocalDateTime.of(2023, 5, 9, 11, 11, 11);
 
