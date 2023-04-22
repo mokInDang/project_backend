@@ -44,7 +44,7 @@ class CommentServiceTest {
         CommentCreationRequest commentCreateRequest = createCommentCreateRequest();
 
         //when
-        commentService.addCommentToRecruitmentBoard(1L, 1L, commentCreateRequest);
+        commentService.addComment(1L, BoardType.RECRUITMENT_BOARD,1L, commentCreateRequest);
 
         //then
         verify(commentRepository, times(1)).save(any());
