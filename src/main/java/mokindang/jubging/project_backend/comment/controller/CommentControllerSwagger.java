@@ -8,9 +8,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import mokindang.jubging.project_backend.comment.service.BoardType;
 import mokindang.jubging.project_backend.comment.service.request.CommentCreationRequest;
+import mokindang.jubging.project_backend.comment.service.response.BoardIdResponse;
 import mokindang.jubging.project_backend.exception.ErrorResponse;
-import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
 import mokindang.jubging.project_backend.web.argumentresolver.Login;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,9 +34,12 @@ public interface CommentControllerSwagger {
             @ApiResponse(responseCode = "201", description = "새 댓글 작성"),
             @ApiResponse(responseCode = "400", description = "유효하지 않은 유저 \t\n" +
                     "존재하지 않는 게시글 \t\n" +
-                    "유효하지 않은 댓글 길이 \t\n", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    "유효하지 않은 댓글 길이 \t\n" +
+                    "존재하지 않는 게시판에 대한 접근 \t\n",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PostMapping("/recruitment-board/{boardId}/comments")
-    ResponseEntity<RecruitmentBoardIdResponse> addCommentToRecruitmentBoard(@Login final Long memberId, @PathVariable final Long boardId,
-                                                                            @Valid @RequestBody final CommentCreationRequest commentCreationRequest);
+    @PostMapping("/{board-type}/{boardId}/comments")
+    ResponseEntity<BoardIdResponse> addCommentToBoard(@Login final Long memberId, @PathVariable("board-type") final BoardType boardType,
+                                                      @PathVariable final Long boardId,
+                                                      @Valid @RequestBody final CommentCreationRequest commentCreationRequest);
 }
