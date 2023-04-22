@@ -1,6 +1,5 @@
-package mokindang.jubging.project_backend.domain.comment.vo;
+package mokindang.jubging.project_backend.comment.domain.vo;
 
-import mokindang.jubging.project_backend.comment.domain.vo.CommentBody;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
