@@ -1,18 +1,23 @@
-package mokindang.jubging.project_backend.domain.comment;
+package mokindang.jubging.project_backend.comment.domain;
 
-import mokindang.jubging.project_backend.comment.domain.Comment;
 import mokindang.jubging.project_backend.comment.domain.vo.CommentBody;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
 class CommentTest {
 
     @Test
@@ -70,17 +75,22 @@ class CommentTest {
     @DisplayName("게시글 내용 변경한다. 이때 마지막 수정일을 변경한다.")
     void modify() {
         //given
+        Member writer = mock(Member.class);
+        when(writer.getId()).thenReturn(1L);
+
         SoftAssertions softly = new SoftAssertions();
         RecruitmentBoard recruitmentBoard = createRecruitmentBoard();
         LocalDateTime createdTime = LocalDateTime.of(2023, 4, 8, 16, 48);
-        Member writer = new Member("test@email.com", "test");
+
         String commentBodyValue = "안녕하세요.";
         Comment comment = Comment.createOnRecruitmentBoardWith(recruitmentBoard, commentBodyValue, writer, createdTime);
         String newCommentBody = "하이~~";
         LocalDateTime now = LocalDateTime.of(2023, 5, 9, 11, 11, 11);
 
+        Long writerId = 1L;
+
         //when
-        comment.modify(newCommentBody, now);
+        comment.modify(writerId, newCommentBody, now);
 
         //then
         softly.assertThat(comment.getCommentBody().getBody()).isEqualTo(newCommentBody);
@@ -92,14 +102,16 @@ class CommentTest {
     @DisplayName("게시글이 수정 되었는지에 대한 여부를 반환한다.")
     void wasEdited() {
         //given
+        Member writer = mock(Member.class);
+        when(writer.getId()).thenReturn(1L);
+
         RecruitmentBoard recruitmentBoard = createRecruitmentBoard();
         LocalDateTime createdTime = LocalDateTime.of(2023, 4, 8, 16, 48);
-        Member writer = new Member("test@email.com", "test");
         String commentBodyValue = "안녕하세요.";
         Comment comment = Comment.createOnRecruitmentBoardWith(recruitmentBoard, commentBodyValue, writer, createdTime);
         String newCommentBody = "하이~~";
         LocalDateTime now = LocalDateTime.of(2023, 5, 9, 11, 11, 11);
-        comment.modify(newCommentBody, now);
+        comment.modify(1L,newCommentBody, now);
 
         //when
         boolean actual = comment.wasEdited();
