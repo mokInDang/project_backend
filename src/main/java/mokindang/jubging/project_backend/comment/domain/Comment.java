@@ -89,6 +89,23 @@ public class Comment {
         this.lastModifiedDateTime = now;
     }
 
+    public boolean wasEdited() {
+        return lastModifiedDateTime.isAfter(createdDateTime);
+    }
+
+    public String getWriterProfileImageUrl() {
+        return writer.getProfileImage()
+                .getProfileImageUrl();
+    }
+
+    public String getWriterAlias() {
+        return writer.getAlias();
+    }
+
+    public String getFirstFourDigitsOfWriterEmail() {
+        return writer.getFirstFourDigitsOfWriterEmail();
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
