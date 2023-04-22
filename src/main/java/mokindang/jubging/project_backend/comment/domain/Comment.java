@@ -3,9 +3,10 @@ package mokindang.jubging.project_backend.comment.domain;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
+import mokindang.jubging.project_backend.certification_board.domain.CertificationBoard;
 import mokindang.jubging.project_backend.comment.domain.vo.CommentBody;
 import mokindang.jubging.project_backend.member.domain.Member;
+import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -38,13 +39,22 @@ public class Comment {
     @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE)
     private List<ReplyComment> replyComments = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "certification_board_id")
+    private CertificationBoard certificationBoard;
+
+
     @Column(nullable = false)
     private LocalDateTime createdDateTime;
 
     @Column(nullable = false)
     private LocalDateTime lastModifiedDateTime;
 
-    public Comment(final RecruitmentBoard board, final String commentBody, final Member writer, final LocalDateTime now) {
+    public static Comment createOnRecruitmentBoardWith(final RecruitmentBoard board, final String commentBody, final Member writer, final LocalDateTime now) {
+        return new Comment(board, commentBody, writer, now);
+    }
+
+    private Comment(final RecruitmentBoard board, final String commentBody, final Member writer, final LocalDateTime now) {
         this.commentBody = new CommentBody(commentBody);
         this.writer = writer;
         this.createdDateTime = now;
@@ -55,6 +65,23 @@ public class Comment {
     private void setRecruitmentBoard(final RecruitmentBoard recruitmentBoard) {
         this.recruitmentBoard = recruitmentBoard;
         recruitmentBoard.addComment(this);
+    }
+
+    public static Comment createOnCertificationBoardWith(final CertificationBoard board, final String commentBody, final Member writer, final LocalDateTime now) {
+        return new Comment(board, commentBody, writer, now);
+    }
+
+    private Comment(final CertificationBoard board, final String commentBody, final Member writer, final LocalDateTime now) {
+        this.commentBody = new CommentBody(commentBody);
+        this.writer = writer;
+        this.createdDateTime = now;
+        this.lastModifiedDateTime = createdDateTime;
+        setCertificationBoard(board);
+    }
+
+    private void setCertificationBoard(final CertificationBoard certificationBoard) {
+        this.certificationBoard = certificationBoard;
+        certificationBoard.addComment(this);
     }
 
     public void modify(final String commentBody, final LocalDateTime now) {
