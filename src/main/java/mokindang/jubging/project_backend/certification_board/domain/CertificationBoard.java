@@ -3,11 +3,12 @@ package mokindang.jubging.project_backend.certification_board.domain;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.ContentBody;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.Title;
+import mokindang.jubging.project_backend.comment.domain.Comment;
+import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.image.domain.Image;
 import mokindang.jubging.project_backend.member.domain.Member;
-import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.ContentBody;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.Title;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -44,6 +45,9 @@ public class CertificationBoard {
     @OneToMany(mappedBy = "certificationBoard")
     private List<Image> images = new ArrayList<>();
 
+    @OneToMany(mappedBy = "certificationBoard", cascade = CascadeType.REMOVE)
+    List<Comment> comments = new ArrayList<>();
+
     public CertificationBoard(final LocalDateTime createdDateTime, final LocalDateTime modifiedTIme,
                               final Member writer, final String title, final String contentBody) {
         this.createdDateTime = createdDateTime;
@@ -71,7 +75,7 @@ public class CertificationBoard {
         return writer.getFirstFourDigitsOfWriterEmail();
     }
 
-    public String getMainImageUrl(){
+    public String getMainImageUrl() {
         return images.get(0).getFilePath();
     }
 
@@ -86,6 +90,10 @@ public class CertificationBoard {
         this.modifiedTIme = LocalDateTime.now();
         this.title = new Title(titleValue);
         this.contentBody = new ContentBody(contentBody);
+    }
+
+    public void addComment(final Comment comment) {
+        this.comments.add(comment);
     }
 
     @Override
