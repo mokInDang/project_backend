@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BoardIdResponse {
 
-    @Schema(description = "게시글 id")
+    @Schema(description = "게시글 id", example = "1")
     private Long boardId;
 }
