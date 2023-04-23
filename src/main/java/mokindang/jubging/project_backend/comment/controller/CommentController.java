@@ -42,4 +42,12 @@ public class CommentController implements CommentControllerSwagger {
         return ResponseEntity.ok()
                 .body(multiCommentSelectionResponse);
     }
+
+    @DeleteMapping("/comments/{commentId}")
+    public ResponseEntity<Object> removeComment(@Login Long memberId,  @PathVariable final Long commentId) {
+        log.info("memberId = {} 의 commentId = {} 삭제", memberId, commentId);
+        commentService.deleteComment(memberId, commentId);
+        return ResponseEntity.noContent()
+                .build();
+    }
 }
