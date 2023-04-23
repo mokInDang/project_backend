@@ -6,6 +6,7 @@ import mokindang.jubging.project_backend.comment.service.BoardType;
 import mokindang.jubging.project_backend.comment.service.CommentService;
 import mokindang.jubging.project_backend.comment.service.request.CommentCreationRequest;
 import mokindang.jubging.project_backend.comment.service.response.BoardIdResponse;
+import mokindang.jubging.project_backend.comment.service.response.MultiCommentSelectionResponse;
 import mokindang.jubging.project_backend.web.argumentresolver.Login;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,9 +27,19 @@ public class CommentController implements CommentControllerSwagger {
                                                              @PathVariable("board-type") final BoardType boardType,
                                                              @PathVariable final Long boardId,
                                                              @Valid @RequestBody final CommentCreationRequest commentCreationRequest) {
-        log.info("memberId ={} 의 RecruitmentBoardId = {} 에 대한 댓글 작성 요청", memberId, boardId);
+        log.info("memberId ={} 의 게시판 {} BoardId = {} 에 대한 댓글 작성 요청", memberId, boardType.toString(), boardId);
         BoardIdResponse boardIdResponse = commentService.addComment(memberId, boardType, boardId, commentCreationRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(boardIdResponse);
+    }
+
+    @GetMapping("/{board-type}/{boardId}/comments")
+    public ResponseEntity<MultiCommentSelectionResponse> selectComments(@Login final Long memberId,
+                                                                        @PathVariable("board-type") final BoardType boardType,
+                                                                        @PathVariable final Long boardId) {
+        log.info("memberId = {} 의 게시판 {} boardId = {} 에 대한 댓글 조회 요청", memberId, boardType.toString(), boardId);
+        MultiCommentSelectionResponse multiCommentSelectionResponse = commentService.selectComments(memberId, boardType, boardId);
+        return ResponseEntity.ok()
+                .body(multiCommentSelectionResponse);
     }
 }
