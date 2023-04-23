@@ -68,7 +68,7 @@ class CommentServiceTest {
         Comment comment1 = createMockedComment(1L);
         Comment comment2 = createMockedComment(2L);
 
-        when(commentRepository.findCommentsByRecruitmentBoard(anyLong())).thenReturn(List.of(comment1, comment2));
+        when(commentRepository.findCommentsByRecruitmentBoardId(anyLong())).thenReturn(List.of(comment1, comment2));
 
         //when
         MultiCommentSelectionResponse multiCommentSelectionResponse = commentService.selectComments(1L, BoardType.RECRUITMENT_BOARD, 1L);
