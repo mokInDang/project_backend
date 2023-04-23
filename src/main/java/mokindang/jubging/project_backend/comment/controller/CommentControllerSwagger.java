@@ -15,10 +15,7 @@ import mokindang.jubging.project_backend.comment.service.response.MultiCommentSe
 import mokindang.jubging.project_backend.exception.ErrorResponse;
 import mokindang.jubging.project_backend.web.argumentresolver.Login;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -63,4 +60,18 @@ public interface CommentControllerSwagger {
     ResponseEntity<MultiCommentSelectionResponse> selectComments(@Login final Long memberId,
                                                                  @PathVariable("board-type") final BoardType boardType,
                                                                  @PathVariable final Long boardId);
+
+    @Operation(summary = "댓글 삭제", parameters = {
+            @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true),
+            @Parameter(name = SET_COOKIE, description = "refreshToken", in = ParameterIn.COOKIE, required = true)
+    }
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "댓글 삭제 완료"),
+            @ApiResponse(responseCode = "400", description =
+                    "존재하지 않는 댓글에 대한 접근 \t\n",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @DeleteMapping("/comments/{commentId}")
+    ResponseEntity<Object> removeComment(@Login Long memberId, @PathVariable final Long commentId);
 }
