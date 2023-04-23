@@ -33,14 +33,14 @@ public class Comment {
     @JoinColumn(name = "member_id")
     private Member writer;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recruitment_board_id")
     private RecruitmentBoard recruitmentBoard;
 
     @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE)
     private List<ReplyComment> replyComments = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "certification_board_id")
     private CertificationBoard certificationBoard;
 

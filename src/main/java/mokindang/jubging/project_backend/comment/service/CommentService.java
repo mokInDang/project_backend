@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -73,5 +74,17 @@ public class CommentService {
         return commentsByRecruitmentBoard.stream()
                 .map(comment -> new CommentSelectionResponse(comment, memberId))
                 .collect(Collectors.toUnmodifiableList());
+    }
+
+    @Transactional
+    public void deleteComment(final Long memberId, final Long commentId) {
+        Comment comment = findById(commentId);
+        comment.validatePermission(memberId);
+        commentRepository.delete(comment);
+    }
+
+    private Comment findById(final Long commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글 입니다."));
     }
 }

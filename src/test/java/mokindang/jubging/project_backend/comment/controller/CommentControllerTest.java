@@ -24,10 +24,8 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -91,6 +89,7 @@ class CommentControllerTest {
                 .andExpect(jsonPath("$.comments[0].writerProfileImageUrl").value("test_url"));
 
     }
+
     private Comment createMockedComment() {
 
         Comment comment = mock(Comment.class);
@@ -102,5 +101,38 @@ class CommentControllerTest {
         when(comment.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
         when(comment.getWriterProfileImageUrl()).thenReturn("test_url");
         return comment;
+    }
+
+    @Test
+    @DisplayName("댓글 삭제 요청 시 , 입력 받은 commentId 에 해당하는 댓글을 삭제한 후 HTTP 상태코드 204 를 반환한다.")
+    void deleteComment() throws Exception {
+        //given
+        doNothing().when(commentService)
+                .deleteComment(anyLong(),anyLong());
+
+        //when
+        ResultActions actual = mockMvc.perform(delete("/api/comments/{commentId}",
+                1L)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        actual.andExpect(status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("댓글 삭제 요청 시 ,입력 받은 commentId 가 존재하지 않는 comment 인 경우 HTTP 상태코드 400을 반환한다.")
+    void deleteFailedByNoneExistComment() throws Exception {
+        //given
+        doThrow(new IllegalArgumentException("존재하지 않는 댓글 입니다.")).when(commentService)
+                .deleteComment(anyLong(), anyLong());
+
+        //when
+        ResultActions actual = mockMvc.perform(delete("/api/comments/{commentId}",
+                1L)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        actual.andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("존재하지 않는 댓글 입니다."));
     }
 }

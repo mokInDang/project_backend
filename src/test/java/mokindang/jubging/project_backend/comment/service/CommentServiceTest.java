@@ -18,8 +18,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -73,6 +75,7 @@ class CommentServiceTest {
         //when
         MultiCommentSelectionResponse multiCommentSelectionResponse = commentService.selectComments(1L, BoardType.RECRUITMENT_BOARD, 1L);
 
+
         //then
         assertThat(multiCommentSelectionResponse.getComments()).hasSize(2);
     }
@@ -87,5 +90,31 @@ class CommentServiceTest {
         when(comment.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
         when(comment.getWriterProfileImageUrl()).thenReturn("test_url");
         return comment;
+    }
+
+    @Test
+    @DisplayName("입력 받은 commentId 에 해당하는 댓글을 삭제한다")
+    void deleteComment() {
+        //given
+        Comment comment = mock(Comment.class);
+        when(commentRepository.findById(anyLong())).thenReturn(Optional.ofNullable(comment));
+
+        //when
+        commentService.deleteComment(1L, 1L);
+
+        //then
+        verify(commentRepository, times(1)).delete(any(Comment.class));
+    }
+
+    @Test
+    @DisplayName("댓글 삭제시 입력받은 commentId 에 해당하는 Comment 가 없으면 예외를 반환한다.")
+    void deleteFailedByNoneExistComment() {
+        //given
+        when(commentRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        //when, then
+        assertThatThrownBy(() -> commentService.deleteComment(1L, 1L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("존재하지 않는 댓글 입니다.");
     }
 }
