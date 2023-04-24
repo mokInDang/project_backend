@@ -10,7 +10,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import mokindang.jubging.project_backend.comment.service.BoardType;
 import mokindang.jubging.project_backend.comment.service.request.CommentCreationRequest;
+import mokindang.jubging.project_backend.comment.service.request.ReplyCommentCreationRequest;
 import mokindang.jubging.project_backend.comment.service.response.BoardIdResponse;
+import mokindang.jubging.project_backend.comment.service.response.CommentIdResponse;
 import mokindang.jubging.project_backend.comment.service.response.MultiCommentSelectionResponse;
 import mokindang.jubging.project_backend.exception.ErrorResponse;
 import mokindang.jubging.project_backend.web.argumentresolver.Login;
@@ -39,7 +41,7 @@ public interface CommentControllerSwagger {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @PostMapping("/{board-type}/{boardId}/comments")
-    ResponseEntity<BoardIdResponse> addCommentToBoard(@Login final Long memberId,
+    ResponseEntity<BoardIdResponse> addCommentToBoard(@Parameter(hidden = true) @Login final Long memberId,
                                                       @Parameter(hidden = true) @PathVariable("board-type") final BoardType boardType,
                                                       @PathVariable final Long boardId,
                                                       @Valid @RequestBody final CommentCreationRequest commentCreationRequest);
@@ -57,7 +59,7 @@ public interface CommentControllerSwagger {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @GetMapping("/{board-type}/{boardId}/comments")
-    ResponseEntity<MultiCommentSelectionResponse> selectComments(@Login final Long memberId,
+    ResponseEntity<MultiCommentSelectionResponse> selectComments(@Parameter(hidden = true) @Login final Long memberId,
                                                                  @PathVariable("board-type") final BoardType boardType,
                                                                  @PathVariable final Long boardId);
 
@@ -73,5 +75,22 @@ public interface CommentControllerSwagger {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @DeleteMapping("/comments/{commentId}")
-    ResponseEntity<Object> removeComment(@Login Long memberId, @PathVariable final Long commentId);
+    ResponseEntity<Object> removeComment(@Parameter(hidden = true) @Login Long memberId, @PathVariable final Long commentId);
+
+    @Operation(summary = "대댓글 생성", parameters = {
+            @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true),
+            @Parameter(name = SET_COOKIE, description = "refreshToken", in = ParameterIn.COOKIE, required = true)
+    }
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "대댓글 생성 완료"),
+            @ApiResponse(responseCode = "400", description =
+                    "존재하지 않는 댓글에 대한 접근 \t\n",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @PostMapping("/comments/{commentId}/reply-comment")
+    ResponseEntity<CommentIdResponse> addReplyComment(@Parameter(hidden = true) @Login final Long memberId,
+                                                      @PathVariable Long commentId,
+                                                      @RequestBody @Valid final
+                                                      ReplyCommentCreationRequest replyCommentCreationRequest);
 }

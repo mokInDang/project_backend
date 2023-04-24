@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import mokindang.jubging.project_backend.comment.service.BoardType;
 import mokindang.jubging.project_backend.comment.service.CommentService;
 import mokindang.jubging.project_backend.comment.service.request.CommentCreationRequest;
+import mokindang.jubging.project_backend.comment.service.request.ReplyCommentCreationRequest;
 import mokindang.jubging.project_backend.comment.service.response.BoardIdResponse;
+import mokindang.jubging.project_backend.comment.service.response.CommentIdResponse;
 import mokindang.jubging.project_backend.comment.service.response.MultiCommentSelectionResponse;
 import mokindang.jubging.project_backend.web.argumentresolver.Login;
 import org.springframework.http.HttpStatus;
@@ -45,9 +47,20 @@ public class CommentController implements CommentControllerSwagger {
 
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<Object> removeComment(@Login Long memberId,  @PathVariable final Long commentId) {
-        log.info("memberId = {} 의 commentId = {} 삭제", memberId, commentId);
+        log.info("memberId = {} 의 commentId = {} 삭제 요청", memberId, commentId);
         commentService.deleteComment(memberId, commentId);
         return ResponseEntity.noContent()
                 .build();
+    }
+
+    @PostMapping("/comments/{commentId}/reply-comment")
+    public ResponseEntity<CommentIdResponse> addReplyComment(@Login final Long memberId,
+                                                             @PathVariable Long commentId,
+                                                             @RequestBody @Valid final
+                                                             ReplyCommentCreationRequest replyCommentCreationRequest) {
+        log.info("memberId = {} 의 commentId = {} 에 추가 대댓글 작성 요청");
+        CommentIdResponse commentIdResponse = commentService.addReplyComment(memberId, commentId, replyCommentCreationRequest);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(commentIdResponse);
     }
 }

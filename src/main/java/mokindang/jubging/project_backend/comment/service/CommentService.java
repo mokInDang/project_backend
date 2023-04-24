@@ -5,9 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import mokindang.jubging.project_backend.certification_board.domain.CertificationBoard;
 import mokindang.jubging.project_backend.certification_board.service.CertificationBoardService;
 import mokindang.jubging.project_backend.comment.domain.Comment;
+import mokindang.jubging.project_backend.comment.domain.ReplyComment;
 import mokindang.jubging.project_backend.comment.repository.CommentRepository;
+import mokindang.jubging.project_backend.comment.repository.ReplyCommentRepository;
 import mokindang.jubging.project_backend.comment.service.request.CommentCreationRequest;
+import mokindang.jubging.project_backend.comment.service.request.ReplyCommentCreationRequest;
 import mokindang.jubging.project_backend.comment.service.response.BoardIdResponse;
+import mokindang.jubging.project_backend.comment.service.response.CommentIdResponse;
 import mokindang.jubging.project_backend.comment.service.response.CommentSelectionResponse;
 import mokindang.jubging.project_backend.comment.service.response.MultiCommentSelectionResponse;
 import mokindang.jubging.project_backend.member.domain.Member;
@@ -29,6 +33,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CommentService {
 
+    private final ReplyCommentRepository replyCommentRepository;
     private final CommentRepository commentRepository;
     private final RecruitmentBoardService recruitmentBoardService;
     private final CertificationBoardService certificationBoardService;
@@ -86,5 +91,16 @@ public class CommentService {
     private Comment findById(final Long commentId) {
         return commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글 입니다."));
+    }
+
+    @Transactional
+    public CommentIdResponse addReplyComment(final Long memberId, final Long commentId,
+                                             final ReplyCommentCreationRequest replyCommentCreationRequest) {
+        Member writer = memberService.findByMemberId(memberId);
+        Comment comment = findById(commentId);
+        LocalDateTime now = LocalDateTime.now();
+        ReplyComment replyComment = new ReplyComment(comment, replyCommentCreationRequest.getReplyCommentBody(), writer, now);
+        ReplyComment savedReplyComment = replyCommentRepository.save(replyComment);
+        return new CommentIdResponse(savedReplyComment.getComment().getId());
     }
 }

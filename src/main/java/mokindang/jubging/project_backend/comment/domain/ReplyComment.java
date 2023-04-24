@@ -24,11 +24,11 @@ public class ReplyComment {
     @Column(nullable = false)
     private CommentBody replyCommentBody;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member writer;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id")
     private Comment comment;
 
@@ -38,11 +38,17 @@ public class ReplyComment {
     @Column(nullable = false)
     private LocalDateTime lastModifiedDateTime;
 
-    public ReplyComment(final String replyCommentBody, final Member writer, final LocalDateTime now) {
+    public ReplyComment(final Comment comment, final String replyCommentBody, final Member writer, final LocalDateTime now) {
+        setReplyComment(comment);
         this.replyCommentBody = new CommentBody(replyCommentBody);
         this.writer = writer;
         this.createdDateTime = now;
         this.lastModifiedDateTime = now;
+    }
+
+    private void setReplyComment(final Comment comment) {
+        this.comment = comment;
+        this.comment.addReplyComment(this);
     }
 
     public void modify(final String commentBody, final LocalDateTime now) {

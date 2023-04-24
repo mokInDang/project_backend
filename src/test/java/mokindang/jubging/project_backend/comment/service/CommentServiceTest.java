@@ -1,9 +1,13 @@
 package mokindang.jubging.project_backend.comment.service;
 
 import mokindang.jubging.project_backend.comment.domain.Comment;
+import mokindang.jubging.project_backend.comment.domain.ReplyComment;
 import mokindang.jubging.project_backend.comment.domain.vo.CommentBody;
 import mokindang.jubging.project_backend.comment.repository.CommentRepository;
+import mokindang.jubging.project_backend.comment.repository.ReplyCommentRepository;
 import mokindang.jubging.project_backend.comment.service.request.CommentCreationRequest;
+import mokindang.jubging.project_backend.comment.service.request.ReplyCommentCreationRequest;
+import mokindang.jubging.project_backend.comment.service.response.CommentIdResponse;
 import mokindang.jubging.project_backend.comment.service.response.MultiCommentSelectionResponse;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.service.MemberService;
@@ -36,6 +40,9 @@ class CommentServiceTest {
 
     @Mock
     private CommentRepository commentRepository;
+
+    @Mock
+    private ReplyCommentRepository replyCommentRepository;
 
     @InjectMocks
     private CommentService commentService;
@@ -116,5 +123,26 @@ class CommentServiceTest {
         assertThatThrownBy(() -> commentService.deleteComment(1L, 1L))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하지 않는 댓글 입니다.");
+    }
+
+    @Test
+    @DisplayName("입력받은 대댓글을 추가한다.")
+    void addReplyComment() {
+        //given
+        Member writer = mock(Member.class);
+        when(memberService.findByMemberId(anyLong())).thenReturn(writer);
+        Comment comment = mock(Comment.class);
+        when(commentRepository.findById(anyLong())).thenReturn(Optional.ofNullable(comment));
+        ReplyComment replyComment = mock(ReplyComment.class);
+        when(replyCommentRepository.save(any(ReplyComment.class))).thenReturn(replyComment);
+        when(replyComment.getComment()).thenReturn(comment);
+        when(replyComment.getComment().getId()).thenReturn(1L);
+
+        ReplyCommentCreationRequest replyCommentCreationRequest = new ReplyCommentCreationRequest("대댓글 본문");
+        //when
+        CommentIdResponse commentIdResponse = commentService.addReplyComment(1L, 1L, replyCommentCreationRequest);
+
+        //then
+        assertThat(commentIdResponse.getCommentId()).isEqualTo(1L);
     }
 }
