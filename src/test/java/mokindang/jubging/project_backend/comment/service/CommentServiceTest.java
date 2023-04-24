@@ -13,6 +13,7 @@ import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.service.MemberService;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 import mokindang.jubging.project_backend.recruitment_board.service.RecruitmentBoardService;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -74,17 +75,36 @@ class CommentServiceTest {
     @DisplayName("입력 받은 게시물의 댓글 리스트를 반환한다.")
     void selectComments() {
         //given
+        SoftAssertions softly = new SoftAssertions();
         Comment comment1 = createMockedComment(1L);
         Comment comment2 = createMockedComment(2L);
 
+
         when(commentRepository.findCommentsByRecruitmentBoardId(anyLong())).thenReturn(List.of(comment1, comment2));
+        ReplyComment replyComment = createMockedReplyComment();
+        when(replyCommentRepository.findReplyCommentsByCommentId(anyLong())).thenReturn(List.of(replyComment));
 
         //when
         MultiCommentSelectionResponse multiCommentSelectionResponse = commentService.selectComments(1L, BoardType.RECRUITMENT_BOARD, 1L);
 
 
         //then
-        assertThat(multiCommentSelectionResponse.getComments()).hasSize(2);
+        softly.assertThat(multiCommentSelectionResponse.getComments()).hasSize(2);
+        softly.assertThat(multiCommentSelectionResponse.getComments().get(0).getMultiReplyCommentSelectionResponse().getReplyComments()).hasSize(1);
+        softly.assertThat(multiCommentSelectionResponse.getComments().get(0).getMultiReplyCommentSelectionResponse().getCountOfReplyComments()).isEqualTo(1);
+        softly.assertAll();
+    }
+
+    private ReplyComment createMockedReplyComment() {
+        ReplyComment replyComment = mock(ReplyComment.class);
+        when(replyComment.getId()).thenReturn(1L);
+        when(replyComment.getReplyCommentBody()).thenReturn(new CommentBody("본문내용"));
+        when(replyComment.isSameWriterId(any())).thenReturn(true);
+        when(replyComment.getCreatedDateTime()).thenReturn(LocalDateTime.of(2023, 11, 11, 11, 11, 1));
+        when(replyComment.getWriterAlias()).thenReturn("대댓글작성자");
+        when(replyComment.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
+        when(replyComment.getWriterProfileImageUrl()).thenReturn("test_url");
+        return replyComment;
     }
 
     private Comment createMockedComment(final Long commentId) {
