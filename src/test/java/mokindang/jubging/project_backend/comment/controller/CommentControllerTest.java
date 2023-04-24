@@ -2,15 +2,13 @@ package mokindang.jubging.project_backend.comment.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mokindang.jubging.project_backend.comment.domain.Comment;
+import mokindang.jubging.project_backend.comment.domain.ReplyComment;
 import mokindang.jubging.project_backend.comment.domain.vo.CommentBody;
 import mokindang.jubging.project_backend.comment.service.BoardType;
 import mokindang.jubging.project_backend.comment.service.CommentService;
 import mokindang.jubging.project_backend.comment.service.request.CommentCreationRequest;
 import mokindang.jubging.project_backend.comment.service.request.ReplyCommentCreationRequest;
-import mokindang.jubging.project_backend.comment.service.response.BoardIdResponse;
-import mokindang.jubging.project_backend.comment.service.response.CommentIdResponse;
-import mokindang.jubging.project_backend.comment.service.response.CommentSelectionResponse;
-import mokindang.jubging.project_backend.comment.service.response.MultiCommentSelectionResponse;
+import mokindang.jubging.project_backend.comment.service.response.*;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -67,12 +65,15 @@ class CommentControllerTest {
     }
 
     @Test
-    @DisplayName("입력받은 BoardType 과 boardId 에 해당하는 게시글에 새 댓글을 추가한다.")
+    @DisplayName("입력받은 BoardType 과 boardId 에 해당하는 댓글과 댓글 리스트를 반환한다.")
     void selectComments() throws Exception {
         //given
-        CommentSelectionResponse commentSelectionResponse1 = new CommentSelectionResponse(createMockedComment(), 1L);
+        MultiReplyCommentSelectionResponse multiReplyCommentSelectionResponse = new MultiReplyCommentSelectionResponse(
+                List.of(new ReplyCommentSelectionResponse(createMockedReplyComment(), 1L)));
+        CommentSelectionResponse commentSelectionResponse = new CommentSelectionResponse(createMockedComment(),
+                1L, multiReplyCommentSelectionResponse);
         when(commentService.selectComments(anyLong(), any(BoardType.class), anyLong()))
-                .thenReturn(new MultiCommentSelectionResponse(List.of(commentSelectionResponse1)));
+                .thenReturn(new MultiCommentSelectionResponse(List.of(commentSelectionResponse)));
 
 
         //when
@@ -88,21 +89,33 @@ class CommentControllerTest {
                 .andExpect(jsonPath("$.comments[0].createdDatetime").value("2023-11-11T11:11:01"))
                 .andExpect(jsonPath("$.comments[0].writerAlias").value("댓글작성자"))
                 .andExpect(jsonPath("$.comments[0].firstFourLettersOfEmail").value("test"))
-                .andExpect(jsonPath("$.comments[0].writerProfileImageUrl").value("test_url"));
-
+                .andExpect(jsonPath("$.comments[0].writerProfileImageUrl").value("test_url"))
+                .andExpect(jsonPath("$.comments[0].multiReplyCommentSelectionResponse.replyComments").exists())
+                .andExpect(jsonPath("$.comments[0].multiReplyCommentSelectionResponse.replyComments.countOfReplyComments").value(1));
     }
 
     private Comment createMockedComment() {
-
         Comment comment = mock(Comment.class);
         when(comment.getId()).thenReturn(1L);
         when(comment.getCommentBody()).thenReturn(new CommentBody("본문내용"));
-        when(comment.isSameWriterId(any())).thenReturn(true);
+        when(comment.isSameWriterId(anyLong())).thenReturn(true);
         when(comment.getCreatedDateTime()).thenReturn(LocalDateTime.of(2023, 11, 11, 11, 11, 1));
         when(comment.getWriterAlias()).thenReturn("댓글작성자");
         when(comment.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
         when(comment.getWriterProfileImageUrl()).thenReturn("test_url");
         return comment;
+    }
+
+    private ReplyComment createMockedReplyComment() {
+        ReplyComment replyComment = mock(ReplyComment.class);
+        when(replyComment.getId()).thenReturn(1L);
+        when(replyComment.getReplyCommentBody()).thenReturn(new CommentBody("댓글 본문"));
+        when(replyComment.isSameWriterId(anyLong())).thenReturn(true);
+        when(replyComment.getCreatedDateTime()).thenReturn(LocalDateTime.of(2323, 11, 11, 11, 11, 11));
+        when(replyComment.getWriterAlias()).thenReturn("대댓글작성자");
+        when(replyComment.getWriterProfileImageUrl()).thenReturn("test_url");
+        when(replyComment.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
+        return replyComment;
     }
 
     @Test
