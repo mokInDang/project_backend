@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import mokindang.jubging.project_backend.comment.service.BoardType;
 import mokindang.jubging.project_backend.comment.service.CommentService;
 import mokindang.jubging.project_backend.comment.service.request.CommentCreationRequest;
+import mokindang.jubging.project_backend.comment.service.request.ReplyCommentCreationRequest;
 import mokindang.jubging.project_backend.comment.service.response.BoardIdResponse;
 import mokindang.jubging.project_backend.comment.service.response.CommentIdResponse;
 import mokindang.jubging.project_backend.comment.service.response.MultiCommentSelectionResponse;
@@ -54,8 +55,12 @@ public class CommentController implements CommentControllerSwagger {
 
     @PostMapping("/comments/{commentId}/reply-comment")
     public ResponseEntity<CommentIdResponse> addReplyComment(@Login final Long memberId,
-                                                             @PathVariable Long commentId) {
+                                                             @PathVariable Long commentId,
+                                                             @RequestBody @Valid final
+                                                             ReplyCommentCreationRequest replyCommentCreationRequest) {
         log.info("memberId = {} 의 commentId = {} 에 추가 대댓글 작성 요청");
-        return null;
+        CommentIdResponse commentIdResponse = commentService.addReplyComment(memberId, commentId, replyCommentCreationRequest);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(commentIdResponse);
     }
 }
