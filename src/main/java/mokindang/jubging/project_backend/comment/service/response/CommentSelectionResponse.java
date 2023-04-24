@@ -36,8 +36,6 @@ public class CommentSelectionResponse {
     @Schema(description = "대댓글 목록")
     MultiReplyCommentSelectionResponse multiReplyCommentSelectionResponse;
 
-    Long replyCommentsCount;
-
     public CommentSelectionResponse(final Comment comment, final Long memberId, final MultiReplyCommentSelectionResponse multiReplyCommentSelectionResponse) {
         this.commentId = comment.getId();
         this.commentBody = comment.getCommentBody()
