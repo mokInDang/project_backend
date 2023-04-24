@@ -10,10 +10,7 @@ import mokindang.jubging.project_backend.comment.repository.CommentRepository;
 import mokindang.jubging.project_backend.comment.repository.ReplyCommentRepository;
 import mokindang.jubging.project_backend.comment.service.request.CommentCreationRequest;
 import mokindang.jubging.project_backend.comment.service.request.ReplyCommentCreationRequest;
-import mokindang.jubging.project_backend.comment.service.response.BoardIdResponse;
-import mokindang.jubging.project_backend.comment.service.response.CommentIdResponse;
-import mokindang.jubging.project_backend.comment.service.response.CommentSelectionResponse;
-import mokindang.jubging.project_backend.comment.service.response.MultiCommentSelectionResponse;
+import mokindang.jubging.project_backend.comment.service.response.*;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.service.MemberService;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
@@ -23,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -77,8 +73,22 @@ public class CommentService {
 
     private List<CommentSelectionResponse> convertToCommentSelectionResponse(final Long memberId, final List<Comment> commentsByRecruitmentBoard) {
         return commentsByRecruitmentBoard.stream()
-                .map(comment -> new CommentSelectionResponse(comment, memberId))
+                .map(comment -> getCommentSelectionResponse(memberId, comment))
                 .collect(Collectors.toUnmodifiableList());
+    }
+
+    private CommentSelectionResponse getCommentSelectionResponse(final Long memberId, final Comment comment) {
+        List<ReplyCommentSelectionResponse> replyComments = findReplyComments(comment.getId(), memberId);
+        MultiReplyCommentSelectionResponse multiReplyCommentSelectionResponse = new MultiReplyCommentSelectionResponse(replyComments);
+        return new CommentSelectionResponse(comment, memberId, multiReplyCommentSelectionResponse);
+    }
+
+    private List<ReplyCommentSelectionResponse> findReplyComments(final Long commentId, final Long memberId) {
+        List<ReplyComment> replyCommentsByCommentId = replyCommentRepository.findReplyCommentsByCommentId(commentId);
+        return replyCommentsByCommentId.stream()
+                .map(replyComment -> new ReplyCommentSelectionResponse(replyComment, memberId))
+                .collect(Collectors.toUnmodifiableList());
+
     }
 
     @Transactional
