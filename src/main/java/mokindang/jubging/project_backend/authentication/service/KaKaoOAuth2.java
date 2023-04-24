@@ -31,7 +31,7 @@ public class KaKaoOAuth2 {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
         params.add("client_id", clientId);
-        params.add("redirect_uri", "https://www.dongnejupging.xyz/api/auth/join");
+        params.add("redirect_uri", "https://dongnejupging.xyz/api/auth/join");
         params.add("code", authorizationCode);
 
         RestTemplate rt = new RestTemplate();
