@@ -119,6 +119,11 @@ public class Comment {
         return writer.getFirstFourDigitsOfWriterEmail();
     }
 
+    public void addReplyComment(final ReplyComment replyComment) {
+        this.replyComments
+                .add(replyComment);
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
