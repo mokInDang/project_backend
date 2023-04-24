@@ -6,7 +6,9 @@ import mokindang.jubging.project_backend.comment.domain.vo.CommentBody;
 import mokindang.jubging.project_backend.comment.service.BoardType;
 import mokindang.jubging.project_backend.comment.service.CommentService;
 import mokindang.jubging.project_backend.comment.service.request.CommentCreationRequest;
+import mokindang.jubging.project_backend.comment.service.request.ReplyCommentCreationRequest;
 import mokindang.jubging.project_backend.comment.service.response.BoardIdResponse;
+import mokindang.jubging.project_backend.comment.service.response.CommentIdResponse;
 import mokindang.jubging.project_backend.comment.service.response.CommentSelectionResponse;
 import mokindang.jubging.project_backend.comment.service.response.MultiCommentSelectionResponse;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
@@ -129,6 +131,41 @@ class CommentControllerTest {
         //when
         ResultActions actual = mockMvc.perform(delete("/api/comments/{commentId}",
                 1L)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        actual.andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("존재하지 않는 댓글 입니다."));
+    }
+
+    @Test
+    @DisplayName("대댓글 작성 요청 시, 입력받은 commentId 에 대댓글을 작성한 후, http 상태코드 204 를 반환한다.")
+    void addReplyComment() throws Exception {
+        //given
+        when(commentService.addReplyComment(anyLong(), anyLong(), any(ReplyCommentCreationRequest.class))).thenReturn(new CommentIdResponse(1L));
+
+        ReplyCommentCreationRequest replyCommentCreationRequest = new ReplyCommentCreationRequest("대댓글 본문");
+        //when
+        ResultActions actual = mockMvc.perform(post("/api/comments/{commentId}/reply-comment", 1L)
+                        .content(objectMapper.writeValueAsString(replyCommentCreationRequest))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        actual.andExpect(status().isCreated())
+                .andExpect(jsonPath("$.commentId").value(1L));
+    }
+
+    @Test
+    @DisplayName("대댓글 작성 요청 시, 입력받은 commentId 가 존재하지 않을 경우 http 상태코드 400 를 반환한다.")
+    void addReplyCommentFailedByNoneExistComment() throws Exception {
+        //given
+        doThrow(new IllegalArgumentException("존재하지 않는 댓글 입니다.")).when(commentService)
+                .addReplyComment(anyLong(), anyLong(), any(ReplyCommentCreationRequest.class));
+
+        ReplyCommentCreationRequest replyCommentCreationRequest = new ReplyCommentCreationRequest("대댓글 본문");
+        //when
+        ResultActions actual = mockMvc.perform(post("/api/comments/{commentId}/reply-comment", 1L)
+                .content(objectMapper.writeValueAsString(replyCommentCreationRequest))
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
