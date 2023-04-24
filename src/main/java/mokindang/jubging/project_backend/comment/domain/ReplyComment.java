@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mokindang.jubging.project_backend.comment.domain.vo.CommentBody;
+import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.member.domain.Member;
 
 import javax.persistence.*;
@@ -51,9 +52,39 @@ public class ReplyComment {
         this.comment.addReplyComment(this);
     }
 
-    public void modify(final String commentBody, final LocalDateTime now) {
+
+    public void modify(final Long memberId, final String commentBody, final LocalDateTime now) {
+        validatePermission(memberId);
         this.replyCommentBody = new CommentBody(commentBody);
         this.lastModifiedDateTime = now;
+    }
+
+    public boolean isSameWriterId(final Long memberId) {
+        return writer.getId()
+                .equals(memberId);
+    }
+
+    public void validatePermission(final Long memberId) {
+        if (!isSameWriterId(memberId)) {
+            throw new ForbiddenException("작성자 권한이 없습니다.");
+        }
+    }
+
+    public boolean wasEdited() {
+        return lastModifiedDateTime.isAfter(createdDateTime);
+    }
+
+    public String getWriterProfileImageUrl() {
+        return writer.getProfileImage()
+                .getProfileImageUrl();
+    }
+
+    public String getWriterAlias() {
+        return writer.getAlias();
+    }
+
+    public String getFirstFourDigitsOfWriterEmail() {
+        return writer.getFirstFourDigitsOfWriterEmail();
     }
 
     @Override

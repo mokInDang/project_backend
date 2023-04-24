@@ -21,20 +21,22 @@ public class CommentSelectionResponse {
     @Schema(description = "작성자", example = "작성자닉네임")
     private final String writerAlias;
 
-    @Schema(description = "게시글 수정 여부")
+    @Schema(description = "댓글 수정 여부")
     private final boolean edited;
 
-    @Schema(description = "게시글 작성자의 이메일 앞 4글자")
+    @Schema(description = "댓글 작성자의 이메일 앞 4글자")
     private final String firstFourLettersOfEmail;
 
-    @Schema(description = "게시글 작성자의 프로필 경로")
+    @Schema(description = "댓글 작성자의 프로필 경로")
     private final String writerProfileImageUrl;
 
-    @Schema(description = "게시글 조회 회원이, 작성자인지에 대한 정보", allowableValues = {"true", "false"})
+    @Schema(description = "댓글 조회 회원이, 작성자인지에 대한 정보", allowableValues = {"true", "false"})
     private final boolean mine;
 
+    @Schema(description = "대댓글 목록")
+    MultiReplyCommentSelectionResponse multiReplyCommentSelectionResponse;
 
-    public CommentSelectionResponse(final Comment comment, final Long memberId) {
+    public CommentSelectionResponse(final Comment comment, final Long memberId, final MultiReplyCommentSelectionResponse multiReplyCommentSelectionResponse) {
         this.commentId = comment.getId();
         this.commentBody = comment.getCommentBody()
                 .getBody();
@@ -44,5 +46,6 @@ public class CommentSelectionResponse {
         this.firstFourLettersOfEmail = comment.getFirstFourDigitsOfWriterEmail();
         this.writerProfileImageUrl = comment.getWriterProfileImageUrl();
         this.mine = comment.isSameWriterId(memberId);
+        this.multiReplyCommentSelectionResponse = multiReplyCommentSelectionResponse;
     }
 }
