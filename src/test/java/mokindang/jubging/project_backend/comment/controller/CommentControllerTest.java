@@ -139,7 +139,7 @@ class CommentControllerTest {
     }
 
     @Test
-    @DisplayName("대댓글 작성 요청 시, 입력받은 commentId 에 대댓글을 작성한 후, http 상태코드 204 를 반환한다.")
+    @DisplayName("대댓글 작성 요청 시, 입력받은 commentId 에 대댓글을 작성한 후, http 상태코드 201 를 반환한다.")
     void addReplyComment() throws Exception {
         //given
         when(commentService.addReplyComment(anyLong(), anyLong(), any(ReplyCommentCreationRequest.class))).thenReturn(new CommentIdResponse(1L));
