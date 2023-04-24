@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class ReplyCommentTest {
 
@@ -57,15 +58,18 @@ class ReplyCommentTest {
     @DisplayName("게시글 내용 변경한다. 이때 마지막 수정일을 변경한다.")
     void modify() {
         //given
+        Member member = mock(Member.class);
+        when(member.getId()).thenReturn(1L);
         Comment comment = mock(Comment.class);
 
         SoftAssertions softly = new SoftAssertions();
-        ReplyComment replyComment = createReplyCommentForTest();
+        LocalDateTime createdTime = LocalDateTime.of(2023, 1, 1, 1, 1, 1);
+        ReplyComment replyComment = new ReplyComment(comment, "대댓글 본문", member, createdTime);
         String newCommentBody = "하이~~";
         LocalDateTime now = LocalDateTime.of(2023, 5, 9, 11, 11, 11);
 
         //when
-        replyComment.modify(newCommentBody, now);
+        replyComment.modify(1L, newCommentBody, now);
 
         //then
         softly.assertThat(replyComment.getReplyCommentBody().getBody()).isEqualTo(newCommentBody);
@@ -77,10 +81,15 @@ class ReplyCommentTest {
     @DisplayName("게시글 수정 여부를 반환한다.")
     void wasEdited() {
         //given
-        ReplyComment replyComment = createReplyCommentForTest();
+        Member member = mock(Member.class);
+        when(member.getId()).thenReturn(1L);
+        Comment comment = mock(Comment.class);
+
+        LocalDateTime createdTime = LocalDateTime.of(2023, 1, 1, 1, 1, 1);
+        ReplyComment replyComment = new ReplyComment(comment, "대댓글 본문", member, createdTime);
         String newCommentBody = "하이~~";
         LocalDateTime now = LocalDateTime.of(2023, 5, 9, 11, 11, 11);
-        replyComment.modify(newCommentBody, now);
+        replyComment.modify(1L, newCommentBody, now);
 
         //when
         boolean actual = replyComment.wasEdited();
@@ -109,7 +118,7 @@ class ReplyCommentTest {
         ReplyComment replyComment = createReplyCommentForTest();
 
         //when
-        String actual = replyComment.getWriterProfileImageUrl();
+        String actual = replyComment.getWriterAlias();
 
         //then
         assertThat(actual).isEqualTo("test");
