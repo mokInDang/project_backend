@@ -91,7 +91,7 @@ class CommentControllerTest {
                 .andExpect(jsonPath("$.comments[0].firstFourLettersOfEmail").value("test"))
                 .andExpect(jsonPath("$.comments[0].writerProfileImageUrl").value("test_url"))
                 .andExpect(jsonPath("$.comments[0].multiReplyCommentSelectionResponse.replyComments").exists())
-                .andExpect(jsonPath("$.comments[0].multiReplyCommentSelectionResponse.replyComments.countOfReplyComments").value(1));
+                .andExpect(jsonPath("$.comments[0].multiReplyCommentSelectionResponse.countOfReplyComments").value(1));
     }
 
     private Comment createMockedComment() {
