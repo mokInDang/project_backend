@@ -119,5 +119,6 @@ public class CommentService {
         ReplyComment replyComment = replyCommentRepository.findById(replyCommentId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 대댓글 입니다."));
         replyComment.validatePermission(memberId);
+        replyCommentRepository.delete(replyComment);
     }
 }
