@@ -27,7 +27,7 @@ import static org.springframework.http.HttpHeaders.SET_COOKIE;
 @Tag(name = "댓글 서비스", description = "댓글 관련 api")
 public interface CommentControllerSwagger {
 
-    @Operation(summary = "게시판에 새 댓글 작성", parameters = {
+    @Operation(summary = "게시글에 새 댓글 작성", parameters = {
             @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true),
             @Parameter(name = SET_COOKIE, description = "refreshToken", in = ParameterIn.COOKIE, required = true)
     }
@@ -46,7 +46,7 @@ public interface CommentControllerSwagger {
                                                       @PathVariable final Long boardId,
                                                       @Valid @RequestBody final CommentCreationRequest commentCreationRequest);
 
-    @Operation(summary = "게시판의 댓글 목록 조회", parameters = {
+    @Operation(summary = "게시글의 댓글 목록 조회", parameters = {
             @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true),
             @Parameter(name = SET_COOKIE, description = "refreshToken", in = ParameterIn.COOKIE, required = true)
     }
