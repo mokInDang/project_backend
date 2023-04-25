@@ -185,4 +185,37 @@ class CommentControllerTest {
         actual.andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("존재하지 않는 댓글 입니다."));
     }
+
+    @Test
+    @DisplayName("대댓글 삭제 요청 시 , 입력 받은 replyCommentId 에 해당하는 대댓글을 삭제한 후 HTTP 상태코드 204 를 반환한다.")
+    void deleteReplyComment() throws Exception {
+        //given
+        doNothing().when(commentService)
+                .deleteReplyComment(anyLong(),anyLong());
+
+        //when
+        ResultActions actual = mockMvc.perform(delete("/api/comments/reply-comments/{replyCommentId}",
+                1L)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        actual.andExpect(status().isNoContent());
+    }
+    @Test
+    @DisplayName("대댓글 삭제 요청 시 , 입력 받은 replyCommentId 에 해당하는 대댓글이 존재하지 않는 경우 후 HTTP 상태코드 400 를 반환한다.")
+    void deleteFailedByNoneExistReplyComment() throws Exception {
+        //given
+        doThrow(new IllegalArgumentException("존재하지 않는 대댓글 입니다.")).when(commentService)
+                .deleteReplyComment(anyLong(),anyLong());
+
+        //when
+        ResultActions actual = mockMvc.perform(delete("/api/comments/reply-comments/{replyCommentId}",
+                1L)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        actual.andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("존재하지 않는 대댓글 입니다."));
+    }
+
 }
