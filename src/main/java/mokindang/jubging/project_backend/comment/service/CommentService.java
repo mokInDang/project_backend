@@ -113,4 +113,11 @@ public class CommentService {
         ReplyComment savedReplyComment = replyCommentRepository.save(replyComment);
         return new CommentIdResponse(savedReplyComment.getComment().getId());
     }
+
+    @Transactional
+    public void deleteReplyComment(final Long memberId, final Long replyCommentId) {
+        ReplyComment replyComment = replyCommentRepository.findById(replyCommentId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 대댓글 입니다."));
+        replyComment.validatePermission(memberId);
+    }
 }
