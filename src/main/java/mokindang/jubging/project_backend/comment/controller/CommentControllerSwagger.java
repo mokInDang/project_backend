@@ -93,4 +93,18 @@ public interface CommentControllerSwagger {
                                                       @PathVariable Long commentId,
                                                       @RequestBody @Valid final
                                                       ReplyCommentCreationRequest replyCommentCreationRequest);
+
+    @Operation(summary = "대댓글 삭제", parameters = {
+            @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true),
+            @Parameter(name = SET_COOKIE, description = "refreshToken", in = ParameterIn.COOKIE, required = true)
+    }
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "대댓글 삭제 완료"),
+            @ApiResponse(responseCode = "400", description =
+                    "존재하지 않는 댓글에 대한 접근 \t\n",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @DeleteMapping("/comments/reply-comments/{replyCommentId}")
+    ResponseEntity<Object> deleteReplyComment(@Login final Long memberId, @PathVariable Long replyCommentId);
 }
