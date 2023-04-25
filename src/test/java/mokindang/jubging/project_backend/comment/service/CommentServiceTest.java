@@ -165,4 +165,23 @@ class CommentServiceTest {
         //then
         assertThat(commentIdResponse.getCommentId()).isEqualTo(1L);
     }
+    
+    @Test
+    @DisplayName("memberId 와 replyCommentId 를 받아 해당하는 대댓글 삭제를 한다.")
+    void deleteReplyComment() {
+        //given
+        ReplyComment replyComment = mock(ReplyComment.class);
+        when(replyCommentRepository.findById(anyLong())).thenReturn(Optional.ofNullable(replyComment));
+        doNothing().when(replyComment)
+                .validatePermission(anyLong());
+
+        Long memberId = 1L;
+        Long replyCommentId = 1L;
+
+        //when
+        commentService.deleteReplyComment(memberId, replyCommentId);
+
+        //then
+        verify(replyCommentRepository, times(1)).findById(anyLong());
+    }
 }
