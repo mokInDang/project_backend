@@ -172,8 +172,6 @@ class CommentServiceTest {
         //given
         ReplyComment replyComment = mock(ReplyComment.class);
         when(replyCommentRepository.findById(anyLong())).thenReturn(Optional.ofNullable(replyComment));
-        doNothing().when(replyComment)
-                .validatePermission(anyLong());
 
         Long memberId = 1L;
         Long replyCommentId = 1L;
@@ -183,5 +181,17 @@ class CommentServiceTest {
 
         //then
         verify(replyCommentRepository, times(1)).findById(anyLong());
+    }
+
+    @Test
+    @DisplayName("대댓글 삭제 요청 시, 입력받은 대댓글에 해당하는 id 가 없으면 예외를 반환한다.")
+    void deleteFailedByNoneExistReplyComment() {
+        //given
+        when(replyCommentRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        //when, then
+        assertThatThrownBy(() -> commentService.deleteReplyComment(1L, 1L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("존재하지 않는 대댓글 입니다.");
     }
 }
