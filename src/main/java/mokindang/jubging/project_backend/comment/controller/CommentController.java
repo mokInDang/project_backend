@@ -10,7 +10,6 @@ import mokindang.jubging.project_backend.comment.service.response.BoardIdRespons
 import mokindang.jubging.project_backend.comment.service.response.CommentIdResponse;
 import mokindang.jubging.project_backend.comment.service.response.MultiCommentSelectionResponse;
 import mokindang.jubging.project_backend.web.argumentresolver.Login;
-import org.apache.catalina.connector.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -65,7 +64,7 @@ public class CommentController implements CommentControllerSwagger {
                 .body(commentIdResponse);
     }
 
-    @DeleteMapping("/comments/reply-comment/{replyCommentId")
+    @DeleteMapping("/comments/reply-comments/{replyCommentId}")
     public ResponseEntity<Object> deleteReplyComment(@Login final Long memberId,
                                                      @PathVariable Long replyCommentId) {
         log.info("memberId = {} 의 replyCommentId = {} 삭제 요청");
