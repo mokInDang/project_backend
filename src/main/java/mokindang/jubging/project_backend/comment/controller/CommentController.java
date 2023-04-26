@@ -47,7 +47,7 @@ public class CommentController implements CommentControllerSwagger {
 
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<Object> removeComment(@Login Long memberId, @PathVariable final Long commentId) {
-        log.info("memberId = {} 의 commentId = {} 삭제 요청", memberId, commentId);
+        log.info("작성자 memberId = {} 의 commentId = {} 삭제 요청", memberId, commentId);
         commentService.deleteComment(memberId, commentId);
         return ResponseEntity.noContent()
                 .build();
@@ -58,7 +58,7 @@ public class CommentController implements CommentControllerSwagger {
                                                              @PathVariable Long commentId,
                                                              @RequestBody @Valid final
                                                              ReplyCommentCreationRequest replyCommentCreationRequest) {
-        log.info("memberId = {} 의 commentId = {} 에 추가 대댓글 작성 요청");
+        log.info("작성자 memberId = {} 의 commentId = {} 에 추가 대댓글 작성 요청");
         CommentIdResponse commentIdResponse = commentService.addReplyComment(memberId, commentId, replyCommentCreationRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(commentIdResponse);
