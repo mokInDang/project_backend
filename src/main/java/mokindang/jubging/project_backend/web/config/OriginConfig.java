@@ -24,7 +24,8 @@ public class OriginConfig implements WebMvcConfigurer {
                         "https://dev.dongnejupging.xyz/api/auth/logout",
                         "http://localhost:8080",
                         "http://localhost:3000",
-                        "https://localhost:3000")
+                        "https://localhost:3000",
+                        "https://dev.dongnejupging.xyz")
                 .allowedMethods(ALLOWED_METHOD_NAMES.split(","))
                 .allowedHeaders("*")
                 .allowCredentials(true)
