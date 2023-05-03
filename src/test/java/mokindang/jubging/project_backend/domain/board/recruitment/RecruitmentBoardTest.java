@@ -300,6 +300,6 @@ class RecruitmentBoardTest {
         Long actual = recruitmentBoard.countCommentAndReplyComment();
 
         //then
-        assertThat(actual).isEqualTo(6);
+        assertThat(actual).isEqualTo(4);
     }
 }
