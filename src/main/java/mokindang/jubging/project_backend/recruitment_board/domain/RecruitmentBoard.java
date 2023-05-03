@@ -3,13 +3,13 @@ package mokindang.jubging.project_backend.recruitment_board.domain;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import mokindang.jubging.project_backend.comment.domain.Comment;
+import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
+import mokindang.jubging.project_backend.member.domain.Member;
+import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.ContentBody;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.StartingDate;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.Title;
-import mokindang.jubging.project_backend.comment.domain.Comment;
-import mokindang.jubging.project_backend.member.domain.Member;
-import mokindang.jubging.project_backend.member.domain.vo.Region;
-import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -121,6 +121,13 @@ public class RecruitmentBoard {
 
     public String getFirstFourDigitsOfWriterEmail() {
         return writer.getFirstFourDigitsOfWriterEmail();
+    }
+
+    public Long countCommentAndReplyComment() {
+        long countOfAllReplyComment = comments.stream()
+                .mapToInt(Comment::countReplyComment)
+                .sum();
+        return comments.size() + countOfAllReplyComment;
     }
 
     public void addComment(final Comment comment) {
