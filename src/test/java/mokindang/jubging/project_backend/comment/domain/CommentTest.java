@@ -7,6 +7,8 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
@@ -111,7 +113,7 @@ class CommentTest {
         Comment comment = Comment.createOnRecruitmentBoardWith(recruitmentBoard, commentBodyValue, writer, createdTime);
         String newCommentBody = "하이~~";
         LocalDateTime now = LocalDateTime.of(2023, 5, 9, 11, 11, 11);
-        comment.modify(1L,newCommentBody, now);
+        comment.modify(1L, newCommentBody, now);
 
         //when
         boolean actual = comment.wasEdited();
@@ -157,5 +159,27 @@ class CommentTest {
 
         //then
         assertThat(actual).isEqualTo("test_url");
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {1, 2, 3})
+    @DisplayName("댓글에 달린 대댓글의 갯수를 반환한다.")
+    void countReplyComment(final int countOfReplyComment) {
+        //given
+        Comment comment = createTestComment();
+        addMockedReplyCommentByCountOfReplyComment(countOfReplyComment, comment);
+
+        //when
+        int actual = comment.countReplyComment();
+
+        //then
+        assertThat(actual).isEqualTo(countOfReplyComment);
+    }
+
+    private void addMockedReplyCommentByCountOfReplyComment(final int countOfReplyComment, final Comment comment) {
+        ReplyComment replyComment = mock(ReplyComment.class);
+        for (int i = 0; i < countOfReplyComment; i++) {
+            comment.addReplyComment(replyComment);
+        }
     }
 }
