@@ -37,6 +37,9 @@ public class SummaryBoardResponse {
     @Schema(description = "게시글 작성자의 이메일 앞 4글자")
     private final String firstFourLettersOfEmail;
 
+    @Schema(description = "게시글의 댓글과 대댓글의 총 갯수")
+    private final Long countOfCommentAndReplyComment;
+
     public SummaryBoardResponse(final RecruitmentBoard recruitmentBoard) {
         this.boardId = recruitmentBoard.getId();
         this.title = recruitmentBoard.getTitle()
@@ -53,5 +56,6 @@ public class SummaryBoardResponse {
                 .getValue();
         this.onRecruitment = recruitmentBoard.isOnRecruitment();
         this.firstFourLettersOfEmail = recruitmentBoard.getFirstFourDigitsOfWriterEmail();
+        this.countOfCommentAndReplyComment = recruitmentBoard.countCommentAndReplyComment();
     }
 }
