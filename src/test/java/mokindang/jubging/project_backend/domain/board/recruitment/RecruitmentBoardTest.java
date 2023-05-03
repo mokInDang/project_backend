@@ -1,5 +1,6 @@
 package mokindang.jubging.project_backend.domain.board.recruitment;
 
+import mokindang.jubging.project_backend.comment.domain.Comment;
 import mokindang.jubging.project_backend.recruitment_board.domain.ActivityCategory;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.ContentBody;
@@ -22,6 +23,8 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Rollback
@@ -282,5 +285,21 @@ class RecruitmentBoardTest {
 
         //then
         assertThat(writerProfileImageUrl).isEqualTo(testUrl);
+    }
+
+    @Test
+    @DisplayName("구인 게시글에 달린 모든 댓글과 대댓글의 갯수를 반환한다.")
+    void countCommentAndReplyComment() {
+        //given
+        Comment comment = mock(Comment.class);
+        when(comment.countReplyComment()).thenReturn(3);
+        RecruitmentBoard recruitmentBoard = createRecruitmentBoardWithTestWriter();
+        recruitmentBoard.addComment(comment);
+
+        //when
+        Long actual = recruitmentBoard.countCommentAndReplyComment();
+
+        //then
+        assertThat(actual).isEqualTo(6);
     }
 }
