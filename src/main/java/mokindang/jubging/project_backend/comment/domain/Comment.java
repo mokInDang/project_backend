@@ -85,6 +85,10 @@ public class Comment {
         certificationBoard.addComment(this);
     }
 
+    public int countReplyComment() {
+        return replyComments.size();
+    }
+
     public void modify(final Long memberId,final String commentBody, final LocalDateTime now) {
         validatePermission(memberId);
         this.commentBody = new CommentBody(commentBody);
