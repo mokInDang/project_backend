@@ -238,7 +238,6 @@ class RecruitmentBoardTest {
         String newContentValue = "새로운 본문 내용입니다.";
         LocalDate newStartingDate = LocalDate.parse("2023-11-13");
 
-
         //when
         recruitmentBoard.modify(writerId, newStartingDate, newActivityCategory, newTitleValue, newContentValue);
 
