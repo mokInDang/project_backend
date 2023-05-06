@@ -49,7 +49,7 @@ class ReplyCommentTest {
         Comment comment = mock(Comment.class);
         LocalDateTime now = LocalDateTime.of(2023, 4, 8, 16, 48);
         Member writer = new Member("test@email.com", "test");
-        writer.updateProfileImage("test_url", "test_image");
+        writer.updateProfileImage("test_url");
         String replyCommentBodyValue = "안녕하세요.";
         return new ReplyComment(comment, replyCommentBodyValue, writer, now);
     }

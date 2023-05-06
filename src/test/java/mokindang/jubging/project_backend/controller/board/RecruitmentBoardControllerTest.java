@@ -1,10 +1,10 @@
 package mokindang.jubging.project_backend.controller.board;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
+import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.recruitment_board.controller.RecruitmentBoardController;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
-import mokindang.jubging.project_backend.member.domain.Member;
-import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.recruitment_board.service.RecruitmentBoardService;
 import mokindang.jubging.project_backend.recruitment_board.service.request.BoardModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
@@ -183,7 +183,7 @@ class RecruitmentBoardControllerTest {
         LocalDateTime now = LocalDateTime.of(2023, 3, 30, 11, 11, 0, 0);
         Member testMember = new Member("test@email.com", "test");
         testMember.updateRegion("동작구");
-        testMember.updateProfileImage("test_profile_url", "test_profile");
+        testMember.updateProfileImage("test_profile_url");
         return new RecruitmentBoard(now, testMember, LocalDate.of(2025, 2, 11),
                 "달리기", "게시판 제목", "게시판 내용 작성 테스트");
     }
