@@ -1,9 +1,9 @@
 package mokindang.jubging.project_backend.controller.member;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import mokindang.jubging.project_backend.member.controller.MemberController;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
-import mokindang.jubging.project_backend.member.controller.MemberController;
 import mokindang.jubging.project_backend.member.service.MemberService;
 import mokindang.jubging.project_backend.member.service.request.RegionUpdateRequest;
 import mokindang.jubging.project_backend.member.service.response.MyPageResponse;
@@ -125,7 +125,7 @@ class MemberControllerTest {
 
         //when
         ResultActions resultActions = mockMvc.perform(patch("/api/member/edit-mypage")
-                .contentType(MediaType.MULTIPART_FORM_DATA));
+                .contentType(MediaType.APPLICATION_JSON));
 
         //then
         resultActions.andExpect(status().isOk())
