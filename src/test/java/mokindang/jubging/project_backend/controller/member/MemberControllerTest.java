@@ -5,6 +5,7 @@ import mokindang.jubging.project_backend.member.controller.MemberController;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.member.service.MemberService;
+import mokindang.jubging.project_backend.member.service.request.MyPageEditRequest;
 import mokindang.jubging.project_backend.member.service.request.RegionUpdateRequest;
 import mokindang.jubging.project_backend.member.service.response.MyPageResponse;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
@@ -121,11 +122,14 @@ class MemberControllerTest {
         Member member = new Member("test123@test.com", "minho");
         member.updateRegion("동작구");
         MyPageResponse myPageResponse = new MyPageResponse("https://test.png", "newAlias", "동작구");
+        MyPageEditRequest myPageEditRequest = new MyPageEditRequest("https://test.png", "minho");
         when(memberService.editMypage(any(), any())).thenReturn(myPageResponse);
 
         //when
         ResultActions resultActions = mockMvc.perform(patch("/api/member/edit-mypage")
-                .contentType(MediaType.APPLICATION_JSON));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(myPageEditRequest))
+        );
 
         //then
         resultActions.andExpect(status().isOk())
