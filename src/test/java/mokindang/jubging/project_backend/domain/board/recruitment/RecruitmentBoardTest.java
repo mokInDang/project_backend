@@ -1,14 +1,14 @@
 package mokindang.jubging.project_backend.domain.board.recruitment;
 
 import mokindang.jubging.project_backend.comment.domain.Comment;
+import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
+import mokindang.jubging.project_backend.member.domain.Member;
+import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.recruitment_board.domain.ActivityCategory;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.ContentBody;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.StartingDate;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.Title;
-import mokindang.jubging.project_backend.member.domain.Member;
-import mokindang.jubging.project_backend.member.domain.vo.Region;
-import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -275,7 +275,7 @@ class RecruitmentBoardTest {
         LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
         Member writer = new Member("test1@email.com", "test");
         writer.updateRegion("동작구");
-        writer.updateProfileImage(testUrl, "test_Image");
+        writer.updateProfileImage(testUrl);
         RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, writer, LocalDate.of(2025, 2, 11), "달리기",
                 "제목", "본문내용");
 

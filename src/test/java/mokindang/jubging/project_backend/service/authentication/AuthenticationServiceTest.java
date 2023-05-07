@@ -1,12 +1,12 @@
 package mokindang.jubging.project_backend.service.authentication;
 
 import io.jsonwebtoken.JwtException;
+import mokindang.jubging.project_backend.authentication.domain.token.RefreshToken;
+import mokindang.jubging.project_backend.authentication.repository.RefreshTokenRepository;
 import mokindang.jubging.project_backend.authentication.service.AuthenticationService;
 import mokindang.jubging.project_backend.authentication.service.KaKaoOAuth2;
 import mokindang.jubging.project_backend.member.domain.LoginState;
 import mokindang.jubging.project_backend.member.domain.Member;
-import mokindang.jubging.project_backend.authentication.domain.token.RefreshToken;
-import mokindang.jubging.project_backend.authentication.repository.RefreshTokenRepository;
 import mokindang.jubging.project_backend.member.service.MemberService;
 import mokindang.jubging.project_backend.member.service.request.AuthorizationCodeRequest;
 import mokindang.jubging.project_backend.member.service.response.JwtResponse;
@@ -89,7 +89,7 @@ class AuthenticationServiceTest {
         //given
         Member existMember = new Member("dog123@test.com", "minho");
         existMember.updateRegion("동작구");
-        existMember.updateProfileImage("https://testimage.png", "testimage");
+        existMember.updateProfileImage("https://testimage.png");
         KakaoApiMemberResponse kakaoApiMemberResponse = new KakaoApiMemberResponse("dog123@test.com", "minho");
 
 

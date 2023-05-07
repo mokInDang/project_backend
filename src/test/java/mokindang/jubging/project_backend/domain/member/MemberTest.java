@@ -5,14 +5,13 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static mokindang.jubging.project_backend.member.domain.vo.ProfileImage.DEFAULT_PROFILE_IMAGE_NAME;
 import static mokindang.jubging.project_backend.member.domain.vo.ProfileImage.DEFAULT_PROFILE_IMAGE_URL;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberTest {
 
     @Test
-    @DisplayName("멤버 생성 시 멤버의 email 과 alias 를 반환하고 ProfileImageUrl 과 ProfileImageName은 DEFAULT 값을 반환한다.")
+    @DisplayName("멤버 생성 시 멤버의 email 과 alias 를 반환하고 ProfileImageUrl은 DEFAULT 값을 반환한다.")
     void getter() {
         //given
         SoftAssertions softly = new SoftAssertions();
@@ -22,13 +21,11 @@ class MemberTest {
         String email = member.getEmail();
         String alias = member.getAlias();
         String profileImageUrl = member.getProfileImage().getProfileImageUrl();
-        String profileImageName = member.getProfileImage().getProfileImageName();
 
         //then
         softly.assertThat(email).isEqualTo("cjh87467@gmail.com");
         softly.assertThat(alias).isEqualTo("지환");
         softly.assertThat(profileImageUrl).isEqualTo(DEFAULT_PROFILE_IMAGE_URL);
-        softly.assertThat(profileImageName).isEqualTo(DEFAULT_PROFILE_IMAGE_NAME);
         softly.assertAll();
     }
 
@@ -59,17 +56,16 @@ class MemberTest {
     }
 
     @Test
-    @DisplayName("ProfileImageUrl 과 ProfileImageName을 변경한다.")
+    @DisplayName("ProfileImageUrl을 변경한다.")
     void updateProfileImage(){
         //given
         Member member = new Member("test@mail.com", "test");
 
         //when
-        member.updateProfileImage("http://testimage.png", "testimage");
+        member.updateProfileImage("http://testimage.png");
 
         //then
         assertThat(member.getProfileImage().getProfileImageUrl()).isEqualTo("http://testimage.png");
-        assertThat(member.getProfileImage().getProfileImageName()).isEqualTo("testimage");
     }
 
     @Test

@@ -42,8 +42,8 @@ public class Member {
         this.region.updateRegion(region);
     }
 
-    public void updateProfileImage(final String profileImageUrl, final String profileImageName) {
-        this.profileImage.updateProfileImage(profileImageUrl, profileImageName);
+    public void updateProfileImage(final String profileImageUrl) {
+        this.profileImage.updateProfileImage(profileImageUrl);
     }
 
     public void updateAlias(final String alias){

@@ -9,7 +9,6 @@ import mokindang.jubging.project_backend.member.service.request.RegionUpdateRequ
 import mokindang.jubging.project_backend.member.service.response.MyPageResponse;
 import mokindang.jubging.project_backend.member.service.response.RegionUpdateResponse;
 import mokindang.jubging.project_backend.web.argumentresolver.Login;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,8 +35,8 @@ public class MemberController implements MemberControllerSwagger{
         return ResponseEntity.ok()
                 .body(myPageResponse);
     }
-    @PatchMapping(value = "/edit-mypage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<MyPageResponse> editMyPage(@Login Long memberId, @ModelAttribute MyPageEditRequest myPageEditRequest){
+    @PatchMapping("/edit-mypage")
+    public ResponseEntity<MyPageResponse> editMyPage(@Login Long memberId, @RequestBody MyPageEditRequest myPageEditRequest){
         MyPageResponse myPageResponse = memberService.editMypage(memberId, myPageEditRequest);
         return ResponseEntity.ok()
                 .body(myPageResponse);

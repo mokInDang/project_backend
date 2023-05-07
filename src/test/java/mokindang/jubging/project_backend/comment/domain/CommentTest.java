@@ -68,7 +68,7 @@ class CommentTest {
         RecruitmentBoard recruitmentBoard = createRecruitmentBoard();
         LocalDateTime now = LocalDateTime.of(2023, 4, 8, 16, 48);
         Member writer = new Member("test@email.com", "test");
-        writer.updateProfileImage("test_url", "image");
+        writer.updateProfileImage("test_url");
         String commentBodyValue = "안녕하세요.";
         return Comment.createOnRecruitmentBoardWith(recruitmentBoard, commentBodyValue, writer, now);
     }
