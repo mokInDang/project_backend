@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mokindang.jubging.project_backend.certification_board.domain.CertificationBoard;
 import mokindang.jubging.project_backend.image.domain.Image;
-import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.image.repository.ImageRepository;
+import mokindang.jubging.project_backend.member.domain.Member;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
-
-import static mokindang.jubging.project_backend.member.domain.vo.ProfileImage.DEFAULT_PROFILE_IMAGE_NAME;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -33,10 +31,7 @@ public class FileService {
     private final AmazonS3Client amazonS3Client;
     private final ImageRepository imageRepository;
 
-    public FileResponse uploadFile(MultipartFile multipartFile, Member member) {
-        if(multipartFile.isEmpty()){
-            return new FileResponse(member.getProfileImage().getProfileImageUrl(), member.getProfileImage().getProfileImageName());
-        }
+    public FileResponse uploadFile(MultipartFile multipartFile) {
 
         String uploadFilePath = PROFILE_IMAGE;
         String originalFileName = multipartFile.getOriginalFilename();
@@ -46,7 +41,6 @@ public class FileService {
         ObjectMetadata objectMetadata = getObjectMetadata(multipartFile);
         uploadFileUrl = uploadToS3(multipartFile, uploadFilePath, uploadFileName, uploadFileUrl, objectMetadata);
 
-        log.info("memberId = {}, alias = {} 의 프로필 이미지 {} 업로드", member.getId(), member.getAlias(), uploadFileName);
         return new FileResponse(uploadFileUrl, uploadFileName);
     }
 
@@ -86,11 +80,9 @@ public class FileService {
         return objectMetadata;
     }
 
-    public void deleteFile(String fileName, String filePath) {
-        String uploadFileName = fileName;
+    public void deleteFile(String fileUrl, String filePath) {
+        String uploadFileName = getFileNameFromURL(fileUrl);
         String uploadFilePath = filePath;
-
-        if (checkNameDefault(uploadFileName)) return;
 
         try {
             String keyName = uploadFilePath + "/" + uploadFileName;
@@ -105,12 +97,8 @@ public class FileService {
         }
     }
 
-    private boolean checkNameDefault(String uploadFileName) {
-        if(uploadFileName.equals(DEFAULT_PROFILE_IMAGE_NAME)){
-            log.info("기본이미지로 삭제되지 않았습니다.");
-            return true;
-        }
-        return false;
+    private String getFileNameFromURL(String url) {
+        return url.substring(url.lastIndexOf('/') + 1, url.length());
     }
 
     public String getUuidFileName(String fileName) {

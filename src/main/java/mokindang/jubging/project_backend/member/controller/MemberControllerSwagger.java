@@ -14,10 +14,8 @@ import mokindang.jubging.project_backend.member.service.request.RegionUpdateRequ
 import mokindang.jubging.project_backend.member.service.response.MyPageResponse;
 import mokindang.jubging.project_backend.member.service.response.RegionUpdateResponse;
 import mokindang.jubging.project_backend.web.argumentresolver.Login;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -57,7 +55,7 @@ public interface MemberControllerSwagger {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "수정완료")
     })
-    @PatchMapping(value = "/edit-mypage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    ResponseEntity<MyPageResponse> editMyPage(@Parameter(hidden = true) @Login Long memberId, @ModelAttribute MyPageEditRequest myPageEditRequest);
+    @PatchMapping(value = "/edit-mypage")
+    ResponseEntity<MyPageResponse> editMyPage(@Parameter(hidden = true) @Login Long memberId, @RequestBody MyPageEditRequest myPageEditRequest);
 
 }
