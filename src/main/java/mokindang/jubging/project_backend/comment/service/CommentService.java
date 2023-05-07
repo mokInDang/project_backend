@@ -73,22 +73,8 @@ public class CommentService {
 
     private List<CommentSelectionResponse> convertToCommentSelectionResponse(final Long memberId, final List<Comment> commentsByRecruitmentBoard) {
         return commentsByRecruitmentBoard.stream()
-                .map(comment -> getCommentSelectionResponse(memberId, comment))
+                .map(comment -> new CommentSelectionResponse(comment, memberId))
                 .collect(Collectors.toUnmodifiableList());
-    }
-
-    private CommentSelectionResponse getCommentSelectionResponse(final Long memberId, final Comment comment) {
-        List<ReplyCommentSelectionResponse> replyComments = findReplyComments(comment.getId(), memberId);
-        MultiReplyCommentSelectionResponse multiReplyCommentSelectionResponse = new MultiReplyCommentSelectionResponse(replyComments);
-        return new CommentSelectionResponse(comment, memberId, multiReplyCommentSelectionResponse);
-    }
-
-    private List<ReplyCommentSelectionResponse> findReplyComments(final Long commentId, final Long memberId) {
-        List<ReplyComment> replyCommentsByCommentId = replyCommentRepository.findReplyCommentsByCommentId(commentId);
-        return replyCommentsByCommentId.stream()
-                .map(replyComment -> new ReplyCommentSelectionResponse(replyComment, memberId))
-                .collect(Collectors.toUnmodifiableList());
-
     }
 
     @Transactional

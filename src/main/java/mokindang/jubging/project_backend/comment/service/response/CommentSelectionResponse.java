@@ -5,6 +5,8 @@ import lombok.Getter;
 import mokindang.jubging.project_backend.comment.domain.Comment;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 public class CommentSelectionResponse {
@@ -36,7 +38,7 @@ public class CommentSelectionResponse {
     @Schema(description = "대댓글 목록")
     MultiReplyCommentSelectionResponse multiReplyCommentSelectionResponse;
 
-    public CommentSelectionResponse(final Comment comment, final Long memberId, final MultiReplyCommentSelectionResponse multiReplyCommentSelectionResponse) {
+    public CommentSelectionResponse(final Comment comment, final Long memberId) {
         this.commentId = comment.getId();
         this.commentBody = comment.getCommentBody()
                 .getBody();
@@ -46,6 +48,13 @@ public class CommentSelectionResponse {
         this.firstFourLettersOfEmail = comment.getFirstFourDigitsOfWriterEmail();
         this.writerProfileImageUrl = comment.getWriterProfileImageUrl();
         this.mine = comment.isSameWriterId(memberId);
-        this.multiReplyCommentSelectionResponse = multiReplyCommentSelectionResponse;
+        List<ReplyCommentSelectionResponse> replyCommentSelectionResponses = generateReplyCommentSelectionResponses(comment);
+        this.multiReplyCommentSelectionResponse = new MultiReplyCommentSelectionResponse(replyCommentSelectionResponses);
+    }
+
+    private  List<ReplyCommentSelectionResponse> generateReplyCommentSelectionResponses(final Comment comment) {
+        return comment.getReplyComments().stream()
+                .map(replyComment -> new ReplyCommentSelectionResponse(replyComment, replyComment.getId()))
+                .collect(Collectors.toUnmodifiableList());
     }
 }
