@@ -68,10 +68,8 @@ class CommentControllerTest {
     @DisplayName("입력받은 BoardType 과 boardId 에 해당하는 댓글과 댓글 리스트를 반환한다.")
     void selectComments() throws Exception {
         //given
-        MultiReplyCommentSelectionResponse multiReplyCommentSelectionResponse = new MultiReplyCommentSelectionResponse(
-                List.of(new ReplyCommentSelectionResponse(createMockedReplyComment(), 1L)));
         CommentSelectionResponse commentSelectionResponse = new CommentSelectionResponse(createMockedComment(),
-                1L, multiReplyCommentSelectionResponse);
+                1L);
         when(commentService.selectComments(anyLong(), any(BoardType.class), anyLong()))
                 .thenReturn(new MultiCommentSelectionResponse(List.of(commentSelectionResponse)));
 
@@ -90,8 +88,7 @@ class CommentControllerTest {
                 .andExpect(jsonPath("$.comments[0].writerAlias").value("댓글작성자"))
                 .andExpect(jsonPath("$.comments[0].firstFourLettersOfEmail").value("test"))
                 .andExpect(jsonPath("$.comments[0].writerProfileImageUrl").value("test_url"))
-                .andExpect(jsonPath("$.comments[0].multiReplyCommentSelectionResponse.replyComments").exists())
-                .andExpect(jsonPath("$.comments[0].multiReplyCommentSelectionResponse.countOfReplyComments").value(1));
+                .andExpect(jsonPath("$.comments[0].multiReplyCommentSelectionResponse.replyComments").exists());
     }
 
     private Comment createMockedComment() {
@@ -104,18 +101,6 @@ class CommentControllerTest {
         when(comment.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
         when(comment.getWriterProfileImageUrl()).thenReturn("test_url");
         return comment;
-    }
-
-    private ReplyComment createMockedReplyComment() {
-        ReplyComment replyComment = mock(ReplyComment.class);
-        when(replyComment.getId()).thenReturn(1L);
-        when(replyComment.getReplyCommentBody()).thenReturn(new CommentBody("댓글 본문"));
-        when(replyComment.isSameWriterId(anyLong())).thenReturn(true);
-        when(replyComment.getCreatedDateTime()).thenReturn(LocalDateTime.of(2323, 11, 11, 11, 11, 11));
-        when(replyComment.getWriterAlias()).thenReturn("대댓글작성자");
-        when(replyComment.getWriterProfileImageUrl()).thenReturn("test_url");
-        when(replyComment.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
-        return replyComment;
     }
 
     @Test
