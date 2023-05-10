@@ -5,6 +5,7 @@ import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.member.service.MemberService;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.Coordinate;
 import mokindang.jubging.project_backend.recruitment_board.repository.RecruitmentBoardRepository;
 import mokindang.jubging.project_backend.recruitment_board.service.request.BoardModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
@@ -33,8 +34,9 @@ public class RecruitmentBoardService {
     public RecruitmentBoardIdResponse write(final Long memberId, final RecruitmentBoardCreationRequest recruitmentBoardCreationRequest) {
         Member member = memberService.findByMemberId(memberId);
         LocalDateTime now = LocalDateTime.now();
+        Coordinate meetingSpot = new Coordinate(recruitmentBoardCreationRequest.getLongitude(), recruitmentBoardCreationRequest.getLatitude());
         RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, member, recruitmentBoardCreationRequest.getStartingDate(), recruitmentBoardCreationRequest.getActivityCategory(),
-                recruitmentBoardCreationRequest.getTitle(), recruitmentBoardCreationRequest.getContentBody());
+                meetingSpot, recruitmentBoardCreationRequest.getTitle(), recruitmentBoardCreationRequest.getContentBody());
         RecruitmentBoard savedRecruitmentBoard = recruitmentBoardRepository.save(recruitmentBoard);
         return new RecruitmentBoardIdResponse(savedRecruitmentBoard.getId());
     }
