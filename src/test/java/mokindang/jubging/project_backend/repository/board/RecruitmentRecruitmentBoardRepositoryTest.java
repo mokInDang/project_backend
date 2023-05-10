@@ -1,9 +1,10 @@
 package mokindang.jubging.project_backend.repository.board;
 
-import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.member.repository.MemberRepository;
+import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.Coordinate;
 import mokindang.jubging.project_backend.recruitment_board.repository.RecruitmentBoardRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,7 +43,9 @@ class RecruitmentRecruitmentBoardRepositoryTest {
         member.updateRegion("동작구");
         memberRepository.save(member);
         LocalDateTime now = LocalDateTime.of(2023, 3, 25, 1, 1);
-        RecruitmentBoard recruitingRecruitmentBoardWithPastStartingDate = new RecruitmentBoard(now, member, LocalDate.of(2023, 3, 27), "달리기", "제목", "본문");
+        Coordinate coordinate = new Coordinate(1.1, 1.2);
+        RecruitmentBoard recruitingRecruitmentBoardWithPastStartingDate = new RecruitmentBoard(now, member,
+                LocalDate.of(2023, 3, 27), "달리기", coordinate, "제목", "본문");
         RecruitmentBoard save = recruitmentBoardRepository.save(recruitingRecruitmentBoardWithPastStartingDate);
 
         LocalDate today = LocalDate.of(2023, 3, 28);
@@ -61,19 +64,25 @@ class RecruitmentRecruitmentBoardRepositoryTest {
     void selectRegionBoards() {
         //given
         LocalDateTime now = LocalDateTime.of(2023, 3, 25, 1, 1);
+        Coordinate coordinate = new Coordinate(1.1, 1.2);
 
         Member dongJackMember = new Member("test@mail.com", "동작이");
         dongJackMember.updateRegion("동작구");
         memberRepository.save(dongJackMember);
-        RecruitmentBoard dongJackRecruitmentBoard1 = new RecruitmentBoard(now.plusDays(1), dongJackMember, LocalDate.of(2023, 3, 27), "달리기", "제목1", "본문1");
-        RecruitmentBoard dongJackRecruitmentBoard2 = new RecruitmentBoard(now, dongJackMember, LocalDate.of(2023, 3, 27), "산책", "제목2", "본문2");
+        RecruitmentBoard dongJackRecruitmentBoard1 = new RecruitmentBoard(now.plusDays(1), dongJackMember,
+                LocalDate.of(2023, 3, 27), "달리기", coordinate,
+                "제목1", "본문1");
+        RecruitmentBoard dongJackRecruitmentBoard2 = new RecruitmentBoard(now, dongJackMember,
+                LocalDate.of(2023, 3, 27), "산책", coordinate,
+                "제목2", "본문2");
         recruitmentBoardRepository.save(dongJackRecruitmentBoard1);
         recruitmentBoardRepository.save(dongJackRecruitmentBoard2);
 
         Member sungDongMember = new Member("test2@maill.com", "성동이");
         sungDongMember.updateRegion("성동구");
         memberRepository.save(sungDongMember);
-        RecruitmentBoard sungDongRecruitmentBoard1 = new RecruitmentBoard(now, sungDongMember, LocalDate.of(2023, 3, 27), "달리기", "제목1", "본문1");
+        RecruitmentBoard sungDongRecruitmentBoard1 = new RecruitmentBoard(now, sungDongMember, LocalDate.of(2023, 3, 27), "달리기", coordinate,
+                "제목1", "본문1");
         recruitmentBoardRepository.save(sungDongRecruitmentBoard1);
 
         Region targetRegion = Region.from("동작구");
