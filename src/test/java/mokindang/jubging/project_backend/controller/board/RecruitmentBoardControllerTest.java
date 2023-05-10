@@ -59,7 +59,7 @@ class RecruitmentBoardControllerTest {
         when(boardService.write(anyLong(), any(RecruitmentBoardCreationRequest.class))).thenReturn(new RecruitmentBoardIdResponse(1L));
 
         RecruitmentBoardCreationRequest boardCreationRequest = new RecruitmentBoardCreationRequest("제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11));
+                LocalDate.of(2023, 11, 11), 1.1, 1.2);
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
@@ -79,7 +79,7 @@ class RecruitmentBoardControllerTest {
                 .write(anyLong(), any(RecruitmentBoardCreationRequest.class));
 
         RecruitmentBoardCreationRequest boardCreationRequest = new RecruitmentBoardCreationRequest("제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11));
+                LocalDate.of(2023, 11, 11), 1.1, 1.2);
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
@@ -99,7 +99,7 @@ class RecruitmentBoardControllerTest {
                 .write(anyLong(), any(RecruitmentBoardCreationRequest.class));
 
         RecruitmentBoardCreationRequest incorrectTitleRequest = new RecruitmentBoardCreationRequest("잘못된 제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11));
+                LocalDate.of(2023, 11, 11), 1.1, 1.2);
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
@@ -119,7 +119,7 @@ class RecruitmentBoardControllerTest {
                 .write(anyLong(), any(RecruitmentBoardCreationRequest.class));
 
         RecruitmentBoardCreationRequest incorrectContentRequest = new RecruitmentBoardCreationRequest("제목", "잘못된 본문", "달리기",
-                LocalDate.of(2023, 11, 11));
+                LocalDate.of(2023, 11, 11), 1.1, 1.2);
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
@@ -139,7 +139,7 @@ class RecruitmentBoardControllerTest {
                 .write(anyLong(), any(RecruitmentBoardCreationRequest.class));
 
         RecruitmentBoardCreationRequest incorrectContentRequest = new RecruitmentBoardCreationRequest("제목", "잘못된 본문", "달리기",
-                LocalDate.of(2023, 11, 11));
+                LocalDate.of(2023, 11, 11), 1.1, 1.2);
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
