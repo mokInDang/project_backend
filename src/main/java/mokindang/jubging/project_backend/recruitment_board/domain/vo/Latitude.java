@@ -14,7 +14,7 @@ public class Latitude {
     private static final Double MIN_LATITUDE = -90.0;
     private static final Double MAX_LATITUDE = 90.0;
 
-    @Column
+    @Column(name = "latitude_point")
     private  Double point;
 
     public Latitude(final Double point) {

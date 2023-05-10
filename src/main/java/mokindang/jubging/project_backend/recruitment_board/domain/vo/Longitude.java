@@ -13,7 +13,7 @@ public class Longitude {
     private static final Double MIN_LONGITUDE = -180.0;
     private static final Double MAX_LONGITUDE = 180.0;
 
-    @Column
+    @Column(name = "longitude_point")
     private Double point;
 
     public Longitude(final Double point) {
