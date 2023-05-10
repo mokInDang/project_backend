@@ -177,7 +177,9 @@ class RecruitmentBoardControllerTest {
                 .andExpect(jsonPath("$.writerProfileImageUrl").value("test_profile_url"))
                 .andExpect(jsonPath("$.firstFourLettersOfEmail").value("test"))
                 .andExpect(jsonPath("$.mine").value(true))
-                .andExpect(jsonPath("$.creatingDatetime").value("2023-03-30T11:11:00"));
+                .andExpect(jsonPath("$.creatingDatetime").value("2023-03-30T11:11:00"))
+                .andExpect(jsonPath("$.longitude").value(1.1))
+                .andExpect(jsonPath("$.latitude").value(1.2));
     }
 
     private RecruitmentBoard createRecruitmentBoard() {
