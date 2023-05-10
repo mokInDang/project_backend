@@ -3,17 +3,17 @@ package mokindang.jubging.project_backend.recruitment_board.domain.vo;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Coordinate {
 
-    @Column
+    @Embedded
     private Longitude longitude;
 
-    @Column
+    @Embedded
     private Latitude latitude;
 
     public Coordinate(final Double longitude, final Double latitude) {
