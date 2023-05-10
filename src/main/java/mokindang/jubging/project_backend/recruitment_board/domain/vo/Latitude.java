@@ -1,13 +1,21 @@
 package mokindang.jubging.project_backend.recruitment_board.domain.vo;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import java.util.Objects;
 
+@Embeddable
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Latitude {
 
     private static final Double MIN_LATITUDE = -90.0;
     private static final Double MAX_LATITUDE = 90.0;
 
-    private final Double point;
+    @Column
+    private  Double point;
 
     public Latitude(final Double point) {
         validateRange(point);

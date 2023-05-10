@@ -1,11 +1,20 @@
 package mokindang.jubging.project_backend.recruitment_board.domain.vo;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
+@Embeddable
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Longitude {
 
     private static final Double MIN_LONGITUDE = -180.0;
     private static final Double MAX_LONGITUDE = 180.0;
 
-    private final Double point;
+    @Column
+    private Double point;
 
     public Longitude(final Double point) {
         validateRange(point);
