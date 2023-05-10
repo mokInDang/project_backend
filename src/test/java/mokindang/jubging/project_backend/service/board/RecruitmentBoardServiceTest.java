@@ -108,6 +108,8 @@ class RecruitmentBoardServiceTest {
         when(recruitmentBoard.getWriterProfileImageUrl()).thenReturn("test_url");
         when(recruitmentBoard.isSameWriterId(anyLong())).thenReturn(true);
         when(recruitmentBoard.getContentBody()).thenReturn(new ContentBody("본문내용입니다."));
+        Coordinate coordinate = new Coordinate(1.1, 1.2);
+        when(recruitmentBoard.getMeetingSpot()).thenReturn(coordinate);
         when(boardRepository.findById(1L)).thenReturn(Optional.of(recruitmentBoard));
 
         //when
@@ -123,6 +125,8 @@ class RecruitmentBoardServiceTest {
         softly.assertThat(actual.isOnRecruitment()).isEqualTo(true);
         softly.assertThat(actual.getWriterProfileImageUrl()).isEqualTo("test_url");
         softly.assertThat(actual.getFirstFourLettersOfEmail()).isEqualTo("test");
+        softly.assertThat(actual.getLongitude()).isEqualTo(1.1);
+        softly.assertThat(actual.getLatitude()).isEqualTo(1.2);
         softly.assertThat(actual.isMine()).isEqualTo(true);
         softly.assertAll();
     }

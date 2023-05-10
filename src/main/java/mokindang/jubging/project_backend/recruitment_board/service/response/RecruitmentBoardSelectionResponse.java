@@ -45,6 +45,12 @@ public class RecruitmentBoardSelectionResponse {
     @Schema(description = "게시글 조회 회원이, 작성자인지에 대한 정보", allowableValues = {"true", "false"})
     private final boolean mine;
 
+    @Schema(description = "만남 장소 경도 값")
+    private final Double longitude;
+
+    @Schema(description = "만남 장소 위도 값")
+    private final Double latitude;
+
     public RecruitmentBoardSelectionResponse(final RecruitmentBoard board, final boolean mine) {
         this.boardId = board.getId();
         this.title = board.getTitle()
@@ -63,5 +69,9 @@ public class RecruitmentBoardSelectionResponse {
         this.firstFourLettersOfEmail = board.getFirstFourDigitsOfWriterEmail();
         this.writerProfileImageUrl = board.getWriterProfileImageUrl();
         this.mine = mine;
+        this.longitude = board.getMeetingSpot()
+                .getPointOfLongitude();
+        this.latitude = board.getMeetingSpot()
+                .getPointOfLatitude();
     }
 }

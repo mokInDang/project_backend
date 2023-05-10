@@ -91,6 +91,7 @@ class BoardSelectionResponseTest {
         when(recruitmentBoard.getWriterAlias()).thenReturn("test");
         when(recruitmentBoard.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
         when(recruitmentBoard.getWriterProfileImageUrl()).thenReturn("test_url");
+        when(recruitmentBoard.getMeetingSpot()).thenReturn(new Coordinate(1.1, 1.2));
         return recruitmentBoard;
     }
 }
