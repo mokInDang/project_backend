@@ -22,13 +22,10 @@ public class Image {
     @JoinColumn(name = "certification_board_id")
     private CertificationBoard certificationBoard;
 
-    private String storeName;
-
     private String filePath;
 
-    public Image(CertificationBoard certificationBoard, String storeName, String filePath) {
+    public Image(CertificationBoard certificationBoard, String filePath) {
         this.certificationBoard = certificationBoard;
-        this.storeName = storeName;
         this.filePath = filePath;
     }
 
