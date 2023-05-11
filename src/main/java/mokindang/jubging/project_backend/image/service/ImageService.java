@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static mokindang.jubging.project_backend.file.FileService.CERTIFICATION_BOARD_IMAGE;
 import static mokindang.jubging.project_backend.file.FileService.PROFILE_IMAGE;
@@ -72,5 +73,43 @@ public class ImageService {
     public void deleteCertificationImage(ImageDeleteRequest imageDeleteRequest) {
         String imageUrl = imageDeleteRequest.getImageUrl();
         fileService.deleteFile(imageUrl, CERTIFICATION_BOARD_IMAGE);
+    }
+
+    public void modifyImages(CertificationBoard board, List<String> fileUrls) {
+        Long boardId = board.getId();
+        List<Image> images = imageRepository.findByCertificationBoardId(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 인증 게시글입니다."));
+
+        deleteImage(fileUrls, images);
+
+        List<Image> images2 = imageRepository.findByCertificationBoardId(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 인증 게시글입니다."));
+
+        getNewUrl(fileUrls, images2);
+        createImage(board, fileUrls);
+    }
+
+    private void createImage(CertificationBoard board, List<String> fileUrls) {
+        List<Image> collect = fileUrls.stream()
+                .map(url -> new Image(board, url))
+                .collect(Collectors.toUnmodifiableList());
+        imageRepository.saveAll(collect);
+    }
+
+    private void getNewUrl(List<String> fileUrls, List<Image> images2) {
+        List<String> existingFileUrls = new ArrayList<>(images2.stream().map(Image::getFilePath).collect(Collectors.toUnmodifiableList()));
+        fileUrls.removeAll(existingFileUrls);
+    }
+
+    private void deleteImage(List<String> fileUrls, List<Image> images) {
+        List<Image> deletion = images.stream()
+                .filter(image -> checkDeletion(image, fileUrls))
+                .collect(Collectors.toUnmodifiableList());
+        imageRepository.deleteAll(deletion);
+    }
+
+    private boolean checkDeletion(Image image, List<String> fileUrls) {
+        return fileUrls.stream()
+                .noneMatch(fileUrl -> image.getFilePath().equals(fileUrl));
     }
 }
