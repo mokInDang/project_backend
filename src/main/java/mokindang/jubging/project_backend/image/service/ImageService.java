@@ -7,9 +7,9 @@ import mokindang.jubging.project_backend.file.FileResponse;
 import mokindang.jubging.project_backend.file.FileService;
 import mokindang.jubging.project_backend.image.domain.Image;
 import mokindang.jubging.project_backend.image.repository.ImageRepository;
-import mokindang.jubging.project_backend.image.service.request.ProfileImageDeleteRequest;
-import mokindang.jubging.project_backend.image.service.request.ProfileImageRequest;
-import mokindang.jubging.project_backend.image.service.response.ProfileImageResponse;
+import mokindang.jubging.project_backend.image.service.request.ImageDeleteRequest;
+import mokindang.jubging.project_backend.image.service.request.ImageRequest;
+import mokindang.jubging.project_backend.image.service.response.ImageUrlResponse;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.service.MemberService;
 import org.springframework.stereotype.Service;
@@ -17,6 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static mokindang.jubging.project_backend.file.FileService.CERTIFICATION_BOARD_IMAGE;
+import static mokindang.jubging.project_backend.file.FileService.PROFILE_IMAGE;
 
 @Slf4j
 @Service
@@ -43,34 +46,31 @@ public class ImageService {
         }
     }
 
-    public List<String> findImagesName(final CertificationBoard board) {
-        List<String> imagesName = new ArrayList<>();
-        List<Image> images = imageRepository.findByCertificationBoard(board)
-                .orElseThrow(() -> new IllegalArgumentException("인증 게시판 id로 저장된 이미지가 존재하지 않습니다."));
-
-        setImagesName(imagesName, images);
-        return imagesName;
-    }
-
-    private void setImagesName(List<String> imagesName, List<Image> images) {
-        for (Image image : images) {
-            imagesName.add(image.getStoreName());
-        }
-    }
-
-    public ProfileImageResponse uploadProfileImage(Long memberId, ProfileImageRequest profileImageRequest) {
+    public ImageUrlResponse uploadProfileImage(Long memberId, ImageRequest imageRequest) {
         Member member = memberService.findByMemberId(memberId);
-        FileResponse fileResponse = fileService.uploadFile(profileImageRequest.getProfileImage());
+        FileResponse fileResponse = fileService.uploadFile(imageRequest.getImage(), PROFILE_IMAGE);
         log.info("memberId = {}, alias = {} 의 프로필 이미지 {} 업로드", member.getId(), member.getAlias(), fileResponse.getUploadFileName());
-        return new ProfileImageResponse(fileResponse.getUploadFileUrl());
+        return new ImageUrlResponse(fileResponse.getUploadFileUrl());
     }
 
-    public ProfileImageResponse deleteProfileImage(ProfileImageDeleteRequest profileImageDeleteRequest) {
-        String profileImageUrl = profileImageDeleteRequest.getProfileImageUrl();
-        if (profileImageUrl.equals(defaultImageUrl)) {
-            return new ProfileImageResponse(defaultImageUrl);
+    public ImageUrlResponse uploadCertificationImage(Long memberId, ImageRequest imageRequest) {
+        Member member = memberService.findByMemberId(memberId);
+        FileResponse fileResponse = fileService.uploadFile(imageRequest.getImage(), CERTIFICATION_BOARD_IMAGE);
+        log.info("memberId = {}, alias = {} 의 인증게시글 이미지 {} 업로드", member.getId(), member.getAlias(), fileResponse.getUploadFileName());
+        return new ImageUrlResponse(fileResponse.getUploadFileUrl());
+    }
+
+    public ImageUrlResponse deleteProfileImage(ImageDeleteRequest imageDeleteRequest) {
+        String imageUrl = imageDeleteRequest.getImageUrl();
+        if (imageUrl.equals(defaultImageUrl)) {
+            return new ImageUrlResponse(defaultImageUrl);
         }
-        fileService.deleteFile(profileImageUrl, "profile_image");
-        return new ProfileImageResponse(defaultImageUrl);
+        fileService.deleteFile(imageUrl, PROFILE_IMAGE);
+        return new ImageUrlResponse(defaultImageUrl);
+    }
+
+    public void deleteCertificationImage(ImageDeleteRequest imageDeleteRequest) {
+        String imageUrl = imageDeleteRequest.getImageUrl();
+        fileService.deleteFile(imageUrl, CERTIFICATION_BOARD_IMAGE);
     }
 }
