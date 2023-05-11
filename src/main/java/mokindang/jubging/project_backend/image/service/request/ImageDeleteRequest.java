@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProfileImageDeleteRequest {
+public class ImageDeleteRequest {
 
     @Schema(description = "삭제할 이미지 Url")
-    private String profileImageUrl;
+    private String imageUrl;
 }
