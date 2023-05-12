@@ -27,7 +27,7 @@ public interface ImageControllerSwagger {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "변경완료")
     })
-    @PostMapping("profile")
+    @PostMapping("/member/profile-image")
     ResponseEntity<ImageUrlResponse> uploadProfileImage(@Parameter(hidden = true) @Login Long memberId, @ModelAttribute ImageRequest imageRequest);
 
     @Operation(summary = "프로필 이미지 삭제", parameters = {
@@ -36,7 +36,7 @@ public interface ImageControllerSwagger {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "삭제완료")
     })
-    @DeleteMapping("profile")
+    @DeleteMapping("/member/profile-image")
     ResponseEntity<ImageUrlResponse> deleteProfileImage(@Parameter(hidden = true) @RequestBody ImageDeleteRequest imageDeleteRequest);
 
     @Operation(summary = "인증게시글 이미지 추가", parameters = {
@@ -45,7 +45,7 @@ public interface ImageControllerSwagger {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "변경완료")
     })
-    @PostMapping("certification")
+    @PostMapping("/certification-image")
     ResponseEntity<ImageUrlResponse> uploadCertificationImage(@Parameter(hidden = true) @Login Long memberId, @ModelAttribute ImageRequest imageRequest);
 
     @Operation(summary = "인증게시글 이미지 삭제", parameters = {
@@ -54,7 +54,7 @@ public interface ImageControllerSwagger {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "삭제완료")
     })
-    @DeleteMapping("certification")
+    @DeleteMapping("/certification-image")
     ResponseEntity<Void> deleteCertificationImage(@Parameter(hidden = true) @RequestBody ImageDeleteRequest imageDeleteRequest);
 
 }

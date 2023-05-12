@@ -19,28 +19,28 @@ public class ImageController implements ImageControllerSwagger{
 
     private final ImageService imageService;
 
-    @PostMapping(value = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/member/profile-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ImageUrlResponse> uploadProfileImage(@Login Long memberId, @ModelAttribute ImageRequest imageRequest) {
         ImageUrlResponse imageUrlResponse = imageService.uploadProfileImage(memberId, imageRequest);
         return ResponseEntity.ok()
                 .body(imageUrlResponse);
     }
 
-    @DeleteMapping("/profile")
+    @DeleteMapping("/member/profile-image")
     public ResponseEntity<ImageUrlResponse> deleteProfileImage(@RequestBody ImageDeleteRequest imageDeleteRequest) {
         ImageUrlResponse imageUrlResponse = imageService.deleteProfileImage(imageDeleteRequest);
         return ResponseEntity.ok()
                 .body(imageUrlResponse);
     }
 
-    @PostMapping(value = "/certification", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/certification-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ImageUrlResponse> uploadCertificationImage(@Login Long memberId, @ModelAttribute ImageRequest imageRequest) {
         ImageUrlResponse imageUrlResponse = imageService.uploadCertificationImage(memberId, imageRequest);
         return ResponseEntity.ok()
                 .body(imageUrlResponse);
     }
 
-    @DeleteMapping("/certification")
+    @DeleteMapping("/certification-image")
     public ResponseEntity<Void> deleteCertificationImage(@RequestBody ImageDeleteRequest imageDeleteRequest) {
         imageService.deleteCertificationImage(imageDeleteRequest);
         return ResponseEntity.ok()
