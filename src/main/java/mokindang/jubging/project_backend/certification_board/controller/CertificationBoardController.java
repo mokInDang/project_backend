@@ -56,7 +56,7 @@ public class CertificationBoardController implements CertificationBoardControlle
 
     @PatchMapping("/{boardId}")
     public ResponseEntity<CertificationBoardIdResponse> modifyBoard(@Login final Long memberId, @PathVariable final Long boardId, @Valid @RequestBody final CertificationBoardModificationRequest certificationBoardModificationRequest) {
-        log.info("memberId = {} 의 게시글 수정 요청, 게시글 번호 : {}", memberId, boardId);
+        log.info("memberId = {} 의 인증 게시글 수정 요청, 게시글 번호 : {}", memberId, boardId);
         CertificationBoardIdResponse certificationBoardIdResponse = certificationBoardService.modify(memberId, boardId, certificationBoardModificationRequest);
         return ResponseEntity.ok()
                 .body(certificationBoardIdResponse);
