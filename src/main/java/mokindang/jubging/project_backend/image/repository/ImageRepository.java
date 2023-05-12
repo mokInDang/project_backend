@@ -11,5 +11,5 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
 
     Optional<List<Image>> findByCertificationBoard(CertificationBoard certificationBoard);
 
-    void deleteByStoreName(String storeName);
+    Optional<List<Image>> findByCertificationBoardId(Long boardId);
 }

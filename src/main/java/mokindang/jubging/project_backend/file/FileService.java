@@ -5,17 +5,12 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import mokindang.jubging.project_backend.certification_board.domain.CertificationBoard;
-import mokindang.jubging.project_backend.image.domain.Image;
-import mokindang.jubging.project_backend.image.repository.ImageRepository;
-import mokindang.jubging.project_backend.member.domain.Member;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -29,11 +24,10 @@ public class FileService {
     public static final String PROFILE_IMAGE = "profile_image";
     public static final String CERTIFICATION_BOARD_IMAGE = "certificationBoard_image";
     private final AmazonS3Client amazonS3Client;
-    private final ImageRepository imageRepository;
 
-    public FileResponse uploadFile(MultipartFile multipartFile) {
+    public FileResponse uploadFile(MultipartFile multipartFile, String filePath) {
 
-        String uploadFilePath = PROFILE_IMAGE;
+        String uploadFilePath = filePath;
         String originalFileName = multipartFile.getOriginalFilename();
         String uploadFileName = getUuidFileName(originalFileName);
         String uploadFileUrl = "";
@@ -42,23 +36,6 @@ public class FileService {
         uploadFileUrl = uploadToS3(multipartFile, uploadFilePath, uploadFileName, uploadFileUrl, objectMetadata);
 
         return new FileResponse(uploadFileUrl, uploadFileName);
-    }
-
-    public void uploadFiles(List<MultipartFile> multipartFiles, Member member, CertificationBoard certificationBoard) {
-
-        String uploadFilePath = CERTIFICATION_BOARD_IMAGE;
-
-        for (MultipartFile multipartFile : multipartFiles) {
-            String originalFileName = multipartFile.getOriginalFilename();
-            String uploadFileName = getUuidFileName(originalFileName);
-            String uploadFileUrl = "";
-
-            ObjectMetadata objectMetadata = getObjectMetadata(multipartFile);
-            uploadFileUrl = uploadToS3(multipartFile, uploadFilePath, uploadFileName, uploadFileUrl, objectMetadata);
-
-            log.info("memberId = {}, alias = {} 의 boardId = {} 인증 게시판 이미지 {} 업로드", member.getId(), member.getAlias(), certificationBoard.getId(), uploadFileName);
-            imageRepository.save(new Image(certificationBoard, uploadFileName, uploadFileUrl));
-        }
     }
 
     private String uploadToS3(MultipartFile multipartFile, String uploadFilePath, String uploadFileName, String uploadFileUrl, ObjectMetadata objectMetadata) {

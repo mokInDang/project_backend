@@ -3,9 +3,9 @@ package mokindang.jubging.project_backend.image.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mokindang.jubging.project_backend.image.service.ImageService;
-import mokindang.jubging.project_backend.image.service.request.ProfileImageDeleteRequest;
-import mokindang.jubging.project_backend.image.service.request.ProfileImageRequest;
-import mokindang.jubging.project_backend.image.service.response.ProfileImageResponse;
+import mokindang.jubging.project_backend.image.service.request.ImageDeleteRequest;
+import mokindang.jubging.project_backend.image.service.request.ImageRequest;
+import mokindang.jubging.project_backend.image.service.response.ImageUrlResponse;
 import mokindang.jubging.project_backend.web.argumentresolver.Login;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,17 +19,31 @@ public class ImageController implements ImageControllerSwagger{
 
     private final ImageService imageService;
 
-    @PostMapping(value = "profile-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ProfileImageResponse> uploadProfileImage(@Login long memberId, @ModelAttribute ProfileImageRequest profileImageRequest) {
-        ProfileImageResponse profileImageResponse = imageService.uploadProfileImage(memberId, profileImageRequest);
+    @PostMapping(value = "/member/profile-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ImageUrlResponse> uploadProfileImage(@Login Long memberId, @ModelAttribute ImageRequest imageRequest) {
+        ImageUrlResponse imageUrlResponse = imageService.uploadProfileImage(memberId, imageRequest);
         return ResponseEntity.ok()
-                .body(profileImageResponse);
+                .body(imageUrlResponse);
     }
 
-    @DeleteMapping("profile-image")
-    public ResponseEntity<ProfileImageResponse> deleteProfileImage(@RequestBody ProfileImageDeleteRequest profileImageDeleteRequest) {
-        ProfileImageResponse profileImageResponse = imageService.deleteProfileImage(profileImageDeleteRequest);
+    @DeleteMapping("/member/profile-image")
+    public ResponseEntity<ImageUrlResponse> deleteProfileImage(@RequestBody ImageDeleteRequest imageDeleteRequest) {
+        ImageUrlResponse imageUrlResponse = imageService.deleteProfileImage(imageDeleteRequest);
         return ResponseEntity.ok()
-                .body(profileImageResponse);
+                .body(imageUrlResponse);
+    }
+
+    @PostMapping(value = "/certification-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ImageUrlResponse> uploadCertificationImage(@Login Long memberId, @ModelAttribute ImageRequest imageRequest) {
+        ImageUrlResponse imageUrlResponse = imageService.uploadCertificationImage(memberId, imageRequest);
+        return ResponseEntity.ok()
+                .body(imageUrlResponse);
+    }
+
+    @DeleteMapping("/certification-image")
+    public ResponseEntity<Void> deleteCertificationImage(@RequestBody ImageDeleteRequest imageDeleteRequest) {
+        imageService.deleteCertificationImage(imageDeleteRequest);
+        return ResponseEntity.ok()
+                .build();
     }
 }
