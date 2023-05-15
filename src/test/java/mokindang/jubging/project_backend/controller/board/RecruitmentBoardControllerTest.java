@@ -6,6 +6,7 @@ import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.recruitment_board.controller.RecruitmentBoardController;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.Coordinate;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.Place;
 import mokindang.jubging.project_backend.recruitment_board.service.RecruitmentBoardService;
 import mokindang.jubging.project_backend.recruitment_board.service.request.BoardModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
@@ -189,9 +190,13 @@ class RecruitmentBoardControllerTest {
         testMember.updateProfileImage("test_profile_url");
         Coordinate coordinate = new Coordinate(1.1, 1.2);
         return new RecruitmentBoard(now, testMember, LocalDate.of(2025, 2, 11),
-                "달리기", coordinate, "게시판 제목", "게시판 내용 작성 테스트");
+                "달리기", createTestPlace(), "게시판 제목", "게시판 내용 작성 테스트");
     }
 
+    private Place createTestPlace() {
+        Coordinate coordinate = new Coordinate(1.1, 1.2);
+        return new Place(coordinate, "서울시 동작구 상도동 1-1");
+    }
     @Test
     @DisplayName("게시글 식별 번호를 입력받아 게시글 조회 시, 유저의 지역과 게시글의 지역이 일치하지 않으면 HTTP 400 상태코드와 함께 예외를 반환한다.")
     void failedToMatchMemberRegionAndBoardArea() throws Exception {

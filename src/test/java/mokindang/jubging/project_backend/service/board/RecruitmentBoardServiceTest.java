@@ -5,10 +5,7 @@ import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.member.service.MemberService;
 import mokindang.jubging.project_backend.recruitment_board.domain.ActivityCategory;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.ContentBody;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.Coordinate;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.StartingDate;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.Title;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.*;
 import mokindang.jubging.project_backend.recruitment_board.repository.RecruitmentBoardRepository;
 import mokindang.jubging.project_backend.recruitment_board.service.RecruitmentBoardService;
 import mokindang.jubging.project_backend.recruitment_board.service.request.BoardModificationRequest;
@@ -109,7 +106,7 @@ class RecruitmentBoardServiceTest {
         when(recruitmentBoard.isSameWriterId(anyLong())).thenReturn(true);
         when(recruitmentBoard.getContentBody()).thenReturn(new ContentBody("본문내용입니다."));
         Coordinate coordinate = new Coordinate(1.1, 1.2);
-        when(recruitmentBoard.getMeetingSpot()).thenReturn(coordinate);
+        when(recruitmentBoard.getMeetingPlace()).thenReturn(createTestPlace());
         when(boardRepository.findById(1L)).thenReturn(Optional.of(recruitmentBoard));
 
         //when
@@ -129,6 +126,10 @@ class RecruitmentBoardServiceTest {
         softly.assertThat(actual.getLatitude()).isEqualTo(1.2);
         softly.assertThat(actual.isMine()).isEqualTo(true);
         softly.assertAll();
+    }
+    private Place createTestPlace() {
+        Coordinate coordinate = new Coordinate(1.1, 1.2);
+        return new Place(coordinate, "서울시 동작구 상도동 1-1");
     }
 
     @Test
@@ -222,11 +223,10 @@ class RecruitmentBoardServiceTest {
         LocalDateTime now = LocalDateTime.of(2023, 3, 25, 1, 1);
         Member dongJackMember = new Member("test@mail.com", "동작이");
         dongJackMember.updateRegion("동작구");
-        Coordinate coordinate = new Coordinate(1.1, 1.2);
         RecruitmentBoard dongJackBoard1 = new RecruitmentBoard(now.plusDays(1), dongJackMember,
-                LocalDate.of(2023, 3, 27), "달리기", coordinate, "제목1", "본문1");
+                LocalDate.of(2023, 3, 27), "달리기", createTestPlace(), "제목1", "본문1");
         RecruitmentBoard dongJackBoard2 = new RecruitmentBoard(now, dongJackMember,
-                LocalDate.of(2023, 3, 27), "산책", coordinate, "제목2", "본문2");
+                LocalDate.of(2023, 3, 27), "산책",createTestPlace(), "제목2", "본문2");
         Slice<RecruitmentBoard> slice = new SliceImpl<>(List.of(dongJackBoard1, dongJackBoard2));
 
         Member member = mock(Member.class);

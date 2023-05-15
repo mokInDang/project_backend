@@ -2,10 +2,7 @@ package mokindang.jubging.project_backend.service.board.response;
 
 import mokindang.jubging.project_backend.recruitment_board.domain.ActivityCategory;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.ContentBody;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.Coordinate;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.StartingDate;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.Title;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.*;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardSelectionResponse;
@@ -32,10 +29,15 @@ class BoardSelectionResponseTest {
         writer.updateRegion("동작구");
         Coordinate coordinate = new Coordinate(1.1, 1.2);
         RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, writer, LocalDate.of(2025, 2, 11), "달리기",
-               coordinate, "제목", "본문내용");
+               createTestPlace(), "제목", "본문내용");
 
         //when, then
         assertThatCode(() -> new RecruitmentBoardSelectionResponse(recruitmentBoard, mine)).doesNotThrowAnyException();
+    }
+
+    private Place createTestPlace() {
+        Coordinate coordinate = new Coordinate(1.1, 1.2);
+        return new Place(coordinate, "서울시 동작구 상도동 1-1");
     }
 
     @Test
@@ -91,7 +93,7 @@ class BoardSelectionResponseTest {
         when(recruitmentBoard.getWriterAlias()).thenReturn("test");
         when(recruitmentBoard.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
         when(recruitmentBoard.getWriterProfileImageUrl()).thenReturn("test_url");
-        when(recruitmentBoard.getMeetingSpot()).thenReturn(new Coordinate(1.1, 1.2));
+        when(recruitmentBoard.getMeetingPlace()).thenReturn(createTestPlace());
         return recruitmentBoard;
     }
 }

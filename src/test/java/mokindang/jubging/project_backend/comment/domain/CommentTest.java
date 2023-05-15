@@ -4,6 +4,7 @@ import mokindang.jubging.project_backend.comment.domain.vo.CommentBody;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.Coordinate;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.Place;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,7 +43,12 @@ class CommentTest {
         writer.updateRegion("동작구");
         Coordinate coordinate = new Coordinate(1.1, 1.2);
         return new RecruitmentBoard(now, writer, LocalDate.of(2025, 2, 11), "달리기",
-                coordinate, "제목", "본문내용");
+                createTestPlace(), "제목", "본문내용");
+    }
+
+    private Place createTestPlace() {
+        Coordinate coordinate = new Coordinate(1.1, 1.2);
+        return new Place(coordinate, "서울시 동작구 상도동 1-1");
     }
 
     @Test
