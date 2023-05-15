@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 import static mokindang.jubging.project_backend.file.FileService.CERTIFICATION_BOARD_IMAGE;
 import static mokindang.jubging.project_backend.file.FileService.PROFILE_IMAGE;
+import static mokindang.jubging.project_backend.member.domain.vo.ProfileImage.DEFAULT_PROFILE_IMAGE_URL;
 
 @Slf4j
 @Service
@@ -27,7 +28,6 @@ import static mokindang.jubging.project_backend.file.FileService.PROFILE_IMAGE;
 @RequiredArgsConstructor
 public class ImageService {
 
-    private final String defaultImageUrl = "https://dognejupging-xyz-image-bucket.s3.ap-northeast-2.amazonaws.com/profile_image/profileimage2.png";
     private final ImageRepository imageRepository;
     private final FileService fileService;
     private final MemberService memberService;
@@ -105,6 +105,6 @@ public class ImageService {
     }
 
     public ImageUrlResponse getDefaultImageUrl() {
-        return new ImageUrlResponse(defaultImageUrl);
+        return new ImageUrlResponse(DEFAULT_PROFILE_IMAGE_URL);
     }
 }

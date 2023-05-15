@@ -12,7 +12,7 @@ import javax.persistence.Embeddable;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ProfileImage {
 
-    public static final String DEFAULT_PROFILE_IMAGE_URL = "DEFAULT_PROFILE_IMAGE_URL";
+    public static final String DEFAULT_PROFILE_IMAGE_URL = "https://dognejupging-xyz-image-bucket.s3.ap-northeast-2.amazonaws.com/profile_image/profileimage2.png";
 
     @Column(name = "profile_image_url", nullable = false)
     private String profileImageUrl;

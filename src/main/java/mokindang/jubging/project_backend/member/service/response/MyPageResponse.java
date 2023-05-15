@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MyPageResponse {
 
-    @Schema(description = "마이페이지 프로필 URL", example = "DEFAULT_PROFILE_IMAGE_URL")
+    @Schema(description = "마이페이지 프로필 URL", example = "기본 프로필 이미지 url")
     private final String profileImageUrl;
 
     @Schema(description = "마이페이지 닉네임", example = "민호")

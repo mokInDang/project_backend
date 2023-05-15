@@ -1,11 +1,11 @@
 package mokindang.jubging.project_backend.service.member;
 
+import mokindang.jubging.project_backend.file.FileService;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.member.repository.MemberRepository;
 import mokindang.jubging.project_backend.member.service.KaKaoLocalApi;
 import mokindang.jubging.project_backend.member.service.MemberService;
-import mokindang.jubging.project_backend.file.FileService;
 import mokindang.jubging.project_backend.member.service.request.RegionUpdateRequest;
 import mokindang.jubging.project_backend.member.service.response.MyPageResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Optional;
 
+import static mokindang.jubging.project_backend.member.domain.vo.ProfileImage.DEFAULT_PROFILE_IMAGE_URL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -107,6 +108,6 @@ class MemberServiceTest {
         //then
         assertThat(myInformation.getAlias()).isEqualTo("test");
         assertThat(myInformation.getRegion()).isEqualTo("부천시");
-        assertThat(myInformation.getProfileImageUrl()).isEqualTo("DEFAULT_PROFILE_IMAGE_URL");
+        assertThat(myInformation.getProfileImageUrl()).isEqualTo(DEFAULT_PROFILE_IMAGE_URL);
     }
 }
