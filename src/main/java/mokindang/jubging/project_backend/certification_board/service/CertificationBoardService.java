@@ -71,6 +71,8 @@ public class CertificationBoardService {
     public CertificationBoardIdResponse delete(final Long memberId, final Long boardId) {
         CertificationBoard certificationBoard = findById(boardId);
         certificationBoard.validatePermission(memberId);
+        List<String> findImagesUrl = imageService.findImagesUrl(certificationBoard);
+        imageService.deleteCertificationImage(findImagesUrl);
         certificationBoardRepository.delete(certificationBoard);
         return new CertificationBoardIdResponse(certificationBoard.getId());
     }
