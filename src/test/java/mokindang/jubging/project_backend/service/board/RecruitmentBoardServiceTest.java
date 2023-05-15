@@ -62,7 +62,7 @@ class RecruitmentBoardServiceTest {
         when(boardRepository.save(any(RecruitmentBoard.class))).thenReturn(savedBoard);
 
         RecruitmentBoardCreationRequest recruitmentBoardCreationRequest = new RecruitmentBoardCreationRequest("제목", "본문내용", "달리기",
-                LocalDate.of(2025, 2, 12), 1.1, 1.2);
+                LocalDate.of(2025, 2, 12), 1.1, 1.2, "서울시 동작구 상도동 1-1");
 
         //when
         RecruitmentBoardIdResponse savedBoardId = boardService.write(1L, recruitmentBoardCreationRequest);
@@ -79,7 +79,7 @@ class RecruitmentBoardServiceTest {
         when(memberService.findByMemberId(anyLong())).thenThrow(new IllegalArgumentException("해당하는 유저가 존재하지 않습니다."));
 
         RecruitmentBoardCreationRequest boardCreationRequest = new RecruitmentBoardCreationRequest("제목", "본문내용", "달리기",
-                LocalDate.of(2023, 2, 12), 1.1, 1.2);
+                LocalDate.of(2023, 2, 12), 1.1, 1.2, "서울시 동작구 상도동 1-1");
 
         //when, then
         assertThatThrownBy(() -> boardService.write(1L, boardCreationRequest))
@@ -127,6 +127,7 @@ class RecruitmentBoardServiceTest {
         softly.assertThat(actual.isMine()).isEqualTo(true);
         softly.assertAll();
     }
+
     private Place createTestPlace() {
         Coordinate coordinate = new Coordinate(1.1, 1.2);
         return new Place(coordinate, "서울시 동작구 상도동 1-1");
@@ -226,7 +227,7 @@ class RecruitmentBoardServiceTest {
         RecruitmentBoard dongJackBoard1 = new RecruitmentBoard(now.plusDays(1), dongJackMember,
                 LocalDate.of(2023, 3, 27), "달리기", createTestPlace(), "제목1", "본문1");
         RecruitmentBoard dongJackBoard2 = new RecruitmentBoard(now, dongJackMember,
-                LocalDate.of(2023, 3, 27), "산책",createTestPlace(), "제목2", "본문2");
+                LocalDate.of(2023, 3, 27), "산책", createTestPlace(), "제목2", "본문2");
         Slice<RecruitmentBoard> slice = new SliceImpl<>(List.of(dongJackBoard1, dongJackBoard2));
 
         Member member = mock(Member.class);

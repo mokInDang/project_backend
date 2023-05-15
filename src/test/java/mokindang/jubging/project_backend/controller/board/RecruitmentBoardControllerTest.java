@@ -60,7 +60,7 @@ class RecruitmentBoardControllerTest {
         when(boardService.write(anyLong(), any(RecruitmentBoardCreationRequest.class))).thenReturn(new RecruitmentBoardIdResponse(1L));
 
         RecruitmentBoardCreationRequest boardCreationRequest = new RecruitmentBoardCreationRequest("제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11), 1.1, 1.2);
+                LocalDate.of(2023, 11, 11), 1.1, 1.2, "서울시 동작구 상도동 1-1");
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
@@ -80,7 +80,7 @@ class RecruitmentBoardControllerTest {
                 .write(anyLong(), any(RecruitmentBoardCreationRequest.class));
 
         RecruitmentBoardCreationRequest boardCreationRequest = new RecruitmentBoardCreationRequest("제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11), 1.1, 1.2);
+                LocalDate.of(2023, 11, 11), 1.1, 1.2, "서울시 동작구 상도동 1-1");
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
@@ -100,7 +100,7 @@ class RecruitmentBoardControllerTest {
                 .write(anyLong(), any(RecruitmentBoardCreationRequest.class));
 
         RecruitmentBoardCreationRequest incorrectTitleRequest = new RecruitmentBoardCreationRequest("잘못된 제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11), 1.1, 1.2);
+                LocalDate.of(2023, 11, 11), 1.1, 1.2, "서울시 동작구 상도동 1-1");
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
@@ -120,7 +120,7 @@ class RecruitmentBoardControllerTest {
                 .write(anyLong(), any(RecruitmentBoardCreationRequest.class));
 
         RecruitmentBoardCreationRequest incorrectContentRequest = new RecruitmentBoardCreationRequest("제목", "잘못된 본문", "달리기",
-                LocalDate.of(2023, 11, 11), 1.1, 1.2);
+                LocalDate.of(2023, 11, 11), 1.1, 1.2, "서울시 동작구 상도동 1-1");
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
@@ -140,7 +140,7 @@ class RecruitmentBoardControllerTest {
                 .write(anyLong(), any(RecruitmentBoardCreationRequest.class));
 
         RecruitmentBoardCreationRequest incorrectContentRequest = new RecruitmentBoardCreationRequest("제목", "잘못된 본문", "달리기",
-                LocalDate.of(2023, 11, 11), 1.1, 1.2);
+                LocalDate.of(2023, 11, 11), 1.1, 1.2, "서울시 동작구 상도동 1-1");
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
@@ -197,6 +197,7 @@ class RecruitmentBoardControllerTest {
         Coordinate coordinate = new Coordinate(1.1, 1.2);
         return new Place(coordinate, "서울시 동작구 상도동 1-1");
     }
+
     @Test
     @DisplayName("게시글 식별 번호를 입력받아 게시글 조회 시, 유저의 지역과 게시글의 지역이 일치하지 않으면 HTTP 400 상태코드와 함께 예외를 반환한다.")
     void failedToMatchMemberRegionAndBoardArea() throws Exception {
