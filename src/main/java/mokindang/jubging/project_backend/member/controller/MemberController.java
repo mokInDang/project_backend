@@ -37,7 +37,7 @@ public class MemberController implements MemberControllerSwagger{
     }
     @PatchMapping("/edit-mypage")
     public ResponseEntity<MyPageResponse> editMyPage(@Login Long memberId, @RequestBody MyPageEditRequest myPageEditRequest){
-        MyPageResponse myPageResponse = memberService.editMypage(memberId, myPageEditRequest);
+        MyPageResponse myPageResponse = memberService.editMyPage(memberId, myPageEditRequest);
         return ResponseEntity.ok()
                 .body(myPageResponse);
     }
