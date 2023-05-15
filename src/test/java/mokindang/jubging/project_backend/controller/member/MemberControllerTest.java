@@ -123,7 +123,7 @@ class MemberControllerTest {
         member.updateRegion("동작구");
         MyPageResponse myPageResponse = new MyPageResponse("https://test.png", "newAlias", "동작구");
         MyPageEditRequest myPageEditRequest = new MyPageEditRequest("https://test.png", "minho");
-        when(memberService.editMypage(any(), any())).thenReturn(myPageResponse);
+        when(memberService.editMyPage(any(), any())).thenReturn(myPageResponse);
 
         //when
         ResultActions resultActions = mockMvc.perform(patch("/api/member/edit-mypage")

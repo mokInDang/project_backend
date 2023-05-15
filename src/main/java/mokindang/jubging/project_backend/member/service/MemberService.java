@@ -2,6 +2,7 @@ package mokindang.jubging.project_backend.member.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import mokindang.jubging.project_backend.image.service.ImageService;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.member.repository.MemberRepository;
@@ -21,6 +22,7 @@ public class MemberService {
 
     private final KaKaoLocalApi kakaoLocalApi;
     private final MemberRepository memberRepository;
+    private final ImageService imageService;
 
     public Member saveMember(Member member) {
         return memberRepository.save(member);
@@ -49,8 +51,9 @@ public class MemberService {
     }
 
     @Transactional
-    public MyPageResponse editMypage(final Long memberId, final MyPageEditRequest myPageEditRequest) {
+    public MyPageResponse editMyPage(final Long memberId, final MyPageEditRequest myPageEditRequest) {
         Member member = findByMemberId(memberId);
+        imageService.deleteProfileImage(member.getProfileImage().getProfileImageUrl());
         member.updateProfileImage(myPageEditRequest.getProfileImageUrl());
         member.updateAlias(myPageEditRequest.getAlias());
         return new MyPageResponse(member.getProfileImage().getProfileImageUrl(), member.getAlias(), member.getRegion().getValue());
