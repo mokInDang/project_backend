@@ -122,8 +122,9 @@ class RecruitmentBoardServiceTest {
         softly.assertThat(actual.isOnRecruitment()).isEqualTo(true);
         softly.assertThat(actual.getWriterProfileImageUrl()).isEqualTo("test_url");
         softly.assertThat(actual.getFirstFourLettersOfEmail()).isEqualTo("test");
-        softly.assertThat(actual.getLongitude()).isEqualTo(1.1);
-        softly.assertThat(actual.getLatitude()).isEqualTo(1.2);
+        softly.assertThat(actual.getMeetingPlaceResponse().getLongitude()).isEqualTo(1.1);
+        softly.assertThat(actual.getMeetingPlaceResponse().getLatitude()).isEqualTo(1.2);
+        softly.assertThat(actual.getMeetingPlaceResponse().getMeetingAddress()).isEqualTo("서울시 동작구 상도동 1-1");
         softly.assertThat(actual.isMine()).isEqualTo(true);
         softly.assertAll();
     }

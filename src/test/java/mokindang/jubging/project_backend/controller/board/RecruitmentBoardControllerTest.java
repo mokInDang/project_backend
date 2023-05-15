@@ -179,8 +179,9 @@ class RecruitmentBoardControllerTest {
                 .andExpect(jsonPath("$.firstFourLettersOfEmail").value("test"))
                 .andExpect(jsonPath("$.mine").value(true))
                 .andExpect(jsonPath("$.creatingDatetime").value("2023-03-30T11:11:00"))
-                .andExpect(jsonPath("$.longitude").value(1.1))
-                .andExpect(jsonPath("$.latitude").value(1.2));
+                .andExpect(jsonPath("$.meetingPlaceResponse.longitude").value(1.1))
+                .andExpect(jsonPath("$.meetingPlaceResponse.latitude").value(1.2))
+                .andExpect(jsonPath("$.meetingPlaceResponse.meetingAddress").value("서울시 동작구 상도동 1-1"));
     }
 
     private RecruitmentBoard createRecruitmentBoard() {
