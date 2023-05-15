@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.util.Objects;
 
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -29,5 +30,20 @@ public class Longitude {
 
     public Double getPoint() {
         return point;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final Longitude longitude = (Longitude) o;
+
+        return Objects.equals(point, longitude.point);
+    }
+
+    @Override
+    public int hashCode() {
+        return point != null ? point.hashCode() : 0;
     }
 }
