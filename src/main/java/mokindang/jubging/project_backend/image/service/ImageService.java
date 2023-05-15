@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 
 import static mokindang.jubging.project_backend.file.FileService.CERTIFICATION_BOARD_IMAGE;
 import static mokindang.jubging.project_backend.file.FileService.PROFILE_IMAGE;
-import static mokindang.jubging.project_backend.member.domain.vo.ProfileImage.DEFAULT_PROFILE_IMAGE_URL;
 
 @Slf4j
 @Service
@@ -59,13 +58,6 @@ public class ImageService {
         FileResponse fileResponse = fileService.uploadFile(imageRequest.getImage(), CERTIFICATION_BOARD_IMAGE);
         log.info("memberId = {}, alias = {} 의 인증게시글 이미지 {} 업로드", member.getId(), member.getAlias(), fileResponse.getUploadFileName());
         return new ImageUrlResponse(fileResponse.getUploadFileUrl());
-    }
-
-    public void deleteProfileImage(String profileImageUrl) {
-        if (profileImageUrl.equals(profileImageUrl) || profileImageUrl.equals(DEFAULT_PROFILE_IMAGE_URL)) {
-            return;
-        }
-        fileService.deleteFile(profileImageUrl, PROFILE_IMAGE);
     }
 
     public void deleteCertificationImage(List<String> imageUrls) {
