@@ -8,12 +8,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import mokindang.jubging.project_backend.exception.ErrorResponse;
 import mokindang.jubging.project_backend.certification_board.service.request.CertificationBoardCreationRequest;
 import mokindang.jubging.project_backend.certification_board.service.request.CertificationBoardModificationRequest;
 import mokindang.jubging.project_backend.certification_board.service.response.CertificationBoardIdResponse;
 import mokindang.jubging.project_backend.certification_board.service.response.CertificationBoardSelectionResponse;
 import mokindang.jubging.project_backend.certification_board.service.response.MultiCertificationBoardSelectResponse;
+import mokindang.jubging.project_backend.exception.ErrorResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
 import mokindang.jubging.project_backend.web.argumentresolver.Login;
 import org.springframework.data.domain.Pageable;
@@ -37,7 +37,7 @@ public interface CertificationBoardControllerSwagger {
                     "유효하지 않은 제목 \t\n", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @PostMapping
-    ResponseEntity<CertificationBoardIdResponse> write(@Parameter(hidden = true) @Login Long memberId, @Valid @ModelAttribute final CertificationBoardCreationRequest certificationBoardCreationRequest);
+    ResponseEntity<CertificationBoardIdResponse> write(@Parameter(hidden = true) @Login Long memberId, @Valid @RequestBody final CertificationBoardCreationRequest certificationBoardCreationRequest);
 
     @Operation(summary = "인증 게시글 조회", parameters = {
             @Parameter(name = "boardId", description = "Board 의 id", in = ParameterIn.PATH),
@@ -86,5 +86,5 @@ public interface CertificationBoardControllerSwagger {
     })
     @PatchMapping("/{boardId}")
     ResponseEntity<CertificationBoardIdResponse> modifyBoard(@Parameter(hidden = true) @Login final Long memberId, @PathVariable final Long boardId,
-                                                             @ModelAttribute final CertificationBoardModificationRequest certificationBoardModificationRequest);
+                                                             @Valid @RequestBody final CertificationBoardModificationRequest certificationBoardModificationRequest);
 }

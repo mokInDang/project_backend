@@ -77,16 +77,14 @@ class CommentServiceTest {
         //given
         SoftAssertions softly = new SoftAssertions();
         Comment comment1 = createMockedComment(1L);
+        ReplyComment mockedReplyComment = createMockedReplyComment();
+        when(comment1.getReplyComments()).thenReturn(List.of(mockedReplyComment));
         Comment comment2 = createMockedComment(2L);
 
-
         when(commentRepository.findCommentsByRecruitmentBoardId(anyLong())).thenReturn(List.of(comment1, comment2));
-        ReplyComment replyComment = createMockedReplyComment();
-        when(replyCommentRepository.findReplyCommentsByCommentId(anyLong())).thenReturn(List.of(replyComment));
 
         //when
         MultiCommentSelectionResponse multiCommentSelectionResponse = commentService.selectComments(1L, BoardType.RECRUITMENT_BOARD, 1L);
-
 
         //then
         softly.assertThat(multiCommentSelectionResponse.getComments()).hasSize(2);

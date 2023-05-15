@@ -42,7 +42,7 @@ public class CertificationBoard {
     @Embedded
     private ContentBody contentBody;
 
-    @OneToMany(mappedBy = "certificationBoard")
+    @OneToMany(mappedBy = "certificationBoard", cascade = CascadeType.REMOVE)
     private List<Image> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "certificationBoard", cascade = CascadeType.REMOVE)
