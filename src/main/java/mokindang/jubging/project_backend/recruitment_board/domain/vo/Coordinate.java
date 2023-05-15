@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
+import java.util.Objects;
 
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -36,14 +37,14 @@ public class Coordinate {
 
         final Coordinate that = (Coordinate) o;
 
-        if (!longitude.equals(that.longitude)) return false;
-        return latitude.equals(that.latitude);
+        if (!Objects.equals(longitude, that.longitude)) return false;
+        return Objects.equals(latitude, that.latitude);
     }
 
     @Override
     public int hashCode() {
-        int result = longitude.hashCode();
-        result = 31 * result + latitude.hashCode();
+        int result = longitude != null ? longitude.hashCode() : 0;
+        result = 31 * result + (latitude != null ? latitude.hashCode() : 0);
         return result;
     }
 }
