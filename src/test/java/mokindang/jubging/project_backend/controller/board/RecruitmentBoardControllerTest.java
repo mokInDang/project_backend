@@ -5,6 +5,8 @@ import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.recruitment_board.controller.RecruitmentBoardController;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.Coordinate;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.Place;
 import mokindang.jubging.project_backend.recruitment_board.service.RecruitmentBoardService;
 import mokindang.jubging.project_backend.recruitment_board.service.request.BoardModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
@@ -58,7 +60,7 @@ class RecruitmentBoardControllerTest {
         when(boardService.write(anyLong(), any(RecruitmentBoardCreationRequest.class))).thenReturn(new RecruitmentBoardIdResponse(1L));
 
         RecruitmentBoardCreationRequest boardCreationRequest = new RecruitmentBoardCreationRequest("제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11));
+                LocalDate.of(2023, 11, 11), 1.1, 1.2, "서울시 동작구 상도동 1-1");
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
@@ -78,7 +80,7 @@ class RecruitmentBoardControllerTest {
                 .write(anyLong(), any(RecruitmentBoardCreationRequest.class));
 
         RecruitmentBoardCreationRequest boardCreationRequest = new RecruitmentBoardCreationRequest("제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11));
+                LocalDate.of(2023, 11, 11), 1.1, 1.2, "서울시 동작구 상도동 1-1");
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
@@ -98,7 +100,7 @@ class RecruitmentBoardControllerTest {
                 .write(anyLong(), any(RecruitmentBoardCreationRequest.class));
 
         RecruitmentBoardCreationRequest incorrectTitleRequest = new RecruitmentBoardCreationRequest("잘못된 제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11));
+                LocalDate.of(2023, 11, 11), 1.1, 1.2, "서울시 동작구 상도동 1-1");
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
@@ -118,7 +120,7 @@ class RecruitmentBoardControllerTest {
                 .write(anyLong(), any(RecruitmentBoardCreationRequest.class));
 
         RecruitmentBoardCreationRequest incorrectContentRequest = new RecruitmentBoardCreationRequest("제목", "잘못된 본문", "달리기",
-                LocalDate.of(2023, 11, 11));
+                LocalDate.of(2023, 11, 11), 1.1, 1.2, "서울시 동작구 상도동 1-1");
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
@@ -138,7 +140,7 @@ class RecruitmentBoardControllerTest {
                 .write(anyLong(), any(RecruitmentBoardCreationRequest.class));
 
         RecruitmentBoardCreationRequest incorrectContentRequest = new RecruitmentBoardCreationRequest("제목", "잘못된 본문", "달리기",
-                LocalDate.of(2023, 11, 11));
+                LocalDate.of(2023, 11, 11), 1.1, 1.2, "서울시 동작구 상도동 1-1");
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
@@ -176,7 +178,10 @@ class RecruitmentBoardControllerTest {
                 .andExpect(jsonPath("$.writerProfileImageUrl").value("test_profile_url"))
                 .andExpect(jsonPath("$.firstFourLettersOfEmail").value("test"))
                 .andExpect(jsonPath("$.mine").value(true))
-                .andExpect(jsonPath("$.creatingDatetime").value("2023-03-30T11:11:00"));
+                .andExpect(jsonPath("$.creatingDatetime").value("2023-03-30T11:11:00"))
+                .andExpect(jsonPath("$.meetingPlaceResponse.longitude").value(1.1))
+                .andExpect(jsonPath("$.meetingPlaceResponse.latitude").value(1.2))
+                .andExpect(jsonPath("$.meetingPlaceResponse.meetingAddress").value("서울시 동작구 상도동 1-1"));
     }
 
     private RecruitmentBoard createRecruitmentBoard() {
@@ -184,8 +189,14 @@ class RecruitmentBoardControllerTest {
         Member testMember = new Member("test@email.com", "test");
         testMember.updateRegion("동작구");
         testMember.updateProfileImage("test_profile_url");
+        Coordinate coordinate = new Coordinate(1.1, 1.2);
         return new RecruitmentBoard(now, testMember, LocalDate.of(2025, 2, 11),
-                "달리기", "게시판 제목", "게시판 내용 작성 테스트");
+                "달리기", createTestPlace(), "게시판 제목", "게시판 내용 작성 테스트");
+    }
+
+    private Place createTestPlace() {
+        Coordinate coordinate = new Coordinate(1.1, 1.2);
+        return new Place(coordinate, "서울시 동작구 상도동 1-1");
     }
 
     @Test

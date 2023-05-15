@@ -1,12 +1,11 @@
 package mokindang.jubging.project_backend.service.board;
 
-import mokindang.jubging.project_backend.recruitment_board.domain.ActivityCategory;
-import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.ContentBody;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.StartingDate;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.Title;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
+import mokindang.jubging.project_backend.member.service.MemberService;
+import mokindang.jubging.project_backend.recruitment_board.domain.ActivityCategory;
+import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.*;
 import mokindang.jubging.project_backend.recruitment_board.repository.RecruitmentBoardRepository;
 import mokindang.jubging.project_backend.recruitment_board.service.RecruitmentBoardService;
 import mokindang.jubging.project_backend.recruitment_board.service.request.BoardModificationRequest;
@@ -14,7 +13,6 @@ import mokindang.jubging.project_backend.recruitment_board.service.request.Recru
 import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardSelectResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardSelectionResponse;
-import mokindang.jubging.project_backend.member.service.MemberService;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,7 +62,7 @@ class RecruitmentBoardServiceTest {
         when(boardRepository.save(any(RecruitmentBoard.class))).thenReturn(savedBoard);
 
         RecruitmentBoardCreationRequest recruitmentBoardCreationRequest = new RecruitmentBoardCreationRequest("제목", "본문내용", "달리기",
-                LocalDate.of(2025, 2, 12));
+                LocalDate.of(2025, 2, 12), 1.1, 1.2, "서울시 동작구 상도동 1-1");
 
         //when
         RecruitmentBoardIdResponse savedBoardId = boardService.write(1L, recruitmentBoardCreationRequest);
@@ -81,7 +79,7 @@ class RecruitmentBoardServiceTest {
         when(memberService.findByMemberId(anyLong())).thenThrow(new IllegalArgumentException("해당하는 유저가 존재하지 않습니다."));
 
         RecruitmentBoardCreationRequest boardCreationRequest = new RecruitmentBoardCreationRequest("제목", "본문내용", "달리기",
-                LocalDate.of(2023, 2, 12));
+                LocalDate.of(2023, 2, 12), 1.1, 1.2, "서울시 동작구 상도동 1-1");
 
         //when, then
         assertThatThrownBy(() -> boardService.write(1L, boardCreationRequest))
@@ -107,6 +105,8 @@ class RecruitmentBoardServiceTest {
         when(recruitmentBoard.getWriterProfileImageUrl()).thenReturn("test_url");
         when(recruitmentBoard.isSameWriterId(anyLong())).thenReturn(true);
         when(recruitmentBoard.getContentBody()).thenReturn(new ContentBody("본문내용입니다."));
+        Coordinate coordinate = new Coordinate(1.1, 1.2);
+        when(recruitmentBoard.getMeetingPlace()).thenReturn(createTestPlace());
         when(boardRepository.findById(1L)).thenReturn(Optional.of(recruitmentBoard));
 
         //when
@@ -122,8 +122,16 @@ class RecruitmentBoardServiceTest {
         softly.assertThat(actual.isOnRecruitment()).isEqualTo(true);
         softly.assertThat(actual.getWriterProfileImageUrl()).isEqualTo("test_url");
         softly.assertThat(actual.getFirstFourLettersOfEmail()).isEqualTo("test");
+        softly.assertThat(actual.getMeetingPlaceResponse().getLongitude()).isEqualTo(1.1);
+        softly.assertThat(actual.getMeetingPlaceResponse().getLatitude()).isEqualTo(1.2);
+        softly.assertThat(actual.getMeetingPlaceResponse().getMeetingAddress()).isEqualTo("서울시 동작구 상도동 1-1");
         softly.assertThat(actual.isMine()).isEqualTo(true);
         softly.assertAll();
+    }
+
+    private Place createTestPlace() {
+        Coordinate coordinate = new Coordinate(1.1, 1.2);
+        return new Place(coordinate, "서울시 동작구 상도동 1-1");
     }
 
     @Test
@@ -217,8 +225,10 @@ class RecruitmentBoardServiceTest {
         LocalDateTime now = LocalDateTime.of(2023, 3, 25, 1, 1);
         Member dongJackMember = new Member("test@mail.com", "동작이");
         dongJackMember.updateRegion("동작구");
-        RecruitmentBoard dongJackBoard1 = new RecruitmentBoard(now.plusDays(1), dongJackMember, LocalDate.of(2023, 3, 27), "달리기", "제목1", "본문1");
-        RecruitmentBoard dongJackBoard2 = new RecruitmentBoard(now, dongJackMember, LocalDate.of(2023, 3, 27), "산책", "제목2", "본문2");
+        RecruitmentBoard dongJackBoard1 = new RecruitmentBoard(now.plusDays(1), dongJackMember,
+                LocalDate.of(2023, 3, 27), "달리기", createTestPlace(), "제목1", "본문1");
+        RecruitmentBoard dongJackBoard2 = new RecruitmentBoard(now, dongJackMember,
+                LocalDate.of(2023, 3, 27), "산책", createTestPlace(), "제목2", "본문2");
         Slice<RecruitmentBoard> slice = new SliceImpl<>(List.of(dongJackBoard1, dongJackBoard2));
 
         Member member = mock(Member.class);

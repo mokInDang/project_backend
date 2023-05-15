@@ -6,9 +6,7 @@ import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.recruitment_board.domain.ActivityCategory;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.ContentBody;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.StartingDate;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.Title;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.*;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,11 +46,12 @@ class RecruitmentBoardTest {
     }
 
     private RecruitmentBoard createRecruitmentBoardWithTestWriter() {
+
         LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
         Member writer = new Member("test1@email.com", "test");
         writer.updateRegion("동작구");
         RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, writer, LocalDate.of(2025, 2, 11), "달리기",
-                "제목", "본문내용");
+                createTestPlace(), "제목", "본문내용");
 
         em.persist(writer);
         em.persist(recruitmentBoard);
@@ -60,6 +59,11 @@ class RecruitmentBoardTest {
         em.clear();
 
         return recruitmentBoard;
+    }
+
+    private Place createTestPlace() {
+        Coordinate coordinate = new Coordinate(1.1, 1.2);
+        return new Place(coordinate, "서울시 동작구 상도동 1-1");
     }
 
     @Test
@@ -98,8 +102,9 @@ class RecruitmentBoardTest {
         LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
         Member testMember = new Member("koho1047@naver.com", "민호");
         testMember.updateRegion("동작구");
+        Coordinate coordinate = new Coordinate(1.1, 1.2);
         RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, testMember, LocalDate.of(2025, 2, 11),
-                "달리기", "게시판 제목", "게시판 내용 작성 테스트");
+                "달리기", createTestPlace(), "게시판 제목", "게시판 내용 작성 테스트");
 
         //when
         Member member = recruitmentBoard.getWriter();
@@ -131,7 +136,7 @@ class RecruitmentBoardTest {
 
         //when, then
         assertThatThrownBy(() -> new RecruitmentBoard(now, member, LocalDate.of(2025, 2, 11),
-                "달리기", "게시판 제목", "게시판 내용 작성 테스트"))
+                "달리기", createTestPlace(), "게시판 제목", "게시판 내용 작성 테스트"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("지역 인증이 되지 않아, 게시글을 생성할 수 없습니다.");
     }
@@ -155,8 +160,9 @@ class RecruitmentBoardTest {
         LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
         Member testMember = new Member("koho1047@naver.com", "민호");
         testMember.updateRegion("동작구");
+        Coordinate coordinate = new Coordinate(1.1, 1.2);
         RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, testMember, LocalDate.of(2025, 2, 11),
-                "달리기", "게시판 제목", "게시판 내용 작성 테스트");
+                "달리기", createTestPlace(), "게시판 제목", "게시판 내용 작성 테스트");
 
         //when
         String actual = recruitmentBoard.getWriterAlias();
@@ -276,8 +282,9 @@ class RecruitmentBoardTest {
         Member writer = new Member("test1@email.com", "test");
         writer.updateRegion("동작구");
         writer.updateProfileImage(testUrl);
+        Coordinate coordinate = new Coordinate(1.1, 1.2);
         RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, writer, LocalDate.of(2025, 2, 11), "달리기",
-                "제목", "본문내용");
+                createTestPlace(), "제목", "본문내용");
 
         //when
         String writerProfileImageUrl = recruitmentBoard.getWriterProfileImageUrl();
@@ -300,5 +307,18 @@ class RecruitmentBoardTest {
 
         //then
         assertThat(actual).isEqualTo(4);
+    }
+
+    @Test
+    @DisplayName("만남 장소를 반환한다.")
+    void getMeetingPlace() {
+        //given
+        RecruitmentBoard recruitmentBoard = createRecruitmentBoardWithTestWriter();
+
+        //when
+        Place meetingPlace = recruitmentBoard.getMeetingPlace();
+
+        //then
+        assertThat(meetingPlace).isEqualTo(createTestPlace());
     }
 }

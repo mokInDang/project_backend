@@ -7,9 +7,7 @@ import mokindang.jubging.project_backend.comment.domain.Comment;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.ContentBody;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.StartingDate;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.Title;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -54,11 +52,14 @@ public class RecruitmentBoard {
     @Column(nullable = false)
     private boolean onRecruitment;
 
+    @Embedded
+    private Place meetingPlace;
+
     @OneToMany(mappedBy = "recruitmentBoard", cascade = CascadeType.REMOVE)
     List<Comment> comments = new ArrayList<>();
 
     public RecruitmentBoard(final LocalDateTime creatingDateTime, final Member writer, final LocalDate startingDate,
-                            final String activityCategory, final String title, final String content) {
+                            final String activityCategory, final Place meetingPlace, final String title, final String content) {
         this.creatingDateTime = creatingDateTime;
         this.writer = writer;
         LocalDate creatingDate = creatingDateTime.toLocalDate();
@@ -70,6 +71,7 @@ public class RecruitmentBoard {
         validateRegion(region);
         this.writingRegion = region;
         this.onRecruitment = true;
+        this.meetingPlace = meetingPlace;
     }
 
     private void validateRegion(final Region region) {

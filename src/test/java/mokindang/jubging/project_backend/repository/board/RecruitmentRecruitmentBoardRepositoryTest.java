@@ -1,9 +1,11 @@
 package mokindang.jubging.project_backend.repository.board;
 
-import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.member.repository.MemberRepository;
+import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.Coordinate;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.Place;
 import mokindang.jubging.project_backend.recruitment_board.repository.RecruitmentBoardRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,7 +44,9 @@ class RecruitmentRecruitmentBoardRepositoryTest {
         member.updateRegion("동작구");
         memberRepository.save(member);
         LocalDateTime now = LocalDateTime.of(2023, 3, 25, 1, 1);
-        RecruitmentBoard recruitingRecruitmentBoardWithPastStartingDate = new RecruitmentBoard(now, member, LocalDate.of(2023, 3, 27), "달리기", "제목", "본문");
+        Coordinate coordinate = new Coordinate(1.1, 1.2);
+        RecruitmentBoard recruitingRecruitmentBoardWithPastStartingDate = new RecruitmentBoard(now, member,
+                LocalDate.of(2023, 3, 27), "달리기", createTestPlace(), "제목", "본문");
         RecruitmentBoard save = recruitmentBoardRepository.save(recruitingRecruitmentBoardWithPastStartingDate);
 
         LocalDate today = LocalDate.of(2023, 3, 28);
@@ -56,8 +60,13 @@ class RecruitmentRecruitmentBoardRepositoryTest {
         assertThat(recruitmentBoardRepository.findById(save.getId()).get().isOnRecruitment()).isFalse();
     }
 
+    private Place createTestPlace() {
+        Coordinate coordinate = new Coordinate(1.1, 1.2);
+        return new Place(coordinate, "서울시 동작구 상도동 1-1");
+    }
+
     @Test
-    @DisplayName("회원의 지역에 해당하는 게시글 리스트를 반환한다. 이때 게시글은 작성 일 자 기준 내림차순으로 정렬한다.")
+    @DisplayName("회원의 지역에 해당하는 게시글 리스트를 반환한다. 이때 게시글은 작성 일자 기준 내림차순으로 정렬한다.")
     void selectRegionBoards() {
         //given
         LocalDateTime now = LocalDateTime.of(2023, 3, 25, 1, 1);
@@ -65,15 +74,23 @@ class RecruitmentRecruitmentBoardRepositoryTest {
         Member dongJackMember = new Member("test@mail.com", "동작이");
         dongJackMember.updateRegion("동작구");
         memberRepository.save(dongJackMember);
-        RecruitmentBoard dongJackRecruitmentBoard1 = new RecruitmentBoard(now.plusDays(1), dongJackMember, LocalDate.of(2023, 3, 27), "달리기", "제목1", "본문1");
-        RecruitmentBoard dongJackRecruitmentBoard2 = new RecruitmentBoard(now, dongJackMember, LocalDate.of(2023, 3, 27), "산책", "제목2", "본문2");
+        RecruitmentBoard dongJackRecruitmentBoard1 = new RecruitmentBoard(now.plusDays(1), dongJackMember,
+                LocalDate.of(2023, 3, 27), "달리기", createTestPlace(),
+                "제목1", "본문1");
+
         recruitmentBoardRepository.save(dongJackRecruitmentBoard1);
+
+        RecruitmentBoard dongJackRecruitmentBoard2 = new RecruitmentBoard(now, dongJackMember,
+                LocalDate.of(2023, 3, 27), "산책", createTestPlace(),
+                "제목2", "본문2");
+
         recruitmentBoardRepository.save(dongJackRecruitmentBoard2);
 
         Member sungDongMember = new Member("test2@maill.com", "성동이");
         sungDongMember.updateRegion("성동구");
         memberRepository.save(sungDongMember);
-        RecruitmentBoard sungDongRecruitmentBoard1 = new RecruitmentBoard(now, sungDongMember, LocalDate.of(2023, 3, 27), "달리기", "제목1", "본문1");
+        RecruitmentBoard sungDongRecruitmentBoard1 = new RecruitmentBoard(now, sungDongMember, LocalDate.of(2023, 3, 27), "달리기", createTestPlace(),
+                "제목1", "본문1");
         recruitmentBoardRepository.save(sungDongRecruitmentBoard1);
 
         Region targetRegion = Region.from("동작구");
