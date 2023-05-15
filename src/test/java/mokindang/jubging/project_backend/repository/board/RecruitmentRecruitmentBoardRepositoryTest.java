@@ -66,11 +66,10 @@ class RecruitmentRecruitmentBoardRepositoryTest {
     }
 
     @Test
-    @DisplayName("회원의 지역에 해당하는 게시글 리스트를 반환한다. 이때 게시글은 작성 일 자 기준 내림차순으로 정렬한다.")
+    @DisplayName("회원의 지역에 해당하는 게시글 리스트를 반환한다. 이때 게시글은 작성 일자 기준 내림차순으로 정렬한다.")
     void selectRegionBoards() {
         //given
         LocalDateTime now = LocalDateTime.of(2023, 3, 25, 1, 1);
-        Coordinate coordinate = new Coordinate(1.1, 1.2);
 
         Member dongJackMember = new Member("test@mail.com", "동작이");
         dongJackMember.updateRegion("동작구");
@@ -78,6 +77,9 @@ class RecruitmentRecruitmentBoardRepositoryTest {
         RecruitmentBoard dongJackRecruitmentBoard1 = new RecruitmentBoard(now.plusDays(1), dongJackMember,
                 LocalDate.of(2023, 3, 27), "달리기", createTestPlace(),
                 "제목1", "본문1");
+
+        recruitmentBoardRepository.save(dongJackRecruitmentBoard1);
+
         RecruitmentBoard dongJackRecruitmentBoard2 = new RecruitmentBoard(now, dongJackMember,
                 LocalDate.of(2023, 3, 27), "산책", createTestPlace(),
                 "제목2", "본문2");

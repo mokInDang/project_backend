@@ -69,9 +69,11 @@ public class RecruitmentBoardSelectionResponse {
         this.firstFourLettersOfEmail = board.getFirstFourDigitsOfWriterEmail();
         this.writerProfileImageUrl = board.getWriterProfileImageUrl();
         this.mine = mine;
-        this.longitude = board.getMeetingSpot()
+        this.longitude = board.getMeetingPlace()
+                .getCoordinate()
                 .getPointOfLongitude();
-        this.latitude = board.getMeetingSpot()
+        this.latitude = board.getMeetingPlace()
+                .getCoordinate()
                 .getPointOfLatitude();
     }
 }
