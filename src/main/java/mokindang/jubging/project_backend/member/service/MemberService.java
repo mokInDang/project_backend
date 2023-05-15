@@ -49,7 +49,7 @@ public class MemberService {
     }
 
     @Transactional
-    public MyPageResponse editMypage(final Long memberId, final MyPageEditRequest myPageEditRequest) {
+    public MyPageResponse editMyPage(final Long memberId, final MyPageEditRequest myPageEditRequest) {
         Member member = findByMemberId(memberId);
         member.updateProfileImage(myPageEditRequest.getProfileImageUrl());
         member.updateAlias(myPageEditRequest.getAlias());
