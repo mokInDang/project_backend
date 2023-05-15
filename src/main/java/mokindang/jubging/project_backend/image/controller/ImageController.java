@@ -3,7 +3,6 @@ package mokindang.jubging.project_backend.image.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mokindang.jubging.project_backend.image.service.ImageService;
-import mokindang.jubging.project_backend.image.service.request.ImageDeleteRequest;
 import mokindang.jubging.project_backend.image.service.request.ImageRequest;
 import mokindang.jubging.project_backend.image.service.response.ImageUrlResponse;
 import mokindang.jubging.project_backend.web.argumentresolver.Login;
@@ -27,10 +26,10 @@ public class ImageController implements ImageControllerSwagger{
     }
 
     @DeleteMapping("/member/profile-image")
-    public ResponseEntity<ImageUrlResponse> deleteProfileImage(@RequestBody ImageDeleteRequest imageDeleteRequest) {
-        ImageUrlResponse imageUrlResponse = imageService.deleteProfileImage(imageDeleteRequest);
+    public ResponseEntity<ImageUrlResponse> deleteProfileImage() {
+        ImageUrlResponse defaultImageUrl = imageService.getDefaultImageUrl();
         return ResponseEntity.ok()
-                .body(imageUrlResponse);
+                .body(defaultImageUrl);
     }
 
     @PostMapping(value = "/certification-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -41,8 +40,7 @@ public class ImageController implements ImageControllerSwagger{
     }
 
     @DeleteMapping("/certification-image")
-    public ResponseEntity<Void> deleteCertificationImage(@RequestBody ImageDeleteRequest imageDeleteRequest) {
-        imageService.deleteCertificationImage(imageDeleteRequest);
+    public ResponseEntity<Void> deleteCertificationImage() {
         return ResponseEntity.ok()
                 .build();
     }
