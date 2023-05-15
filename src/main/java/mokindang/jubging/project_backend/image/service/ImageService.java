@@ -7,7 +7,6 @@ import mokindang.jubging.project_backend.file.FileResponse;
 import mokindang.jubging.project_backend.file.FileService;
 import mokindang.jubging.project_backend.image.domain.Image;
 import mokindang.jubging.project_backend.image.repository.ImageRepository;
-import mokindang.jubging.project_backend.image.service.request.ImageDeleteRequest;
 import mokindang.jubging.project_backend.image.service.request.ImageRequest;
 import mokindang.jubging.project_backend.image.service.response.ImageUrlResponse;
 import mokindang.jubging.project_backend.member.domain.Member;
@@ -21,6 +20,7 @@ import java.util.stream.Collectors;
 
 import static mokindang.jubging.project_backend.file.FileService.CERTIFICATION_BOARD_IMAGE;
 import static mokindang.jubging.project_backend.file.FileService.PROFILE_IMAGE;
+import static mokindang.jubging.project_backend.member.domain.vo.ProfileImage.DEFAULT_PROFILE_IMAGE_URL;
 
 @Slf4j
 @Service
@@ -28,7 +28,7 @@ import static mokindang.jubging.project_backend.file.FileService.PROFILE_IMAGE;
 @RequiredArgsConstructor
 public class ImageService {
 
-    private final String defaultImageUrl = "https://dognejupging-xyz-image-bucket.s3.ap-northeast-2.amazonaws.com/profile_image/default_profile.png";
+    private final String defaultImageUrl = "https://dognejupging-xyz-image-bucket.s3.ap-northeast-2.amazonaws.com/profile_image/profileimage2.png";
     private final ImageRepository imageRepository;
     private final FileService fileService;
     private final MemberService memberService;
@@ -61,18 +61,17 @@ public class ImageService {
         return new ImageUrlResponse(fileResponse.getUploadFileUrl());
     }
 
-    public ImageUrlResponse deleteProfileImage(ImageDeleteRequest imageDeleteRequest) {
-        String imageUrl = imageDeleteRequest.getImageUrl();
-        if (imageUrl.equals(defaultImageUrl)) {
-            return new ImageUrlResponse(defaultImageUrl);
+    public void deleteProfileImage(String profileImageUrl) {
+        if (profileImageUrl.equals(profileImageUrl) || profileImageUrl.equals(DEFAULT_PROFILE_IMAGE_URL)) {
+            return;
         }
-        fileService.deleteFile(imageUrl, PROFILE_IMAGE);
-        return new ImageUrlResponse(defaultImageUrl);
+        fileService.deleteFile(profileImageUrl, PROFILE_IMAGE);
     }
 
-    public void deleteCertificationImage(ImageDeleteRequest imageDeleteRequest) {
-        String imageUrl = imageDeleteRequest.getImageUrl();
-        fileService.deleteFile(imageUrl, CERTIFICATION_BOARD_IMAGE);
+    public void deleteCertificationImage(List<String> imageUrls) {
+        for (String imageUrl : imageUrls) {
+            fileService.deleteFile(imageUrl, CERTIFICATION_BOARD_IMAGE);
+        }
     }
 
     public void modifyImages(CertificationBoard board, List<String> fileUrls) {
@@ -111,5 +110,9 @@ public class ImageService {
     private boolean checkDeletion(Image image, List<String> fileUrls) {
         return fileUrls.stream()
                 .noneMatch(fileUrl -> image.getFilePath().equals(fileUrl));
+    }
+
+    public ImageUrlResponse getDefaultImageUrl() {
+        return new ImageUrlResponse(defaultImageUrl);
     }
 }
