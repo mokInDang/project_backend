@@ -36,5 +36,5 @@ public class RecruitmentBoardCreationRequest {
 
     @NotNull
     @Schema(description = "활동 장소")
-    private final MeetingPlaceRequest meetingPlaceRequest;
+    private final MeetingPlaceCreationRequest meetingPlaceCreationRequest;
 }

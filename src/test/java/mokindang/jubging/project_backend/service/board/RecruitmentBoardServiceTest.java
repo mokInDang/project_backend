@@ -9,7 +9,8 @@ import mokindang.jubging.project_backend.recruitment_board.domain.vo.*;
 import mokindang.jubging.project_backend.recruitment_board.repository.RecruitmentBoardRepository;
 import mokindang.jubging.project_backend.recruitment_board.service.RecruitmentBoardService;
 import mokindang.jubging.project_backend.recruitment_board.service.request.BoardModificationRequest;
-import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceRequest;
+import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceCreationRequest;
+import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardSelectResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
@@ -73,13 +74,13 @@ class RecruitmentBoardServiceTest {
     }
 
     private RecruitmentBoardCreationRequest createTestRecruitmentBoardCreationRequest() {
-        MeetingPlaceRequest meetingPlaceRequest = createTestMeetingPlaceRequest();
+        MeetingPlaceCreationRequest meetingPlaceCreationRequest = createTestMeetingPlaceCreationRequest();
         return new RecruitmentBoardCreationRequest("제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11), meetingPlaceRequest);
+                LocalDate.of(2023, 11, 11), meetingPlaceCreationRequest);
     }
 
-    private MeetingPlaceRequest createTestMeetingPlaceRequest() {
-        return new MeetingPlaceRequest(1.1, 1.2, "서울시 동작구 상도동 1-1");
+    private MeetingPlaceCreationRequest createTestMeetingPlaceCreationRequest() {
+        return new MeetingPlaceCreationRequest(1.1, 1.2, "서울시 동작구 상도동 1-1");
     }
 
     @Test
@@ -194,10 +195,10 @@ class RecruitmentBoardServiceTest {
     }
 
     private BoardModificationRequest createTestModificationRequest() {
-        MeetingPlaceRequest meetingPlaceRequest = createTestMeetingPlaceRequest();
+        MeetingPlaceModificationRequest meetingPlaceModificationRequest = new MeetingPlaceModificationRequest(1.1, 1.2, "서울시 동작구 상도동 1-1");
 
         return new BoardModificationRequest("새로운 제목", "새로운 본문",
-                "산책", LocalDate.of(2023, 1, 1), meetingPlaceRequest);
+                "산책", LocalDate.of(2023, 1, 1), meetingPlaceModificationRequest);
     }
 
 
@@ -257,7 +258,7 @@ class RecruitmentBoardServiceTest {
         Pageable pageable = PageRequest.of(0, 2);
 
         //when
-        MultiBoardSelectResponse multiBoardSelectResponse = boardService.selectRegionBoards(1L, pageable);
+        MultiBoardSelectResponse multiBoardSelectResponse = boardService.selectRegionBoards(memberId, pageable);
 
         //then
         assertThat(multiBoardSelectResponse.getBoards()).hasSize(2);

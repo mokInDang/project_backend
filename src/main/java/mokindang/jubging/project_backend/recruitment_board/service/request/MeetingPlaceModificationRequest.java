@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 @Schema
 @Getter
 @RequiredArgsConstructor
-public class MeetingPlaceRequest {
+public class MeetingPlaceModificationRequest {
 
     @NotNull
     @Schema(description = "활동 장소 경도 좌표", example = "12.12312412")

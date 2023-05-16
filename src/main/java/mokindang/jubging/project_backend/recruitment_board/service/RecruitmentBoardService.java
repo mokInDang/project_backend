@@ -9,7 +9,8 @@ import mokindang.jubging.project_backend.recruitment_board.domain.vo.Coordinate;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.Place;
 import mokindang.jubging.project_backend.recruitment_board.repository.RecruitmentBoardRepository;
 import mokindang.jubging.project_backend.recruitment_board.service.request.BoardModificationRequest;
-import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceRequest;
+import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceCreationRequest;
+import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardSelectResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
@@ -36,17 +37,17 @@ public class RecruitmentBoardService {
     public RecruitmentBoardIdResponse write(final Long memberId, final RecruitmentBoardCreationRequest recruitmentBoardCreationRequest) {
         Member member = memberService.findByMemberId(memberId);
         LocalDateTime now = LocalDateTime.now();
-        Place meetingPlace = generatePlace(recruitmentBoardCreationRequest.getMeetingPlaceRequest());
+        Place meetingPlace = generateModificationPlace(recruitmentBoardCreationRequest.getMeetingPlaceCreationRequest());
         RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, member, recruitmentBoardCreationRequest.getStartingDate(),
                 recruitmentBoardCreationRequest.getActivityCategory(), meetingPlace, recruitmentBoardCreationRequest.getTitle(), recruitmentBoardCreationRequest.getContentBody());
         RecruitmentBoard savedRecruitmentBoard = recruitmentBoardRepository.save(recruitmentBoard);
         return new RecruitmentBoardIdResponse(savedRecruitmentBoard.getId());
     }
 
-    private static Place generatePlace(final MeetingPlaceRequest meetingPlaceRequest) {
-        Coordinate meetingSpot = new Coordinate(meetingPlaceRequest.getLongitude(),
-                meetingPlaceRequest.getLatitude());
-        String meetingAddress = meetingPlaceRequest.getMeetingAddress();
+    private Place generateModificationPlace(final MeetingPlaceCreationRequest meetingPlaceCreationRequest) {
+        Coordinate meetingSpot = new Coordinate(meetingPlaceCreationRequest.getLongitude(),
+                meetingPlaceCreationRequest.getLatitude());
+        String meetingAddress = meetingPlaceCreationRequest.getMeetingAddress();
         return new Place(meetingSpot, meetingAddress);
     }
 
@@ -79,10 +80,17 @@ public class RecruitmentBoardService {
     @Transactional
     public RecruitmentBoardIdResponse modify(final Long memberId, final Long boardId, final BoardModificationRequest boardModificationRequest) {
         RecruitmentBoard recruitmentBoard = findById(boardId);
-        Place place = generatePlace(boardModificationRequest.getMeetingPlaceRequest());
+        Place place = generateModificationPlace(boardModificationRequest.getMeetingPlaceModificationRequest());
         recruitmentBoard.modify(memberId, boardModificationRequest.getStartingDate(), boardModificationRequest.getActivityCategory(),
                 boardModificationRequest.getTitle(), boardModificationRequest.getContentBody(), place);
         return new RecruitmentBoardIdResponse(recruitmentBoard.getId());
+    }
+
+    private Place generateModificationPlace(final MeetingPlaceModificationRequest meetingPlaceModificationRequest) {
+        Coordinate meetingSpot = new Coordinate(meetingPlaceModificationRequest.getLongitude(),
+                meetingPlaceModificationRequest.getLatitude());
+        String meetingAddress = meetingPlaceModificationRequest.getMeetingAddress();
+        return new Place(meetingSpot, meetingAddress);
     }
 
     @Transactional

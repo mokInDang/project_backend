@@ -9,7 +9,8 @@ import mokindang.jubging.project_backend.recruitment_board.domain.vo.Coordinate;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.Place;
 import mokindang.jubging.project_backend.recruitment_board.service.RecruitmentBoardService;
 import mokindang.jubging.project_backend.recruitment_board.service.request.BoardModificationRequest;
-import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceRequest;
+import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceCreationRequest;
+import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardSelectResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
@@ -73,13 +74,13 @@ class RecruitmentBoardControllerTest {
     }
 
     private RecruitmentBoardCreationRequest createTestRecruitmentBoardCreationRequest() {
-        MeetingPlaceRequest meetingPlaceRequest = createTestMeetingPlaceRequest();
+        MeetingPlaceCreationRequest meetingPlaceModificationRequest = createTestMeetingPlaceCreationRequest();
         return new RecruitmentBoardCreationRequest("제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11), meetingPlaceRequest);
+                LocalDate.of(2023, 11, 11), meetingPlaceModificationRequest);
     }
 
-    private  MeetingPlaceRequest createTestMeetingPlaceRequest() {
-        return new MeetingPlaceRequest(1.1, 1.2, "서울시 동작구 상도동 1-1");
+    private MeetingPlaceCreationRequest createTestMeetingPlaceCreationRequest() {
+        return new MeetingPlaceCreationRequest(1.1, 1.2, "서울시 동작구 상도동 1-1");
     }
 
     @Test
@@ -305,13 +306,13 @@ class RecruitmentBoardControllerTest {
     }
 
     private  BoardModificationRequest createTestModificationRequest() {
-        MeetingPlaceRequest meetingPlaceRequest = createTestMeetingPlaceRequest();
+        MeetingPlaceModificationRequest meetingPlaceModificationRequest = new MeetingPlaceModificationRequest(1.1, 1.2, "서울시 동작구 상도동 1-1");
 
         return new BoardModificationRequest("새로운 제목", "새로운 본문",
-                "산책", LocalDate.of(2023, 1, 1), meetingPlaceRequest);
+                "산책", LocalDate.of(2023, 1, 1), meetingPlaceModificationRequest);
     }
 
-    @Test
+        @Test
     @DisplayName("게시글 수정 요청 시, 존재하지 않는 게시글에 대한 수정을 요청할 시 HTTP 400 과 예외를 담은 ErrorResponse 를 반환한다.")
     void modifyFailedByNonexistentBoard() throws Exception {
         //given

@@ -35,5 +35,5 @@ public class BoardModificationRequest {
 
     @NotNull
     @Schema(description = "변경될 장소 경도 좌표", example = "12.12312412")
-    private final MeetingPlaceRequest meetingPlaceRequest;
+    private final MeetingPlaceModificationRequest meetingPlaceModificationRequest;
 }
