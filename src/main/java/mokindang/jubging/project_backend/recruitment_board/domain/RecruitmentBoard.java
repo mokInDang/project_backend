@@ -7,7 +7,10 @@ import mokindang.jubging.project_backend.comment.domain.Comment;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.*;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.ContentBody;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.Place;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.StartingDate;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.Title;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -92,13 +95,14 @@ public class RecruitmentBoard {
     }
 
     public void modify(final Long memberId, final LocalDate startingDate, final String activityCategoryValue,
-                       final String titleValue, final String contentValue) {
+                       final String titleValue, final String contentValue, final Place place) {
         validatePermission(memberId);
         LocalDate today = LocalDate.now();
         this.startingDate = new StartingDate(today, startingDate);
         this.activityCategory = ActivityCategory.from(activityCategoryValue);
         this.title = new Title(titleValue);
         this.contentBody = new ContentBody(contentValue);
+        this.meetingPlace = place;
     }
 
     public boolean isSameWriterId(final Long memberId) {

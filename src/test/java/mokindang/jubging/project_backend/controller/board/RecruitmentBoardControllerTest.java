@@ -9,6 +9,8 @@ import mokindang.jubging.project_backend.recruitment_board.domain.vo.Coordinate;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.Place;
 import mokindang.jubging.project_backend.recruitment_board.service.RecruitmentBoardService;
 import mokindang.jubging.project_backend.recruitment_board.service.request.BoardModificationRequest;
+import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceCreationRequest;
+import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardSelectResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
@@ -59,8 +61,7 @@ class RecruitmentBoardControllerTest {
         //given
         when(boardService.write(anyLong(), any(RecruitmentBoardCreationRequest.class))).thenReturn(new RecruitmentBoardIdResponse(1L));
 
-        RecruitmentBoardCreationRequest boardCreationRequest = new RecruitmentBoardCreationRequest("제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11), 1.1, 1.2, "서울시 동작구 상도동 1-1");
+        RecruitmentBoardCreationRequest boardCreationRequest = createTestRecruitmentBoardCreationRequest();
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
@@ -72,6 +73,16 @@ class RecruitmentBoardControllerTest {
                 .andExpect(jsonPath("$.boardId").value(1L));
     }
 
+    private RecruitmentBoardCreationRequest createTestRecruitmentBoardCreationRequest() {
+        MeetingPlaceCreationRequest meetingPlaceModificationRequest = createTestMeetingPlaceCreationRequest();
+        return new RecruitmentBoardCreationRequest("제목", "본문", "달리기",
+                LocalDate.of(2023, 11, 11), meetingPlaceModificationRequest);
+    }
+
+    private MeetingPlaceCreationRequest createTestMeetingPlaceCreationRequest() {
+        return new MeetingPlaceCreationRequest(1.1, 1.2, "서울시 동작구 상도동 1-1");
+    }
+
     @Test
     @DisplayName("새 게시글 작성 시, 유저가 존재하지 않으면 HTTP 400 을 반환한다.")
     void writeFailedByNonexistentMember() throws Exception {
@@ -79,8 +90,7 @@ class RecruitmentBoardControllerTest {
         doThrow(new IllegalArgumentException("해당하는 유저가 존재하지 않습니다.")).when(boardService)
                 .write(anyLong(), any(RecruitmentBoardCreationRequest.class));
 
-        RecruitmentBoardCreationRequest boardCreationRequest = new RecruitmentBoardCreationRequest("제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11), 1.1, 1.2, "서울시 동작구 상도동 1-1");
+        RecruitmentBoardCreationRequest boardCreationRequest = createTestRecruitmentBoardCreationRequest();
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
@@ -99,8 +109,7 @@ class RecruitmentBoardControllerTest {
         doThrow(new IllegalArgumentException("글 제목은 1글자 이상 140자 이하야합니다.")).when(boardService)
                 .write(anyLong(), any(RecruitmentBoardCreationRequest.class));
 
-        RecruitmentBoardCreationRequest incorrectTitleRequest = new RecruitmentBoardCreationRequest("잘못된 제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11), 1.1, 1.2, "서울시 동작구 상도동 1-1");
+        RecruitmentBoardCreationRequest incorrectTitleRequest = createTestRecruitmentBoardCreationRequest();
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
@@ -119,8 +128,7 @@ class RecruitmentBoardControllerTest {
         doThrow(new IllegalArgumentException("글 내용은 최소 1자 이상, 최대 4000자 입니다.")).when(boardService)
                 .write(anyLong(), any(RecruitmentBoardCreationRequest.class));
 
-        RecruitmentBoardCreationRequest incorrectContentRequest = new RecruitmentBoardCreationRequest("제목", "잘못된 본문", "달리기",
-                LocalDate.of(2023, 11, 11), 1.1, 1.2, "서울시 동작구 상도동 1-1");
+        RecruitmentBoardCreationRequest incorrectContentRequest = createTestRecruitmentBoardCreationRequest();
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
@@ -139,8 +147,7 @@ class RecruitmentBoardControllerTest {
         doThrow(new IllegalArgumentException("이미 지난 날짜는 활동 시작일로 할 수 없습니다.")).when(boardService)
                 .write(anyLong(), any(RecruitmentBoardCreationRequest.class));
 
-        RecruitmentBoardCreationRequest incorrectContentRequest = new RecruitmentBoardCreationRequest("제목", "잘못된 본문", "달리기",
-                LocalDate.of(2023, 11, 11), 1.1, 1.2, "서울시 동작구 상도동 1-1");
+        RecruitmentBoardCreationRequest incorrectContentRequest = createTestRecruitmentBoardCreationRequest();
 
         //when
         ResultActions actual = mockMvc.perform(post("/api/boards/recruitment")
@@ -286,8 +293,7 @@ class RecruitmentBoardControllerTest {
         RecruitmentBoardIdResponse boardIdResponse = new RecruitmentBoardIdResponse(1L);
         when(boardService.modify(anyLong(), anyLong(), any(BoardModificationRequest.class))).thenReturn(boardIdResponse);
 
-        BoardModificationRequest boardModificationRequest = new BoardModificationRequest("새로운 제목", "새로운 본문",
-                "산책", LocalDate.of(2023, 1, 1));
+        BoardModificationRequest boardModificationRequest = createTestModificationRequest();
 
         //when
         ResultActions actual = mockMvc.perform(patch("/api/boards/recruitment/{boardId}", 1L)
@@ -299,15 +305,21 @@ class RecruitmentBoardControllerTest {
                 .andExpect(jsonPath("$.boardId").value(1));
     }
 
-    @Test
+    private  BoardModificationRequest createTestModificationRequest() {
+        MeetingPlaceModificationRequest meetingPlaceModificationRequest = new MeetingPlaceModificationRequest(1.1, 1.2, "서울시 동작구 상도동 1-1");
+
+        return new BoardModificationRequest("새로운 제목", "새로운 본문",
+                "산책", LocalDate.of(2023, 1, 1), meetingPlaceModificationRequest);
+    }
+
+        @Test
     @DisplayName("게시글 수정 요청 시, 존재하지 않는 게시글에 대한 수정을 요청할 시 HTTP 400 과 예외를 담은 ErrorResponse 를 반환한다.")
     void modifyFailedByNonexistentBoard() throws Exception {
         //given
         doThrow(new IllegalArgumentException("존재하지 않는 게시물입니다.")).when(boardService)
                 .modify(anyLong(), anyLong(), any(BoardModificationRequest.class));
 
-        BoardModificationRequest boardModificationRequest = new BoardModificationRequest("새로운 제목", "새로운 본문",
-                "산책", LocalDate.of(2023, 1, 1));
+        BoardModificationRequest boardModificationRequest = createTestModificationRequest();
 
         //when
         ResultActions actual = mockMvc.perform(patch("/api/boards/recruitment/{boardId}", 1L)
@@ -326,8 +338,7 @@ class RecruitmentBoardControllerTest {
         doThrow(new ForbiddenException("글 작성자만 게시글을 수정할 수 있습니다.")).when(boardService)
                 .modify(anyLong(), anyLong(), any(BoardModificationRequest.class));
 
-        BoardModificationRequest boardModificationRequest = new BoardModificationRequest("새로운 제목", "새로운 본문",
-                "산책", LocalDate.of(2023, 1, 1));
+        BoardModificationRequest boardModificationRequest = createTestModificationRequest();
 
         //when
         ResultActions actual = mockMvc.perform(patch("/api/boards/recruitment/{boardId}", 1L)
