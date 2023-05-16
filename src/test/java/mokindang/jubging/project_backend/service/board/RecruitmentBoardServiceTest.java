@@ -9,6 +9,7 @@ import mokindang.jubging.project_backend.recruitment_board.domain.vo.*;
 import mokindang.jubging.project_backend.recruitment_board.repository.RecruitmentBoardRepository;
 import mokindang.jubging.project_backend.recruitment_board.service.RecruitmentBoardService;
 import mokindang.jubging.project_backend.recruitment_board.service.request.BoardModificationRequest;
+import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardSelectResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
@@ -61,8 +62,7 @@ class RecruitmentBoardServiceTest {
         when(savedBoard.getId()).thenReturn(1L);
         when(boardRepository.save(any(RecruitmentBoard.class))).thenReturn(savedBoard);
 
-        RecruitmentBoardCreationRequest recruitmentBoardCreationRequest = new RecruitmentBoardCreationRequest("제목", "본문내용", "달리기",
-                LocalDate.of(2025, 2, 12), 1.1, 1.2, "서울시 동작구 상도동 1-1");
+        RecruitmentBoardCreationRequest recruitmentBoardCreationRequest = createTestRecruitmentBoardCreationRequest();
 
         //when
         RecruitmentBoardIdResponse savedBoardId = boardService.write(1L, recruitmentBoardCreationRequest);
@@ -72,14 +72,23 @@ class RecruitmentBoardServiceTest {
         verify(boardRepository, times(1)).save(any());
     }
 
+    private RecruitmentBoardCreationRequest createTestRecruitmentBoardCreationRequest() {
+        MeetingPlaceRequest meetingPlaceRequest = createTestMeetingPlaceRequest();
+        return new RecruitmentBoardCreationRequest("제목", "본문", "달리기",
+                LocalDate.of(2023, 11, 11), meetingPlaceRequest);
+    }
+
+    private MeetingPlaceRequest createTestMeetingPlaceRequest() {
+        return new MeetingPlaceRequest(1.1, 1.2, "서울시 동작구 상도동 1-1");
+    }
+
     @Test
     @DisplayName("존재하지 않는 유저가 게시글 저장 시, 예외를 발생한다.")
     void writeFailedByNonexistentMember() {
         //given
         when(memberService.findByMemberId(anyLong())).thenThrow(new IllegalArgumentException("해당하는 유저가 존재하지 않습니다."));
 
-        RecruitmentBoardCreationRequest boardCreationRequest = new RecruitmentBoardCreationRequest("제목", "본문내용", "달리기",
-                LocalDate.of(2023, 2, 12), 1.1, 1.2, "서울시 동작구 상도동 1-1");
+        RecruitmentBoardCreationRequest boardCreationRequest = createTestRecruitmentBoardCreationRequest();
 
         //when, then
         assertThatThrownBy(() -> boardService.write(1L, boardCreationRequest))
@@ -174,16 +183,23 @@ class RecruitmentBoardServiceTest {
 
         Long memberId = 1L;
         Long boardId = 1L;
-        BoardModificationRequest boardModificationRequest = new BoardModificationRequest("변경 제목", "변경 본문",
-                "산책", LocalDate.of(2023, 12, 12));
+        BoardModificationRequest boardModificationRequest = createTestModificationRequest();
 
         //when
         RecruitmentBoardIdResponse actual = boardService.modify(memberId, boardId, boardModificationRequest);
 
         //then
         assertThat(actual.getBoardId()).isEqualTo(1L);
-        verify(recruitmentBoard, times(1)).modify(anyLong(), any(), any(), any(), any());
+        verify(recruitmentBoard, times(1)).modify(anyLong(), any(), any(), any(), any(), any());
     }
+
+    private BoardModificationRequest createTestModificationRequest() {
+        MeetingPlaceRequest meetingPlaceRequest = createTestMeetingPlaceRequest();
+
+        return new BoardModificationRequest("새로운 제목", "새로운 본문",
+                "산책", LocalDate.of(2023, 1, 1), meetingPlaceRequest);
+    }
+
 
     @Test
     @DisplayName("게시글의 모집을 마감한다.")
