@@ -32,4 +32,8 @@ public class BoardModificationRequest {
     @Schema(description = "변경될 활동 시작일", example = "2023-11-23", pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private final LocalDate startingDate;
+
+    @NotNull
+    @Schema(description = "변경될 장소 경도 좌표", example = "12.12312412")
+    private final MeetingPlaceRequest meetingPlaceRequest;
 }
