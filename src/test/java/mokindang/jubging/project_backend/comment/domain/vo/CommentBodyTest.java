@@ -7,6 +7,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
@@ -18,6 +19,19 @@ class CommentBodyTest {
     void create(final String input) {
         //when, then
         assertThatCode(() -> new CommentBody(input)).doesNotThrowAnyException();
+    }
+
+    @Test
+    @DisplayName("같은 본문 내용을 가진 경우 동등한 객체이다.")
+    void equals() {
+        //given
+        String value = "댓글 본문 내용";
+
+        //when
+        CommentBody commentBody = new CommentBody(value);
+
+        //then
+        assertThat(commentBody).isEqualTo(new CommentBody(value));
     }
 
     @ParameterizedTest
