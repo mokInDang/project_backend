@@ -12,7 +12,7 @@ import mokindang.jubging.project_backend.recruitment_board.service.request.Board
 import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceCreationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
-import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardSelectResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardSelectionResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardSelectionResponse;
 import org.assertj.core.api.SoftAssertions;
@@ -258,10 +258,10 @@ class RecruitmentBoardServiceTest {
         Pageable pageable = PageRequest.of(0, 2);
 
         //when
-        MultiBoardSelectResponse multiBoardSelectResponse = boardService.selectRegionBoards(memberId, pageable);
+        MultiBoardSelectionResponse multiBoardSelectionResponse = boardService.selectRegionBoards(memberId, pageable);
 
         //then
-        assertThat(multiBoardSelectResponse.getBoards()).hasSize(2);
+        assertThat(multiBoardSelectionResponse.getBoards()).hasSize(2);
         verify(boardRepository, times(1)).selectRegionBoards(any(Region.class), any(Pageable.class));
     }
 }

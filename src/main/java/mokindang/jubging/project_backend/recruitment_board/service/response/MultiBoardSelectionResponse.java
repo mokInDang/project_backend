@@ -8,7 +8,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @Getter
-public class MultiBoardSelectResponse {
+public class MultiBoardSelectionResponse {
 
     @Schema(description = "조회된 요약 게시글 목록")
     private final List<SummaryBoardResponse> boards;

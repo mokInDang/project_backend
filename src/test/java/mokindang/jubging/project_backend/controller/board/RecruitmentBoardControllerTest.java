@@ -12,7 +12,7 @@ import mokindang.jubging.project_backend.recruitment_board.service.request.Board
 import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceCreationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
-import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardSelectResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardSelectionResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardSelectionResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.SummaryBoardResponse;
@@ -404,7 +404,7 @@ class RecruitmentBoardControllerTest {
         List<SummaryBoardResponse> summaryBoardResponses = List.of(new SummaryBoardResponse(createRecruitmentBoard()),
                 new SummaryBoardResponse(createRecruitmentBoard()));
         when(boardService.selectRegionBoards(anyLong(), any(Pageable.class)))
-                .thenReturn(new MultiBoardSelectResponse(summaryBoardResponses, false));
+                .thenReturn(new MultiBoardSelectionResponse(summaryBoardResponses, false));
 
         //when
         ResultActions actual = mockMvc.perform(get("/api/boards/recruitment/region").param("page", "3")

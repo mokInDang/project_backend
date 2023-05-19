@@ -7,7 +7,7 @@ import mokindang.jubging.project_backend.recruitment_board.service.request.Recru
 import mokindang.jubging.project_backend.recruitment_board.service.request.BoardModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardSelectionResponse;
-import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardSelectResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardSelectionResponse;
 import mokindang.jubging.project_backend.web.argumentresolver.Login;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -41,10 +41,10 @@ public class RecruitmentBoardController implements RecruitmentBoardControllerSwa
     }
 
     @GetMapping
-    public ResponseEntity<MultiBoardSelectResponse> selectBoards(final Pageable pageable) {
-        MultiBoardSelectResponse multiBoardSelectResponse = recruitmentBoardService.selectAllBoards(pageable);
+    public ResponseEntity<MultiBoardSelectionResponse> selectBoards(final Pageable pageable) {
+        MultiBoardSelectionResponse multiBoardSelectionResponse = recruitmentBoardService.selectAllBoards(pageable);
         return ResponseEntity.ok()
-                .body(multiBoardSelectResponse);
+                .body(multiBoardSelectionResponse);
     }
 
     @DeleteMapping("/{boardId}")
@@ -71,9 +71,9 @@ public class RecruitmentBoardController implements RecruitmentBoardControllerSwa
     }
 
     @GetMapping("/region")
-    public ResponseEntity<MultiBoardSelectResponse> selectRegionBoards(@Login final Long memberId, final Pageable pageable) {
-        MultiBoardSelectResponse multiBoardSelectResponse = recruitmentBoardService.selectRegionBoards(memberId, pageable);
+    public ResponseEntity<MultiBoardSelectionResponse> selectRegionBoards(@Login final Long memberId, final Pageable pageable) {
+        MultiBoardSelectionResponse multiBoardSelectionResponse = recruitmentBoardService.selectRegionBoards(memberId, pageable);
         return ResponseEntity.ok()
-                .body(multiBoardSelectResponse);
+                .body(multiBoardSelectionResponse);
     }
 }
