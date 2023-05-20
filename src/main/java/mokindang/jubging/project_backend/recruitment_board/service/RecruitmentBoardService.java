@@ -97,7 +97,6 @@ public class RecruitmentBoardService {
         return new RecruitmentBoardIdResponse(recruitmentBoard.getId());
     }
 
-    @Transactional
     public MultiBoardSelectionResponse selectRegionBoards(final Long memberId, final Pageable pageable) {
         Member loggedInMember = memberService.findByMemberId(memberId);
         Region targetRegion = loggedInMember.getRegion();
@@ -106,5 +105,14 @@ public class RecruitmentBoardService {
                 .map(SummaryBoardResponse::new)
                 .collect(Collectors.toUnmodifiableList());
         return new MultiBoardSelectionResponse(summaryBoards, boards.hasNext());
+    }
+
+    public MultiBoardPlaceSelectionResponse selectRegionBoardsCloseToDeadline(final Long memberId, final Pageable pageable) {
+        Member member = memberService.findByMemberId(memberId);
+        Slice<RecruitmentBoard> recruitmentBoards = recruitmentBoardRepository.selectRecruitmentRegionBoardsCloseToDeadline(member.getRegion(), pageable);
+        List<BoardPlaceMarkerResponse> boardPlaceMarkerResponses = recruitmentBoards.stream()
+                .map(BoardPlaceMarkerResponse::new)
+                .collect(Collectors.toUnmodifiableList());
+        return new MultiBoardPlaceSelectionResponse(boardPlaceMarkerResponses);
     }
 }
