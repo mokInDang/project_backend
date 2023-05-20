@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import mokindang.jubging.project_backend.recruitment_board.service.RecruitmentBoardService;
 import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.BoardModificationRequest;
+import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardPlaceSelectionResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardSelectionResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardSelectionResponse;
@@ -75,5 +76,12 @@ public class RecruitmentBoardController implements RecruitmentBoardControllerSwa
         MultiBoardSelectionResponse multiBoardSelectionResponse = recruitmentBoardService.selectRegionBoards(memberId, pageable);
         return ResponseEntity.ok()
                 .body(multiBoardSelectionResponse);
+    }
+
+    @GetMapping("/places")
+    public ResponseEntity<MultiBoardPlaceSelectionResponse> selectPlacesOfRegionBoards(@Login final Long memberId, final Pageable pageable) {
+        MultiBoardPlaceSelectionResponse multiBoardPlaceSelectionResponse = recruitmentBoardService.selectRegionBoardsCloseToDeadline(memberId, pageable);
+        return ResponseEntity.ok()
+                .body(multiBoardPlaceSelectionResponse);
     }
 }
