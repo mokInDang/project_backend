@@ -1,11 +1,9 @@
 package mokindang.jubging.project_backend.recruitment_board.service.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 
-@AllArgsConstructor
 @Getter
 public class MeetingPlaceResponse {
 
