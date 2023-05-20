@@ -12,10 +12,7 @@ import mokindang.jubging.project_backend.recruitment_board.service.request.Board
 import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceCreationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
-import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardSelectResponse;
-import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
-import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardSelectionResponse;
-import mokindang.jubging.project_backend.recruitment_board.service.response.SummaryBoardResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.response.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -61,12 +58,12 @@ public class RecruitmentBoardService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
     }
 
-    public MultiBoardSelectResponse selectAllBoards(final Pageable pageable) {
+    public MultiBoardSelectionResponse selectAllBoards(final Pageable pageable) {
         Slice<RecruitmentBoard> recruitmentBoards = recruitmentBoardRepository.selectBoards(pageable);
         List<SummaryBoardResponse> summaryRecruitmentBoards = recruitmentBoards.stream()
                 .map(SummaryBoardResponse::new)
                 .collect(Collectors.toUnmodifiableList());
-        return new MultiBoardSelectResponse(summaryRecruitmentBoards, recruitmentBoards.hasNext());
+        return new MultiBoardSelectionResponse(summaryRecruitmentBoards, recruitmentBoards.hasNext());
     }
 
     @Transactional
@@ -100,14 +97,22 @@ public class RecruitmentBoardService {
         return new RecruitmentBoardIdResponse(recruitmentBoard.getId());
     }
 
-    @Transactional
-    public MultiBoardSelectResponse selectRegionBoards(final Long memberId, final Pageable pageable) {
+    public MultiBoardSelectionResponse selectRegionBoards(final Long memberId, final Pageable pageable) {
         Member loggedInMember = memberService.findByMemberId(memberId);
         Region targetRegion = loggedInMember.getRegion();
         Slice<RecruitmentBoard> boards = recruitmentBoardRepository.selectRegionBoards(targetRegion, pageable);
         List<SummaryBoardResponse> summaryBoards = boards.stream()
                 .map(SummaryBoardResponse::new)
                 .collect(Collectors.toUnmodifiableList());
-        return new MultiBoardSelectResponse(summaryBoards, boards.hasNext());
+        return new MultiBoardSelectionResponse(summaryBoards, boards.hasNext());
+    }
+
+    public MultiBoardPlaceSelectionResponse selectRegionBoardsCloseToDeadline(final Long memberId, final Pageable pageable) {
+        Member member = memberService.findByMemberId(memberId);
+        Slice<RecruitmentBoard> recruitmentBoards = recruitmentBoardRepository.selectRecruitmentRegionBoardsCloseToDeadline(member.getRegion(), pageable);
+        List<BoardPlaceMarkerResponse> boardPlaceMarkerResponses = recruitmentBoards.stream()
+                .map(BoardPlaceMarkerResponse::new)
+                .collect(Collectors.toUnmodifiableList());
+        return new MultiBoardPlaceSelectionResponse(boardPlaceMarkerResponses, recruitmentBoards.hasNext());
     }
 }

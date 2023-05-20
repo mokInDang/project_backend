@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
 import javax.persistence.EntityManager;
@@ -44,7 +45,6 @@ class RecruitmentRecruitmentBoardRepositoryTest {
         member.updateRegion("동작구");
         memberRepository.save(member);
         LocalDateTime now = LocalDateTime.of(2023, 3, 25, 1, 1);
-        Coordinate coordinate = new Coordinate(1.1, 1.2);
         RecruitmentBoard recruitingRecruitmentBoardWithPastStartingDate = new RecruitmentBoard(now, member,
                 LocalDate.of(2023, 3, 27), "달리기", createTestPlace(), "제목", "본문");
         RecruitmentBoard save = recruitmentBoardRepository.save(recruitingRecruitmentBoardWithPastStartingDate);
@@ -101,5 +101,44 @@ class RecruitmentRecruitmentBoardRepositoryTest {
 
         //then
         assertThat(boards.getContent()).isEqualTo(List.of(dongJackRecruitmentBoard1, dongJackRecruitmentBoard2));
+    }
+
+    @Test
+    @DisplayName("지역을 입력받아. 현재 모집 중인 게시글 중 지역에 해당하는 게시글을 활동 시작일 기준으로 오름차순 정렬하여 반환한다.")
+    void selectRecruitmentRegionBoardsCloseToDeadline() {
+        //given
+        LocalDateTime now = LocalDateTime.of(2023, 3, 25, 1, 1);
+
+        Member dongJackMember = new Member("test@mail.com", "동작이");
+        dongJackMember.updateRegion("관악구");
+        memberRepository.save(dongJackMember);
+
+        RecruitmentBoard dongJackRecruitmentBoard1 = new RecruitmentBoard(now, dongJackMember,
+                LocalDate.of(2023, 3, 28), "달리기", createTestPlace(),
+                "제목1", "본문1");
+        recruitmentBoardRepository.save(dongJackRecruitmentBoard1);
+
+        RecruitmentBoard dongJackRecruitmentBoard2 = new RecruitmentBoard(now, dongJackMember,
+                LocalDate.of(2023, 3, 27), "산책", createTestPlace(),
+                "제목2", "본문2");
+        recruitmentBoardRepository.save(dongJackRecruitmentBoard2);
+
+        Member sungDongMember = new Member("test2@maill.com", "성동이");
+        sungDongMember.updateRegion("성동구");
+        memberRepository.save(sungDongMember);
+
+        RecruitmentBoard sungDongRecruitmentBoard1 = new RecruitmentBoard(now, sungDongMember,
+                LocalDate.of(2023, 3, 27), "달리기", createTestPlace(),
+                "제목1", "본문1");
+        recruitmentBoardRepository.save(sungDongRecruitmentBoard1);
+
+        Region targetRegion = Region.from("관악구");
+        Pageable pageable = PageRequest.of(0, 2);
+
+        //when
+        Slice<RecruitmentBoard> recruitmentBoards = recruitmentBoardRepository.selectRecruitmentRegionBoardsCloseToDeadline(targetRegion, pageable);
+
+        //then
+        assertThat(recruitmentBoards.getContent()).isEqualTo(List.of(dongJackRecruitmentBoard2, dongJackRecruitmentBoard1));
     }
 }

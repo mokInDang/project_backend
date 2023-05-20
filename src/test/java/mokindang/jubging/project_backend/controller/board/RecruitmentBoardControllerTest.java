@@ -12,10 +12,7 @@ import mokindang.jubging.project_backend.recruitment_board.service.request.Board
 import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceCreationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
-import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardSelectResponse;
-import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
-import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardSelectionResponse;
-import mokindang.jubging.project_backend.recruitment_board.service.response.SummaryBoardResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.response.*;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -166,7 +163,7 @@ class RecruitmentBoardControllerTest {
         //given
 
         boolean isMine = true;
-        RecruitmentBoardSelectionResponse boardSelectionResponse = new RecruitmentBoardSelectionResponse(createRecruitmentBoard(), isMine);
+        RecruitmentBoardSelectionResponse boardSelectionResponse = new RecruitmentBoardSelectionResponse(createTestRecruitmentBoard(), isMine);
         when(boardService.select(anyLong(), anyLong())).thenReturn(boardSelectionResponse);
 
         //when
@@ -191,7 +188,7 @@ class RecruitmentBoardControllerTest {
                 .andExpect(jsonPath("$.meetingPlaceResponse.meetingAddress").value("서울시 동작구 상도동 1-1"));
     }
 
-    private RecruitmentBoard createRecruitmentBoard() {
+    private RecruitmentBoard createTestRecruitmentBoard() {
         LocalDateTime now = LocalDateTime.of(2023, 3, 30, 11, 11, 0, 0);
         Member testMember = new Member("test@email.com", "test");
         testMember.updateRegion("동작구");
@@ -401,18 +398,37 @@ class RecruitmentBoardControllerTest {
     @DisplayName("지역 게시글 조회 시, HTTP 200 코드와 함께 요청 회원 지역에 해당하는 게시글 리스트를 반환한다.")
     void selectRegionBoards() throws Exception {
         //given
-        List<SummaryBoardResponse> summaryBoardResponses = List.of(new SummaryBoardResponse(createRecruitmentBoard()),
-                new SummaryBoardResponse(createRecruitmentBoard()));
+        List<SummaryBoardResponse> summaryBoardResponses = List.of(new SummaryBoardResponse(createTestRecruitmentBoard()),
+                new SummaryBoardResponse(createTestRecruitmentBoard()));
         when(boardService.selectRegionBoards(anyLong(), any(Pageable.class)))
-                .thenReturn(new MultiBoardSelectResponse(summaryBoardResponses, false));
+                .thenReturn(new MultiBoardSelectionResponse(summaryBoardResponses, false));
 
         //when
-        ResultActions actual = mockMvc.perform(get("/api/boards/recruitment/region").param("page", "3")
+        ResultActions actual = mockMvc.perform(get("/api/boards/recruitment/region").param("page", "0")
                 .param("size", "2"));
 
         //then
         actual.andExpect(status().isOk())
                 .andExpect(jsonPath("$.boards").exists())
+                .andExpect(jsonPath("$.hasNext").value(false));
+    }
+
+    @Test
+    @DisplayName("지역 게시글에 해당하는 장소리스트 조회 시, HTTP 200 와 함께 게시글의 장소 값과 id 를 갖고 있는 BoardPlaceMarkerResponse 리스트를 반환한다.")
+    void selectPlacesOfRegionBoards() throws Exception {
+        //given
+        List<BoardPlaceMarkerResponse> boardPlaceMarkerResponses = List.of(new BoardPlaceMarkerResponse(createTestRecruitmentBoard()),
+                new BoardPlaceMarkerResponse(createTestRecruitmentBoard()));
+        when(boardService.selectRegionBoardsCloseToDeadline(anyLong(), any(Pageable.class)))
+                .thenReturn(new MultiBoardPlaceSelectionResponse(boardPlaceMarkerResponses, false));
+
+        //when
+        ResultActions actual = mockMvc.perform(get("/api/boards/recruitment/places").param("page", "0")
+                .param("size", "2"));
+
+        //then
+        actual.andExpect(status().isOk())
+                .andExpect(jsonPath("$.boardPlaceMarkerResponses").exists())
                 .andExpect(jsonPath("$.hasNext").value(false));
     }
 }

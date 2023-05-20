@@ -11,9 +11,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import mokindang.jubging.project_backend.exception.ErrorResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.BoardModificationRequest;
+import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardPlaceSelectionResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardSelectionResponse;
-import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardSelectResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardSelectionResponse;
 import mokindang.jubging.project_backend.web.argumentresolver.Login;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -60,7 +61,7 @@ public interface RecruitmentBoardControllerSwagger {
             @ApiResponse(responseCode = "200", description = "전체 게시글 리스트 조회 완료"),
     })
     @GetMapping
-    ResponseEntity<MultiBoardSelectResponse> selectBoards(final Pageable pageable);
+    ResponseEntity<MultiBoardSelectionResponse> selectBoards(final Pageable pageable);
 
     @Operation(summary = "게시글 삭제", parameters = {
             @Parameter(name = "boardId", description = "삭제할 Board 의 Id", in = ParameterIn.PATH),
@@ -98,5 +99,18 @@ public interface RecruitmentBoardControllerSwagger {
             @Parameter(name = SET_COOKIE, description = "refreshToken", in = ParameterIn.COOKIE, required = true)}
     )
     @GetMapping("/my-region")
-    ResponseEntity<MultiBoardSelectResponse> selectRegionBoards(@Login final Long memberId, final Pageable pageable);
+    ResponseEntity<MultiBoardSelectionResponse> selectRegionBoards(@Login final Long memberId, final Pageable pageable);
+
+    @Operation(summary = "장소 마커 리스트 조회", parameters = {
+            @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true),
+            @Parameter(name = SET_COOKIE, description = "refreshToken", in = ParameterIn.COOKIE, required = true)})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "게시글 마커 조회 완료",
+                    content = @Content(schema = @Schema(implementation = MultiBoardPlaceSelectionResponse.class))),
+            @ApiResponse(responseCode = "403", description = " 권한이 없는 회원의 조회 요청",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @GetMapping("/places")
+    ResponseEntity<MultiBoardPlaceSelectionResponse> selectPlacesOfRegionBoards(@Login final Long memberId, final Pageable pageable);
+
 }
