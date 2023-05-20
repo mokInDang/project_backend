@@ -110,7 +110,7 @@ class RecruitmentRecruitmentBoardRepositoryTest {
         LocalDateTime now = LocalDateTime.of(2023, 3, 25, 1, 1);
 
         Member dongJackMember = new Member("test@mail.com", "동작이");
-        dongJackMember.updateRegion("동작구");
+        dongJackMember.updateRegion("관악구");
         memberRepository.save(dongJackMember);
 
         RecruitmentBoard dongJackRecruitmentBoard1 = new RecruitmentBoard(now, dongJackMember,
@@ -132,7 +132,7 @@ class RecruitmentRecruitmentBoardRepositoryTest {
                 "제목1", "본문1");
         recruitmentBoardRepository.save(sungDongRecruitmentBoard1);
 
-        Region targetRegion = Region.from("동작구");
+        Region targetRegion = Region.from("관악구");
         Pageable pageable = PageRequest.of(0, 2);
 
         //when
