@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
 import javax.persistence.EntityManager;
@@ -44,7 +45,6 @@ class RecruitmentRecruitmentBoardRepositoryTest {
         member.updateRegion("동작구");
         memberRepository.save(member);
         LocalDateTime now = LocalDateTime.of(2023, 3, 25, 1, 1);
-        Coordinate coordinate = new Coordinate(1.1, 1.2);
         RecruitmentBoard recruitingRecruitmentBoardWithPastStartingDate = new RecruitmentBoard(now, member,
                 LocalDate.of(2023, 3, 27), "달리기", createTestPlace(), "제목", "본문");
         RecruitmentBoard save = recruitmentBoardRepository.save(recruitingRecruitmentBoardWithPastStartingDate);
@@ -133,12 +133,12 @@ class RecruitmentRecruitmentBoardRepositoryTest {
         recruitmentBoardRepository.save(sungDongRecruitmentBoard1);
 
         Region targetRegion = Region.from("동작구");
-        PageRequest pageRequest = PageRequest.of(0, 2);
+        Pageable pageable = PageRequest.of(0, 2);
 
         //when
-        List<RecruitmentBoard> recruitmentBoards = recruitmentBoardRepository.selectRecruitmentRegionBoardsCloseToDeadline(targetRegion, pageRequest);
+        Slice<RecruitmentBoard> recruitmentBoards = recruitmentBoardRepository.selectRecruitmentRegionBoardsCloseToDeadline(targetRegion, pageable);
 
         //then
-        assertThat(recruitmentBoards).isEqualTo(List.of(dongJackRecruitmentBoard2, dongJackRecruitmentBoard1));
+        assertThat(recruitmentBoards.getContent()).isEqualTo(List.of(dongJackRecruitmentBoard2, dongJackRecruitmentBoard1));
     }
 }
