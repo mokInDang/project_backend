@@ -12,6 +12,7 @@ import mokindang.jubging.project_backend.recruitment_board.service.request.Board
 import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceCreationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
+import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardPlaceSelectionResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardSelectionResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardSelectionResponse;
@@ -264,4 +265,36 @@ class RecruitmentBoardServiceTest {
         assertThat(multiBoardSelectionResponse.getBoards()).hasSize(2);
         verify(boardRepository, times(1)).selectRegionBoards(any(Region.class), any(Pageable.class));
     }
+
+    @Test
+    @DisplayName("요청 회원에 해당하는 지역에 대한 모집 중인 게시글을 활동 시작일 기준으로 오름차순으로 조회한 후, 조회한 게시글들에 대해" +
+            "경도, 위도, 상세 주소, boardId를 MultiPlaceSelectionResponse 로 감싸 반환한다.")
+    void selectRegionBoardsCloseToDeadline() {
+        //given
+        LocalDateTime now = LocalDateTime.of(2023, 3, 25, 1, 1);
+        Member dongJackMember = new Member("test@mail.com", "동작이");
+        dongJackMember.updateRegion("동작구");
+        RecruitmentBoard dongJackBoard1 = new RecruitmentBoard(now, dongJackMember,
+                LocalDate.of(2023, 3, 26), "달리기", createTestPlace(), "제목1", "본문1");
+        RecruitmentBoard dongJackBoard2 = new RecruitmentBoard(now, dongJackMember,
+                LocalDate.of(2023, 3, 27), "산책", createTestPlace(), "제목2", "본문2");
+        Slice<RecruitmentBoard> slice = new SliceImpl<>(List.of(dongJackBoard1, dongJackBoard2));
+
+        Member member = mock(Member.class);
+        when(member.getRegion()).thenReturn(Region.from("동작구"));
+        when(memberService.findByMemberId(1L)).thenReturn(member);
+        when(boardRepository.selectRecruitmentRegionBoardsCloseToDeadline(any(Region.class), any(Pageable.class)))
+                .thenReturn(slice);
+
+        Long memberId = 1L;
+        Pageable pageable = PageRequest.of(0, 2);
+
+        //when
+        MultiBoardPlaceSelectionResponse multiBoardPlaceSelectionResponse = boardService.selectRegionBoardsCloseToDeadline(memberId, pageable);
+
+        //then
+        assertThat(multiBoardPlaceSelectionResponse.getBoardPlaceMarkerResponses()).hasSize(2);
+        verify(boardRepository, times(1)).selectRecruitmentRegionBoardsCloseToDeadline(any(Region.class), any(Pageable.class));
+    }
 }
+
