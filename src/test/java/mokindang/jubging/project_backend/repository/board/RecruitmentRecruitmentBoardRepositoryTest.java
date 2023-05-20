@@ -102,4 +102,43 @@ class RecruitmentRecruitmentBoardRepositoryTest {
         //then
         assertThat(boards.getContent()).isEqualTo(List.of(dongJackRecruitmentBoard1, dongJackRecruitmentBoard2));
     }
+
+    @Test
+    @DisplayName("지역을 입력받아. 현재 모집 중인 게시글 중 지역에 해당하는 게시글을 활동 시작일 기준으로 오름차순 정렬하여 반환한다.")
+    void selectRecruitmentRegionBoardsCloseToDeadline() {
+        //given
+        LocalDateTime now = LocalDateTime.of(2023, 3, 25, 1, 1);
+
+        Member dongJackMember = new Member("test@mail.com", "동작이");
+        dongJackMember.updateRegion("동작구");
+        memberRepository.save(dongJackMember);
+
+        RecruitmentBoard dongJackRecruitmentBoard1 = new RecruitmentBoard(now, dongJackMember,
+                LocalDate.of(2023, 3, 28), "달리기", createTestPlace(),
+                "제목1", "본문1");
+        recruitmentBoardRepository.save(dongJackRecruitmentBoard1);
+
+        RecruitmentBoard dongJackRecruitmentBoard2 = new RecruitmentBoard(now, dongJackMember,
+                LocalDate.of(2023, 3, 27), "산책", createTestPlace(),
+                "제목2", "본문2");
+        recruitmentBoardRepository.save(dongJackRecruitmentBoard2);
+
+        Member sungDongMember = new Member("test2@maill.com", "성동이");
+        sungDongMember.updateRegion("성동구");
+        memberRepository.save(sungDongMember);
+
+        RecruitmentBoard sungDongRecruitmentBoard1 = new RecruitmentBoard(now, sungDongMember,
+                LocalDate.of(2023, 3, 27), "달리기", createTestPlace(),
+                "제목1", "본문1");
+        recruitmentBoardRepository.save(sungDongRecruitmentBoard1);
+
+        Region targetRegion = Region.from("동작구");
+        PageRequest pageRequest = PageRequest.of(0, 2);
+
+        //when
+        List<RecruitmentBoard> recruitmentBoards = recruitmentBoardRepository.selectRecruitmentRegionBoardsCloseToDeadline(targetRegion, pageRequest);
+
+        //then
+        assertThat(recruitmentBoards).isEqualTo(List.of(dongJackRecruitmentBoard2, dongJackRecruitmentBoard1));
+    }
 }
