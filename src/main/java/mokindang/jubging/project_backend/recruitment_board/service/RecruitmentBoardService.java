@@ -113,6 +113,6 @@ public class RecruitmentBoardService {
         List<BoardPlaceMarkerResponse> boardPlaceMarkerResponses = recruitmentBoards.stream()
                 .map(BoardPlaceMarkerResponse::new)
                 .collect(Collectors.toUnmodifiableList());
-        return new MultiBoardPlaceSelectionResponse(boardPlaceMarkerResponses);
+        return new MultiBoardPlaceSelectionResponse(boardPlaceMarkerResponses, recruitmentBoards.hasNext());
     }
 }
