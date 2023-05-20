@@ -38,6 +38,6 @@ public interface RecruitmentBoardRepository extends JpaRepository<RecruitmentBoa
             "WHERE b.writingRegion = :region " +
             "AND b.onRecruitment = true " +
             "ORDER By b.startingDate.startingDate ASC")
-    List<RecruitmentBoard> selectRecruitmentRegionBoardsCloseToDeadline(final Region region, final Pageable pageable);
+    Slice<RecruitmentBoard> selectRecruitmentRegionBoardsCloseToDeadline(final Region region, final Pageable pageable);
     
 }
