@@ -9,6 +9,7 @@ import mokindang.jubging.project_backend.comment.service.request.ReplyCommentCre
 import mokindang.jubging.project_backend.comment.service.response.BoardIdResponse;
 import mokindang.jubging.project_backend.comment.service.response.CommentIdResponse;
 import mokindang.jubging.project_backend.comment.service.response.MultiCommentSelectionResponse;
+import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.web.argumentresolver.Login;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,9 +41,14 @@ public class CommentController implements CommentControllerSwagger {
                                                                         @PathVariable("board-type") final BoardType boardType,
                                                                         @PathVariable final Long boardId) {
         log.info("memberId = {} 의 게시판 {} boardId = {} 에 대한 댓글 조회 요청", memberId, boardType.toString(), boardId);
-        MultiCommentSelectionResponse multiCommentSelectionResponse = commentService.selectComments(memberId, boardType, boardId);
-        return ResponseEntity.ok()
-                .body(multiCommentSelectionResponse);
+        try {
+            MultiCommentSelectionResponse multiCommentSelectionResponse = commentService.selectComments(memberId, boardType, boardId);
+            return ResponseEntity.ok()
+                    .body(multiCommentSelectionResponse);
+        } catch (ForbiddenException e) {
+            return ResponseEntity.noContent()
+                    .build();
+        }
     }
 
     @DeleteMapping("/comments/{commentId}")

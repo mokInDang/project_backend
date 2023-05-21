@@ -115,4 +115,10 @@ public class RecruitmentBoardService {
                 .collect(Collectors.toUnmodifiableList());
         return new MultiBoardPlaceSelectionResponse(boardPlaceMarkerResponses, recruitmentBoards.hasNext());
     }
+
+    public void validateRegionPermission(final Long memberId, final Long boardId) {
+        Member member = memberService.findByMemberId(memberId);
+        RecruitmentBoard board = findById(boardId);
+        board.validateRegionPermission(member.getRegion());
+    }
 }
