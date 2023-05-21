@@ -1,5 +1,6 @@
 package mokindang.jubging.project_backend.comment.domain;
 
+import mokindang.jubging.project_backend.certification_board.domain.CertificationBoard;
 import mokindang.jubging.project_backend.comment.domain.vo.CommentBody;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
@@ -41,7 +42,6 @@ class CommentTest {
         LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
         Member writer = new Member("test1@email.com", "test");
         writer.updateRegion("동작구");
-        Coordinate coordinate = new Coordinate(1.1, 1.2);
         return new RecruitmentBoard(now, writer, LocalDate.of(2025, 2, 11), "달리기",
                 createTestPlace(), "제목", "본문내용");
     }
@@ -49,6 +49,26 @@ class CommentTest {
     private Place createTestPlace() {
         Coordinate coordinate = new Coordinate(1.1, 1.2);
         return new Place(coordinate, "서울시 동작구 상도동 1-1");
+    }
+
+    @Test
+    @DisplayName("인증 게시글에 대한 작성 일시, 작성자, 댓글 본문을 입력받아 댓글을 생성한다.")
+    void createByCertification_board() {
+        //given
+        CertificationBoard certificationBoard = createCertificationBoard();
+        LocalDateTime now = LocalDateTime.of(2023, 4, 8, 16, 48);
+        Member writer = new Member("test@email.com", "test");
+        String commentBodyValue = "안녕하세요.";
+
+        //when, then
+        assertThatCode(() -> Comment.createOnCertificationBoardWith(certificationBoard, commentBodyValue, writer, now)).doesNotThrowAnyException();
+    }
+
+    private CertificationBoard createCertificationBoard() {
+        LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
+        Member writer = new Member("test1@email.com", "test");
+        writer.updateRegion("동작구");
+        return new CertificationBoard(now, now, writer, "본문", "내용");
     }
 
     @Test
