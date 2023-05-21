@@ -10,7 +10,10 @@ import mokindang.jubging.project_backend.comment.repository.CommentRepository;
 import mokindang.jubging.project_backend.comment.repository.ReplyCommentRepository;
 import mokindang.jubging.project_backend.comment.service.request.CommentCreationRequest;
 import mokindang.jubging.project_backend.comment.service.request.ReplyCommentCreationRequest;
-import mokindang.jubging.project_backend.comment.service.response.*;
+import mokindang.jubging.project_backend.comment.service.response.BoardIdResponse;
+import mokindang.jubging.project_backend.comment.service.response.CommentIdResponse;
+import mokindang.jubging.project_backend.comment.service.response.CommentSelectionResponse;
+import mokindang.jubging.project_backend.comment.service.response.MultiCommentSelectionResponse;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.service.MemberService;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
@@ -60,6 +63,7 @@ public class CommentService {
     @Transactional
     public MultiCommentSelectionResponse selectComments(final Long memberId, final BoardType boardType, final Long boardId) {
         if (boardType.equals(BoardType.RECRUITMENT_BOARD)) {
+            recruitmentBoardService.validateRegionPermission(memberId, boardId);
             List<Comment> commentsByRecruitmentBoard = commentRepository.findCommentsByRecruitmentBoardId(boardId);
             return new MultiCommentSelectionResponse(convertToCommentSelectionResponse(memberId, commentsByRecruitmentBoard));
         }
