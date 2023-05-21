@@ -1,7 +1,7 @@
 package mokindang.jubging.project_backend.recruitment_board.repository;
 
-import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
+import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 import org.hibernate.annotations.BatchSize;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public interface RecruitmentBoardRepository extends JpaRepository<RecruitmentBoard, Long> {
 
@@ -22,7 +21,7 @@ public interface RecruitmentBoardRepository extends JpaRepository<RecruitmentBoa
     void updateOnRecruitmentByStartingDate(LocalDate today);
 
     @BatchSize(size = 1000)
-    @Query("SELECT b FROM RecruitmentBoard b")
+    @Query("SELECT b FROM RecruitmentBoard b ORDER BY b.creatingDateTime ASC")
     Slice<RecruitmentBoard> selectBoards(final Pageable pageable);
 
     @BatchSize(size = 1000)
