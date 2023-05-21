@@ -1,5 +1,6 @@
 package mokindang.jubging.project_backend.service.board;
 
+import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.member.service.MemberService;
@@ -295,6 +296,27 @@ class RecruitmentBoardServiceTest {
         //then
         assertThat(multiBoardPlaceSelectionResponse.getBoardPlaceMarkerResponses()).hasSize(2);
         verify(boardRepository, times(1)).selectRecruitmentRegionBoardsCloseToDeadline(any(Region.class), any(Pageable.class));
+    }
+
+    @Test
+    @DisplayName("댓글 요청 회원의 지역과 대상 게시글의 작성 지역이 다른 경우 예외를 반환한다.")
+    void validateRegionPermission() {
+        //given
+        Member member = mock(Member.class);
+        when(member.getRegion()).thenReturn(Region.from("성동구"));
+        when(memberService.findByMemberId(anyLong())).thenReturn(member);
+
+        RecruitmentBoard board = mock(RecruitmentBoard.class);
+        doThrow(new ForbiddenException("게시글 작성 지역과 같지 않은 지역입니다.")).when(board)
+                .validateRegionPermission(any(Region.class));
+        when(boardRepository.findById(anyLong())).thenReturn(Optional.ofNullable(board));
+
+        Long memberId = 1L;
+        Long boardId = 1L;
+
+        //when, then
+        assertThatThrownBy(() -> boardService.validateRegionPermission(memberId, boardId)).isInstanceOf(ForbiddenException.class)
+                .hasMessage("게시글 작성 지역과 같지 않은 지역입니다.");
     }
 }
 
