@@ -324,4 +324,16 @@ class RecruitmentBoardTest {
         //then
         assertThat(meetingPlace).isEqualTo(createTestPlace());
     }
+
+    @Test
+    @DisplayName("게시글 작성 지역에 대해서 입력 받은 지역이 같지 않은 경우 ForbiddenException 을 반환한다.")
+    void validateRegionPermission() {
+        //given
+        RecruitmentBoard recruitmentBoard = createRecruitmentBoardWithTestWriter();
+        Region region = Region.from("성동구");
+
+        //when, then
+        assertThatThrownBy(() -> recruitmentBoard.validateRegionPermission(region)).isInstanceOf(ForbiddenException.class)
+                .hasMessage("게시글 작성 지역과 같지 않은 지역입니다.");
+    }
 }
