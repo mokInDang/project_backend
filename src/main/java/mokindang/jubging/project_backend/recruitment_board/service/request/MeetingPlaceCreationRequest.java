@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @RequiredArgsConstructor
 public class MeetingPlaceCreationRequest {
+
     @NotNull
     @Schema(description = "활동 장소 경도 좌표", example = "12.12312412")
     private final Double longitude;

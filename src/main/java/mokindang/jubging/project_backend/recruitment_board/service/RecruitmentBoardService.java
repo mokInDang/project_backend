@@ -34,19 +34,20 @@ public class RecruitmentBoardService {
     public RecruitmentBoardIdResponse write(final Long memberId, final RecruitmentBoardCreationRequest recruitmentBoardCreationRequest) {
         Member member = memberService.findByMemberId(memberId);
         LocalDateTime now = LocalDateTime.now();
-        Place meetingPlace = generateModificationPlace(recruitmentBoardCreationRequest.getMeetingPlaceCreationRequest());
+        Place meetingPlace = generateCreationPlace(recruitmentBoardCreationRequest.getMeetingPlaceCreationRequest());
         RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, member, recruitmentBoardCreationRequest.getStartingDate(),
                 recruitmentBoardCreationRequest.getActivityCategory(), meetingPlace, recruitmentBoardCreationRequest.getTitle(), recruitmentBoardCreationRequest.getContentBody());
         RecruitmentBoard savedRecruitmentBoard = recruitmentBoardRepository.save(recruitmentBoard);
         return new RecruitmentBoardIdResponse(savedRecruitmentBoard.getId());
     }
 
-    private Place generateModificationPlace(final MeetingPlaceCreationRequest meetingPlaceCreationRequest) {
+    private Place generateCreationPlace(final MeetingPlaceCreationRequest meetingPlaceCreationRequest) {
         Coordinate meetingSpot = new Coordinate(meetingPlaceCreationRequest.getLongitude(),
                 meetingPlaceCreationRequest.getLatitude());
         String meetingAddress = meetingPlaceCreationRequest.getMeetingAddress();
         return new Place(meetingSpot, meetingAddress);
     }
+
 
     public RecruitmentBoardSelectionResponse select(final Long memberId, final Long boardId) {
         RecruitmentBoard recruitmentBoard = findById(boardId);
