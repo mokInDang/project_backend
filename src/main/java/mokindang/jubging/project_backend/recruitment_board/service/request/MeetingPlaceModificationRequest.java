@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 
-@Schema
 @Getter
 @RequiredArgsConstructor
 public class MeetingPlaceModificationRequest {
