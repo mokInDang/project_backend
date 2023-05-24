@@ -10,6 +10,8 @@ import mokindang.jubging.project_backend.recruitment_board.domain.vo.*;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
@@ -270,7 +272,7 @@ class RecruitmentBoardTest {
         Place place = new Place(new Coordinate(1.1, 1.2), "서울시 동작구 상도동 1-1");
 
         //when, then
-        assertThatThrownBy(() -> recruitmentBoard.modify(noneWriterId, newStartingDate, newActivityCategory, newTitleValue, newContentValue,place))
+        assertThatThrownBy(() -> recruitmentBoard.modify(noneWriterId, newStartingDate, newActivityCategory, newTitleValue, newContentValue, place))
                 .isInstanceOf(ForbiddenException.class)
                 .hasMessage("작성자 권한이 없습니다.");
     }
@@ -325,15 +327,18 @@ class RecruitmentBoardTest {
         assertThat(meetingPlace).isEqualTo(createTestPlace());
     }
 
-    @Test
-    @DisplayName("게시글 작성 지역에 대해서 입력 받은 지역이 같지 않은 경우 ForbiddenException 을 반환한다.")
-    void validateRegionPermission() {
+    @ParameterizedTest
+    @CsvSource(value = {"성동구 , false", "동작구 , true"})
+    @DisplayName("게시글 작성 지역에 대해서 입력 받은 지역이 같은지 확인한다.")
+    void isSameRegion(final String input, final boolean expect) {
         //given
         RecruitmentBoard recruitmentBoard = createRecruitmentBoardWithTestWriter();
-        Region region = Region.from("성동구");
+        Region region = Region.from(input);
 
-        //when, then
-        assertThatThrownBy(() -> recruitmentBoard.validateRegionPermission(region)).isInstanceOf(ForbiddenException.class)
-                .hasMessage("게시글 작성 지역과 같지 않은 지역입니다.");
+        //when
+        boolean actual = recruitmentBoard.isSameRegion(region);
+
+        //then
+        assertThat(actual).isEqualTo(expect);
     }
 }
