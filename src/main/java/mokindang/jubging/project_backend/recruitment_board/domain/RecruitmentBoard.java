@@ -140,10 +140,8 @@ public class RecruitmentBoard {
         this.comments.add(comment);
     }
 
-    public void validateRegionPermission(final Region region) {
-        if (!this.writingRegion.equals(region)) {
-            throw new ForbiddenException("게시글 작성 지역과 같지 않은 지역입니다.");
-        }
+    public boolean isSameRegion(final Region region) {
+        return this.writingRegion.equals(region);
     }
 
     @Override
