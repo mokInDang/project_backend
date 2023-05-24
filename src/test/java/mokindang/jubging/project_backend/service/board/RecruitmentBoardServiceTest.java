@@ -21,6 +21,8 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -298,25 +300,27 @@ class RecruitmentBoardServiceTest {
         verify(boardRepository, times(1)).selectRecruitmentRegionBoardsCloseToDeadline(any(Region.class), any(Pageable.class));
     }
 
-    @Test
-    @DisplayName("댓글 요청 회원의 지역과 대상 게시글의 작성 지역이 다른 경우 예외를 반환한다.")
-    void validateRegionPermission() {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    @DisplayName("요청 회원의 지역과 해당 게시글의 지역이 같은 경우 true 를 그렇지 않은경우 false 를 반환다.")
+    void hasWritingCommentPermission(final boolean input) {
         //given
         Member member = mock(Member.class);
         when(member.getRegion()).thenReturn(Region.from("성동구"));
         when(memberService.findByMemberId(anyLong())).thenReturn(member);
 
         RecruitmentBoard board = mock(RecruitmentBoard.class);
-        doThrow(new ForbiddenException("게시글 작성 지역과 같지 않은 지역입니다.")).when(board)
-                .validateRegionPermission(any(Region.class));
+        when(board.isSameRegion(any(Region.class))).thenReturn(input);
         when(boardRepository.findById(anyLong())).thenReturn(Optional.ofNullable(board));
 
         Long memberId = 1L;
         Long boardId = 1L;
 
-        //when, then
-        assertThatThrownBy(() -> boardService.validateRegionPermission(memberId, boardId)).isInstanceOf(ForbiddenException.class)
-                .hasMessage("게시글 작성 지역과 같지 않은 지역입니다.");
+        //when
+        boolean actual = boardService.hasWritingCommentPermission(memberId, boardId);
+
+        //then
+        assertThat(actual).isEqualTo(input);
     }
 }
 
