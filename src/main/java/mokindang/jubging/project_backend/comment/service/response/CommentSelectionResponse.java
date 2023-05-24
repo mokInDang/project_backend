@@ -48,13 +48,13 @@ public class CommentSelectionResponse {
         this.firstFourLettersOfEmail = comment.getFirstFourDigitsOfWriterEmail();
         this.writerProfileImageUrl = comment.getWriterProfileImageUrl();
         this.mine = comment.isSameWriterId(memberId);
-        List<ReplyCommentSelectionResponse> replyCommentSelectionResponses = generateReplyCommentSelectionResponses(comment);
+        List<ReplyCommentSelectionResponse> replyCommentSelectionResponses = generateReplyCommentSelectionResponses(comment,memberId);
         this.multiReplyCommentSelectionResponse = new MultiReplyCommentSelectionResponse(replyCommentSelectionResponses);
     }
 
-    private  List<ReplyCommentSelectionResponse> generateReplyCommentSelectionResponses(final Comment comment) {
+    private  List<ReplyCommentSelectionResponse> generateReplyCommentSelectionResponses(final Comment comment, final Long memberId) {
         return comment.getReplyComments().stream()
-                .map(replyComment -> new ReplyCommentSelectionResponse(replyComment, replyComment.getId()))
+                .map(replyComment -> new ReplyCommentSelectionResponse(replyComment, memberId))
                 .collect(Collectors.toUnmodifiableList());
     }
 }
