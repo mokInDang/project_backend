@@ -3,12 +3,9 @@ package mokindang.jubging.project_backend.recruitment_board.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mokindang.jubging.project_backend.recruitment_board.service.RecruitmentBoardService;
-import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.BoardModificationRequest;
-import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardPlaceSelectionResponse;
-import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
-import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardSelectionResponse;
-import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardSelectionResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
+import mokindang.jubging.project_backend.recruitment_board.service.response.*;
 import mokindang.jubging.project_backend.web.argumentresolver.Login;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -16,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @RequestMapping("/api/boards/recruitment")
@@ -83,5 +81,12 @@ public class RecruitmentBoardController implements RecruitmentBoardControllerSwa
         MultiBoardPlaceSelectionResponse multiBoardPlaceSelectionResponse = recruitmentBoardService.selectRegionBoardsCloseToDeadline(memberId, pageable);
         return ResponseEntity.ok()
                 .body(multiBoardPlaceSelectionResponse);
+    }
+
+    @GetMapping("/rank")
+    public ResponseEntity<List<RegionCountChartResponse>> getRegionCountChart(final Pageable pageable) {
+        List<RegionCountChartResponse> regionCountChart = recruitmentBoardService.getRegionCountChart(pageable);
+        return ResponseEntity.ok()
+                .body(regionCountChart);
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface RecruitmentBoardRepository extends JpaRepository<RecruitmentBoard, Long> {
 
@@ -38,5 +39,7 @@ public interface RecruitmentBoardRepository extends JpaRepository<RecruitmentBoa
             "AND b.onRecruitment = true " +
             "ORDER By b.startingDate.startingDate ASC")
     Slice<RecruitmentBoard> selectRecruitmentRegionBoardsCloseToDeadline(final Region region, final Pageable pageable);
-    
+
+    @Query("SELECT b, COUNT(b) FROM RecruitmentBoard b GROUP BY b.writingRegion ORDER BY COUNT(b) DESC")
+    List<Region> getRegionBoardsCountChart(final Pageable pageable);
 }

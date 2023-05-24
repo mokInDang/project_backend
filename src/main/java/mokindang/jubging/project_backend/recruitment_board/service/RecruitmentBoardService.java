@@ -122,4 +122,12 @@ public class RecruitmentBoardService {
         RecruitmentBoard board = findById(boardId);
         return board.isSameRegion(member.getRegion());
     }
+
+    public List<RegionCountChartResponse> getRegionCountChart(final Pageable pageable) {
+        List<Region> regionBoardsCountChart = recruitmentBoardRepository.getRegionBoardsCountChart(pageable);
+        List<RegionCountChartResponse> regionCountChartResponses = regionBoardsCountChart.stream()
+                .map(RegionCountChartResponse::new)
+                .collect(Collectors.toUnmodifiableList());
+        return regionCountChartResponses;
+    }
 }
