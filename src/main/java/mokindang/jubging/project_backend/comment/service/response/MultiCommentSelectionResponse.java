@@ -14,9 +14,13 @@ public class MultiCommentSelectionResponse {
     @Schema(description = "댓글과 대댓글의 총 갯수")
     private final Long countOfCommentAndReplyComment;
 
-    public MultiCommentSelectionResponse(final List<CommentSelectionResponse> comments) {
+    @Schema(description = "댓글 작성 가눙 여부")
+    private final boolean writingCommentPermission;
+
+    public MultiCommentSelectionResponse(final List<CommentSelectionResponse> comments, final boolean writingCommentPermission) {
         this.comments = comments;
         this.countOfCommentAndReplyComment = countReplyCommentAndComment(comments);
+        this.writingCommentPermission = writingCommentPermission;
     }
 
     private Long countReplyCommentAndComment(final List<CommentSelectionResponse> comments) {

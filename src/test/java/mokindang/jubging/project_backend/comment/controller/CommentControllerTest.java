@@ -71,7 +71,7 @@ class CommentControllerTest {
         CommentSelectionResponse commentSelectionResponse = new CommentSelectionResponse(createMockedComment(),
                 1L);
         when(commentService.selectComments(anyLong(), any(BoardType.class), anyLong()))
-                .thenReturn(new MultiCommentSelectionResponse(List.of(commentSelectionResponse)));
+                .thenReturn(new MultiCommentSelectionResponse(List.of(commentSelectionResponse), true));
 
 
         //when
@@ -202,5 +202,4 @@ class CommentControllerTest {
         actual.andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("존재하지 않는 대댓글 입니다."));
     }
-
 }
