@@ -9,12 +9,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import mokindang.jubging.project_backend.exception.ErrorResponse;
-import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.BoardModificationRequest;
-import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardPlaceSelectionResponse;
-import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
-import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardSelectionResponse;
-import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardSelectionResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
+import mokindang.jubging.project_backend.recruitment_board.service.response.*;
 import mokindang.jubging.project_backend.web.argumentresolver.Login;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -113,4 +110,10 @@ public interface RecruitmentBoardControllerSwagger {
     @GetMapping("/places")
     ResponseEntity<MultiBoardPlaceSelectionResponse> selectPlacesOfRegionBoards(@Login final Long memberId, final Pageable pageable);
 
+    @Operation(summary = "모집 게시글 갯수 상위 5개 지역")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "모집 게시글 갯수 상위 5개 지역 조회 완료"),
+    })
+    @GetMapping("/region-rank")
+    ResponseEntity<MultiRegionCountingChartResponse> getRegionCountingChart(final Pageable pageable);
 }

@@ -38,5 +38,7 @@ public interface RecruitmentBoardRepository extends JpaRepository<RecruitmentBoa
             "AND b.onRecruitment = true " +
             "ORDER By b.startingDate.startingDate ASC")
     Slice<RecruitmentBoard> selectRecruitmentRegionBoardsCloseToDeadline(final Region region, final Pageable pageable);
-    
+
+    @Query("SELECT b, COUNT(b) FROM RecruitmentBoard b GROUP BY b.writingRegion ORDER BY COUNT(b) DESC")
+    Slice<Region> getRegionBoardsCountingChart(final Pageable pageable);
 }

@@ -3,12 +3,9 @@ package mokindang.jubging.project_backend.recruitment_board.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mokindang.jubging.project_backend.recruitment_board.service.RecruitmentBoardService;
-import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.BoardModificationRequest;
-import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardPlaceSelectionResponse;
-import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
-import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardSelectionResponse;
-import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardSelectionResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
+import mokindang.jubging.project_backend.recruitment_board.service.response.*;
 import mokindang.jubging.project_backend.web.argumentresolver.Login;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -83,5 +80,12 @@ public class RecruitmentBoardController implements RecruitmentBoardControllerSwa
         MultiBoardPlaceSelectionResponse multiBoardPlaceSelectionResponse = recruitmentBoardService.selectRegionBoardsCloseToDeadline(memberId, pageable);
         return ResponseEntity.ok()
                 .body(multiBoardPlaceSelectionResponse);
+    }
+
+    @GetMapping("/region-rank")
+    public ResponseEntity<MultiRegionCountingChartResponse> getRegionCountingChart(final Pageable pageable) {
+        MultiRegionCountingChartResponse regionCountingChart = recruitmentBoardService.getRegionCountingChart(pageable);
+        return ResponseEntity.ok()
+                .body(regionCountingChart);
     }
 }
