@@ -117,9 +117,9 @@ public class RecruitmentBoardService {
         return new MultiBoardPlaceSelectionResponse(boardPlaceMarkerResponses, recruitmentBoards.hasNext());
     }
 
-    public void validateRegionPermission(final Long memberId, final Long boardId) {
+    public boolean hasWritingCommentPermission(final Long memberId, final Long boardId) {
         Member member = memberService.findByMemberId(memberId);
         RecruitmentBoard board = findById(boardId);
-        board.validateRegionPermission(member.getRegion());
+        return board.isSameRegion(member.getRegion());
     }
 }

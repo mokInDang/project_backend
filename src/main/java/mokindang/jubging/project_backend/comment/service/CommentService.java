@@ -63,14 +63,14 @@ public class CommentService {
     @Transactional
     public MultiCommentSelectionResponse selectComments(final Long memberId, final BoardType boardType, final Long boardId) {
         if (boardType.equals(BoardType.RECRUITMENT_BOARD)) {
-            recruitmentBoardService.validateRegionPermission(memberId, boardId);
             List<Comment> commentsByRecruitmentBoard = commentRepository.findCommentsByRecruitmentBoardId(boardId);
-            return new MultiCommentSelectionResponse(convertToCommentSelectionResponse(memberId, commentsByRecruitmentBoard));
+            boolean writingCommentPermission = recruitmentBoardService.hasWritingCommentPermission(memberId, boardId);
+            return new MultiCommentSelectionResponse(convertToCommentSelectionResponse(memberId, commentsByRecruitmentBoard), writingCommentPermission);
         }
 
         if (boardType.equals(BoardType.CERTIFICATION_BOARD)) {
             List<Comment> commentsByCertificationBoard = commentRepository.findCommentsByCertificationBoardId(boardId);
-            return new MultiCommentSelectionResponse(convertToCommentSelectionResponse(memberId, commentsByCertificationBoard));
+            return new MultiCommentSelectionResponse(convertToCommentSelectionResponse(memberId, commentsByCertificationBoard), true);
         }
         throw new IllegalArgumentException("존재 하지 않는 게시판에 대한 접근입니다.");
     }
