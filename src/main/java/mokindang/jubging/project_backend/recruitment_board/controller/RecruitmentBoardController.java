@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Slf4j
 @RequestMapping("/api/boards/recruitment")
@@ -83,10 +82,10 @@ public class RecruitmentBoardController implements RecruitmentBoardControllerSwa
                 .body(multiBoardPlaceSelectionResponse);
     }
 
-    @GetMapping("/rank")
-    public ResponseEntity<List<RegionCountChartResponse>> getRegionCountChart(final Pageable pageable) {
-        List<RegionCountChartResponse> regionCountChart = recruitmentBoardService.getRegionCountChart(pageable);
+    @GetMapping("/region-rank")
+    public ResponseEntity<MultiRegionCountingChartResponse> getRegionCountingChart(final Pageable pageable) {
+        MultiRegionCountingChartResponse regionCountingChart = recruitmentBoardService.getRegionCountingChart(pageable);
         return ResponseEntity.ok()
-                .body(regionCountChart);
+                .body(regionCountingChart);
     }
 }

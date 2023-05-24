@@ -123,11 +123,11 @@ public class RecruitmentBoardService {
         return board.isSameRegion(member.getRegion());
     }
 
-    public List<RegionCountChartResponse> getRegionCountChart(final Pageable pageable) {
-        List<Region> regionBoardsCountChart = recruitmentBoardRepository.getRegionBoardsCountChart(pageable);
-        List<RegionCountChartResponse> regionCountChartResponses = regionBoardsCountChart.stream()
-                .map(RegionCountChartResponse::new)
+    public MultiRegionCountingChartResponse getRegionCountingChart(final Pageable pageable) {
+        Slice<Region> regionBoardsCountingChart = recruitmentBoardRepository.getRegionBoardsCountingChart(pageable);
+        List<RegionCountingChartResponse> regionCountingChartResponses = regionBoardsCountingChart.stream()
+                .map(RegionCountingChartResponse::new)
                 .collect(Collectors.toUnmodifiableList());
-        return regionCountChartResponses;
+        return new MultiRegionCountingChartResponse(regionCountingChartResponses, regionBoardsCountingChart.hasNext());
     }
 }
