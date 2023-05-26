@@ -1,15 +1,18 @@
 package mokindang.jubging.project_backend.recruitment_board.service.response;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @Getter
-@RequiredArgsConstructor
 public class MultiRegionCountingChartResponse {
 
-    private final List<RegionCountingChartResponse> regions;
+    private List<RegionCountingChartResponse> regions;
 
-    private final boolean hasNext;
+    private boolean hasNext;
+
+    public MultiRegionCountingChartResponse(final List<RegionCountingChartResponse> regions, final boolean hasNext) {
+        this.regions = regions;
+        this.hasNext = hasNext;
+    }
 }
