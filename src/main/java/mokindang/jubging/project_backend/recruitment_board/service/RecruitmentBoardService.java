@@ -126,7 +126,7 @@ public class RecruitmentBoardService {
     public MultiRegionCountingChartResponse getRegionCountingChart(final Pageable pageable) {
         Slice<Region> regionBoardsCountingChart = recruitmentBoardRepository.getRegionBoardsCountingChart(pageable);
         List<RegionCountingChartResponse> regionCountingChartResponses = regionBoardsCountingChart.stream()
-                .map(RegionCountingChartResponse::new)
+                .map(region -> new RegionCountingChartResponse(region.getValue()))
                 .collect(Collectors.toUnmodifiableList());
         return new MultiRegionCountingChartResponse(regionCountingChartResponses, regionBoardsCountingChart.hasNext());
     }
