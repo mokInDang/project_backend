@@ -9,9 +9,6 @@ import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.List;
-
-
 @Configuration
 public class OpenApiConfig {
 
@@ -31,19 +28,10 @@ public class OpenApiConfig {
                         .scheme("bearer")
                         .bearerFormat("JWT"));
 
-        Server production = new Server()
-                .url("http://dev.dongnejupging.xyz")
-                .description("production");
-
-        Server local = new Server()
-                .url("http://localhost:8080")
-                .description("local");
-
-        List<Server> servers = List.of(local, production);
         return new OpenAPI()
                 .info(info)
                 .addSecurityItem(securityRequirement)
                 .components(components)
-                .servers(servers);
+                .addServersItem(new Server().url("/"));
     }
 }
