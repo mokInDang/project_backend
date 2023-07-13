@@ -22,14 +22,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
 @Tag(name = "댓글 서비스", description = "댓글 관련 api")
 public interface CommentControllerSwagger {
 
     @Operation(summary = "게시글에 새 댓글 작성", parameters = {
-            @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true),
-            @Parameter(name = SET_COOKIE, description = "refreshToken", in = ParameterIn.COOKIE, required = true)
+            @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true)
     }
     )
     @ApiResponses(value = {
@@ -42,13 +40,12 @@ public interface CommentControllerSwagger {
     })
     @PostMapping("/{board-type}/{boardId}/comments")
     ResponseEntity<BoardIdResponse> addCommentToBoard(@Parameter(hidden = true) @Login final Long memberId,
-                                                      @Parameter(hidden = true) @PathVariable("board-type") final BoardType boardType,
+                                                      @PathVariable("board-type") final BoardType boardType,
                                                       @PathVariable final Long boardId,
                                                       @Valid @RequestBody final CommentCreationRequest commentCreationRequest);
 
     @Operation(summary = "게시글의 댓글 목록 조회", parameters = {
-            @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true),
-            @Parameter(name = SET_COOKIE, description = "refreshToken", in = ParameterIn.COOKIE, required = true)
+            @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true)
     }
     )
     @ApiResponses(value = {
@@ -64,8 +61,7 @@ public interface CommentControllerSwagger {
                                                                  @PathVariable final Long boardId);
 
     @Operation(summary = "댓글 삭제", parameters = {
-            @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true),
-            @Parameter(name = SET_COOKIE, description = "refreshToken", in = ParameterIn.COOKIE, required = true)
+            @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true)
     }
     )
     @ApiResponses(value = {
@@ -78,9 +74,7 @@ public interface CommentControllerSwagger {
     ResponseEntity<Object> removeComment(@Parameter(hidden = true) @Login Long memberId, @PathVariable final Long commentId);
 
     @Operation(summary = "대댓글 생성", parameters = {
-            @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true),
-            @Parameter(name = SET_COOKIE, description = "refreshToken", in = ParameterIn.COOKIE, required = true)
-    }
+            @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true)}
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "대댓글 생성 완료"),
@@ -95,8 +89,7 @@ public interface CommentControllerSwagger {
                                                       ReplyCommentCreationRequest replyCommentCreationRequest);
 
     @Operation(summary = "대댓글 삭제", parameters = {
-            @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true),
-            @Parameter(name = SET_COOKIE, description = "refreshToken", in = ParameterIn.COOKIE, required = true)
+            @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true)
     }
     )
     @ApiResponses(value = {

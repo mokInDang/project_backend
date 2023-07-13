@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CommentCreationRequest {
 
-    @Schema(name = "댓글 본문 내용", example = "예시 댓글 입니다.")
+    @Schema(description = "댓글 본문 내용", example = "예시 댓글 입니다.")
     private String commentBody;
 }
