@@ -22,9 +22,6 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "member")
-    private List<Participation> participation = new ArrayList<>();
-
     @Column(nullable = false)
     private String email;
 
