@@ -28,7 +28,6 @@ public interface AuthenticationControllerSwagger {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "카카오 로그안 완료",
                     headers = {@Header(name = AUTHORIZATION),
-                            @Header(name = SET_COOKIE, description = "refreshToken")
                     }, content = @Content(schema = @Schema(implementation = LoginResponse.class))),
     })
     ResponseEntity<LoginResponse> kakaoLogin(@RequestBody AuthorizationCodeRequest authorizationCodeRequest);
@@ -38,9 +37,7 @@ public interface AuthenticationControllerSwagger {
     })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Refresh 토큰 재발급 완료",
-                    headers = {@Header(name = AUTHORIZATION),
-                            @Header(name = SET_COOKIE, description = "refreshToken")
-                    }),
+                    headers = {@Header(name = SET_COOKIE, description = "refreshToken")}),
             @ApiResponse(responseCode = "401", description = "존재 하지 않는 Refresh 토큰 입력\t\n" +
                     "Refresh 토큰이 만료됨", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "400", description = "refresh token 이 null 이나 공백으로 입력 \t\n" +
@@ -50,7 +47,6 @@ public interface AuthenticationControllerSwagger {
 
     @Operation(summary = "회원 로그아웃 요청", parameters = {
             @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true),
-            @Parameter(name = SET_COOKIE, description = "refreshToken", in = ParameterIn.COOKIE, required = true)
     })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "회원 로그아웃 완료")

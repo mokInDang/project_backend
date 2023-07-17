@@ -22,18 +22,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import javax.validation.Valid;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
 @Tag(name = "회원", description = "회원 관련 api")
 public interface MemberControllerSwagger {
 
     @Operation(summary = "회원의 지역 변경", parameters = {
-            @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true),
-            @Parameter(name = SET_COOKIE, description = "refreshToken", in = ParameterIn.COOKIE, required = true)}
+            @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true)}
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "변경완료"),
-            @ApiResponse(responseCode = "400", description = "유효하지 않은 유저 \t\n"+
+            @ApiResponse(responseCode = "400", description = "유효하지 않은 유저 \t\n" +
                     "입력 받은 위도 경도가 대한민국이 아닌 경우",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })

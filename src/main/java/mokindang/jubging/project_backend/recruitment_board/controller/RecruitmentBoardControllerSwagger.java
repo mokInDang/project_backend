@@ -20,14 +20,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
 @Tag(name = "구인 게시판", description = "구인 게시판 관련 api")
 public interface RecruitmentBoardControllerSwagger {
 
     @Operation(summary = "새글작성", parameters = {
-            @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true),
-            @Parameter(name = SET_COOKIE, description = "refreshToken", in = ParameterIn.COOKIE, required = true)}
+            @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true)}
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "새글작성"),
@@ -42,7 +40,7 @@ public interface RecruitmentBoardControllerSwagger {
     @Operation(summary = "게시글 조회", parameters = {
             @Parameter(name = "boardId", description = "Board 의 id", in = ParameterIn.PATH),
             @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true),
-            @Parameter(name = SET_COOKIE, description = "refreshToken", in = ParameterIn.COOKIE, required = true)}
+    }
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "글 조회"),
@@ -63,7 +61,7 @@ public interface RecruitmentBoardControllerSwagger {
     @Operation(summary = "게시글 삭제", parameters = {
             @Parameter(name = "boardId", description = "삭제할 Board 의 Id", in = ParameterIn.PATH),
             @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true),
-            @Parameter(name = SET_COOKIE, description = "refreshToken", in = ParameterIn.COOKIE, required = true)})
+    })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "게시글 삭제 완료",
                     content = @Content(schema = @Schema(implementation = RecruitmentBoardIdResponse.class))),
@@ -78,7 +76,7 @@ public interface RecruitmentBoardControllerSwagger {
     @Operation(summary = "게시글 수정", parameters = {
             @Parameter(name = "boardId", description = "수정할 Board 의 Id", in = ParameterIn.PATH),
             @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true),
-            @Parameter(name = SET_COOKIE, description = "refreshToken", in = ParameterIn.COOKIE, required = true)})
+    })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "게시글 수정 완료",
                     content = @Content(schema = @Schema(implementation = RecruitmentBoardIdResponse.class))),
@@ -93,14 +91,14 @@ public interface RecruitmentBoardControllerSwagger {
 
     @Operation(summary = "지역 게시글 리스트 게시글 조회", parameters = {
             @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true),
-            @Parameter(name = SET_COOKIE, description = "refreshToken", in = ParameterIn.COOKIE, required = true)}
+    }
     )
     @GetMapping("/my-region")
-    ResponseEntity<MultiBoardSelectionResponse> selectRegionBoards(@Login final Long memberId, final Pageable pageable);
+    ResponseEntity<MultiBoardSelectionResponse> selectRegionBoards(@Parameter(hidden = true) @Login final Long memberId, final Pageable pageable);
 
     @Operation(summary = "장소 마커 리스트 조회", parameters = {
             @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true),
-            @Parameter(name = SET_COOKIE, description = "refreshToken", in = ParameterIn.COOKIE, required = true)})
+    })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "게시글 마커 조회 완료",
                     content = @Content(schema = @Schema(implementation = MultiBoardPlaceSelectionResponse.class))),
@@ -108,7 +106,7 @@ public interface RecruitmentBoardControllerSwagger {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping("/places")
-    ResponseEntity<MultiBoardPlaceSelectionResponse> selectPlacesOfRegionBoards(@Login final Long memberId, final Pageable pageable);
+    ResponseEntity<MultiBoardPlaceSelectionResponse> selectPlacesOfRegionBoards(@Parameter(hidden = true) @Login final Long memberId, final Pageable pageable);
 
     @Operation(summary = "모집 게시글 갯수 상위 5개 지역")
     @ApiResponses(value = {

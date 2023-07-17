@@ -97,14 +97,13 @@ class RecruitmentBoardTest {
     }
 
     @Test
-    @DisplayName("게시글의 member(작성자), title, content, 활동 종류, 활동 시작일, 모집 여부, 작성 지역을 반환한다.")
+    @DisplayName("게시글의 member(작성자), title, content, 활동 종류, 활동 시작일, 모집 여부, 작성 지역, 만남장소 참여중인 인원을 반환한다.")
     void getter() {
         //given
         SoftAssertions softly = new SoftAssertions();
         LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
         Member testMember = new Member("koho1047@naver.com", "민호");
         testMember.updateRegion("동작구");
-        Coordinate coordinate = new Coordinate(1.1, 1.2);
         RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, testMember, LocalDate.of(2025, 2, 11),
                 "달리기", createTestPlace(), "게시판 제목", "게시판 내용 작성 테스트");
 
@@ -116,6 +115,8 @@ class RecruitmentBoardTest {
         StartingDate startingDate = recruitmentBoard.getStartingDate();
         Region region = recruitmentBoard.getWritingRegion();
         boolean onRecruitment = recruitmentBoard.isOnRecruitment();
+        int numberOfMemberParticipating = recruitmentBoard.getParticipation().size();
+        Place meetingPlace = recruitmentBoard.getMeetingPlace();
 
         //then
         softly.assertThat(member).isEqualTo(testMember);
@@ -126,6 +127,8 @@ class RecruitmentBoardTest {
         softly.assertThat(contentBody).isEqualTo(new ContentBody("게시판 내용 작성 테스트"));
         softly.assertThat(region).isEqualTo(member.getRegion());
         softly.assertThat(onRecruitment).isEqualTo(true);
+        softly.assertThat(meetingPlace).isEqualTo(createTestPlace());
+        softly.assertThat(numberOfMemberParticipating).isEqualTo(1);
         softly.assertAll();
     }
 
@@ -314,18 +317,7 @@ class RecruitmentBoardTest {
         assertThat(actual).isEqualTo(4);
     }
 
-    @Test
-    @DisplayName("만남 장소를 반환한다.")
-    void getMeetingPlace() {
-        //given
-        RecruitmentBoard recruitmentBoard = createRecruitmentBoardWithTestWriter();
 
-        //when
-        Place meetingPlace = recruitmentBoard.getMeetingPlace();
-
-        //then
-        assertThat(meetingPlace).isEqualTo(createTestPlace());
-    }
 
     @ParameterizedTest
     @CsvSource(value = {"성동구 , false", "동작구 , true"})
