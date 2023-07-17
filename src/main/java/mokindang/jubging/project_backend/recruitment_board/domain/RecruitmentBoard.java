@@ -34,7 +34,12 @@ public class RecruitmentBoard {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    private Member writer;
+    private Member   writer;
+
+    @OneToMany(mappedBy = "recruitmentBoard")
+    private List<Participation> participation = new ArrayList<>();
+
+    Long maxNumberOfParticipation;
 
     @Embedded
     private StartingDate startingDate;
@@ -75,6 +80,7 @@ public class RecruitmentBoard {
         this.writingRegion = region;
         this.onRecruitment = true;
         this.meetingPlace = meetingPlace;
+        this.participation.add(new Participation(this, writer));
     }
 
     private void validateRegion(final Region region) {
