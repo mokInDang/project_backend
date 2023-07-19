@@ -1,4 +1,4 @@
-package mokindang.jubging.project_backend.recruitment_board.domain;
+package mokindang.jubging.project_backend.recruitment_board.domain.participation;
 
 import java.io.Serializable;
 import java.util.Objects;
