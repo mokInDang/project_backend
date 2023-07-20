@@ -117,7 +117,7 @@ class RecruitmentBoardTest {
         StartingDate startingDate = recruitmentBoard.getStartingDate();
         Region region = recruitmentBoard.getWritingRegion();
         boolean onRecruitment = recruitmentBoard.isOnRecruitment();
-        int numberOfMemberParticipating = recruitmentBoard.getParticipation().size();
+        int numberOfMemberParticipating = recruitmentBoard.getParticipations().size();
         Place meetingPlace = recruitmentBoard.getMeetingPlace();
 
         //then
@@ -347,7 +347,7 @@ class RecruitmentBoardTest {
         recruitmentBoard.addParticipationMember(member);
 
         //then
-        softly.assertThat(recruitmentBoard.getParticipation().size()).isEqualTo(2);
+        softly.assertThat(recruitmentBoard.getParticipations().size()).isEqualTo(2);
         softly.assertThat(recruitmentBoard.getParticipationCount().getCount()).isEqualTo(2);
         softly.assertAll();
     }

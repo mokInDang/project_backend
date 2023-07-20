@@ -65,7 +65,7 @@ public class RecruitmentBoard {
     private ParticipationCount participationCount;
 
     @OneToMany(mappedBy = "recruitmentBoard")
-    private List<Participation> participation = new ArrayList<>();
+    private List<Participation> participations = new ArrayList<>();
 
     @OneToMany(mappedBy = "recruitmentBoard", cascade = CascadeType.REMOVE)
     List<Comment> comments = new ArrayList<>();
@@ -85,7 +85,7 @@ public class RecruitmentBoard {
         this.writingRegion = region;
         this.onRecruitment = true;
         this.meetingPlace = meetingPlace;
-        this.participation.add(new Participation(this, writer));
+        this.participations.add(new Participation(this, writer));
         this.participationCount = ParticipationCount.createDefaultParticipationCount(maxParticipationCount);
     }
 
@@ -158,7 +158,7 @@ public class RecruitmentBoard {
 
     public void addParticipationMember(final Member member) {
         participationCount.countUp();
-        participation.add(new Participation(this, member));
+        participations.add(new Participation(this, member));
     }
 
     @Override
