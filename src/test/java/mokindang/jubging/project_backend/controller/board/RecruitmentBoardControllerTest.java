@@ -73,7 +73,7 @@ class RecruitmentBoardControllerTest {
     private RecruitmentBoardCreationRequest createTestRecruitmentBoardCreationRequest() {
         MeetingPlaceCreationRequest meetingPlaceModificationRequest = createTestMeetingPlaceCreationRequest();
         return new RecruitmentBoardCreationRequest("제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11), meetingPlaceModificationRequest);
+                LocalDate.of(2023, 11, 11), meetingPlaceModificationRequest, 8);
     }
 
     private MeetingPlaceCreationRequest createTestMeetingPlaceCreationRequest() {

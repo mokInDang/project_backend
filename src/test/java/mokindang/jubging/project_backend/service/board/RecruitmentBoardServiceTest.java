@@ -81,7 +81,7 @@ class RecruitmentBoardServiceTest {
     private RecruitmentBoardCreationRequest createTestRecruitmentBoardCreationRequest() {
         MeetingPlaceCreationRequest meetingPlaceCreationRequest = createTestMeetingPlaceCreationRequest();
         return new RecruitmentBoardCreationRequest("제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11), meetingPlaceCreationRequest);
+                LocalDate.of(2023, 11, 11), meetingPlaceCreationRequest,8);
     }
 
     private MeetingPlaceCreationRequest createTestMeetingPlaceCreationRequest() {
@@ -122,6 +122,10 @@ class RecruitmentBoardServiceTest {
         when(recruitmentBoard.getContentBody()).thenReturn(new ContentBody("본문내용입니다."));
         Coordinate coordinate = new Coordinate(1.1, 1.2);
         when(recruitmentBoard.getMeetingPlace()).thenReturn(createTestPlace());
+        ParticipationCount participationCount = mock(ParticipationCount.class);
+        when(participationCount.getCount()).thenReturn(3);
+        when(participationCount.getMax()).thenReturn(8);
+        when(recruitmentBoard.getParticipationCount()).thenReturn(participationCount);
         when(boardRepository.findById(1L)).thenReturn(Optional.of(recruitmentBoard));
 
         //when
@@ -141,6 +145,8 @@ class RecruitmentBoardServiceTest {
         softly.assertThat(actual.getMeetingPlaceResponse().getLatitude()).isEqualTo(1.2);
         softly.assertThat(actual.getMeetingPlaceResponse().getMeetingAddress()).isEqualTo("서울시 동작구 상도동 1-1");
         softly.assertThat(actual.isMine()).isEqualTo(true);
+        softly.assertThat(actual.getParticipationCount()).isEqualTo(3);
+        softly.assertThat(actual.getMaxOfParticipationCount()).isEqualTo(8);
         softly.assertAll();
     }
 
