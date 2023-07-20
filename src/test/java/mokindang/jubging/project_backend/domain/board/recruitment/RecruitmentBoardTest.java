@@ -55,7 +55,7 @@ class RecruitmentBoardTest {
         Member writer = new Member("test1@email.com", "test");
         writer.updateRegion("동작구");
         RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, writer, LocalDate.of(2025, 2, 11), "달리기",
-                createTestPlace(), "제목", "본문내용");
+                createTestPlace(), "제목", "본문내용", 8);
 
         em.persist(writer);
         em.persist(recruitmentBoard);
@@ -107,7 +107,7 @@ class RecruitmentBoardTest {
         Member testMember = new Member("koho1047@naver.com", "민호");
         testMember.updateRegion("동작구");
         RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, testMember, LocalDate.of(2025, 2, 11),
-                "달리기", createTestPlace(), "게시판 제목", "게시판 내용 작성 테스트");
+                "달리기", createTestPlace(), "게시판 제목", "게시판 내용 작성 테스트", 8);
 
         //when
         Member member = recruitmentBoard.getWriter();
@@ -143,7 +143,7 @@ class RecruitmentBoardTest {
 
         //when, then
         assertThatThrownBy(() -> new RecruitmentBoard(now, member, LocalDate.of(2025, 2, 11),
-                "달리기", createTestPlace(), "게시판 제목", "게시판 내용 작성 테스트"))
+                "달리기", createTestPlace(), "게시판 제목", "게시판 내용 작성 테스트", 8))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("지역 인증이 되지 않아, 게시글을 생성할 수 없습니다.");
     }
@@ -169,7 +169,7 @@ class RecruitmentBoardTest {
         testMember.updateRegion("동작구");
         Coordinate coordinate = new Coordinate(1.1, 1.2);
         RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, testMember, LocalDate.of(2025, 2, 11),
-                "달리기", createTestPlace(), "게시판 제목", "게시판 내용 작성 테스트");
+                "달리기", createTestPlace(), "게시판 제목", "게시판 내용 작성 테스트", 8);
 
         //when
         String actual = recruitmentBoard.getWriterAlias();
@@ -294,7 +294,7 @@ class RecruitmentBoardTest {
         writer.updateProfileImage(testUrl);
         Coordinate coordinate = new Coordinate(1.1, 1.2);
         RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, writer, LocalDate.of(2025, 2, 11), "달리기",
-                createTestPlace(), "제목", "본문내용");
+                createTestPlace(), "제목", "본문내용", 8);
 
         //when
         String writerProfileImageUrl = recruitmentBoard.getWriterProfileImageUrl();
@@ -320,7 +320,6 @@ class RecruitmentBoardTest {
     }
 
 
-
     @ParameterizedTest
     @CsvSource(value = {"성동구 , false", "동작구 , true"})
     @DisplayName("게시글 작성 지역에 대해서 입력 받은 지역이 같은지 확인한다.")
@@ -334,5 +333,41 @@ class RecruitmentBoardTest {
 
         //then
         assertThat(actual).isEqualTo(expect);
+    }
+
+    @Test
+    @DisplayName("참여 회원 추가 시 참여 회원을 입력받아 참여인원수를 1 업한 후, 회원을 참여 리스트에 추가한다.")
+    void addParticipationMember() {
+        //given
+        SoftAssertions softly = new SoftAssertions();
+        RecruitmentBoard recruitmentBoard = createRecruitmentBoardWithTestWriter();
+        Member member = new Member("test2@email.com", "test2");
+
+        //when
+        recruitmentBoard.addParticipationMember(member);
+
+        //then
+        softly.assertThat(recruitmentBoard.getParticipation().size()).isEqualTo(2);
+        softly.assertThat(recruitmentBoard.getParticipationCount().getCount()).isEqualTo(2);
+        softly.assertAll();
+    }
+
+    @Test
+    @DisplayName("참여 회원 추가시 인원이 이미 찼다면 예외를 반환한다.")
+    void failedByFullParticipationCount() {
+        //given
+        SoftAssertions softly = new SoftAssertions();
+        int maxParticipationCount = 1;
+        LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
+        Member writer = new Member("test1@email.com", "test");
+        writer.updateRegion("동작구");
+
+        RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, writer, LocalDate.of(2025, 2, 11), "달리기",
+                createTestPlace(), "제목", "본문내용", maxParticipationCount);
+        Member member = new Member("test2@email.com", "test2");
+
+        //when, then
+        assertThatThrownBy(() -> recruitmentBoard.addParticipationMember(member)).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("참여 인원이 꽉 찼습니다.");
     }
 }
