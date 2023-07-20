@@ -37,4 +37,8 @@ public class RecruitmentBoardCreationRequest {
     @NotNull
     @Schema(description = "활동 장소")
     private final MeetingPlaceCreationRequest meetingPlaceCreationRequest;
+
+    @NotNull
+    @Schema(description = "최대 모집 인원 수")
+    private final int maxOfParticipationCount;
 }
