@@ -45,7 +45,14 @@ public class RecruitmentBoardSelectionResponse {
     @Schema(description = "게시글 조회 회원이, 작성자인지에 대한 정보", allowableValues = {"true", "false"})
     private final boolean mine;
 
+    @Schema(description =  "만남 장소")
     private final MeetingPlaceResponse meetingPlaceResponse;
+
+    @Schema(description = "현재 모집 인원")
+    private final int participationCount;
+
+    @Schema(description = "최대 모집 인원")
+    private final int maxOfParticipationCount;
 
 
     public RecruitmentBoardSelectionResponse(final RecruitmentBoard board, final boolean mine) {
@@ -67,5 +74,9 @@ public class RecruitmentBoardSelectionResponse {
         this.writerProfileImageUrl = board.getWriterProfileImageUrl();
         this.mine = mine;
         this.meetingPlaceResponse = new MeetingPlaceResponse(board);
+        this.participationCount = board.getParticipationCount()
+                .getCount();
+        this.maxOfParticipationCount = board.getParticipationCount()
+                .getMax();
     }
 }

@@ -36,7 +36,8 @@ public class RecruitmentBoardService {
         LocalDateTime now = LocalDateTime.now();
         Place meetingPlace = generateCreationPlace(recruitmentBoardCreationRequest.getMeetingPlaceCreationRequest());
         RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, member, recruitmentBoardCreationRequest.getStartingDate(),
-                recruitmentBoardCreationRequest.getActivityCategory(), meetingPlace, recruitmentBoardCreationRequest.getTitle(), recruitmentBoardCreationRequest.getContentBody());
+                recruitmentBoardCreationRequest.getActivityCategory(), meetingPlace, recruitmentBoardCreationRequest.getTitle(),
+                recruitmentBoardCreationRequest.getContentBody(),recruitmentBoardCreationRequest.getMaxOfParticipationCount());
         RecruitmentBoard savedRecruitmentBoard = recruitmentBoardRepository.save(recruitmentBoard);
         return new RecruitmentBoardIdResponse(savedRecruitmentBoard.getId());
     }
