@@ -195,7 +195,7 @@ class RecruitmentBoardControllerTest {
         testMember.updateProfileImage("test_profile_url");
         Coordinate coordinate = new Coordinate(1.1, 1.2);
         return new RecruitmentBoard(now, testMember, LocalDate.of(2025, 2, 11),
-                "달리기", createTestPlace(), "게시판 제목", "게시판 내용 작성 테스트");
+                "달리기", createTestPlace(), "게시판 제목", "게시판 내용 작성 테스트", 8);
     }
 
     private Place createTestPlace() {
@@ -302,14 +302,14 @@ class RecruitmentBoardControllerTest {
                 .andExpect(jsonPath("$.boardId").value(1));
     }
 
-    private  BoardModificationRequest createTestModificationRequest() {
+    private BoardModificationRequest createTestModificationRequest() {
         MeetingPlaceModificationRequest meetingPlaceModificationRequest = new MeetingPlaceModificationRequest(1.1, 1.2, "서울시 동작구 상도동 1-1");
 
         return new BoardModificationRequest("새로운 제목", "새로운 본문",
                 "산책", LocalDate.of(2023, 1, 1), meetingPlaceModificationRequest);
     }
 
-        @Test
+    @Test
     @DisplayName("게시글 수정 요청 시, 존재하지 않는 게시글에 대한 수정을 요청할 시 HTTP 400 과 예외를 담은 ErrorResponse 를 반환한다.")
     void modifyFailedByNonexistentBoard() throws Exception {
         //given

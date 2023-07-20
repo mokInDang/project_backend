@@ -9,6 +9,7 @@ import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.recruitment_board.domain.participation.Participation;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.ContentBody;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.ParticipationCount;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Place;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.StartingDate;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.Title;
@@ -37,10 +38,6 @@ public class RecruitmentBoard {
     @JoinColumn(name = "member_id")
     private Member writer;
 
-    @OneToMany(mappedBy = "recruitmentBoard")
-    private List<Participation> participation = new ArrayList<>();
-
-    Long maxNumberOfParticipation;
 
     @Embedded
     private StartingDate startingDate;
@@ -64,11 +61,18 @@ public class RecruitmentBoard {
     @Embedded
     private Place meetingPlace;
 
+    @Embedded
+    private ParticipationCount participationCount;
+
+    @OneToMany(mappedBy = "recruitmentBoard")
+    private List<Participation> participation = new ArrayList<>();
+
     @OneToMany(mappedBy = "recruitmentBoard", cascade = CascadeType.REMOVE)
     List<Comment> comments = new ArrayList<>();
 
     public RecruitmentBoard(final LocalDateTime creatingDateTime, final Member writer, final LocalDate startingDate,
-                            final String activityCategory, final Place meetingPlace, final String title, final String content) {
+                            final String activityCategory, final Place meetingPlace, final String title, final String content,
+                            final int maxParticipationCount) {
         this.creatingDateTime = creatingDateTime;
         this.writer = writer;
         LocalDate creatingDate = creatingDateTime.toLocalDate();
@@ -82,6 +86,7 @@ public class RecruitmentBoard {
         this.onRecruitment = true;
         this.meetingPlace = meetingPlace;
         this.participation.add(new Participation(this, writer));
+        this.participationCount = ParticipationCount.createDefaultParticipationCount(maxParticipationCount);
     }
 
     private void validateRegion(final Region region) {
@@ -149,6 +154,11 @@ public class RecruitmentBoard {
 
     public boolean isSameRegion(final Region region) {
         return this.writingRegion.equals(region);
+    }
+
+    public void addParticipationMember(final Member member) {
+        participationCount.countUp();
+        participation.add(new Participation(this, member));
     }
 
     @Override

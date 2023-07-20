@@ -43,7 +43,7 @@ class CommentTest {
         Member writer = new Member("test1@email.com", "test");
         writer.updateRegion("동작구");
         return new RecruitmentBoard(now, writer, LocalDate.of(2025, 2, 11), "달리기",
-                createTestPlace(), "제목", "본문내용");
+                createTestPlace(), "제목", "본문내용", 8);
     }
 
     private Place createTestPlace() {

@@ -248,9 +248,9 @@ class RecruitmentBoardServiceTest {
         Member dongJackMember = new Member("test@mail.com", "동작이");
         dongJackMember.updateRegion("동작구");
         RecruitmentBoard dongJackBoard1 = new RecruitmentBoard(now.plusDays(1), dongJackMember,
-                LocalDate.of(2023, 3, 27), "달리기", createTestPlace(), "제목1", "본문1");
+                LocalDate.of(2023, 3, 27), "달리기", createTestPlace(), "제목1", "본문1", 8);
         RecruitmentBoard dongJackBoard2 = new RecruitmentBoard(now, dongJackMember,
-                LocalDate.of(2023, 3, 27), "산책", createTestPlace(), "제목2", "본문2");
+                LocalDate.of(2023, 3, 27), "산책", createTestPlace(), "제목2", "본문2", 8);
         Slice<RecruitmentBoard> slice = new SliceImpl<>(List.of(dongJackBoard1, dongJackBoard2));
 
         Member member = mock(Member.class);
@@ -279,9 +279,9 @@ class RecruitmentBoardServiceTest {
         Member dongJackMember = new Member("test@mail.com", "동작이");
         dongJackMember.updateRegion("동작구");
         RecruitmentBoard dongJackBoard1 = new RecruitmentBoard(now, dongJackMember,
-                LocalDate.of(2023, 3, 26), "달리기", createTestPlace(), "제목1", "본문1");
+                LocalDate.of(2023, 3, 26), "달리기", createTestPlace(), "제목1", "본문1", 8);
         RecruitmentBoard dongJackBoard2 = new RecruitmentBoard(now, dongJackMember,
-                LocalDate.of(2023, 3, 27), "산책", createTestPlace(), "제목2", "본문2");
+                LocalDate.of(2023, 3, 27), "산책", createTestPlace(), "제목2", "본문2", 8);
         Slice<RecruitmentBoard> slice = new SliceImpl<>(List.of(dongJackBoard1, dongJackBoard2));
 
         Member member = mock(Member.class);
