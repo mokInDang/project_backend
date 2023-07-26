@@ -1,6 +1,7 @@
 package mokindang.jubging.project_backend.recruitment_board.service;
 
 import lombok.RequiredArgsConstructor;
+import mokindang.jubging.project_backend.comment.service.response.BoardIdResponse;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.member.service.MemberService;
@@ -130,5 +131,13 @@ public class RecruitmentBoardService {
                 .map(region -> new RegionCountingChartResponse(region.getValue()))
                 .collect(Collectors.toUnmodifiableList());
         return new MultiRegionCountingChartResponse(regionCountingChartResponses, regionBoardsCountingChart.hasNext());
+    }
+
+    @Transactional
+    public BoardIdResponse participate(final Long memberId, final Long boardId) {
+        RecruitmentBoard board = findById(boardId);
+        Member member = memberService.findByMemberId(memberId);
+        board.addParticipationMember(member);
+        return new BoardIdResponse(board.getId());
     }
 }
