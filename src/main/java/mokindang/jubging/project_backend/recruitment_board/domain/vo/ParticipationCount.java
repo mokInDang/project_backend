@@ -14,10 +14,10 @@ public class ParticipationCount {
 
     private static final int DEFAULT_COUNT_VALUE = 1;
 
-    @Column
+    @Column(name = "count_of_participation")
     private int count;
 
-    @Column
+    @Column(name = "max_count_of_participation")
     private int max;
 
     public static ParticipationCount createDefaultParticipationCount(final int max) {
@@ -36,7 +36,7 @@ public class ParticipationCount {
 
     private void validateCountUp() {
         if (count + 1 >= max) {
-            throw new IllegalArgumentException("참여 인원이 꽉 찼습니다.");
+            throw new IllegalStateException("참여 인원이 꽉 찼습니다.");
         }
     }
 
