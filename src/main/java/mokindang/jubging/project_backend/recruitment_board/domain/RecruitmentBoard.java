@@ -49,7 +49,6 @@ public class RecruitmentBoard {
     private Title title;
 
     @Embedded
-    @Column(name = "content_body")
     private ContentBody contentBody;
 
     @Embedded
