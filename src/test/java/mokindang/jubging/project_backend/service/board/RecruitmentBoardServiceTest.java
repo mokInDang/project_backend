@@ -1,5 +1,6 @@
 package mokindang.jubging.project_backend.service.board;
 
+import mokindang.jubging.project_backend.comment.service.response.BoardIdResponse;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.member.service.MemberService;
@@ -81,7 +82,7 @@ class RecruitmentBoardServiceTest {
     private RecruitmentBoardCreationRequest createTestRecruitmentBoardCreationRequest() {
         MeetingPlaceCreationRequest meetingPlaceCreationRequest = createTestMeetingPlaceCreationRequest();
         return new RecruitmentBoardCreationRequest("제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11), meetingPlaceCreationRequest,8);
+                LocalDate.of(2023, 11, 11), meetingPlaceCreationRequest, 8);
     }
 
     private MeetingPlaceCreationRequest createTestMeetingPlaceCreationRequest() {
@@ -328,6 +329,57 @@ class RecruitmentBoardServiceTest {
 
         //then
         assertThat(actual).isEqualTo(input);
+    }
+
+    @Test
+    @DisplayName("게시글에 참여 요청 시, 게시글의 참여리스트에 회원을 추가한다.")
+    void participate() {
+        //given
+        Member member = mock(Member.class);
+        when(memberService.findByMemberId(anyLong())).thenReturn(member);
+
+        RecruitmentBoard board = mock(RecruitmentBoard.class);
+        Long boardId = 2L;
+        when(board.getId()).thenReturn(boardId);
+        when(boardRepository.findById(anyLong())).thenReturn(Optional.ofNullable(board));
+
+        //when
+        BoardIdResponse actual = boardService.participate(1L, 1L);
+
+        //then
+        assertThat(actual.getBoardId()).isEqualTo(boardId);
+    }
+
+    @Test
+    @DisplayName("게시글에 참여 요청 시, 게시글의 모집이 마감되었으면 예외를 반환한다.")
+    void failedByParticipateByClosedRecruitment() {
+        //given
+        Member member = mock(Member.class);
+        when(memberService.findByMemberId(anyLong())).thenReturn(member);
+
+        RecruitmentBoard board = mock(RecruitmentBoard.class);
+        when(boardRepository.findById(anyLong())).thenReturn(Optional.ofNullable(board));
+        doThrow(new IllegalArgumentException("모집이 마감된 게시글 입니다.")).when(board).addParticipationMember(member);
+
+        //when, then
+        assertThatThrownBy(() -> boardService.participate(1L, 1L)).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("모집이 마감된 게시글 입니다.");
+    }
+
+    @Test
+    @DisplayName("게시글에 참여 요청 시, 게시글의 모집 인원이 꽉 찼으면 예외를 반환한다.")
+    void failedByFullParticipationCount() {
+        //given
+        Member member = mock(Member.class);
+        when(memberService.findByMemberId(anyLong())).thenReturn(member);
+
+        RecruitmentBoard board = mock(RecruitmentBoard.class);
+        when(boardRepository.findById(anyLong())).thenReturn(Optional.ofNullable(board));
+        doThrow(new IllegalArgumentException("참여 인원이 꽉 찼습니다.")).when(board).addParticipationMember(member);
+
+        //when, then
+        assertThatThrownBy(() -> boardService.participate(1L, 1L)).isInstanceOf(IllegalStateException.class)
+                .hasMessage("참여 인원이 꽉 찼습니다.");
     }
 }
 

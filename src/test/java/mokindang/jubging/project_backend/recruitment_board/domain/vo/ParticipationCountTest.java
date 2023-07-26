@@ -56,7 +56,7 @@ class ParticipationCountTest {
         ParticipationCount defaultParticipationCount = ParticipationCount.createDefaultParticipationCount(max);
 
         //when, then
-        assertThatThrownBy(defaultParticipationCount::countUp).isInstanceOf(IllegalArgumentException.class)
+        assertThatThrownBy(defaultParticipationCount::countUp).isInstanceOf(IllegalStateException.class)
                 .hasMessage("참여 인원이 꽉 찼습니다.");
     }
 }
