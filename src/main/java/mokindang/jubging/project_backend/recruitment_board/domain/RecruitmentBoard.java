@@ -65,10 +65,10 @@ public class RecruitmentBoard {
     private ParticipationCount participationCount;
 
     @OneToMany(mappedBy = "recruitmentBoard")
-    private List<Participation> participations = new ArrayList<>();
+    private List<Participation> participationList = new ArrayList<>();
 
     @OneToMany(mappedBy = "recruitmentBoard", cascade = CascadeType.REMOVE)
-    List<Comment> comments = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
     public RecruitmentBoard(final LocalDateTime creatingDateTime, final Member writer, final LocalDate startingDate,
                             final String activityCategory, final Place meetingPlace, final String title, final String content,
@@ -85,7 +85,7 @@ public class RecruitmentBoard {
         this.writingRegion = region;
         this.onRecruitment = true;
         this.meetingPlace = meetingPlace;
-        this.participations.add(new Participation(this, writer));
+        this.participationList.add(new Participation(this, writer));
         this.participationCount = ParticipationCount.createDefaultParticipationCount(maxParticipationCount);
     }
 
@@ -157,8 +157,12 @@ public class RecruitmentBoard {
     }
 
     public void addParticipationMember(final Member member) {
-        participationCount.countUp();
-        participations.add(new Participation(this, member));
+        if(onRecruitment) {
+            participationCount.countUp();
+            participationList.add(new Participation(this, member));
+            return;
+        }
+        throw new IllegalArgumentException("모집이 마감된 게시글 입니다.");
     }
 
     @Override
