@@ -12,7 +12,7 @@ import javax.persistence.Embeddable;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ParticipationCount {
 
-    private static int DEFAULT_COUNT_VALUE = 1;
+    private static final int DEFAULT_COUNT_VALUE = 1;
 
     @Column
     private int count;
