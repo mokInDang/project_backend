@@ -375,7 +375,7 @@ class RecruitmentBoardServiceTest {
 
         RecruitmentBoard board = mock(RecruitmentBoard.class);
         when(boardRepository.findById(anyLong())).thenReturn(Optional.ofNullable(board));
-        doThrow(new IllegalArgumentException("참여 인원이 꽉 찼습니다.")).when(board).addParticipationMember(member);
+        doThrow(new IllegalStateException("참여 인원이 꽉 찼습니다.")).when(board).addParticipationMember(member);
 
         //when, then
         assertThatThrownBy(() -> boardService.participate(1L, 1L)).isInstanceOf(IllegalStateException.class)

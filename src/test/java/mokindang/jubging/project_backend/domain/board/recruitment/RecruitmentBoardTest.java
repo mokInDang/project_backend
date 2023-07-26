@@ -349,7 +349,7 @@ class RecruitmentBoardTest {
         Member member = new Member("test2@email.com", "test2");
 
         //when, then
-        assertThatThrownBy(() -> recruitmentBoard.addParticipationMember(member)).isInstanceOf(IllegalArgumentException.class)
+        assertThatThrownBy(() -> recruitmentBoard.addParticipationMember(member)).isInstanceOf(IllegalStateException.class)
                 .hasMessage("참여 인원이 꽉 찼습니다.");
     }
 
