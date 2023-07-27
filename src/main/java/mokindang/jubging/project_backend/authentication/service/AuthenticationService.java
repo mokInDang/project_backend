@@ -42,11 +42,13 @@ public class AuthenticationService {
     private KakaoLoginResponse authenticate(final KakaoApiMemberResponse kakaoApiMemberResponse) {
         Optional<Member> member = memberService.findByMemberEmail(kakaoApiMemberResponse.getEmail());
         if (member.isEmpty()) {
+            log.info("존재하지 않는 회원");
             return join(kakaoApiMemberResponse);
         }
         Member existMember = member.get();
         log.info("memberId = {}, email = {}, alias = {} 의 로그인", existMember.getId(), kakaoApiMemberResponse.getEmail(), kakaoApiMemberResponse.getAlias());
         JwtResponse jwtResponse = issueJwtToken(existMember);
+        log.info("존재하는 회원");
         log.info("리프레시 토큰 재발급 : {}", jwtResponse.getRefreshToken());
         return new KakaoLoginResponse(jwtResponse.getAccessToken(),
                 jwtResponse.getRefreshToken(), existMember.getFirstFourDigitsOfWriterEmail(), existMember.getAlias(), existMember.getRegion().getValue(), existMember.getProfileImage().getProfileImageUrl(), LOGIN);
