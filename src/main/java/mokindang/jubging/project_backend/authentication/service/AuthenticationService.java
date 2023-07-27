@@ -74,14 +74,13 @@ public class AuthenticationService {
         refreshTokenRepository.findByMemberId(member.getId())
                 .ifPresentOrElse(
                         existRefreshToken -> {
-                            existRefreshToken.switchRefreshToken(newRefreshToken, LocalDateTime.now());
+                            existRefreshToken.switchRefreshToken(newRefreshToken);
                             log.info("JWT 토큰 재발행 - MemberId : {}, Email : {}, Alias : {}, Access Token : {}, RefreshToken : {} ",
                                     member.getId(), member.getEmail(), member.getAlias(), newAccessToken, newRefreshToken);
                         },
                         () -> {
                             LocalDateTime newTokenExpirationTime = LocalDateTime.now()
                                     .plusDays(60);
-
                             RefreshToken refreshToken = new RefreshToken(member.getId(), newRefreshToken, newTokenExpirationTime);
                             refreshTokenRepository.save(refreshToken);
                             log.info("JWT 토큰 발행 - MemberId : {}, Email : {}, Alias : {}, Access Token : {}, RefreshToken : {} ",
@@ -95,7 +94,8 @@ public class AuthenticationService {
         RefreshToken existRefreshToken = refreshTokenRepository.findByToken(refreshToken)
                 .orElseThrow(() -> new JwtException("Refresh Token 이 존재하지 않습니다."));
         String newRefreshToken = UUID.randomUUID().toString();
-        existRefreshToken.switchRefreshToken(newRefreshToken, LocalDateTime.now());
+        existRefreshToken.validateExpirationTime(LocalDateTime.now());
+        existRefreshToken.switchRefreshToken(newRefreshToken);
         Member member = memberService.findByMemberId(existRefreshToken.getMemberId());
         return new JwtResponse(tokenManager.createToken(member.getId()), newRefreshToken);
     }
