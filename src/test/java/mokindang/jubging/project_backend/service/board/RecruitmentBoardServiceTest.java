@@ -1,6 +1,5 @@
 package mokindang.jubging.project_backend.service.board;
 
-import mokindang.jubging.project_backend.comment.service.response.BoardIdResponse;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.member.service.MemberService;
@@ -344,7 +343,7 @@ class RecruitmentBoardServiceTest {
         when(boardRepository.findById(anyLong())).thenReturn(Optional.ofNullable(board));
 
         //when
-        BoardIdResponse actual = boardService.participate(1L, 1L);
+        RecruitmentBoardIdResponse actual = boardService.participate(1L, 1L);
 
         //then
         assertThat(actual.getBoardId()).isEqualTo(boardId);
