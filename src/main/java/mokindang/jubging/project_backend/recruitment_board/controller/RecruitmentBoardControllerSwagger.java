@@ -89,6 +89,21 @@ public interface RecruitmentBoardControllerSwagger {
     ResponseEntity<RecruitmentBoardIdResponse> modifyBoard(@Parameter(hidden = true) @Login final Long memberId, @PathVariable final Long boardId,
                                                            @RequestBody final BoardModificationRequest modificationRequest);
 
+    @Operation(summary = "구인 게시글 참여 요청", parameters = {
+            @Parameter(name = "boardId", description = "참여요청 할 Board 의 Id", in = ParameterIn.PATH),
+            @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true),
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "게시글 참여 완료",
+                    content = @Content(schema = @Schema(implementation = RecruitmentBoardIdResponse.class))),
+            @ApiResponse(responseCode = "400", description = "모집이 마감된 게시글에 대한 참여 요청",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "참여인원이 꽉 찬 게시글에 대한 참여 요청",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PatchMapping("/{boardId}/participation-list")
+    ResponseEntity<RecruitmentBoardIdResponse> participate(@Login final Long memberId, @PathVariable final Long boardId);
+
     @Operation(summary = "지역 게시글 리스트 게시글 조회", parameters = {
             @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true),
     }
