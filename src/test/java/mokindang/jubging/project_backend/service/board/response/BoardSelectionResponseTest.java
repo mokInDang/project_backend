@@ -5,6 +5,8 @@ import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoa
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.*;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Coordinate;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Place;
 import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardSelectionResponse;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
@@ -29,7 +31,7 @@ class BoardSelectionResponseTest {
         writer.updateRegion("동작구");
         Coordinate coordinate = new Coordinate(1.1, 1.2);
         RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, writer, LocalDate.of(2025, 2, 11), "달리기",
-               createTestPlace(), "제목", "본문내용");
+                createTestPlace(), "제목", "본문내용", 8);
 
         //when, then
         assertThatCode(() -> new RecruitmentBoardSelectionResponse(recruitmentBoard, mine)).doesNotThrowAnyException();
@@ -94,6 +96,7 @@ class BoardSelectionResponseTest {
         when(recruitmentBoard.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
         when(recruitmentBoard.getWriterProfileImageUrl()).thenReturn("test_url");
         when(recruitmentBoard.getMeetingPlace()).thenReturn(createTestPlace());
+        when(recruitmentBoard.getParticipationCount()).thenReturn(ParticipationCount.createDefaultParticipationCount(8));
         return recruitmentBoard;
     }
 }

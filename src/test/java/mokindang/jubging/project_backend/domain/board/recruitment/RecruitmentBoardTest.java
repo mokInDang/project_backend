@@ -1,12 +1,13 @@
 package mokindang.jubging.project_backend.domain.board.recruitment;
 
-import mokindang.jubging.project_backend.comment.domain.Comment;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.recruitment_board.domain.ActivityCategory;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.*;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Coordinate;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Place;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,6 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Rollback
@@ -38,7 +38,7 @@ class RecruitmentBoardTest {
     @DisplayName("게시글 생성 시, 모집 여부는 상태는 항상 true 이다.")
     void defaultOfOnRecruitment() {
         //given
-        RecruitmentBoard recruitmentBoard = createRecruitmentBoardWithTestWriter();
+        RecruitmentBoard recruitmentBoard = findTestRecruitmentBoard();
 
         //when
         boolean onRecruitment = recruitmentBoard.isOnRecruitment();
@@ -47,20 +47,8 @@ class RecruitmentBoardTest {
         assertThat(onRecruitment).isTrue();
     }
 
-    private RecruitmentBoard createRecruitmentBoardWithTestWriter() {
-
-        LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
-        Member writer = new Member("test1@email.com", "test");
-        writer.updateRegion("동작구");
-        RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, writer, LocalDate.of(2025, 2, 11), "달리기",
-                createTestPlace(), "제목", "본문내용");
-
-        em.persist(writer);
-        em.persist(recruitmentBoard);
-        em.flush();
-        em.clear();
-
-        return recruitmentBoard;
+    private RecruitmentBoard findTestRecruitmentBoard() {
+        return em.find(RecruitmentBoard.class, 1L);
     }
 
     private Place createTestPlace() {
@@ -72,7 +60,7 @@ class RecruitmentBoardTest {
     @DisplayName("회원 Id 를 받아 모집 여부를 마감한다.")
     void closeRecruitment() {
         //given
-        RecruitmentBoard recruitmentBoard = createRecruitmentBoardWithTestWriter();
+        RecruitmentBoard recruitmentBoard = findTestRecruitmentBoard();
         Long memberId = recruitmentBoard.getWriter()
                 .getId();
 
@@ -87,7 +75,7 @@ class RecruitmentBoardTest {
     @DisplayName("회원 Id 를 받아 권환을 확인 후 모집 여부를 마감한다. 이때 작성자가 아닌 회원이면 예외를 반환한다.")
     void closeRecruitmentWhenNoneWriterId() {
         //given
-        RecruitmentBoard recruitmentBoard = createRecruitmentBoardWithTestWriter();
+        RecruitmentBoard recruitmentBoard = findTestRecruitmentBoard();
         Long memberId = recruitmentBoard.getWriter()
                 .getId() + 1;
 
@@ -105,7 +93,7 @@ class RecruitmentBoardTest {
         Member testMember = new Member("koho1047@naver.com", "민호");
         testMember.updateRegion("동작구");
         RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, testMember, LocalDate.of(2025, 2, 11),
-                "달리기", createTestPlace(), "게시판 제목", "게시판 내용 작성 테스트");
+                "달리기", createTestPlace(), "게시판 제목", "게시판 내용 작성 테스트", 8);
 
         //when
         Member member = recruitmentBoard.getWriter();
@@ -115,7 +103,7 @@ class RecruitmentBoardTest {
         StartingDate startingDate = recruitmentBoard.getStartingDate();
         Region region = recruitmentBoard.getWritingRegion();
         boolean onRecruitment = recruitmentBoard.isOnRecruitment();
-        int numberOfMemberParticipating = recruitmentBoard.getParticipation().size();
+        int numberOfMemberParticipating = recruitmentBoard.getParticipationList().size();
         Place meetingPlace = recruitmentBoard.getMeetingPlace();
 
         //then
@@ -141,7 +129,7 @@ class RecruitmentBoardTest {
 
         //when, then
         assertThatThrownBy(() -> new RecruitmentBoard(now, member, LocalDate.of(2025, 2, 11),
-                "달리기", createTestPlace(), "게시판 제목", "게시판 내용 작성 테스트"))
+                "달리기", createTestPlace(), "게시판 제목", "게시판 내용 작성 테스트", 8))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("지역 인증이 되지 않아, 게시글을 생성할 수 없습니다.");
     }
@@ -150,7 +138,7 @@ class RecruitmentBoardTest {
     @DisplayName("지역을 입력 받아, 게시글의 지역과 다르면 예외를 반환한다.")
     void checkRegion() {
         //given
-        RecruitmentBoard recruitmentBoard = createRecruitmentBoardWithTestWriter();
+        RecruitmentBoard recruitmentBoard = findTestRecruitmentBoard();
 
         //when, then
         assertThatThrownBy(() -> recruitmentBoard.checkRegion(Region.from("성동구")))
@@ -167,7 +155,7 @@ class RecruitmentBoardTest {
         testMember.updateRegion("동작구");
         Coordinate coordinate = new Coordinate(1.1, 1.2);
         RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, testMember, LocalDate.of(2025, 2, 11),
-                "달리기", createTestPlace(), "게시판 제목", "게시판 내용 작성 테스트");
+                "달리기", createTestPlace(), "게시판 제목", "게시판 내용 작성 테스트", 8);
 
         //when
         String actual = recruitmentBoard.getWriterAlias();
@@ -180,7 +168,7 @@ class RecruitmentBoardTest {
     @DisplayName("게시글 작성자의 이메일 앞 4글자를 반환한다.")
     void getFirstFourDigitsOfWriterEmail() {
         //given
-        RecruitmentBoard recruitmentBoard = createRecruitmentBoardWithTestWriter();
+        RecruitmentBoard recruitmentBoard = findTestRecruitmentBoard();
         String expect = "test";
 
         //when
@@ -194,7 +182,7 @@ class RecruitmentBoardTest {
     @DisplayName("회원 Id 를 입력받아 게시글 작성자인지 확인한다. 작성자인경우 true 를 반환한다.")
     void isSameWriterId() {
         //given
-        RecruitmentBoard recruitmentBoard = createRecruitmentBoardWithTestWriter();
+        RecruitmentBoard recruitmentBoard = findTestRecruitmentBoard();
         Member writer = recruitmentBoard.getWriter();
 
         Long writerId = writer.getId();
@@ -210,7 +198,7 @@ class RecruitmentBoardTest {
     @DisplayName("회원 ID 를 입력받아 게시글 작성자인지 확인한다. 작성자가 아닌경우 false 를 반환한다.")
     void isSameWriterIdFailed() {
         //given
-        RecruitmentBoard recruitmentBoard = createRecruitmentBoardWithTestWriter();
+        RecruitmentBoard recruitmentBoard = findTestRecruitmentBoard();
         long noneWriterId = recruitmentBoard.getWriter()
                 .getId() + 1;
 
@@ -225,7 +213,7 @@ class RecruitmentBoardTest {
     @DisplayName("회원 Id 를 입력받아, 게시글 작성자가 아닌경우 예외를 반환한다.")
     void validatePermission() {
         //given
-        RecruitmentBoard recruitmentBoard = createRecruitmentBoardWithTestWriter();
+        RecruitmentBoard recruitmentBoard = findTestRecruitmentBoard();
         Long noneWriterId = recruitmentBoard.getWriter()
                 .getId() + 1;
 
@@ -240,7 +228,7 @@ class RecruitmentBoardTest {
         //given
         SoftAssertions softly = new SoftAssertions();
 
-        RecruitmentBoard recruitmentBoard = createRecruitmentBoardWithTestWriter();
+        RecruitmentBoard recruitmentBoard = findTestRecruitmentBoard();
         Long writerId = recruitmentBoard.getWriter()
                 .getId();
 
@@ -266,7 +254,7 @@ class RecruitmentBoardTest {
     @DisplayName("게시글 수정 요청 시, 요청 회원의 id 가 작성자 id 가 아닌 경우 예외를 반환한다.")
     void modifyFailedWhenNoneWriterId() {
         //given
-        RecruitmentBoard recruitmentBoard = createRecruitmentBoardWithTestWriter();
+        RecruitmentBoard recruitmentBoard = findTestRecruitmentBoard();
         Long noneWriterId = 10L;
         String newActivityCategory = "산책";
         String newTitleValue = "새로운 제목입니다.";
@@ -292,7 +280,7 @@ class RecruitmentBoardTest {
         writer.updateProfileImage(testUrl);
         Coordinate coordinate = new Coordinate(1.1, 1.2);
         RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, writer, LocalDate.of(2025, 2, 11), "달리기",
-                createTestPlace(), "제목", "본문내용");
+                createTestPlace(), "제목", "본문내용", 8);
 
         //when
         String writerProfileImageUrl = recruitmentBoard.getWriterProfileImageUrl();
@@ -305,18 +293,14 @@ class RecruitmentBoardTest {
     @DisplayName("구인 게시글에 달린 모든 댓글과 대댓글의 갯수를 반환한다.")
     void countCommentAndReplyComment() {
         //given
-        Comment comment = mock(Comment.class);
-        when(comment.countReplyComment()).thenReturn(3);
-        RecruitmentBoard recruitmentBoard = createRecruitmentBoardWithTestWriter();
-        recruitmentBoard.addComment(comment);
+        RecruitmentBoard recruitmentBoard = findTestRecruitmentBoard();
 
         //when
         Long actual = recruitmentBoard.countCommentAndReplyComment();
 
         //then
-        assertThat(actual).isEqualTo(4);
+        assertThat(actual).isEqualTo(3);
     }
-
 
 
     @ParameterizedTest
@@ -324,7 +308,7 @@ class RecruitmentBoardTest {
     @DisplayName("게시글 작성 지역에 대해서 입력 받은 지역이 같은지 확인한다.")
     void isSameRegion(final String input, final boolean expect) {
         //given
-        RecruitmentBoard recruitmentBoard = createRecruitmentBoardWithTestWriter();
+        RecruitmentBoard recruitmentBoard = findTestRecruitmentBoard();
         Region region = Region.from(input);
 
         //when
@@ -332,5 +316,54 @@ class RecruitmentBoardTest {
 
         //then
         assertThat(actual).isEqualTo(expect);
+    }
+
+    @Test
+    @DisplayName("참여 회원 추가 시 참여 회원을 입력받아 참여인원수를 1 업한 후, 회원을 참여 리스트에 추가한다.")
+    void addParticipationMember() {
+        //given
+        SoftAssertions softly = new SoftAssertions();
+        RecruitmentBoard recruitmentBoard = findTestRecruitmentBoard();
+        Member member = new Member("test2@email.com", "test2");
+
+        //when
+        recruitmentBoard.addParticipationMember(member);
+
+        //then
+        softly.assertThat(recruitmentBoard.getParticipationList().size()).isEqualTo(2);
+        softly.assertThat(recruitmentBoard.getParticipationCount().getCount()).isEqualTo(2);
+        softly.assertAll();
+    }
+
+    @Test
+    @DisplayName("참여 회원 추가시 인원이 이미 찼다면 예외를 반환한다.")
+    void failedByFullParticipationCount() {
+        //given
+        int maxParticipationCount = 1;
+        LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
+        Member writer = new Member("test1@email.com", "test");
+        writer.updateRegion("동작구");
+
+        RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, writer, LocalDate.of(2025, 2, 11), "달리기",
+                createTestPlace(), "제목", "본문내용", maxParticipationCount);
+        Member member = new Member("test2@email.com", "test2");
+
+        //when, then
+        assertThatThrownBy(() -> recruitmentBoard.addParticipationMember(member)).isInstanceOf(IllegalStateException.class)
+                .hasMessage("참여 인원이 꽉 찼습니다.");
+    }
+
+    @Test
+    @DisplayName("참여 회원 추가 시, 모집이 마감 되었다면 예외를 반환한다.")
+    void failedByClosedRecruitment() {
+        //given
+        RecruitmentBoard recruitmentBoard = findTestRecruitmentBoard();
+        recruitmentBoard.closeRecruitment(1L);
+
+        Member member = new Member("test1@email.com", "test");
+
+        //when, then
+        assertThatThrownBy(() -> recruitmentBoard.addParticipationMember(member)).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("모집이 마감된 게시글 입니다.");
     }
 }

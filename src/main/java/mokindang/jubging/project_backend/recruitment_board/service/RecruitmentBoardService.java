@@ -5,8 +5,8 @@ import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.member.service.MemberService;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.Coordinate;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.Place;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Coordinate;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Place;
 import mokindang.jubging.project_backend.recruitment_board.repository.RecruitmentBoardRepository;
 import mokindang.jubging.project_backend.recruitment_board.service.request.BoardModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceCreationRequest;
@@ -36,7 +36,8 @@ public class RecruitmentBoardService {
         LocalDateTime now = LocalDateTime.now();
         Place meetingPlace = generateCreationPlace(recruitmentBoardCreationRequest.getMeetingPlaceCreationRequest());
         RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, member, recruitmentBoardCreationRequest.getStartingDate(),
-                recruitmentBoardCreationRequest.getActivityCategory(), meetingPlace, recruitmentBoardCreationRequest.getTitle(), recruitmentBoardCreationRequest.getContentBody());
+                recruitmentBoardCreationRequest.getActivityCategory(), meetingPlace, recruitmentBoardCreationRequest.getTitle(),
+                recruitmentBoardCreationRequest.getContentBody(), recruitmentBoardCreationRequest.getMaxOfParticipationCount());
         RecruitmentBoard savedRecruitmentBoard = recruitmentBoardRepository.save(recruitmentBoard);
         return new RecruitmentBoardIdResponse(savedRecruitmentBoard.getId());
     }
@@ -129,5 +130,13 @@ public class RecruitmentBoardService {
                 .map(region -> new RegionCountingChartResponse(region.getValue()))
                 .collect(Collectors.toUnmodifiableList());
         return new MultiRegionCountingChartResponse(regionCountingChartResponses, regionBoardsCountingChart.hasNext());
+    }
+
+    @Transactional
+    public RecruitmentBoardIdResponse participate(final Long memberId, final Long boardId) {
+        RecruitmentBoard board = findById(boardId);
+        Member member = memberService.findByMemberId(memberId);
+        board.addParticipationMember(member);
+        return new RecruitmentBoardIdResponse(board.getId());
     }
 }

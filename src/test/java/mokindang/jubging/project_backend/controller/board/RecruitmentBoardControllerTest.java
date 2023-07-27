@@ -5,8 +5,8 @@ import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.recruitment_board.controller.RecruitmentBoardController;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.Coordinate;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.Place;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Coordinate;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Place;
 import mokindang.jubging.project_backend.recruitment_board.service.RecruitmentBoardService;
 import mokindang.jubging.project_backend.recruitment_board.service.request.BoardModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceCreationRequest;
@@ -73,7 +73,7 @@ class RecruitmentBoardControllerTest {
     private RecruitmentBoardCreationRequest createTestRecruitmentBoardCreationRequest() {
         MeetingPlaceCreationRequest meetingPlaceModificationRequest = createTestMeetingPlaceCreationRequest();
         return new RecruitmentBoardCreationRequest("제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11), meetingPlaceModificationRequest);
+                LocalDate.of(2023, 11, 11), meetingPlaceModificationRequest, 8);
     }
 
     private MeetingPlaceCreationRequest createTestMeetingPlaceCreationRequest() {
@@ -195,7 +195,7 @@ class RecruitmentBoardControllerTest {
         testMember.updateProfileImage("test_profile_url");
         Coordinate coordinate = new Coordinate(1.1, 1.2);
         return new RecruitmentBoard(now, testMember, LocalDate.of(2025, 2, 11),
-                "달리기", createTestPlace(), "게시판 제목", "게시판 내용 작성 테스트");
+                "달리기", createTestPlace(), "게시판 제목", "게시판 내용 작성 테스트", 8);
     }
 
     private Place createTestPlace() {
@@ -302,14 +302,14 @@ class RecruitmentBoardControllerTest {
                 .andExpect(jsonPath("$.boardId").value(1));
     }
 
-    private  BoardModificationRequest createTestModificationRequest() {
+    private BoardModificationRequest createTestModificationRequest() {
         MeetingPlaceModificationRequest meetingPlaceModificationRequest = new MeetingPlaceModificationRequest(1.1, 1.2, "서울시 동작구 상도동 1-1");
 
         return new BoardModificationRequest("새로운 제목", "새로운 본문",
                 "산책", LocalDate.of(2023, 1, 1), meetingPlaceModificationRequest);
     }
 
-        @Test
+    @Test
     @DisplayName("게시글 수정 요청 시, 존재하지 않는 게시글에 대한 수정을 요청할 시 HTTP 400 과 예외를 담은 ErrorResponse 를 반환한다.")
     void modifyFailedByNonexistentBoard() throws Exception {
         //given
@@ -395,7 +395,7 @@ class RecruitmentBoardControllerTest {
     }
 
     @Test
-    @DisplayName("지역 게시글 조회 시, HTTP 200 코드와 함께 요청 회원 지역에 해당하는 게시글 리스트를 반환한다.")
+    @DisplayName("특정 지역에 해당하는 구인 게시글 조회 시, HTTP 200 코드와 함께 요청 회원 지역에 해당하는 게시글 리스트를 반환한다.")
     void selectRegionBoards() throws Exception {
         //given
         List<SummaryBoardResponse> summaryBoardResponses = List.of(new SummaryBoardResponse(createTestRecruitmentBoard()),
@@ -414,7 +414,7 @@ class RecruitmentBoardControllerTest {
     }
 
     @Test
-    @DisplayName("지역 게시글에 해당하는 장소리스트 조회 시, HTTP 200 와 함께 게시글의 장소 값과 id 를 갖고 있는 BoardPlaceMarkerResponse 리스트를 반환한다.")
+    @DisplayName("특정 지역에 해당하는 게시글리스트 조회 시, HTTP 200 와 함께 게시글의 장소 값(마커)과 id 를 갖고 있는 BoardPlaceMarkerResponse 리스트를 반환한다.")
     void selectPlacesOfRegionBoards() throws Exception {
         //given
         List<BoardPlaceMarkerResponse> boardPlaceMarkerResponses = List.of(new BoardPlaceMarkerResponse(createTestRecruitmentBoard()),
@@ -430,5 +430,19 @@ class RecruitmentBoardControllerTest {
         actual.andExpect(status().isOk())
                 .andExpect(jsonPath("$.boardPlaceMarkerResponses").exists())
                 .andExpect(jsonPath("$.hasNext").value(false));
+    }
+
+    @Test
+    @DisplayName("구인 게시글에 참여요청 시, HTTP 200 과 함께 게시글의 id 를 가진 RecruitmentBoardIdResponse 를 반환한다.")
+    void participate() throws Exception {
+        //given
+        when(boardService.participate(anyLong(), anyLong())).thenReturn(new RecruitmentBoardIdResponse(1L));
+
+        //when
+        ResultActions actual = mockMvc.perform(patch("/api/boards/recruitment/{boardId}/participation-list", 1L));
+
+        //then
+        actual.andExpect(status().isOk())
+                .andExpect(jsonPath("$.boardId").value(1L));
     }
 }

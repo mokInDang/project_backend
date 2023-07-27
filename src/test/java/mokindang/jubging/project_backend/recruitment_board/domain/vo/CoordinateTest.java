@@ -1,5 +1,6 @@
 package mokindang.jubging.project_backend.recruitment_board.domain.vo;
 
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Coordinate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

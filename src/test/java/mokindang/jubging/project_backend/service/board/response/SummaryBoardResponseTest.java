@@ -5,6 +5,8 @@ import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.recruitment_board.domain.ActivityCategory;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.*;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Coordinate;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Place;
 import mokindang.jubging.project_backend.recruitment_board.service.response.SummaryBoardResponse;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +37,7 @@ class SummaryBoardResponseTest {
         writer.updateProfileImage("test_url");
         writer.updateRegion("동작구");
         return new RecruitmentBoard(now, writer, LocalDate.of(2025, 2, 11), "달리기",
-                createTestPlace(), "제목", "본문내용");
+                createTestPlace(), "제목", "본문내용", 8);
     }
 
     private Place createTestPlace() {

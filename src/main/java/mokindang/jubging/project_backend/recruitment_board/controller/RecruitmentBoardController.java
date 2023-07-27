@@ -60,6 +60,14 @@ public class RecruitmentBoardController implements RecruitmentBoardControllerSwa
                 .body(recruitmentBoardIdResponse);
     }
 
+    @PatchMapping("/{boardId}/participation-list")
+    public ResponseEntity<RecruitmentBoardIdResponse> participate(@Login final Long memberId, @PathVariable final Long boardId) {
+        log.info(("memberId = {} 의 플로깅 참여 요청, 게시글 번호 : {}"), memberId, boardId);
+        RecruitmentBoardIdResponse recruitmentBoardIdResponse = recruitmentBoardService.participate(memberId, boardId);
+        return ResponseEntity.ok()
+                .body(recruitmentBoardIdResponse);
+    }
+
     @PatchMapping("/{boardId}/recruitment-status")
     public ResponseEntity<RecruitmentBoardIdResponse> closeRecruitment(@Login final Long memberId, @PathVariable final Long boardId) {
         log.info("memberId = {} 의 게시글 모집 마감 요청, 게시글 번호 : {}", memberId, boardId);

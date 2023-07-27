@@ -1,13 +1,16 @@
-package mokindang.jubging.project_backend.recruitment_board.domain;
+package mokindang.jubging.project_backend.recruitment_board.domain.participation;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mokindang.jubging.project_backend.member.domain.Member;
+import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 
 import javax.persistence.*;
 
 @IdClass(ParticipationId.class)
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Participation {
 

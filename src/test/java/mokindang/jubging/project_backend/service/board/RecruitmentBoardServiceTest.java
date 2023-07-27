@@ -1,12 +1,13 @@
 package mokindang.jubging.project_backend.service.board;
 
-import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.member.service.MemberService;
 import mokindang.jubging.project_backend.recruitment_board.domain.ActivityCategory;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.*;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Coordinate;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Place;
 import mokindang.jubging.project_backend.recruitment_board.repository.RecruitmentBoardRepository;
 import mokindang.jubging.project_backend.recruitment_board.service.RecruitmentBoardService;
 import mokindang.jubging.project_backend.recruitment_board.service.request.BoardModificationRequest;
@@ -80,7 +81,7 @@ class RecruitmentBoardServiceTest {
     private RecruitmentBoardCreationRequest createTestRecruitmentBoardCreationRequest() {
         MeetingPlaceCreationRequest meetingPlaceCreationRequest = createTestMeetingPlaceCreationRequest();
         return new RecruitmentBoardCreationRequest("제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11), meetingPlaceCreationRequest);
+                LocalDate.of(2023, 11, 11), meetingPlaceCreationRequest, 8);
     }
 
     private MeetingPlaceCreationRequest createTestMeetingPlaceCreationRequest() {
@@ -121,6 +122,10 @@ class RecruitmentBoardServiceTest {
         when(recruitmentBoard.getContentBody()).thenReturn(new ContentBody("본문내용입니다."));
         Coordinate coordinate = new Coordinate(1.1, 1.2);
         when(recruitmentBoard.getMeetingPlace()).thenReturn(createTestPlace());
+        ParticipationCount participationCount = mock(ParticipationCount.class);
+        when(participationCount.getCount()).thenReturn(3);
+        when(participationCount.getMax()).thenReturn(8);
+        when(recruitmentBoard.getParticipationCount()).thenReturn(participationCount);
         when(boardRepository.findById(1L)).thenReturn(Optional.of(recruitmentBoard));
 
         //when
@@ -140,6 +145,8 @@ class RecruitmentBoardServiceTest {
         softly.assertThat(actual.getMeetingPlaceResponse().getLatitude()).isEqualTo(1.2);
         softly.assertThat(actual.getMeetingPlaceResponse().getMeetingAddress()).isEqualTo("서울시 동작구 상도동 1-1");
         softly.assertThat(actual.isMine()).isEqualTo(true);
+        softly.assertThat(actual.getParticipationCount()).isEqualTo(3);
+        softly.assertThat(actual.getMaxOfParticipationCount()).isEqualTo(8);
         softly.assertAll();
     }
 
@@ -247,9 +254,9 @@ class RecruitmentBoardServiceTest {
         Member dongJackMember = new Member("test@mail.com", "동작이");
         dongJackMember.updateRegion("동작구");
         RecruitmentBoard dongJackBoard1 = new RecruitmentBoard(now.plusDays(1), dongJackMember,
-                LocalDate.of(2023, 3, 27), "달리기", createTestPlace(), "제목1", "본문1");
+                LocalDate.of(2023, 3, 27), "달리기", createTestPlace(), "제목1", "본문1", 8);
         RecruitmentBoard dongJackBoard2 = new RecruitmentBoard(now, dongJackMember,
-                LocalDate.of(2023, 3, 27), "산책", createTestPlace(), "제목2", "본문2");
+                LocalDate.of(2023, 3, 27), "산책", createTestPlace(), "제목2", "본문2", 8);
         Slice<RecruitmentBoard> slice = new SliceImpl<>(List.of(dongJackBoard1, dongJackBoard2));
 
         Member member = mock(Member.class);
@@ -278,9 +285,9 @@ class RecruitmentBoardServiceTest {
         Member dongJackMember = new Member("test@mail.com", "동작이");
         dongJackMember.updateRegion("동작구");
         RecruitmentBoard dongJackBoard1 = new RecruitmentBoard(now, dongJackMember,
-                LocalDate.of(2023, 3, 26), "달리기", createTestPlace(), "제목1", "본문1");
+                LocalDate.of(2023, 3, 26), "달리기", createTestPlace(), "제목1", "본문1", 8);
         RecruitmentBoard dongJackBoard2 = new RecruitmentBoard(now, dongJackMember,
-                LocalDate.of(2023, 3, 27), "산책", createTestPlace(), "제목2", "본문2");
+                LocalDate.of(2023, 3, 27), "산책", createTestPlace(), "제목2", "본문2", 8);
         Slice<RecruitmentBoard> slice = new SliceImpl<>(List.of(dongJackBoard1, dongJackBoard2));
 
         Member member = mock(Member.class);
@@ -321,6 +328,57 @@ class RecruitmentBoardServiceTest {
 
         //then
         assertThat(actual).isEqualTo(input);
+    }
+
+    @Test
+    @DisplayName("게시글에 참여 요청 시, 게시글의 참여리스트에 회원을 추가한다.")
+    void participate() {
+        //given
+        Member member = mock(Member.class);
+        when(memberService.findByMemberId(anyLong())).thenReturn(member);
+
+        RecruitmentBoard board = mock(RecruitmentBoard.class);
+        Long boardId = 2L;
+        when(board.getId()).thenReturn(boardId);
+        when(boardRepository.findById(anyLong())).thenReturn(Optional.ofNullable(board));
+
+        //when
+        RecruitmentBoardIdResponse actual = boardService.participate(1L, 1L);
+
+        //then
+        assertThat(actual.getBoardId()).isEqualTo(boardId);
+    }
+
+    @Test
+    @DisplayName("게시글에 참여 요청 시, 게시글의 모집이 마감되었으면 예외를 반환한다.")
+    void failedByParticipateByClosedRecruitment() {
+        //given
+        Member member = mock(Member.class);
+        when(memberService.findByMemberId(anyLong())).thenReturn(member);
+
+        RecruitmentBoard board = mock(RecruitmentBoard.class);
+        when(boardRepository.findById(anyLong())).thenReturn(Optional.ofNullable(board));
+        doThrow(new IllegalArgumentException("모집이 마감된 게시글 입니다.")).when(board).addParticipationMember(member);
+
+        //when, then
+        assertThatThrownBy(() -> boardService.participate(1L, 1L)).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("모집이 마감된 게시글 입니다.");
+    }
+
+    @Test
+    @DisplayName("게시글에 참여 요청 시, 게시글의 모집 인원이 꽉 찼으면 예외를 반환한다.")
+    void failedByFullParticipationCount() {
+        //given
+        Member member = mock(Member.class);
+        when(memberService.findByMemberId(anyLong())).thenReturn(member);
+
+        RecruitmentBoard board = mock(RecruitmentBoard.class);
+        when(boardRepository.findById(anyLong())).thenReturn(Optional.ofNullable(board));
+        doThrow(new IllegalStateException("참여 인원이 꽉 찼습니다.")).when(board).addParticipationMember(member);
+
+        //when, then
+        assertThatThrownBy(() -> boardService.participate(1L, 1L)).isInstanceOf(IllegalStateException.class)
+                .hasMessage("참여 인원이 꽉 찼습니다.");
     }
 }
 

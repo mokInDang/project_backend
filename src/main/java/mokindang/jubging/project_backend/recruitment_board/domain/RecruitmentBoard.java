@@ -7,8 +7,10 @@ import mokindang.jubging.project_backend.comment.domain.Comment;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
+import mokindang.jubging.project_backend.recruitment_board.domain.participation.Participation;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.ContentBody;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.Place;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.ParticipationCount;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Place;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.StartingDate;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.Title;
 
@@ -34,12 +36,8 @@ public class RecruitmentBoard {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    private Member   writer;
+    private Member writer;
 
-    @OneToMany(mappedBy = "recruitmentBoard")
-    private List<Participation> participation = new ArrayList<>();
-
-    Long maxNumberOfParticipation;
 
     @Embedded
     private StartingDate startingDate;
@@ -51,7 +49,6 @@ public class RecruitmentBoard {
     private Title title;
 
     @Embedded
-    @Column(name = "content_body")
     private ContentBody contentBody;
 
     @Embedded
@@ -63,11 +60,18 @@ public class RecruitmentBoard {
     @Embedded
     private Place meetingPlace;
 
+    @Embedded
+    private ParticipationCount participationCount;
+
+    @OneToMany(mappedBy = "recruitmentBoard")
+    private List<Participation> participationList = new ArrayList<>();
+
     @OneToMany(mappedBy = "recruitmentBoard", cascade = CascadeType.REMOVE)
-    List<Comment> comments = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
     public RecruitmentBoard(final LocalDateTime creatingDateTime, final Member writer, final LocalDate startingDate,
-                            final String activityCategory, final Place meetingPlace, final String title, final String content) {
+                            final String activityCategory, final Place meetingPlace, final String title, final String content,
+                            final int maxParticipationCount) {
         this.creatingDateTime = creatingDateTime;
         this.writer = writer;
         LocalDate creatingDate = creatingDateTime.toLocalDate();
@@ -80,7 +84,8 @@ public class RecruitmentBoard {
         this.writingRegion = region;
         this.onRecruitment = true;
         this.meetingPlace = meetingPlace;
-        this.participation.add(new Participation(this, writer));
+        this.participationList.add(new Participation(this, writer));
+        this.participationCount = ParticipationCount.createDefaultParticipationCount(maxParticipationCount);
     }
 
     private void validateRegion(final Region region) {
@@ -148,6 +153,15 @@ public class RecruitmentBoard {
 
     public boolean isSameRegion(final Region region) {
         return this.writingRegion.equals(region);
+    }
+
+    public void addParticipationMember(final Member member) {
+        if(onRecruitment) {
+            participationCount.countUp();
+            participationList.add(new Participation(this, member));
+            return;
+        }
+        throw new IllegalArgumentException("모집이 마감된 게시글 입니다.");
     }
 
     @Override
