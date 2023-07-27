@@ -62,7 +62,7 @@ public class RecruitmentBoard {
     private ParticipationCount participationCount;
 
     @OneToMany(mappedBy = "recruitmentBoard")
-    private List<Participation> participationMembers = new ArrayList<>();
+    private List<Participation> participationList = new ArrayList<>();
 
     @OneToMany(mappedBy = "recruitmentBoard", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
@@ -82,7 +82,7 @@ public class RecruitmentBoard {
         this.writingRegion = region;
         this.onRecruitment = true;
         this.meetingPlace = meetingPlace;
-        this.participationMembers.add(new Participation(this, writer));
+        this.participationList.add(new Participation(this, writer));
         this.participationCount = ParticipationCount.createDefaultParticipationCount(maxParticipationCount);
     }
 
@@ -158,14 +158,14 @@ public class RecruitmentBoard {
         validateAlreadyParticipatingMember(participation);
         if (onRecruitment) {
             participationCount.countUp();
-            participationMembers.add(new Participation(this, member));
+            participationList.add(new Participation(this, member));
             return;
         }
         throw new IllegalArgumentException("모집이 마감된 게시글 입니다.");
     }
 
     private void validateAlreadyParticipatingMember(Participation participation) {
-        if (this.participationMembers.contains(participation)) {
+        if (this.participationList.contains(participation)) {
             throw new IllegalArgumentException("이미 참여가 된 상태입니다.");
         }
     }
