@@ -33,12 +33,12 @@ public class RefreshToken {
         this.expirationTime = expirationTime;
     }
 
-    public void switchRefreshToken(final String newToken, final LocalDateTime time) {
-        validateNewToken(newToken, time);
+    public void switchRefreshToken(final String newToken) {
+        validateNewToken(newToken);
         token = newToken;
     }
 
-    private void validateNewToken(final String newToken, final LocalDateTime time) {
+    private void validateNewToken(final String newToken) {
         if (newToken == null || newToken.isBlank()) {
             throw new IllegalArgumentException("refresh token 이 null 이나 공백으로 입력되었습니다.");
         }
@@ -46,8 +46,10 @@ public class RefreshToken {
         if (newToken.equals(token)) {
             throw new IllegalArgumentException("생성된 토큰이 기존 토큰과 같습니다.");
         }
+    }
 
-        if (time.isAfter(expirationTime)) {
+    public void validateExpirationTime(final LocalDateTime now) {
+        if (now.isAfter(expirationTime)) {
             throw new JwtException("Refresh 토큰이 만료되었습니다.");
         }
     }

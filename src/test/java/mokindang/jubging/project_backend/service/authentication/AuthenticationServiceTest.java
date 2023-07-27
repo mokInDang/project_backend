@@ -130,7 +130,7 @@ class AuthenticationServiceTest {
         softly.assertThat(reissue.getAccessToken()).isEqualTo("Test Access Token");
         softly.assertThat(reissue.getRefreshToken()).isNotEqualTo("Test Refresh Token");
         softly.assertAll();
-        verify(refreshToken, times(1)).switchRefreshToken(any(), any());
+        verify(refreshToken, times(1)).switchRefreshToken(any());
     }
 
     @Test
