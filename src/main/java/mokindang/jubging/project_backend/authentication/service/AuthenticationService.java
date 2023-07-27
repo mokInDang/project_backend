@@ -47,6 +47,7 @@ public class AuthenticationService {
         Member existMember = member.get();
         log.info("memberId = {}, email = {}, alias = {} 의 로그인", existMember.getId(), kakaoApiMemberResponse.getEmail(), kakaoApiMemberResponse.getAlias());
         JwtResponse jwtResponse = issueJwtToken(existMember);
+        log.info("리프레시 토큰 재발급 : {}", jwtResponse.getRefreshToken());
         return new KakaoLoginResponse(jwtResponse.getAccessToken(),
                 jwtResponse.getRefreshToken(), existMember.getFirstFourDigitsOfWriterEmail(), existMember.getAlias(), existMember.getRegion().getValue(), existMember.getProfileImage().getProfileImageUrl(), LOGIN);
     }
