@@ -395,7 +395,7 @@ class RecruitmentBoardControllerTest {
     }
 
     @Test
-    @DisplayName("지역 게시글 조회 시, HTTP 200 코드와 함께 요청 회원 지역에 해당하는 게시글 리스트를 반환한다.")
+    @DisplayName("특정 지역에 해당하는 구인 게시글 조회 시, HTTP 200 코드와 함께 요청 회원 지역에 해당하는 게시글 리스트를 반환한다.")
     void selectRegionBoards() throws Exception {
         //given
         List<SummaryBoardResponse> summaryBoardResponses = List.of(new SummaryBoardResponse(createTestRecruitmentBoard()),
@@ -414,7 +414,7 @@ class RecruitmentBoardControllerTest {
     }
 
     @Test
-    @DisplayName("지역 게시글에 해당하는 장소리스트 조회 시, HTTP 200 와 함께 게시글의 장소 값과 id 를 갖고 있는 BoardPlaceMarkerResponse 리스트를 반환한다.")
+    @DisplayName("특정 지역에 해당하는 게시글리스트 조회 시, HTTP 200 와 함께 게시글의 장소 값(마커)과 id 를 갖고 있는 BoardPlaceMarkerResponse 리스트를 반환한다.")
     void selectPlacesOfRegionBoards() throws Exception {
         //given
         List<BoardPlaceMarkerResponse> boardPlaceMarkerResponses = List.of(new BoardPlaceMarkerResponse(createTestRecruitmentBoard()),
@@ -430,5 +430,19 @@ class RecruitmentBoardControllerTest {
         actual.andExpect(status().isOk())
                 .andExpect(jsonPath("$.boardPlaceMarkerResponses").exists())
                 .andExpect(jsonPath("$.hasNext").value(false));
+    }
+
+    @Test
+    @DisplayName("구인 게시글에 참여요청 시, HTTP 200 과 함께 게시글의 id 를 가진 RecruitmentBoardIdResponse 를 반환한다.")
+    void participate() throws Exception {
+        //given
+        when(boardService.participate(anyLong(), anyLong())).thenReturn(new RecruitmentBoardIdResponse(1L));
+
+        //when
+        ResultActions actual = mockMvc.perform(patch("/api/boards/recruitment/{boardId}/participation-list", 1L));
+
+        //then
+        actual.andExpect(status().isOk())
+                .andExpect(jsonPath("$.boardId").value(1L));
     }
 }
