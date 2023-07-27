@@ -1,7 +1,6 @@
 package mokindang.jubging.project_backend.recruitment_board.service;
 
 import lombok.RequiredArgsConstructor;
-import mokindang.jubging.project_backend.comment.service.response.BoardIdResponse;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.member.service.MemberService;
@@ -38,7 +37,7 @@ public class RecruitmentBoardService {
         Place meetingPlace = generateCreationPlace(recruitmentBoardCreationRequest.getMeetingPlaceCreationRequest());
         RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, member, recruitmentBoardCreationRequest.getStartingDate(),
                 recruitmentBoardCreationRequest.getActivityCategory(), meetingPlace, recruitmentBoardCreationRequest.getTitle(),
-                recruitmentBoardCreationRequest.getContentBody(),recruitmentBoardCreationRequest.getMaxOfParticipationCount());
+                recruitmentBoardCreationRequest.getContentBody(), recruitmentBoardCreationRequest.getMaxOfParticipationCount());
         RecruitmentBoard savedRecruitmentBoard = recruitmentBoardRepository.save(recruitmentBoard);
         return new RecruitmentBoardIdResponse(savedRecruitmentBoard.getId());
     }
@@ -134,10 +133,10 @@ public class RecruitmentBoardService {
     }
 
     @Transactional
-    public BoardIdResponse participate(final Long memberId, final Long boardId) {
+    public RecruitmentBoardIdResponse participate(final Long memberId, final Long boardId) {
         RecruitmentBoard board = findById(boardId);
         Member member = memberService.findByMemberId(memberId);
         board.addParticipationMember(member);
-        return new BoardIdResponse(board.getId());
+        return new RecruitmentBoardIdResponse(board.getId());
     }
 }
