@@ -1,5 +1,5 @@
-INSERT INTO member (EMAIL, ALIAS, REGION, PROFILE_IMAGE_URL)
-VALUES ('test@email.com', '테스트유저', '동작구', 'https://dognejupging-xyz-image-bucket.s3.ap-northeast-2.amazonaws.com/profile_image/profileimage2.png');
+INSERT INTO member (member_id, EMAIL, ALIAS, REGION, PROFILE_IMAGE_URL)
+VALUES (1,'test@email.com', '테스트유저', '동작구', 'https://dognejupging-xyz-image-bucket.s3.ap-northeast-2.amazonaws.com/profile_image/profileimage2.png');
 
 INSERT INTO recruitment_board (MEMBER_ID, CREATING_DATE_TIME, STARTING_DATE, ACTIVITY_CATEGORY, TITLE, CONTENT_BODY,
                                REGION, ON_RECRUITMENT, longitude_point, latitude_point, address, count_of_participation, max_count_of_participation)

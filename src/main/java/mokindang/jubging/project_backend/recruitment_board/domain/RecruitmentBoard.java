@@ -17,9 +17,7 @@ import mokindang.jubging.project_backend.recruitment_board.domain.vo.Title;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Getter
 @Entity
@@ -156,12 +154,20 @@ public class RecruitmentBoard {
     }
 
     public void addParticipationMember(final Member member) {
-        if(onRecruitment) {
+        Participation participation = new Participation(this, member);
+        validateAlreadyParticipatingMember(participation);
+        if (onRecruitment) {
             participationCount.countUp();
             participationList.add(new Participation(this, member));
             return;
         }
         throw new IllegalArgumentException("모집이 마감된 게시글 입니다.");
+    }
+
+    private void validateAlreadyParticipatingMember(Participation participation) {
+        if (this.participationList.contains(participation)) {
+            throw new IllegalArgumentException("이미 참여가 된 상태입니다.");
+        }
     }
 
     @Override
