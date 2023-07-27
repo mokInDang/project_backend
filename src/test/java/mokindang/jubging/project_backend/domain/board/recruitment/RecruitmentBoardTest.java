@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Rollback
@@ -339,6 +340,9 @@ class RecruitmentBoardTest {
     @DisplayName("참여 회원 추가시 인원이 이미 찼다면 예외를 반환한다.")
     void failedByFullParticipationCount() {
         //given
+        Member member = mock(Member.class);
+        when(member.getId()).thenReturn(2L);
+
         int maxParticipationCount = 1;
         LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
         Member writer = new Member("test1@email.com", "test");
@@ -346,7 +350,6 @@ class RecruitmentBoardTest {
 
         RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, writer, LocalDate.of(2025, 2, 11), "달리기",
                 createTestPlace(), "제목", "본문내용", maxParticipationCount);
-        Member member = new Member("test2@email.com", "test2");
 
         //when, then
         assertThatThrownBy(() -> recruitmentBoard.addParticipationMember(member)).isInstanceOf(IllegalStateException.class)
