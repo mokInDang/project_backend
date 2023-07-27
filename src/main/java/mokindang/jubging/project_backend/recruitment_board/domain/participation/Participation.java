@@ -7,6 +7,7 @@ import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @IdClass(ParticipationId.class)
 @Entity
@@ -27,5 +28,18 @@ public class Participation {
     public Participation(final RecruitmentBoard recruitmentBoard, final Member writer) {
         this.recruitmentBoard = recruitmentBoard;
         this.member = writer;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Participation that = (Participation) o;
+        return Objects.equals(recruitmentBoard, that.recruitmentBoard) && Objects.equals(member, that.member);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(recruitmentBoard, member);
     }
 }
