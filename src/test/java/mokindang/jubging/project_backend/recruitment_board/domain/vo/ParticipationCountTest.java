@@ -42,10 +42,10 @@ class ParticipationCountTest {
         ParticipationCount defaultParticipationCount = ParticipationCount.createDefaultParticipationCount(max);
 
         //when
-        defaultParticipationCount.countUp();
+        ParticipationCount participationCount = defaultParticipationCount.countUp();
 
         //then
-        assertThat(defaultParticipationCount.getCount()).isEqualTo(expectedCount);
+        assertThat(participationCount.getCount()).isEqualTo(expectedCount);
     }
 
     @Test
@@ -54,9 +54,10 @@ class ParticipationCountTest {
         //given
         int max = 2;
         ParticipationCount defaultParticipationCount = ParticipationCount.createDefaultParticipationCount(max);
+        ParticipationCount participationCount = defaultParticipationCount.countUp();
 
         //when, then
-        assertThatThrownBy(defaultParticipationCount::countUp).isInstanceOf(IllegalStateException.class)
+        assertThatThrownBy(() -> participationCount.countUp()).isInstanceOf(IllegalStateException.class)
                 .hasMessage("참여 인원이 꽉 찼습니다.");
     }
 }
