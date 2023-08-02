@@ -26,11 +26,11 @@ VALUES (8,'test8@email.com', '테스트유저8', '동작구', 'https://dognejupg
 -- 게시글
 INSERT INTO recruitment_board (MEMBER_ID, CREATING_DATE_TIME, STARTING_DATE, ACTIVITY_CATEGORY, TITLE, CONTENT_BODY,
                                REGION, ON_RECRUITMENT, longitude_point, latitude_point, address, count_of_participation, max_count_of_participation, version)
-VALUES (1, '2023-3-9-12-0', '2023-3-15', 'RUNNING', '제목', '본문내용', '동작구', true, 1.1, 1.2, '서울시 동작구 상도동 1-1',1,8, 0);
+VALUES (1, '2023-3-9-12-0', '2023-3-15', 'RUNNING', '제목', '본문내용', '동작구', true, 1.1, 1.2, '서울시 동작구 상도동 1-1',1,8, 1);
 
 INSERT INTO recruitment_board (MEMBER_ID, CREATING_DATE_TIME, STARTING_DATE, ACTIVITY_CATEGORY, TITLE, CONTENT_BODY,
                                REGION, ON_RECRUITMENT, longitude_point, latitude_point, address, count_of_participation, max_count_of_participation,version)
-VALUES (1, '2023-3-9-12-0', '2023-3-16', 'RUNNING', '제목2', '본문내용2', '동작구', true, 1.3, 1.4, '서울시 동작구 상도동 1-2',1,8,0);
+VALUES (1, '2023-3-9-12-0', '2023-3-16', 'RUNNING', '제목2', '본문내용2', '동작구', true, 1.3, 1.4, '서울시 동작구 상도동 1-2',1,8,1);
 
 INSERT INTO comment (body, created_date_time, last_modified_date_time, certification_board_id, recruitment_board_id,
                      member_id)
