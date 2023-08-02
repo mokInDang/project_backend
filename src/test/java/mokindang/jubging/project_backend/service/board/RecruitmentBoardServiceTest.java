@@ -126,7 +126,7 @@ class RecruitmentBoardServiceTest {
         when(participationCount.getCount()).thenReturn(3);
         when(participationCount.getMax()).thenReturn(8);
         when(recruitmentBoard.getParticipationCount()).thenReturn(participationCount);
-        when(boardRepository.findById(1L)).thenReturn(Optional.of(recruitmentBoard));
+        when(boardRepository.findByIdWithOptimisticLock(1L)).thenReturn(Optional.of(recruitmentBoard));
 
         //when
         RecruitmentBoardSelectionResponse actual = boardService.select(1L, 1L);
@@ -161,7 +161,7 @@ class RecruitmentBoardServiceTest {
     void delete() {
         //given
         RecruitmentBoard recruitmentBoard = mock(RecruitmentBoard.class);
-        when(boardRepository.findById(anyLong())).thenReturn(Optional.of(recruitmentBoard));
+        when(boardRepository.findByIdWithOptimisticLock(anyLong())).thenReturn(Optional.of(recruitmentBoard));
         Long boardId = 1L;
         when(recruitmentBoard.getId()).thenReturn(boardId);
         Long writerId = 1L;
@@ -178,7 +178,7 @@ class RecruitmentBoardServiceTest {
     @DisplayName("게시글 삭제 요청 시, 존재하지 않는 게시물에 대한 접근이면 예외를 발생한다.")
     void deleteFailedByNonexistentBoard() {
         //given
-        when(boardRepository.findById(anyLong())).thenThrow(new IllegalArgumentException("존재하지 않는 게시물 입니다."));
+        when(boardRepository.findByIdWithOptimisticLock(anyLong())).thenThrow(new IllegalArgumentException("존재하지 않는 게시물 입니다."));
 
         //when, then
         assertThatThrownBy(() -> boardService.delete(1L, 1L)).isInstanceOf(IllegalArgumentException.class)
@@ -190,7 +190,7 @@ class RecruitmentBoardServiceTest {
     void modify() {
         //given
         RecruitmentBoard recruitmentBoard = mock(RecruitmentBoard.class);
-        when(boardRepository.findById(anyLong())).thenReturn(Optional.of(recruitmentBoard));
+        when(boardRepository.findByIdWithOptimisticLock(anyLong())).thenReturn(Optional.of(recruitmentBoard));
         when(recruitmentBoard.getId()).thenReturn(1L);
 
         Long memberId = 1L;
@@ -219,7 +219,7 @@ class RecruitmentBoardServiceTest {
         //given
         RecruitmentBoard recruitmentBoard = mock(RecruitmentBoard.class);
         when(recruitmentBoard.getId()).thenReturn(1L);
-        when(boardRepository.findById(anyLong())).thenReturn(Optional.of(recruitmentBoard));
+        when(boardRepository.findByIdWithOptimisticLock(anyLong())).thenReturn(Optional.of(recruitmentBoard));
 
         Long memberId = 1L;
         Long boardId = 1L;
@@ -237,7 +237,7 @@ class RecruitmentBoardServiceTest {
     void closeRecruitmentFailedByNoneExistBoard() {
         //given
         RecruitmentBoard recruitmentBoard = mock(RecruitmentBoard.class);
-        when(boardRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(boardRepository.findByIdWithOptimisticLock(anyLong())).thenReturn(Optional.empty());
 
         Long memberId = 1L;
         Long boardId = 1L;
@@ -318,7 +318,7 @@ class RecruitmentBoardServiceTest {
 
         RecruitmentBoard board = mock(RecruitmentBoard.class);
         when(board.isSameRegion(any(Region.class))).thenReturn(input);
-        when(boardRepository.findById(anyLong())).thenReturn(Optional.ofNullable(board));
+        when(boardRepository.findByIdWithOptimisticLock(anyLong())).thenReturn(Optional.ofNullable(board));
 
         Long memberId = 1L;
         Long boardId = 1L;
@@ -340,7 +340,7 @@ class RecruitmentBoardServiceTest {
         RecruitmentBoard board = mock(RecruitmentBoard.class);
         Long boardId = 2L;
         when(board.getId()).thenReturn(boardId);
-        when(boardRepository.findById(anyLong())).thenReturn(Optional.ofNullable(board));
+        when(boardRepository.findByIdWithOptimisticLock(anyLong())).thenReturn(Optional.ofNullable(board));
 
         //when
         RecruitmentBoardIdResponse actual = boardService.participate(1L, 1L);
@@ -357,7 +357,7 @@ class RecruitmentBoardServiceTest {
         when(memberService.findByMemberId(anyLong())).thenReturn(member);
 
         RecruitmentBoard board = mock(RecruitmentBoard.class);
-        when(boardRepository.findById(anyLong())).thenReturn(Optional.ofNullable(board));
+        when(boardRepository.findByIdWithOptimisticLock(anyLong())).thenReturn(Optional.ofNullable(board));
         doThrow(new IllegalArgumentException("모집이 마감된 게시글 입니다.")).when(board).addParticipationMember(member);
 
         //when, then
@@ -373,7 +373,7 @@ class RecruitmentBoardServiceTest {
         when(memberService.findByMemberId(anyLong())).thenReturn(member);
 
         RecruitmentBoard board = mock(RecruitmentBoard.class);
-        when(boardRepository.findById(anyLong())).thenReturn(Optional.ofNullable(board));
+        when(boardRepository.findByIdWithOptimisticLock(anyLong())).thenReturn(Optional.ofNullable(board));
         doThrow(new IllegalStateException("참여 인원이 꽉 찼습니다.")).when(board).addParticipationMember(member);
 
         //when, then

@@ -8,6 +8,7 @@ import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoa
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Coordinate;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Place;
 import mokindang.jubging.project_backend.recruitment_board.service.RecruitmentBoardService;
+import mokindang.jubging.project_backend.recruitment_board.service.facade.OptimisticLockRecruitmentBoardResovler;
 import mokindang.jubging.project_backend.recruitment_board.service.request.BoardModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceCreationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceModificationRequest;
@@ -48,6 +49,9 @@ class RecruitmentBoardControllerTest {
 
     @MockBean
     private RecruitmentBoardService boardService;
+
+    @MockBean
+    private OptimisticLockRecruitmentBoardResovler optimisticLockRecruitmentBoardResovler;
 
     @MockBean
     private TokenManager tokenManager;
@@ -436,7 +440,7 @@ class RecruitmentBoardControllerTest {
     @DisplayName("구인 게시글에 참여요청 시, HTTP 200 과 함께 게시글의 id 를 가진 RecruitmentBoardIdResponse 를 반환한다.")
     void participate() throws Exception {
         //given
-        when(boardService.participate(anyLong(), anyLong())).thenReturn(new RecruitmentBoardIdResponse(1L));
+        when(optimisticLockRecruitmentBoardResovler.participate(anyLong(), anyLong())).thenReturn(new RecruitmentBoardIdResponse(1L));
 
         //when
         ResultActions actual = mockMvc.perform(patch("/api/boards/recruitment/{boardId}/participation-list", 1L));

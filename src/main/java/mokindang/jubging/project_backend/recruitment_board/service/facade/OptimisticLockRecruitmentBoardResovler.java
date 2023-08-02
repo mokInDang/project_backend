@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class OptimisticLockRecruitmentBoardFacade {
+public class OptimisticLockRecruitmentBoardResovler {
 
     private final RecruitmentBoardService recruitmentBoardService;
 

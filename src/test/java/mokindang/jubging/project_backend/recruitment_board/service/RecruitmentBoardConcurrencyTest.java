@@ -2,7 +2,7 @@ package mokindang.jubging.project_backend.recruitment_board.service;
 
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 import mokindang.jubging.project_backend.recruitment_board.repository.RecruitmentBoardRepository;
-import mokindang.jubging.project_backend.recruitment_board.service.facade.OptimisticLockRecruitmentBoardFacade;
+import mokindang.jubging.project_backend.recruitment_board.service.facade.OptimisticLockRecruitmentBoardResovler;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class RecruitmentBoardConcurrencyTest {
 
     @Autowired
-    private OptimisticLockRecruitmentBoardFacade recruitmentBoardService;
+    private OptimisticLockRecruitmentBoardResovler recruitmentBoardService;
 
     @Autowired
     private RecruitmentBoardRepository recruitmentBoardRepository;
