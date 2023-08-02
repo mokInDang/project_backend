@@ -51,13 +51,8 @@ public class RecruitmentBoardService {
 
 
     public RecruitmentBoardSelectionResponse select(final Long memberId, final Long boardId) {
-        RecruitmentBoard recruitmentBoard = findById(boardId);
+        RecruitmentBoard recruitmentBoard = findByIdWithOptimisticLock(boardId);
         return new RecruitmentBoardSelectionResponse(recruitmentBoard, recruitmentBoard.isSameWriterId(memberId));
-    }
-
-    public RecruitmentBoard findById(final Long boardId) {
-        return recruitmentBoardRepository.findById(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
     }
 
     public MultiBoardSelectionResponse selectAllBoards(final Pageable pageable) {
@@ -70,7 +65,7 @@ public class RecruitmentBoardService {
 
     @Transactional
     public RecruitmentBoardIdResponse delete(final Long memberId, final Long boardId) {
-        RecruitmentBoard recruitmentBoard = findById(boardId);
+        RecruitmentBoard recruitmentBoard = findByIdWithOptimisticLock(boardId);
         recruitmentBoard.validatePermission(memberId);
         recruitmentBoardRepository.delete(recruitmentBoard);
         return new RecruitmentBoardIdResponse(recruitmentBoard.getId());
@@ -78,7 +73,7 @@ public class RecruitmentBoardService {
 
     @Transactional
     public RecruitmentBoardIdResponse modify(final Long memberId, final Long boardId, final BoardModificationRequest boardModificationRequest) {
-        RecruitmentBoard recruitmentBoard = findById(boardId);
+        RecruitmentBoard recruitmentBoard = findByIdWithOptimisticLock(boardId);
         Place place = generateModificationPlace(boardModificationRequest.getMeetingPlaceModificationRequest());
         recruitmentBoard.modify(memberId, boardModificationRequest.getStartingDate(), boardModificationRequest.getActivityCategory(),
                 boardModificationRequest.getTitle(), boardModificationRequest.getContentBody(), place);
@@ -94,7 +89,7 @@ public class RecruitmentBoardService {
 
     @Transactional
     public RecruitmentBoardIdResponse closeRecruitment(final Long memberId, final Long boardId) {
-        RecruitmentBoard recruitmentBoard = findById(boardId);
+        RecruitmentBoard recruitmentBoard = findByIdWithOptimisticLock(boardId);
         recruitmentBoard.closeRecruitment(memberId);
         return new RecruitmentBoardIdResponse(recruitmentBoard.getId());
     }
@@ -120,7 +115,7 @@ public class RecruitmentBoardService {
 
     public boolean hasWritingCommentPermission(final Long memberId, final Long boardId) {
         Member member = memberService.findByMemberId(memberId);
-        RecruitmentBoard board = findById(boardId);
+        RecruitmentBoard board = findByIdWithOptimisticLock(boardId);
         return board.isSameRegion(member.getRegion());
     }
 
@@ -134,9 +129,14 @@ public class RecruitmentBoardService {
 
     @Transactional
     public RecruitmentBoardIdResponse participate(final Long memberId, final Long boardId) {
-        RecruitmentBoard board = findById(boardId);
+        RecruitmentBoard board = findByIdWithOptimisticLock(boardId);
         Member member = memberService.findByMemberId(memberId);
         board.addParticipationMember(member);
         return new RecruitmentBoardIdResponse(board.getId());
+    }
+
+    private RecruitmentBoard findByIdWithOptimisticLock(final Long boardId) {
+        return recruitmentBoardRepository.findByIdWithOptimisticLock(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
     }
 }
