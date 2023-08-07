@@ -1,6 +1,6 @@
 spring:
   config:
     import:
-      - classpath:/project_backend_security/application.yml
-      - classpath:/project_backend_security/application-jwt.yml
-      - classpath:/project_backend_security/application-kakao.yml
+      - classpath:/security/application.yml
+      - classpath:/security/application-jwt.yml
+      - classpath:/security/application-kakao.yml
