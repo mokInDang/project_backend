@@ -56,7 +56,7 @@ class CommentServiceTest {
         Member member = mock(Member.class);
         when(memberService.findByMemberId(anyLong())).thenReturn(member);
         RecruitmentBoard recruitmentBoard = mock(RecruitmentBoard.class);
-        when(recruitmentBoardService.findById(anyLong())).thenReturn(recruitmentBoard);
+        when(recruitmentBoardService.findByIdWithOptimisticLock(anyLong())).thenReturn(recruitmentBoard);
 
         CommentCreationRequest commentCreateRequest = createCommentCreateRequest();
 

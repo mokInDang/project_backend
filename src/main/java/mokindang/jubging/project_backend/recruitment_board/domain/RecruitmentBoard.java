@@ -67,6 +67,9 @@ public class RecruitmentBoard {
     @OneToMany(mappedBy = "recruitmentBoard", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
 
+    @Version
+    private Long version;
+
     public RecruitmentBoard(final LocalDateTime creatingDateTime, final Member writer, final LocalDate startingDate,
                             final String activityCategory, final Place meetingPlace, final String title, final String content,
                             final int maxParticipationCount) {
@@ -157,7 +160,7 @@ public class RecruitmentBoard {
         Participation participation = new Participation(this, member);
         validateAlreadyParticipatingMember(participation);
         if (onRecruitment) {
-            participationCount.countUp();
+            participationCount = participationCount.countUp();
             participationList.add(new Participation(this, member));
             return;
         }

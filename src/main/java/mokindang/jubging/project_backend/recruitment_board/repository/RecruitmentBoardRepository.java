@@ -6,10 +6,13 @@ import org.hibernate.annotations.BatchSize;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import javax.persistence.LockModeType;
 import java.time.LocalDate;
+import java.util.Optional;
 
 public interface RecruitmentBoardRepository extends JpaRepository<RecruitmentBoard, Long> {
 
@@ -41,4 +44,10 @@ public interface RecruitmentBoardRepository extends JpaRepository<RecruitmentBoa
 
     @Query("SELECT b.writingRegion FROM RecruitmentBoard b GROUP BY b.writingRegion ORDER BY COUNT(b) DESC")
     Slice<Region> getRegionBoardsCountingChart(final Pageable pageable);
+
+    @Lock(value = LockModeType.OPTIMISTIC)
+    @Query("SELECT b " +
+            "FROM RecruitmentBoard b " +
+            "WHERE b.id = :boardId")
+    Optional<RecruitmentBoard> findByIdWithOptimisticLock(final Long boardId);
 }

@@ -3,6 +3,7 @@ package mokindang.jubging.project_backend.recruitment_board.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mokindang.jubging.project_backend.recruitment_board.service.RecruitmentBoardService;
+import mokindang.jubging.project_backend.recruitment_board.service.facade.OptimisticLockRecruitmentBoardResovler;
 import mokindang.jubging.project_backend.recruitment_board.service.request.BoardModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.response.*;
@@ -21,6 +22,7 @@ import javax.validation.Valid;
 public class RecruitmentBoardController implements RecruitmentBoardControllerSwagger {
 
     private final RecruitmentBoardService recruitmentBoardService;
+    private final OptimisticLockRecruitmentBoardResovler optimisticLockRecruitmentBoardResovler;
 
     @PostMapping
     public ResponseEntity<RecruitmentBoardIdResponse> write(@Login Long memberId, @Valid @RequestBody final RecruitmentBoardCreationRequest recruitmentBoardCreationRequest) {
@@ -63,7 +65,7 @@ public class RecruitmentBoardController implements RecruitmentBoardControllerSwa
     @PatchMapping("/{boardId}/participation-list")
     public ResponseEntity<RecruitmentBoardIdResponse> participate(@Login final Long memberId, @PathVariable final Long boardId) {
         log.info(("memberId = {} 의 플로깅 참여 요청, 게시글 번호 : {}"), memberId, boardId);
-        RecruitmentBoardIdResponse recruitmentBoardIdResponse = recruitmentBoardService.participate(memberId, boardId);
+        RecruitmentBoardIdResponse recruitmentBoardIdResponse = optimisticLockRecruitmentBoardResovler.participate(memberId, boardId);
         return ResponseEntity.ok()
                 .body(recruitmentBoardIdResponse);
     }
@@ -72,8 +74,7 @@ public class RecruitmentBoardController implements RecruitmentBoardControllerSwa
     public ResponseEntity<RecruitmentBoardIdResponse> closeRecruitment(@Login final Long memberId, @PathVariable final Long boardId) {
         log.info("memberId = {} 의 게시글 모집 마감 요청, 게시글 번호 : {}", memberId, boardId);
         RecruitmentBoardIdResponse recruitmentBoardIdResponse = recruitmentBoardService.closeRecruitment(memberId, boardId);
-        return ResponseEntity.ok()
-                .body(recruitmentBoardIdResponse);
+        return ResponseEntity.ok().body(recruitmentBoardIdResponse);
     }
 
     @GetMapping("/region")

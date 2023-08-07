@@ -45,7 +45,7 @@ public class CommentService {
         LocalDateTime now = LocalDateTime.now();
 
         if (boardType.equals(BoardType.RECRUITMENT_BOARD)) {
-            RecruitmentBoard board = recruitmentBoardService.findById(boardId);
+            RecruitmentBoard board = recruitmentBoardService.findByIdWithOptimisticLock(boardId);
             Comment comment = Comment.createOnRecruitmentBoardWith(board, commentCreationRequest.getCommentBody(), writer, now);
             commentRepository.save(comment);
             return new BoardIdResponse(boardId);

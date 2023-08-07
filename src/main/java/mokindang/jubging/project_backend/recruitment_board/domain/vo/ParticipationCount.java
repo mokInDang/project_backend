@@ -20,22 +20,28 @@ public class ParticipationCount {
     @Column(name = "max_count_of_participation")
     private int max;
 
+
+
     public static ParticipationCount createDefaultParticipationCount(final int max) {
         return new ParticipationCount(max);
     }
-
     private ParticipationCount(final int max) {
         this.count = DEFAULT_COUNT_VALUE;
         this.max = max;
     }
 
-    public void countUp() {
+    private ParticipationCount(final int count, final int max) {
+        this.count = count;
+        this.max = max;
+    }
+
+    public ParticipationCount countUp() {
         validateCountUp();
-        count++;
+        return new ParticipationCount(count + 1, max);
     }
 
     private void validateCountUp() {
-        if (count + 1 >= max) {
+        if (count + 1 > max) {
             throw new IllegalStateException("참여 인원이 꽉 찼습니다.");
         }
     }
