@@ -13,8 +13,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.annotation.Rollback;
 
-import java.time.LocalDate;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,14 +26,20 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Rollback
+@DataJpaTest
 @ExtendWith(MockitoExtension.class)
 class CommentTest {
+
+    @PersistenceContext
+    private EntityManager em;
 
     @Test
     @DisplayName("작성 일시, 작성자, 댓글 본문을 입력받아 댓글을 생성한다.")
     void create() {
         //given
-        RecruitmentBoard recruitmentBoard = createRecruitmentBoard();
+        RecruitmentBoard recruitmentBoard = findTestRecruitmentBoard();
         LocalDateTime now = LocalDateTime.of(2023, 4, 8, 16, 48);
         Member writer = new Member("test@email.com", "test");
         String commentBodyValue = "안녕하세요.";
@@ -38,12 +48,8 @@ class CommentTest {
         assertThatCode(() -> Comment.createOnRecruitmentBoardWith(recruitmentBoard, commentBodyValue, writer, now)).doesNotThrowAnyException();
     }
 
-    private RecruitmentBoard createRecruitmentBoard() {
-        LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
-        Member writer = new Member("test1@email.com", "test");
-        writer.updateRegion("동작구");
-        return new RecruitmentBoard(now, writer, LocalDate.of(2025, 2, 11), "달리기",
-                createTestPlace(), "제목", "본문내용", 8);
+    private RecruitmentBoard findTestRecruitmentBoard() {
+        return em.find(RecruitmentBoard.class, 1L);
     }
 
     private Place createTestPlace() {
@@ -93,7 +99,7 @@ class CommentTest {
     }
 
     private Comment createTestComment() {
-        RecruitmentBoard recruitmentBoard = createRecruitmentBoard();
+        RecruitmentBoard recruitmentBoard = findTestRecruitmentBoard();
         LocalDateTime now = LocalDateTime.of(2023, 4, 8, 16, 48);
         Member writer = new Member("test@email.com", "test");
         writer.updateProfileImage("test_url");
@@ -109,7 +115,7 @@ class CommentTest {
         when(writer.getId()).thenReturn(1L);
 
         SoftAssertions softly = new SoftAssertions();
-        RecruitmentBoard recruitmentBoard = createRecruitmentBoard();
+        RecruitmentBoard recruitmentBoard = findTestRecruitmentBoard();
         LocalDateTime createdTime = LocalDateTime.of(2023, 4, 8, 16, 48);
 
         String commentBodyValue = "안녕하세요.";
@@ -135,7 +141,7 @@ class CommentTest {
         Member writer = mock(Member.class);
         when(writer.getId()).thenReturn(1L);
 
-        RecruitmentBoard recruitmentBoard = createRecruitmentBoard();
+        RecruitmentBoard recruitmentBoard = findTestRecruitmentBoard();
         LocalDateTime createdTime = LocalDateTime.of(2023, 4, 8, 16, 48);
         String commentBodyValue = "안녕하세요.";
         Comment comment = Comment.createOnRecruitmentBoardWith(recruitmentBoard, commentBodyValue, writer, createdTime);
