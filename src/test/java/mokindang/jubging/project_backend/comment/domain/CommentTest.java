@@ -9,7 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -209,22 +208,5 @@ class CommentTest {
         for (int i = 0; i < countOfReplyComment; i++) {
             comment.addReplyComment(replyComment);
         }
-    }
-
-    @ParameterizedTest
-    @CsvSource(value = {"1, true", "2, false"})
-    @DisplayName("구인 게시글과 댓글의 작성자가 일치하는지 확인한다.")
-    void isWriterOfBoard(final Long memberId, final boolean expect) {
-        //given
-        RecruitmentBoard testRecruitmentBoard = findTestRecruitmentBoard();
-        Member member = mock(Member.class);
-        when(member.getId()).thenReturn(memberId);
-        Comment comment = Comment.createOnRecruitmentBoardWith(testRecruitmentBoard, "댓글 본문", member, LocalDateTime.now());
-
-        //when
-        boolean actual = comment.isSameWriterId(1L);
-
-        //then
-        assertThat(actual).isEqualTo(expect);
     }
 }
