@@ -5,7 +5,10 @@ import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.member.service.MemberService;
 import mokindang.jubging.project_backend.recruitment_board.domain.ActivityCategory;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.*;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.ContentBody;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.ParticipationCount;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.StartingDate;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.Title;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Coordinate;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Place;
 import mokindang.jubging.project_backend.recruitment_board.repository.RecruitmentBoardRepository;
@@ -22,8 +25,6 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -305,29 +306,6 @@ class RecruitmentBoardServiceTest {
         //then
         assertThat(multiBoardPlaceSelectionResponse.getBoardPlaceMarkerResponses()).hasSize(2);
         verify(boardRepository, times(1)).selectRecruitmentRegionBoardsCloseToDeadline(any(Region.class), any(Pageable.class));
-    }
-
-    @ParameterizedTest
-    @ValueSource(booleans = {true, false})
-    @DisplayName("요청 회원의 지역과 해당 게시글의 지역이 같은 경우 true 를 그렇지 않은경우 false 를 반환다.")
-    void hasWritingCommentPermission(final boolean input) {
-        //given
-        Member member = mock(Member.class);
-        when(member.getRegion()).thenReturn(Region.from("성동구"));
-        when(memberService.findByMemberId(anyLong())).thenReturn(member);
-
-        RecruitmentBoard board = mock(RecruitmentBoard.class);
-        when(board.isSameRegion(any(Region.class))).thenReturn(input);
-        when(boardRepository.findByIdWithOptimisticLock(anyLong())).thenReturn(Optional.ofNullable(board));
-
-        Long memberId = 1L;
-        Long boardId = 1L;
-
-        //when
-        boolean actual = boardService.hasWritingCommentPermission(memberId, boardId);
-
-        //then
-        assertThat(actual).isEqualTo(input);
     }
 
     @Test
