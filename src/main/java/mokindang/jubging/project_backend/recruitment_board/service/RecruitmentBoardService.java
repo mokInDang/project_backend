@@ -118,12 +118,6 @@ public class RecruitmentBoardService {
         return new MultiBoardPlaceSelectionResponse(boardPlaceMarkerResponses, recruitmentBoards.hasNext());
     }
 
-    public boolean hasWritingCommentPermission(final Long memberId, final Long boardId) {
-        Member member = memberService.findByMemberId(memberId);
-        RecruitmentBoard board = findByIdWithOptimisticLock(boardId);
-        return board.isSameRegion(member.getRegion());
-    }
-
     public MultiRegionCountingChartResponse getRegionCountingChart(final Pageable pageable) {
         Slice<Region> regionBoardsCountingChart = recruitmentBoardRepository.getRegionBoardsCountingChart(pageable);
         List<RegionCountingChartResponse> regionCountingChartResponses = regionBoardsCountingChart.stream()

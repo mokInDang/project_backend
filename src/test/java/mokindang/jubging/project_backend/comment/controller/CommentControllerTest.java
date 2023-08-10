@@ -2,13 +2,15 @@ package mokindang.jubging.project_backend.comment.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mokindang.jubging.project_backend.comment.domain.Comment;
-import mokindang.jubging.project_backend.comment.domain.ReplyComment;
 import mokindang.jubging.project_backend.comment.domain.vo.CommentBody;
 import mokindang.jubging.project_backend.comment.service.BoardType;
 import mokindang.jubging.project_backend.comment.service.CommentService;
 import mokindang.jubging.project_backend.comment.service.request.CommentCreationRequest;
 import mokindang.jubging.project_backend.comment.service.request.ReplyCommentCreationRequest;
-import mokindang.jubging.project_backend.comment.service.response.*;
+import mokindang.jubging.project_backend.comment.service.response.BoardIdResponse;
+import mokindang.jubging.project_backend.comment.service.response.CommentIdResponse;
+import mokindang.jubging.project_backend.comment.service.response.CommentSelectionResponse;
+import mokindang.jubging.project_backend.comment.service.response.MultiCommentSelectionResponse;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -65,14 +67,14 @@ class CommentControllerTest {
     }
 
     @Test
-    @DisplayName("입력받은 BoardType 과 boardId 에 해당하는 댓글과 댓글 리스트를 반환한다.")
+    @DisplayName("입력받은 BoardType 과 boardId 에 해당하는 댓글과 댓글 리스트를 반환한다." +
+            "이때 각 댓글에 게시판의 작성자 유무와, 활동 참여 여부를 함께 반환한다.")
     void selectComments() throws Exception {
         //given
-        CommentSelectionResponse commentSelectionResponse = new CommentSelectionResponse(createMockedComment(),
-                1L);
+        CommentSelectionResponse commentSelectionResponse = new CommentSelectionResponse(createMockedComment(), 1L,
+                true, true);
         when(commentService.selectComments(anyLong(), any(BoardType.class), anyLong()))
                 .thenReturn(new MultiCommentSelectionResponse(List.of(commentSelectionResponse), true));
-
 
         //when
         ResultActions actual = mockMvc.perform(get("/api/{board-type}/{boardId}/comments",
@@ -88,7 +90,9 @@ class CommentControllerTest {
                 .andExpect(jsonPath("$.comments[0].writerAlias").value("댓글작성자"))
                 .andExpect(jsonPath("$.comments[0].firstFourLettersOfEmail").value("test"))
                 .andExpect(jsonPath("$.comments[0].writerProfileImageUrl").value("test_url"))
-                .andExpect(jsonPath("$.comments[0].multiReplyCommentSelectionResponse.replyComments").exists());
+                .andExpect(jsonPath("$.comments[0].multiReplyCommentSelectionResponse.replyComments").exists())
+                .andExpect(jsonPath("$.comments[0].writerOfBoard").value("true"))
+                .andExpect(jsonPath("$.comments[0].writerParticipatedIn").value("true"));
     }
 
     private Comment createMockedComment() {
@@ -108,7 +112,7 @@ class CommentControllerTest {
     void deleteComment() throws Exception {
         //given
         doNothing().when(commentService)
-                .deleteComment(anyLong(),anyLong());
+                .deleteComment(anyLong(), anyLong());
 
         //when
         ResultActions actual = mockMvc.perform(delete("/api/comments/{commentId}",
@@ -145,7 +149,7 @@ class CommentControllerTest {
         ReplyCommentCreationRequest replyCommentCreationRequest = new ReplyCommentCreationRequest("대댓글 본문");
         //when
         ResultActions actual = mockMvc.perform(post("/api/comments/{commentId}/reply-comment", 1L)
-                        .content(objectMapper.writeValueAsString(replyCommentCreationRequest))
+                .content(objectMapper.writeValueAsString(replyCommentCreationRequest))
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -176,7 +180,7 @@ class CommentControllerTest {
     void deleteReplyComment() throws Exception {
         //given
         doNothing().when(commentService)
-                .deleteReplyComment(anyLong(),anyLong());
+                .deleteReplyComment(anyLong(), anyLong());
 
         //when
         ResultActions actual = mockMvc.perform(delete("/api/comments/reply-comments/{replyCommentId}",
@@ -186,12 +190,13 @@ class CommentControllerTest {
         //then
         actual.andExpect(status().isNoContent());
     }
+
     @Test
     @DisplayName("대댓글 삭제 요청 시 , 입력 받은 replyCommentId 에 해당하는 대댓글이 존재하지 않는 경우 후 HTTP 상태코드 400 를 반환한다.")
     void deleteFailedByNoneExistReplyComment() throws Exception {
         //given
         doThrow(new IllegalArgumentException("존재하지 않는 대댓글 입니다.")).when(commentService)
-                .deleteReplyComment(anyLong(),anyLong());
+                .deleteReplyComment(anyLong(), anyLong());
 
         //when
         ResultActions actual = mockMvc.perform(delete("/api/comments/reply-comments/{replyCommentId}",

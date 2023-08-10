@@ -25,9 +25,15 @@ public class Participation {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    public Participation(final RecruitmentBoard recruitmentBoard, final Member writer) {
+    public Participation(final RecruitmentBoard recruitmentBoard, final Member member) {
         this.recruitmentBoard = recruitmentBoard;
-        this.member = writer;
+        this.member = member;
+    }
+
+    public boolean isParticipatedIn(final Long memberId) {
+        return this.member
+                .getId()
+                .equals(memberId);
     }
 
     @Override
@@ -35,7 +41,7 @@ public class Participation {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Participation that = (Participation) o;
-        return Objects.equals(recruitmentBoard, that.recruitmentBoard) && Objects.equals(member, that.member);
+        return Objects.equals(recruitmentBoard.getId(), that.recruitmentBoard.getId()) && Objects.equals(member.getId(), that.member.getId());
     }
 
     @Override

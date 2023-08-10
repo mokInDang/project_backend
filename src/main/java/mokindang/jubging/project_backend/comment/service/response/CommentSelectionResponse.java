@@ -38,7 +38,13 @@ public class CommentSelectionResponse {
     @Schema(description = "대댓글 목록")
     MultiReplyCommentSelectionResponse multiReplyCommentSelectionResponse;
 
-    public CommentSelectionResponse(final Comment comment, final Long memberId) {
+    @Schema(description = "해당 댓글이 게시글의 작성자인지 여부")
+    private final boolean writerOfBoard;
+
+    @Schema(description = "댓글의 작성자가 플로깅에 참여한 상태 여부")
+    private final boolean writerParticipatedIn;
+
+    public CommentSelectionResponse(final Comment comment, final Long memberId, final boolean isWriterOfBoard, final boolean writerParticipatedIn) {
         this.commentId = comment.getId();
         this.commentBody = comment.getCommentBody()
                 .getBody();
@@ -48,8 +54,10 @@ public class CommentSelectionResponse {
         this.firstFourLettersOfEmail = comment.getFirstFourDigitsOfWriterEmail();
         this.writerProfileImageUrl = comment.getWriterProfileImageUrl();
         this.mine = comment.isSameWriterId(memberId);
-        List<ReplyCommentSelectionResponse> replyCommentSelectionResponses = generateReplyCommentSelectionResponses(comment,memberId);
+        List<ReplyCommentSelectionResponse> replyCommentSelectionResponses = generateReplyCommentSelectionResponses(comment, memberId);
         this.multiReplyCommentSelectionResponse = new MultiReplyCommentSelectionResponse(replyCommentSelectionResponses);
+        this.writerOfBoard = isWriterOfBoard;
+        this.writerParticipatedIn = writerParticipatedIn;
     }
 
     private  List<ReplyCommentSelectionResponse> generateReplyCommentSelectionResponses(final Comment comment, final Long memberId) {
