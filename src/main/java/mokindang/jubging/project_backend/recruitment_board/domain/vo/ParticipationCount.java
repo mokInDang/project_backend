@@ -20,8 +20,6 @@ public class ParticipationCount {
     @Column(name = "max_count_of_participation")
     private int max;
 
-
-
     public static ParticipationCount createDefaultParticipationCount(final int max) {
         return new ParticipationCount(max);
     }
