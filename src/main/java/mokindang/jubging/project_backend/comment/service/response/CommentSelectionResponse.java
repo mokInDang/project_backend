@@ -3,7 +3,6 @@ package mokindang.jubging.project_backend.comment.service.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import mokindang.jubging.project_backend.comment.domain.Comment;
-import mokindang.jubging.project_backend.comment.service.BoardType;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -45,7 +44,7 @@ public class CommentSelectionResponse {
     @Schema(description = "댓글의 작성자가 플로깅에 참여한 상태 여부")
     private final boolean writerParticipatedIn;
 
-    public CommentSelectionResponse(final Comment comment, final Long memberId, final BoardType boardType, final boolean writerParticipatedIn) {
+    public CommentSelectionResponse(final Comment comment, final Long memberId, final boolean isWriterOfBoard, final boolean writerParticipatedIn) {
         this.commentId = comment.getId();
         this.commentBody = comment.getCommentBody()
                 .getBody();
@@ -57,7 +56,7 @@ public class CommentSelectionResponse {
         this.mine = comment.isSameWriterId(memberId);
         List<ReplyCommentSelectionResponse> replyCommentSelectionResponses = generateReplyCommentSelectionResponses(comment, memberId);
         this.multiReplyCommentSelectionResponse = new MultiReplyCommentSelectionResponse(replyCommentSelectionResponses);
-        this.writerOfBoard = comment.isWriterOfBoard(boardType);
+        this.writerOfBoard = isWriterOfBoard;
         this.writerParticipatedIn = writerParticipatedIn;
     }
 

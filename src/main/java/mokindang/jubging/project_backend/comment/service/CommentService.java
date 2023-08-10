@@ -68,21 +68,28 @@ public class CommentService {
             RecruitmentBoard board = recruitmentBoardService.findByIdWithOptimisticLock(boardId);
             boolean writingCommentPermission = board.isSameRegion(member.getRegion());
             boolean isWriterParticipatedIn = board.isParticipatedIn(memberId);
-            return new MultiCommentSelectionResponse(convertToCommentSelectionResponse(memberId, commentsByRecruitmentBoard, boardType, isWriterParticipatedIn),
+            return new MultiCommentSelectionResponse(convertToRecruitmentBoardCommentSelectionResponse(memberId, commentsByRecruitmentBoard, board, isWriterParticipatedIn),
                     writingCommentPermission);
         }
 
         if (boardType == BoardType.CERTIFICATION_BOARD) {
             List<Comment> commentsByCertificationBoard = commentRepository.findCommentsByCertificationBoardId(boardId);
-            return new MultiCommentSelectionResponse(convertToCommentSelectionResponse(memberId, commentsByCertificationBoard, boardType, false),
+            CertificationBoard board = certificationBoardService.findById(boardId);
+            return new MultiCommentSelectionResponse(convertToCertificationBoardCommentSelectionResponse2(memberId, commentsByCertificationBoard, board),
                     true);
         }
         throw new IllegalArgumentException("존재 하지 않는 게시판에 대한 접근입니다.");
     }
 
-    private List<CommentSelectionResponse> convertToCommentSelectionResponse(final Long memberId, final List<Comment> commentsByRecruitmentBoard, final BoardType boardType, final boolean isWriterParticipatedIn) {
+    private List<CommentSelectionResponse> convertToRecruitmentBoardCommentSelectionResponse(final Long memberId, final List<Comment> commentsByRecruitmentBoard, final RecruitmentBoard board, final boolean isWriterParticipatedIn) {
         return commentsByRecruitmentBoard.stream()
-                .map(comment -> new CommentSelectionResponse(comment, memberId, boardType, isWriterParticipatedIn))
+                .map(comment -> new CommentSelectionResponse(comment, memberId, board.isSameWriterId(comment.getWriter().getId()), isWriterParticipatedIn))
+                .collect(Collectors.toUnmodifiableList());
+    }
+
+    private List<CommentSelectionResponse> convertToCertificationBoardCommentSelectionResponse2(final Long memberId, final List<Comment> commentsByRecruitmentBoard, final CertificationBoard board) {
+        return commentsByRecruitmentBoard.stream()
+                .map(comment -> new CommentSelectionResponse(comment, memberId, board.isSameWriterId(comment.getWriter().getId()), false))
                 .collect(Collectors.toUnmodifiableList());
     }
 
