@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mokindang.jubging.project_backend.certification_board.domain.CertificationBoard;
 import mokindang.jubging.project_backend.comment.domain.vo.CommentBody;
-import mokindang.jubging.project_backend.comment.service.BoardType;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
@@ -90,7 +89,7 @@ public class Comment {
         return replyComments.size();
     }
 
-    public void modify(final Long memberId,final String commentBody, final LocalDateTime now) {
+    public void modify(final Long memberId, final String commentBody, final LocalDateTime now) {
         validatePermission(memberId);
         this.commentBody = new CommentBody(commentBody);
         this.lastModifiedDateTime = now;
@@ -127,16 +126,6 @@ public class Comment {
     public void addReplyComment(final ReplyComment replyComment) {
         this.replyComments
                 .add(replyComment);
-    }
-
-    public boolean isWriterOfBoard(final BoardType boardType) {
-        if (boardType == BoardType.RECRUITMENT_BOARD) {
-            recruitmentBoard.isSameWriterId(this.writer.getId());
-        }
-        if (boardType == BoardType.CERTIFICATION_BOARD) {
-            certificationBoard.isSameWriterId(this.writer.getId());
-        }
-        throw new IllegalArgumentException("존재 하지 않는 게시판에 대한 접근입니다.");
     }
 
     @Override
