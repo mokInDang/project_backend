@@ -4,8 +4,6 @@ import mokindang.jubging.project_backend.certification_board.domain.Certificatio
 import mokindang.jubging.project_backend.comment.domain.vo.CommentBody;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Coordinate;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Place;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,11 +49,6 @@ class CommentTest {
 
     private RecruitmentBoard findTestRecruitmentBoard() {
         return em.find(RecruitmentBoard.class, 1L);
-    }
-
-    private Place createTestPlace() {
-        Coordinate coordinate = new Coordinate(1.1, 1.2);
-        return new Place(coordinate, "서울시 동작구 상도동 1-1");
     }
 
     @Test
