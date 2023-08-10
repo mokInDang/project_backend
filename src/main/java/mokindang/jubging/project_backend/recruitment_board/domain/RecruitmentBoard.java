@@ -10,14 +10,16 @@ import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.recruitment_board.domain.participation.Participation;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.ContentBody;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.ParticipationCount;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Place;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.StartingDate;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.Title;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Place;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Entity
@@ -171,6 +173,11 @@ public class RecruitmentBoard {
         if (this.participationList.contains(participation)) {
             throw new IllegalArgumentException("이미 참여가 된 상태입니다.");
         }
+    }
+
+    public boolean isParticipatedIn(final Long memberId) {
+        return participationList.stream()
+                .anyMatch(participation -> participation.isParticipatedIn(memberId));
     }
 
     @Override
