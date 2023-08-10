@@ -87,6 +87,7 @@ class CommentServiceTest {
         when(memberService.findByMemberId(anyLong())).thenReturn(member);
         RecruitmentBoard board = mock(RecruitmentBoard.class);
         when(board.isParticipatedIn(anyLong())).thenReturn(true);
+        when(board.isSameWriterId(anyLong())).thenReturn(true);
         when(recruitmentBoardService.findByIdWithOptimisticLock(anyLong())).thenReturn(board);
 
         //when
@@ -112,7 +113,10 @@ class CommentServiceTest {
     }
 
     private Comment createMockedComment(final Long commentId) {
+        Member writer = mock(Member.class);
+        when(writer.getId()).thenReturn(1L);
         Comment comment = mock(Comment.class);
+        when(comment.getWriter()).thenReturn(writer);
         when(comment.getId()).thenReturn(commentId);
         when(comment.getCommentBody()).thenReturn(new CommentBody("본문내용"));
         when(comment.isSameWriterId(any())).thenReturn(true);

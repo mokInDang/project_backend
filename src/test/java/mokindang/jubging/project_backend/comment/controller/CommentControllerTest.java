@@ -72,7 +72,7 @@ class CommentControllerTest {
     void selectComments() throws Exception {
         //given
         CommentSelectionResponse commentSelectionResponse = new CommentSelectionResponse(createMockedComment(), 1L,
-                BoardType.RECRUITMENT_BOARD, true);
+                true, true);
         when(commentService.selectComments(anyLong(), any(BoardType.class), anyLong()))
                 .thenReturn(new MultiCommentSelectionResponse(List.of(commentSelectionResponse), true));
 
@@ -104,7 +104,6 @@ class CommentControllerTest {
         when(comment.getWriterAlias()).thenReturn("댓글작성자");
         when(comment.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
         when(comment.getWriterProfileImageUrl()).thenReturn("test_url");
-        when(comment.isWriterOfBoard(any(BoardType.class))).thenReturn(true);
         return comment;
     }
 
