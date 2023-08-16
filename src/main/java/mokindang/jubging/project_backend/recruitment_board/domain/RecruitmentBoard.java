@@ -10,14 +10,16 @@ import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.recruitment_board.domain.participation.Participation;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.ContentBody;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.ParticipationCount;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Place;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.StartingDate;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.Title;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Place;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Entity
@@ -61,7 +63,7 @@ public class RecruitmentBoard {
     @Embedded
     private ParticipationCount participationCount;
 
-    @OneToMany(mappedBy = "recruitmentBoard")
+    @OneToMany(mappedBy = "recruitmentBoard", cascade = CascadeType.ALL)
     private List<Participation> participationList = new ArrayList<>();
 
     @OneToMany(mappedBy = "recruitmentBoard", cascade = CascadeType.REMOVE)
@@ -158,19 +160,24 @@ public class RecruitmentBoard {
 
     public void addParticipationMember(final Member member) {
         Participation participation = new Participation(this, member);
-        validateAlreadyParticipatingMember(participation);
+        validateAlreadyParticipatingMember(member.getId());
         if (onRecruitment) {
             participationCount = participationCount.countUp();
-            participationList.add(new Participation(this, member));
+            participationList.add(participation);
             return;
         }
         throw new IllegalArgumentException("모집이 마감된 게시글 입니다.");
     }
 
-    private void validateAlreadyParticipatingMember(Participation participation) {
-        if (this.participationList.contains(participation)) {
+    private void validateAlreadyParticipatingMember(final Long memberId) {
+        if (isParticipatedIn(memberId)) {
             throw new IllegalArgumentException("이미 참여가 된 상태입니다.");
         }
+    }
+
+    public boolean isParticipatedIn(final Long memberId) {
+        return participationList.stream()
+                .anyMatch(participation -> participation.isParticipatedIn(memberId));
     }
 
     @Override
