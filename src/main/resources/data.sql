@@ -55,4 +55,4 @@ VALUES (2, '2023-3-10-11-0', '2023-4-10-11-0', '테스트 대댓글2', 1, 1);
 
 --참여 2번 게시글에 1번 유저가 참여한 상태
 INSERT INTO participation(member_id, recruitment_board_id)
-VALUES (2, 1);
+VALUES (1, 1);
