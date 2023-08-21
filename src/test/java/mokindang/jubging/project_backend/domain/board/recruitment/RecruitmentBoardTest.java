@@ -5,7 +5,9 @@ import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.recruitment_board.domain.ActivityCategory;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.*;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.ContentBody;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.StartingDate;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.Title;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Coordinate;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Place;
 import org.assertj.core.api.SoftAssertions;
@@ -345,8 +347,9 @@ class RecruitmentBoardTest {
 
         int maxParticipationCount = 1;
         LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
-        Member writer = new Member("test1@email.com", "test");
-        writer.updateRegion("동작구");
+        Member writer = mock(Member.class);
+        when(writer.getId()).thenReturn(1L);
+        when(writer.getRegion()).thenReturn(Region.from("동작구"));
 
         RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, writer, LocalDate.of(2025, 2, 11), "달리기",
                 createTestPlace(), "제목", "본문내용", maxParticipationCount);

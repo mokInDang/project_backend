@@ -102,7 +102,7 @@ public interface RecruitmentBoardControllerSwagger {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PatchMapping("/{boardId}/participation-list")
-    ResponseEntity<RecruitmentBoardIdResponse> participate(@Login final Long memberId, @PathVariable final Long boardId);
+    ResponseEntity<RecruitmentBoardIdResponse> participate(@Parameter(hidden = true) @Login final Long memberId, @PathVariable final Long boardId);
 
     @Operation(summary = "지역 게시글 리스트 게시글 조회", parameters = {
             @Parameter(name = AUTHORIZATION, description = "access token", in = ParameterIn.HEADER, required = true),

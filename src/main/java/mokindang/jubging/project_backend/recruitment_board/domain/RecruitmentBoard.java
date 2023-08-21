@@ -38,7 +38,6 @@ public class RecruitmentBoard {
     @JoinColumn(name = "member_id")
     private Member writer;
 
-
     @Embedded
     private StartingDate startingDate;
 
@@ -63,7 +62,7 @@ public class RecruitmentBoard {
     @Embedded
     private ParticipationCount participationCount;
 
-    @OneToMany(mappedBy = "recruitmentBoard")
+    @OneToMany(mappedBy = "recruitmentBoard", cascade = CascadeType.REMOVE)
     private List<Participation> participationList = new ArrayList<>();
 
     @OneToMany(mappedBy = "recruitmentBoard", cascade = CascadeType.REMOVE)
@@ -160,18 +159,18 @@ public class RecruitmentBoard {
 
     public void addParticipationMember(final Member member) {
         Participation participation = new Participation(this, member);
-        validateAlreadyParticipatingMember(participation);
+        validateAlreadyParticipatingMember(member.getId());
         if (onRecruitment) {
             participationCount = participationCount.countUp();
-            participationList.add(new Participation(this, member));
+            participationList.add(participation);
             return;
         }
         throw new IllegalArgumentException("모집이 마감된 게시글 입니다.");
     }
 
-    private void validateAlreadyParticipatingMember(Participation participation) {
-        if (this.participationList.contains(participation)) {
-            throw new IllegalArgumentException("이미 참여가 된 상태입니다.");
+    private void validateAlreadyParticipatingMember(final Long memberId) {
+        if (isParticipatedIn(memberId)) {
+            throw new IllegalArgumentException("이미 참여가 된 상태 입니다.");
         }
     }
 
