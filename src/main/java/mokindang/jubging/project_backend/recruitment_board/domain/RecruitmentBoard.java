@@ -38,7 +38,6 @@ public class RecruitmentBoard {
     @JoinColumn(name = "member_id")
     private Member writer;
 
-
     @Embedded
     private StartingDate startingDate;
 
@@ -63,7 +62,7 @@ public class RecruitmentBoard {
     @Embedded
     private ParticipationCount participationCount;
 
-    @OneToMany(mappedBy = "recruitmentBoard", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "recruitmentBoard", cascade = CascadeType.REMOVE)
     private List<Participation> participationList = new ArrayList<>();
 
     @OneToMany(mappedBy = "recruitmentBoard", cascade = CascadeType.REMOVE)
@@ -171,7 +170,7 @@ public class RecruitmentBoard {
 
     private void validateAlreadyParticipatingMember(final Long memberId) {
         if (isParticipatedIn(memberId)) {
-            throw new IllegalArgumentException("이미 참여가 된 상태입니다.");
+            throw new IllegalArgumentException("이미 참여가 된 상태 입니다.");
         }
     }
 
