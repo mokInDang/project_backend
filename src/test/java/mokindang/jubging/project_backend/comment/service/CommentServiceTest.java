@@ -10,6 +10,7 @@ import mokindang.jubging.project_backend.comment.service.request.ReplyCommentCre
 import mokindang.jubging.project_backend.comment.service.response.CommentIdResponse;
 import mokindang.jubging.project_backend.comment.service.response.MultiCommentSelectionResponse;
 import mokindang.jubging.project_backend.member.domain.Member;
+import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.member.service.MemberService;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 import mokindang.jubging.project_backend.recruitment_board.service.RecruitmentBoardService;
@@ -80,8 +81,14 @@ class CommentServiceTest {
         ReplyComment mockedReplyComment = createMockedReplyComment();
         when(comment1.getReplyComments()).thenReturn(List.of(mockedReplyComment));
         Comment comment2 = createMockedComment(2L);
-
         when(commentRepository.findCommentsByRecruitmentBoardId(anyLong())).thenReturn(List.of(comment1, comment2));
+        Member member = mock(Member.class);
+        when(member.getRegion()).thenReturn(Region.from("동작구"));
+        when(memberService.findByMemberId(anyLong())).thenReturn(member);
+        RecruitmentBoard board = mock(RecruitmentBoard.class);
+        when(board.isParticipatedIn(anyLong())).thenReturn(true);
+        when(board.isSameWriterId(anyLong())).thenReturn(true);
+        when(recruitmentBoardService.findByIdWithOptimisticLock(anyLong())).thenReturn(board);
 
         //when
         MultiCommentSelectionResponse multiCommentSelectionResponse = commentService.selectComments(1L, BoardType.RECRUITMENT_BOARD, 1L);
@@ -106,7 +113,10 @@ class CommentServiceTest {
     }
 
     private Comment createMockedComment(final Long commentId) {
+        Member writer = mock(Member.class);
+        when(writer.getId()).thenReturn(1L);
         Comment comment = mock(Comment.class);
+        when(comment.getWriter()).thenReturn(writer);
         when(comment.getId()).thenReturn(commentId);
         when(comment.getCommentBody()).thenReturn(new CommentBody("본문내용"));
         when(comment.isSameWriterId(any())).thenReturn(true);

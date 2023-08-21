@@ -89,7 +89,7 @@ public class Comment {
         return replyComments.size();
     }
 
-    public void modify(final Long memberId,final String commentBody, final LocalDateTime now) {
+    public void modify(final Long memberId, final String commentBody, final LocalDateTime now) {
         validatePermission(memberId);
         this.commentBody = new CommentBody(commentBody);
         this.lastModifiedDateTime = now;
