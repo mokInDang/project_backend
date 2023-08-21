@@ -8,17 +8,17 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class OptimisticLockRecruitmentBoardResovler {
+public class OptimisticLockRecruitmentBoardResolver {
 
     private final RecruitmentBoardService recruitmentBoardService;
 
-    public RecruitmentBoardIdResponse participate(Long memberId, Long boardId) {
+    public RecruitmentBoardIdResponse participate(final Long memberId, final Long boardId) {
         RecruitmentBoardIdResponse recruitmentBoardIdResponse;
         while (true) {
             try {
                 recruitmentBoardIdResponse = recruitmentBoardService.participate(memberId, boardId);
                 break;
-            } catch (ObjectOptimisticLockingFailureException e) {
+            } catch (final ObjectOptimisticLockingFailureException e) {
                 sleep();
             }
         }
