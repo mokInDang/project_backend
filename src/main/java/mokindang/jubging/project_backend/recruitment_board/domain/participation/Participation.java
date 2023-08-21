@@ -17,7 +17,7 @@ public class Participation {
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recruitment_board_id")
+    @JoinColumn(name = "recruitment_board_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private RecruitmentBoard recruitmentBoard;
 
     @Id
