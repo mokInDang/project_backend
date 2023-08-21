@@ -2,7 +2,7 @@ package mokindang.jubging.project_backend.recruitment_board.service;
 
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 import mokindang.jubging.project_backend.recruitment_board.repository.RecruitmentBoardRepository;
-import mokindang.jubging.project_backend.recruitment_board.service.facade.OptimisticLockRecruitmentBoardResovler;
+import mokindang.jubging.project_backend.recruitment_board.service.facade.OptimisticLockRecruitmentBoardResolver;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +18,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 class RecruitmentBoardConcurrencyTest {
 
     @Autowired
-    private OptimisticLockRecruitmentBoardResovler recruitmentBoardService;
+    private OptimisticLockRecruitmentBoardResolver recruitmentBoardService;
 
     @Autowired
     private RecruitmentBoardRepository recruitmentBoardRepository;
 
     @Test
     @DisplayName("동시성 문제  - 8명이 동시에 요청한 경우 게시글 카운트가 8이됨")
-    void SuccessCountUp() throws InterruptedException {
+    void successCountUp() throws InterruptedException {
         int threadCount = 7;
         ExecutorService executorService = Executors.newFixedThreadPool(32);
 
@@ -36,7 +36,7 @@ class RecruitmentBoardConcurrencyTest {
             executorService.submit(() -> {
                 try {
                     recruitmentBoardService.participate((long) memberId, 1L);
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     System.out.println(e.getMessage());
                 } finally {
                     latch.countDown(); // 카운트
@@ -45,7 +45,8 @@ class RecruitmentBoardConcurrencyTest {
         }
         latch.await();
 
-        RecruitmentBoard recruitmentBoard = recruitmentBoardRepository.findById(1L).get();
+        RecruitmentBoard recruitmentBoard = recruitmentBoardRepository.findById(1L)
+                .get();
         assertThat(recruitmentBoard.getParticipationCount().getCount()).isEqualTo(8);
     }
 }
