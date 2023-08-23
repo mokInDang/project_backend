@@ -62,7 +62,7 @@ public class RecruitmentBoard {
     @Embedded
     private ParticipationCount participationCount;
 
-    @OneToMany(mappedBy = "recruitmentBoard", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "recruitmentBoard", cascade = CascadeType.ALL)
     private List<Participation> participationList = new ArrayList<>();
 
     @OneToMany(mappedBy = "recruitmentBoard", cascade = CascadeType.REMOVE)
