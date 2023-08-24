@@ -132,6 +132,8 @@ class RecruitmentBoardServiceTest {
         softly.assertThat(actual.isMine()).isEqualTo(true);
         softly.assertThat(actual.getParticipationCount()).isEqualTo(1);
         softly.assertThat(actual.getMaxOfParticipationCount()).isEqualTo(8);
+        softly.assertThat(actual.isOnRecruitment()).isTrue();
+        softly.assertThat(actual.isSameRegion()).isTrue();
         softly.assertAll();
     }
 
@@ -160,6 +162,7 @@ class RecruitmentBoardServiceTest {
         when(recruitmentBoard.getParticipationCount()).thenReturn(ParticipationCount.createDefaultParticipationCount(8));
         when(recruitmentBoard.isSameWriterId(1L)).thenReturn(true);
         when(recruitmentBoard.isParticipatedIn(1L)).thenReturn(true);
+        when(recruitmentBoard.isSameRegion(Region.from("동작구"))).thenReturn(true);
         return recruitmentBoard;
     }
 
