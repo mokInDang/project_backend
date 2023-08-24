@@ -108,36 +108,20 @@ class RecruitmentBoardServiceTest {
     void selectBoardId() {
         //given
         SoftAssertions softly = new SoftAssertions();
-        RecruitmentBoard recruitmentBoard = mock(RecruitmentBoard.class);
-        when(recruitmentBoard.getId()).thenReturn(1L);
-        when(recruitmentBoard.getTitle()).thenReturn(new Title("제목입니다."));
-        when(recruitmentBoard.getWriterAlias()).thenReturn("글작성자");
-        when(recruitmentBoard.getWritingRegion()).thenReturn(Region.from("동작구"));
-        when(recruitmentBoard.getActivityCategory()).thenReturn(ActivityCategory.RUNNING);
-        when(recruitmentBoard.isOnRecruitment()).thenReturn(true);
-        LocalDate now = LocalDate.of(2023, 3, 10);
-        when(recruitmentBoard.getStartingDate()).thenReturn(new StartingDate(now, LocalDate.of(2023, 3, 11)));
-        when(recruitmentBoard.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
-        when(recruitmentBoard.getWriterProfileImageUrl()).thenReturn("test_url");
-        when(recruitmentBoard.isSameWriterId(anyLong())).thenReturn(true);
-        when(recruitmentBoard.getContentBody()).thenReturn(new ContentBody("본문내용입니다."));
-        Coordinate coordinate = new Coordinate(1.1, 1.2);
-        when(recruitmentBoard.getMeetingPlace()).thenReturn(createTestPlace());
-        ParticipationCount participationCount = mock(ParticipationCount.class);
-        when(participationCount.getCount()).thenReturn(3);
-        when(participationCount.getMax()).thenReturn(8);
-        when(recruitmentBoard.getParticipationCount()).thenReturn(participationCount);
+        RecruitmentBoard recruitmentBoard = createMockedBoard();
         when(boardRepository.findByIdWithOptimisticLock(1L)).thenReturn(Optional.of(recruitmentBoard));
+        Member member = createMockedMember();
+        when(memberService.findByMemberId(1L)).thenReturn(member);
 
         //when
         RecruitmentBoardSelectionResponse actual = boardService.select(1L, 1L);
 
         //then
         softly.assertThat(actual.getBoardId()).isEqualTo(1L);
-        softly.assertThat(actual.getTitle()).isEqualTo("제목입니다.");
-        softly.assertThat(actual.getContentBody()).isEqualTo("본문내용입니다.");
-        softly.assertThat(actual.getWriterAlias()).isEqualTo("글작성자");
-        softly.assertThat(actual.getStartingDate()).isEqualTo("2023-03-11");
+        softly.assertThat(actual.getTitle()).isEqualTo("제목");
+        softly.assertThat(actual.getContentBody()).isEqualTo("본문내용");
+        softly.assertThat(actual.getWriterAlias()).isEqualTo("test");
+        softly.assertThat(actual.getStartingDate()).isEqualTo("2025-02-11");
         softly.assertThat(actual.getActivityCategory()).isEqualTo("달리기");
         softly.assertThat(actual.isOnRecruitment()).isEqualTo(true);
         softly.assertThat(actual.getWriterProfileImageUrl()).isEqualTo("test_url");
@@ -146,9 +130,37 @@ class RecruitmentBoardServiceTest {
         softly.assertThat(actual.getMeetingPlaceResponse().getLatitude()).isEqualTo(1.2);
         softly.assertThat(actual.getMeetingPlaceResponse().getMeetingAddress()).isEqualTo("서울시 동작구 상도동 1-1");
         softly.assertThat(actual.isMine()).isEqualTo(true);
-        softly.assertThat(actual.getParticipationCount()).isEqualTo(3);
+        softly.assertThat(actual.getParticipationCount()).isEqualTo(1);
         softly.assertThat(actual.getMaxOfParticipationCount()).isEqualTo(8);
         softly.assertAll();
+    }
+
+    private Member createMockedMember() {
+        Member member = mock(Member.class);
+        when(member.getId()).thenReturn(1L);
+        when(member.getRegion()).thenReturn(Region.from("동작구"));
+        return member;
+    }
+
+    private RecruitmentBoard createMockedBoard() {
+        LocalDate today = LocalDate.of(2023, 3, 14);
+        RecruitmentBoard recruitmentBoard = mock(RecruitmentBoard.class);
+        when(recruitmentBoard.getId()).thenReturn(1L);
+        when(recruitmentBoard.getTitle()).thenReturn(new Title("제목"));
+        when(recruitmentBoard.getContentBody()).thenReturn(new ContentBody("본문내용"));
+        when(recruitmentBoard.getWritingRegion()).thenReturn(Region.from("동작구"));
+        when(recruitmentBoard.getActivityCategory()).thenReturn(ActivityCategory.RUNNING);
+        when(recruitmentBoard.isOnRecruitment()).thenReturn(true);
+        when(recruitmentBoard.getCreatingDateTime()).thenReturn(LocalDateTime.of(2023, 11, 12, 0, 0, 0));
+        when(recruitmentBoard.getStartingDate()).thenReturn(new StartingDate(today, LocalDate.of(2025, 2, 11)));
+        when(recruitmentBoard.getWriterAlias()).thenReturn("test");
+        when(recruitmentBoard.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
+        when(recruitmentBoard.getWriterProfileImageUrl()).thenReturn("test_url");
+        when(recruitmentBoard.getMeetingPlace()).thenReturn(createTestPlace());
+        when(recruitmentBoard.getParticipationCount()).thenReturn(ParticipationCount.createDefaultParticipationCount(8));
+        when(recruitmentBoard.isSameWriterId(1L)).thenReturn(true);
+        when(recruitmentBoard.isParticipatedIn(1L)).thenReturn(true);
+        return recruitmentBoard;
     }
 
     private Place createTestPlace() {

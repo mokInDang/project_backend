@@ -1,10 +1,14 @@
 package mokindang.jubging.project_backend.service.board.response;
 
+import mokindang.jubging.project_backend.member.domain.Member;
+import mokindang.jubging.project_backend.member.domain.vo.ProfileImage;
+import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.recruitment_board.domain.ActivityCategory;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.*;
-import mokindang.jubging.project_backend.member.domain.Member;
-import mokindang.jubging.project_backend.member.domain.vo.Region;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.ContentBody;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.ParticipationCount;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.StartingDate;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.Title;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Coordinate;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Place;
 import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardSelectionResponse;
@@ -22,19 +26,17 @@ import static org.mockito.Mockito.when;
 class BoardSelectionResponseTest {
 
     @Test
-    @DisplayName("게시글과 게시글의 작성자 여부를 입력받아 BoardSelectionResponse 를 생성한다.")
+    @DisplayName("게시글과  작성자를 입력받아 BoardSelectionResponse 를 생성한다.")
     void create() {
         //given
-        boolean mine = true;
+        Member member = createMockedMember();
         LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
-        Member writer = new Member("test1@email.com", "test");
-        writer.updateRegion("동작구");
-        Coordinate coordinate = new Coordinate(1.1, 1.2);
+        Member writer = createMockedMember();
         RecruitmentBoard recruitmentBoard = new RecruitmentBoard(now, writer, LocalDate.of(2025, 2, 11), "달리기",
                 createTestPlace(), "제목", "본문내용", 8);
 
         //when, then
-        assertThatCode(() -> new RecruitmentBoardSelectionResponse(recruitmentBoard, mine)).doesNotThrowAnyException();
+        assertThatCode(() -> new RecruitmentBoardSelectionResponse(member, recruitmentBoard)).doesNotThrowAnyException();
     }
 
     private Place createTestPlace() {
@@ -48,8 +50,8 @@ class BoardSelectionResponseTest {
         //given
         SoftAssertions softly = new SoftAssertions();
         RecruitmentBoard recruitmentBoard = createMockedBoard();
-        boolean mine = true;
-        RecruitmentBoardSelectionResponse selectionResponse = new RecruitmentBoardSelectionResponse(recruitmentBoard, mine);
+        Member member = createMockedMember();
+        RecruitmentBoardSelectionResponse selectionResponse = new RecruitmentBoardSelectionResponse(member, recruitmentBoard);
 
         //when
         Long boardId = selectionResponse.getBoardId();
@@ -81,6 +83,14 @@ class BoardSelectionResponseTest {
         softly.assertAll();
     }
 
+    private Member createMockedMember() {
+        Member member = mock(Member.class);
+        when(member.getId()).thenReturn(1L);
+        when(member.getRegion()).thenReturn(Region.from("동작구"));
+        when(member.getProfileImage()).thenReturn(new ProfileImage("test_url"));
+        return member;
+    }
+
     private RecruitmentBoard createMockedBoard() {
         LocalDate today = LocalDate.of(2023, 3, 14);
         RecruitmentBoard recruitmentBoard = mock(RecruitmentBoard.class);
@@ -97,6 +107,8 @@ class BoardSelectionResponseTest {
         when(recruitmentBoard.getWriterProfileImageUrl()).thenReturn("test_url");
         when(recruitmentBoard.getMeetingPlace()).thenReturn(createTestPlace());
         when(recruitmentBoard.getParticipationCount()).thenReturn(ParticipationCount.createDefaultParticipationCount(8));
+        when(recruitmentBoard.isSameWriterId(1L)).thenReturn(true);
+        when(recruitmentBoard.isParticipatedIn(1L)).thenReturn(true);
         return recruitmentBoard;
     }
 }

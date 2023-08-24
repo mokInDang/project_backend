@@ -3,8 +3,15 @@ package mokindang.jubging.project_backend.controller.board;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.member.domain.Member;
+import mokindang.jubging.project_backend.member.domain.vo.ProfileImage;
+import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.recruitment_board.controller.RecruitmentBoardController;
+import mokindang.jubging.project_backend.recruitment_board.domain.ActivityCategory;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.ContentBody;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.ParticipationCount;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.StartingDate;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.Title;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Coordinate;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Place;
 import mokindang.jubging.project_backend.recruitment_board.service.RecruitmentBoardService;
@@ -32,8 +39,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -166,8 +172,7 @@ class RecruitmentBoardControllerTest {
     void select() throws Exception {
         //given
 
-        boolean isMine = true;
-        RecruitmentBoardSelectionResponse boardSelectionResponse = new RecruitmentBoardSelectionResponse(createTestRecruitmentBoard(), isMine);
+        RecruitmentBoardSelectionResponse boardSelectionResponse = new RecruitmentBoardSelectionResponse(createMockedMember(), createMockedBoard());
         when(boardService.select(anyLong(), anyLong())).thenReturn(boardSelectionResponse);
 
         //when
@@ -176,30 +181,49 @@ class RecruitmentBoardControllerTest {
 
         //then
         actual.andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("게시판 제목"))
-                .andExpect(jsonPath("$.contentBody").value("게시판 내용 작성 테스트"))
+                .andExpect(jsonPath("$.title").value("제목"))
+                .andExpect(jsonPath("$.contentBody").value("본문내용"))
                 .andExpect(jsonPath("$.writerAlias").value("test"))
                 .andExpect(jsonPath("$.startingDate").value("2025-02-11"))
                 .andExpect(jsonPath("$.region").value("동작구"))
                 .andExpect(jsonPath("$.activityCategory").value("달리기"))
                 .andExpect(jsonPath("$.onRecruitment").value(true))
-                .andExpect(jsonPath("$.writerProfileImageUrl").value("test_profile_url"))
+                .andExpect(jsonPath("$.writerProfileImageUrl").value("test_url"))
                 .andExpect(jsonPath("$.firstFourLettersOfEmail").value("test"))
                 .andExpect(jsonPath("$.mine").value(true))
-                .andExpect(jsonPath("$.creatingDatetime").value("2023-03-30T11:11:00"))
+                .andExpect(jsonPath("$.creatingDatetime").value("2023-11-12T00:00:00"))
                 .andExpect(jsonPath("$.meetingPlaceResponse.longitude").value(1.1))
                 .andExpect(jsonPath("$.meetingPlaceResponse.latitude").value(1.2))
                 .andExpect(jsonPath("$.meetingPlaceResponse.meetingAddress").value("서울시 동작구 상도동 1-1"));
     }
 
-    private RecruitmentBoard createTestRecruitmentBoard() {
-        LocalDateTime now = LocalDateTime.of(2023, 3, 30, 11, 11, 0, 0);
-        Member testMember = new Member("test@email.com", "test");
-        testMember.updateRegion("동작구");
-        testMember.updateProfileImage("test_profile_url");
-        Coordinate coordinate = new Coordinate(1.1, 1.2);
-        return new RecruitmentBoard(now, testMember, LocalDate.of(2025, 2, 11),
-                "달리기", createTestPlace(), "게시판 제목", "게시판 내용 작성 테스트", 8);
+    private Member createMockedMember() {
+        Member member = mock(Member.class);
+        when(member.getId()).thenReturn(1L);
+        when(member.getRegion()).thenReturn(Region.from("동작구"));
+        when(member.getProfileImage()).thenReturn(new ProfileImage("test_url"));
+        return member;
+    }
+
+    private RecruitmentBoard createMockedBoard() {
+        LocalDate today = LocalDate.of(2023, 3, 14);
+        RecruitmentBoard recruitmentBoard = mock(RecruitmentBoard.class);
+        when(recruitmentBoard.getId()).thenReturn(1L);
+        when(recruitmentBoard.getTitle()).thenReturn(new Title("제목"));
+        when(recruitmentBoard.getContentBody()).thenReturn(new ContentBody("본문내용"));
+        when(recruitmentBoard.getWritingRegion()).thenReturn(Region.from("동작구"));
+        when(recruitmentBoard.getActivityCategory()).thenReturn(ActivityCategory.RUNNING);
+        when(recruitmentBoard.isOnRecruitment()).thenReturn(true);
+        when(recruitmentBoard.getCreatingDateTime()).thenReturn(LocalDateTime.of(2023, 11, 12, 0, 0, 0));
+        when(recruitmentBoard.getStartingDate()).thenReturn(new StartingDate(today, LocalDate.of(2025, 2, 11)));
+        when(recruitmentBoard.getWriterAlias()).thenReturn("test");
+        when(recruitmentBoard.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
+        when(recruitmentBoard.getWriterProfileImageUrl()).thenReturn("test_url");
+        when(recruitmentBoard.getMeetingPlace()).thenReturn(createTestPlace());
+        when(recruitmentBoard.getParticipationCount()).thenReturn(ParticipationCount.createDefaultParticipationCount(8));
+        when(recruitmentBoard.isSameWriterId(1L)).thenReturn(true);
+        when(recruitmentBoard.isParticipatedIn(1L)).thenReturn(true);
+        return recruitmentBoard;
     }
 
     private Place createTestPlace() {
@@ -402,8 +426,8 @@ class RecruitmentBoardControllerTest {
     @DisplayName("특정 지역에 해당하는 구인 게시글 조회 시, HTTP 200 코드와 함께 요청 회원 지역에 해당하는 게시글 리스트를 반환한다.")
     void selectRegionBoards() throws Exception {
         //given
-        List<SummaryBoardResponse> summaryBoardResponses = List.of(new SummaryBoardResponse(createTestRecruitmentBoard()),
-                new SummaryBoardResponse(createTestRecruitmentBoard()));
+        List<SummaryBoardResponse> summaryBoardResponses = List.of(new SummaryBoardResponse(createMockedBoard()),
+                new SummaryBoardResponse(createMockedBoard()));
         when(boardService.selectRegionBoards(anyLong(), any(Pageable.class)))
                 .thenReturn(new MultiBoardSelectionResponse(summaryBoardResponses, false));
 
@@ -421,8 +445,8 @@ class RecruitmentBoardControllerTest {
     @DisplayName("특정 지역에 해당하는 게시글리스트 조회 시, HTTP 200 와 함께 게시글의 장소 값(마커)과 id 를 갖고 있는 BoardPlaceMarkerResponse 리스트를 반환한다.")
     void selectPlacesOfRegionBoards() throws Exception {
         //given
-        List<BoardPlaceMarkerResponse> boardPlaceMarkerResponses = List.of(new BoardPlaceMarkerResponse(createTestRecruitmentBoard()),
-                new BoardPlaceMarkerResponse(createTestRecruitmentBoard()));
+        List<BoardPlaceMarkerResponse> boardPlaceMarkerResponses = List.of(new BoardPlaceMarkerResponse(createMockedBoard()),
+                new BoardPlaceMarkerResponse(createMockedBoard()));
         when(boardService.selectRegionBoardsCloseToDeadline(anyLong(), any(Pageable.class)))
                 .thenReturn(new MultiBoardPlaceSelectionResponse(boardPlaceMarkerResponses, false));
 
