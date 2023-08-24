@@ -2,6 +2,7 @@ package mokindang.jubging.project_backend.recruitment_board.service.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
+import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 
 import java.time.LocalDateTime;
@@ -45,8 +46,14 @@ public class RecruitmentBoardSelectionResponse {
     @Schema(description = "게시글 조회 회원이, 작성자인지에 대한 정보", allowableValues = {"true", "false"})
     private final boolean mine;
 
-    @Schema(description =  "만남 장소")
+    @Schema(description = "만남 장소")
     private final MeetingPlaceResponse meetingPlaceResponse;
+
+    @Schema(description = "게시글과 회원의 지역이 같은지 여부")
+    private final boolean sameRegion;
+
+    @Schema(description = "조회한 회원이 이미 참여 했는지 여부")
+    private final boolean participated;
 
     @Schema(description = "현재 모집 인원")
     private final int participationCount;
@@ -55,7 +62,7 @@ public class RecruitmentBoardSelectionResponse {
     private final int maxOfParticipationCount;
 
 
-    public RecruitmentBoardSelectionResponse(final RecruitmentBoard board, final boolean mine) {
+    public RecruitmentBoardSelectionResponse(final Member member, final RecruitmentBoard board) {
         this.boardId = board.getId();
         this.title = board.getTitle()
                 .getValue();
@@ -72,11 +79,13 @@ public class RecruitmentBoardSelectionResponse {
         this.onRecruitment = board.isOnRecruitment();
         this.firstFourLettersOfEmail = board.getFirstFourDigitsOfWriterEmail();
         this.writerProfileImageUrl = board.getWriterProfileImageUrl();
-        this.mine = mine;
+        this.mine = board.isSameWriterId(member.getId());
         this.meetingPlaceResponse = new MeetingPlaceResponse(board);
         this.participationCount = board.getParticipationCount()
                 .getCount();
         this.maxOfParticipationCount = board.getParticipationCount()
                 .getMax();
+        this.participated = board.isParticipatedIn(member.getId());
+        this.sameRegion = board.isSameRegion(member.getRegion());
     }
 }

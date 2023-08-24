@@ -52,7 +52,8 @@ public class RecruitmentBoardService {
 
     public RecruitmentBoardSelectionResponse select(final Long memberId, final Long boardId) {
         RecruitmentBoard recruitmentBoard = findByIdWithOptimisticLock(boardId);
-        return new RecruitmentBoardSelectionResponse(recruitmentBoard, recruitmentBoard.isSameWriterId(memberId));
+        Member member = memberService.findByMemberId(memberId);
+        return new RecruitmentBoardSelectionResponse(member, recruitmentBoard);
     }
 
     public RecruitmentBoard findByIdWithOptimisticLock(final Long boardId) {
