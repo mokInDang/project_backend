@@ -98,7 +98,9 @@ public interface RecruitmentBoardControllerSwagger {
                     content = @Content(schema = @Schema(implementation = RecruitmentBoardIdResponse.class))),
             @ApiResponse(responseCode = "400", description = "모집이 마감된 게시글에 대한 참여 요청",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "403", description = "참여인원이 꽉 찬 게시글에 대한 참여 요청",
+            @ApiResponse(responseCode = "400", description = "참여인원이 꽉 찬 게시글에 대한 참여 요청",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "회원의 지역과 게시글의 지역이 다른 경우에 대한 참여 요청",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PatchMapping("/{boardId}/participation-list")

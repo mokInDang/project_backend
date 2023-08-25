@@ -159,7 +159,7 @@ public class RecruitmentBoard {
 
     public void addParticipationMember(final Member member) {
         Participation participation = new Participation(this, member);
-        validateAlreadyParticipatingMember(member.getId());
+        validateAlreadyParticipatingMember(member);
         if (onRecruitment) {
             participationCount = participationCount.countUp();
             participationList.add(participation);
@@ -168,8 +168,11 @@ public class RecruitmentBoard {
         throw new IllegalArgumentException("모집이 마감된 게시글 입니다.");
     }
 
-    private void validateAlreadyParticipatingMember(final Long memberId) {
-        if (isParticipatedIn(memberId)) {
+    private void validateAlreadyParticipatingMember(final Member member) {
+        if (!this.isSameRegion(member.getRegion())) {
+            throw new ForbiddenException("타지역 게시글에 참여할 권한이 없습니다.");
+        }
+        if (isParticipatedIn(member.getId())) {
             throw new IllegalArgumentException("이미 참여가 된 상태 입니다.");
         }
     }

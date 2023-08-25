@@ -327,7 +327,9 @@ class RecruitmentBoardTest {
         //given
         SoftAssertions softly = new SoftAssertions();
         RecruitmentBoard recruitmentBoard = findTestRecruitmentBoard();
-        Member member = new Member("test2@email.com", "test2");
+        Member member = mock(Member.class);
+        when(member.getId()).thenReturn(2L);
+        when(member.getRegion()).thenReturn(Region.from("동작구"));
 
         //when
         recruitmentBoard.addParticipationMember(member);
@@ -344,6 +346,7 @@ class RecruitmentBoardTest {
         //given
         Member member = mock(Member.class);
         when(member.getId()).thenReturn(2L);
+        when(member.getRegion()).thenReturn(Region.from("동작구"));
 
         int maxParticipationCount = 1;
         LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
@@ -367,9 +370,25 @@ class RecruitmentBoardTest {
         recruitmentBoard.closeRecruitment(1L);
 
         Member member = new Member("test1@email.com", "test");
+        member.updateRegion("동작구");
 
         //when, then
         assertThatThrownBy(() -> recruitmentBoard.addParticipationMember(member)).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("모집이 마감된 게시글 입니다.");
+    }
+
+    @Test
+    @DisplayName("참여 회원 추가 시, 해당 회원의 지역이 게시글의 지역과 다르면 예외를 반환한다. ")
+    void failedByOtherRegionMemberRecruitment() {
+        //given
+        RecruitmentBoard recruitmentBoard = findTestRecruitmentBoard();
+        recruitmentBoard.closeRecruitment(1L);
+
+        Member member = new Member("test1@email.com", "test");
+        member.updateRegion("성동구");
+
+        //when, then
+        assertThatThrownBy(() -> recruitmentBoard.addParticipationMember(member)).isInstanceOf(ForbiddenException.class)
+                .hasMessage("타지역 게시글에 참여할 권한이 없습니다.");
     }
 }
