@@ -21,6 +21,11 @@ import mokindang.jubging.project_backend.recruitment_board.service.request.Meeti
 import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.response.*;
+import mokindang.jubging.project_backend.recruitment_board.service.response.board.MultiBoardSelectionResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.response.board.RecruitmentBoardSelectionResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.response.board.SummaryBoardResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.response.marker.BoardPlaceMarkerResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.response.marker.MultiBoardPlaceSelectionResponse;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

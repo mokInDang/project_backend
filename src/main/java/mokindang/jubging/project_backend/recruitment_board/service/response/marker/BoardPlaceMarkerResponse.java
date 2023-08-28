@@ -1,8 +1,10 @@
-package mokindang.jubging.project_backend.recruitment_board.service.response;
+package mokindang.jubging.project_backend.recruitment_board.service.response.marker;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
+import mokindang.jubging.project_backend.recruitment_board.service.response.MeetingPlaceResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
 
 @Getter
 public class BoardPlaceMarkerResponse {

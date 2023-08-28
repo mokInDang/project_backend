@@ -13,6 +13,13 @@ import mokindang.jubging.project_backend.recruitment_board.service.request.Meeti
 import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.response.*;
+import mokindang.jubging.project_backend.recruitment_board.service.response.board.MultiBoardSelectionResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.response.board.RecruitmentBoardSelectionResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.response.board.SummaryBoardResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.response.marker.BoardPlaceMarkerResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.response.marker.MultiBoardPlaceSelectionResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.response.ranking.MultiRegionCountingChartResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.response.ranking.RegionCountingChartResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;

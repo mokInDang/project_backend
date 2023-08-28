@@ -7,7 +7,7 @@ import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoa
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.*;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Coordinate;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Place;
-import mokindang.jubging.project_backend.recruitment_board.service.response.SummaryBoardResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.response.board.SummaryBoardResponse;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
