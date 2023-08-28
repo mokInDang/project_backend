@@ -1,4 +1,4 @@
-package mokindang.jubging.project_backend.recruitment_board.service.response;
+package mokindang.jubging.project_backend.recruitment_board.service.response.ranking;
 
 import lombok.Getter;
 

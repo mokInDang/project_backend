@@ -1,8 +1,9 @@
-package mokindang.jubging.project_backend.recruitment_board.service.response;
+package mokindang.jubging.project_backend.recruitment_board.service.response.marker;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import mokindang.jubging.project_backend.recruitment_board.service.response.marker.BoardPlaceMarkerResponse;
 
 import java.util.List;
 

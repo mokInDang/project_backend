@@ -1,9 +1,10 @@
-package mokindang.jubging.project_backend.recruitment_board.service.response;
+package mokindang.jubging.project_backend.recruitment_board.service.response.board;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
+import mokindang.jubging.project_backend.recruitment_board.service.response.MeetingPlaceResponse;
 
 import java.time.LocalDateTime;
 

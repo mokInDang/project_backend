@@ -4,10 +4,11 @@ import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.recruitment_board.domain.ActivityCategory;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
+import mokindang.jubging.project_backend.recruitment_board.domain.participation.Participation;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.*;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Coordinate;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Place;
-import mokindang.jubging.project_backend.recruitment_board.service.response.SummaryBoardResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.response.board.SummaryBoardResponse;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,8 +65,12 @@ class SummaryBoardResponseTest {
         String writerAlias = summaryBoardResponse.getWriterAlias();
         String writerProfileUrl = summaryBoardResponse.getWriterProfileUrl();
         String firstFourLettersOfEmail = summaryBoardResponse.getFirstFourLettersOfEmail();
+        int countOfParticipation = summaryBoardResponse.getCountOfParticipation();
+        int countOfMaxParticipation = summaryBoardResponse.getCountOfMaxParticipation();
+
 
         //then
+        softly.assertThat(boardId).isEqualTo(1L);
         softly.assertThat(activityCategory).isEqualTo("달리기");
         softly.assertThat(region).isEqualTo("동작구");
         softly.assertThat(title).isEqualTo("제목");
@@ -74,6 +79,9 @@ class SummaryBoardResponseTest {
         softly.assertThat(startingDate).isEqualTo("2025-02-11");
         softly.assertThat(writerAlias).isEqualTo("test");
         softly.assertThat(firstFourLettersOfEmail).isEqualTo("test");
+        softly.assertThat(writerProfileUrl).isEqualTo("test_url");
+        softly.assertThat(countOfParticipation).isEqualTo(1);
+        softly.assertThat(countOfMaxParticipation).isEqualTo(8);
         softly.assertAll();
     }
 
@@ -91,6 +99,8 @@ class SummaryBoardResponseTest {
         when(recruitmentBoard.getWriterAlias()).thenReturn("test");
         when(recruitmentBoard.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
         when(recruitmentBoard.getWriterProfileImageUrl()).thenReturn("test_url");
+        ParticipationCount participationCount = ParticipationCount.createDefaultParticipationCount(8);
+        when(recruitmentBoard.getParticipationCount()).thenReturn(participationCount);
         return recruitmentBoard;
     }
 }

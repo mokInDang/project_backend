@@ -17,10 +17,10 @@ import mokindang.jubging.project_backend.recruitment_board.service.request.Board
 import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceCreationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
-import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardPlaceSelectionResponse;
-import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardSelectionResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.response.marker.MultiBoardPlaceSelectionResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.response.board.MultiBoardSelectionResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
-import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardSelectionResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.response.board.RecruitmentBoardSelectionResponse;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

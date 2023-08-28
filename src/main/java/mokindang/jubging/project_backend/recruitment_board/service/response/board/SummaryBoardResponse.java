@@ -1,4 +1,4 @@
-package mokindang.jubging.project_backend.recruitment_board.service.response;
+package mokindang.jubging.project_backend.recruitment_board.service.response.board;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -28,6 +28,7 @@ public class SummaryBoardResponse {
     @Schema(description = "지역", example = "동작구")
     private final String region;
 
+    @Getter
     @Schema(description = "활동 종류", example = "달리기", allowableValues = {"달리기", "산책"})
     private final String activityCategory;
 
@@ -39,6 +40,12 @@ public class SummaryBoardResponse {
 
     @Schema(description = "게시글의 댓글과 대댓글의 총 갯수")
     private final Long countOfCommentAndReplyComment;
+
+    @Schema(description = "게시글에 참여 가능한 회원의 최대 수")
+    private final int countOfMaxParticipation;
+
+    @Schema(description = "게시글에 참여한 회원의 수")
+    private final int countOfParticipation;
 
     public SummaryBoardResponse(final RecruitmentBoard recruitmentBoard) {
         this.boardId = recruitmentBoard.getId();
@@ -57,5 +64,7 @@ public class SummaryBoardResponse {
         this.onRecruitment = recruitmentBoard.isOnRecruitment();
         this.firstFourLettersOfEmail = recruitmentBoard.getFirstFourDigitsOfWriterEmail();
         this.countOfCommentAndReplyComment = recruitmentBoard.countCommentAndReplyComment();
+        this.countOfMaxParticipation = recruitmentBoard.getParticipationCount().getMax();
+        this.countOfParticipation = recruitmentBoard.getParticipationCount().getCount();
     }
 }
