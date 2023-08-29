@@ -1,4 +1,4 @@
-# README
+<img width="4016" alt="아키텍처" src="https://github.com/mokInDang/project_backend/assets/26710955/dc969a8f-d2ee-4e5b-8849-cce19f9473a3"># README
 
 ## 기술 스택
 
@@ -25,7 +25,9 @@
 - Git, Github
 
 # 서버 구조도
-![아키텍처.png](..%2F%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98.png)
+
+<img width="4016" alt="아키텍처" src="https://github.com/mokInDang/project_backend/assets/26710955/bdee106e-3c62-48f6-a8b8-2ef859876a5e">
+
 
 ## 기술적 이슈
 
