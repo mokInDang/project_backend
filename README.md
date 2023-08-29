@@ -1,4 +1,4 @@
-<img width="4016" alt="아키텍처" src="https://github.com/mokInDang/project_backend/assets/26710955/dc969a8f-d2ee-4e5b-8849-cce19f9473a3"># README
+# 프로젝트 - 동네줍깅
 
 ## 기술 스택
 
