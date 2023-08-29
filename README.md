@@ -32,5 +32,3 @@
 ## 기술적 이슈
 
 - [wiki 문서](https://github.com/mokInDang/project_backend/wiki)
-
-- [velog](https://velog.io/@cjh8746?tag=%EC%A1%B8%EC%97%85%EC%9E%91%ED%92%88)
