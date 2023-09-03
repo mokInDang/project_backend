@@ -1,4 +1,4 @@
-package mokindang.jubging.project_backend.controller.authentication;
+package mokindang.jubging.project_backend.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.JwtException;

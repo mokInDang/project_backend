@@ -1,4 +1,4 @@
-package mokindang.jubging.project_backend.domain.board.recruitment;
+package mokindang.jubging.project_backend.recruitment_board.domain;
 
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.member.domain.Member;

@@ -1,4 +1,4 @@
-package mokindang.jubging.project_backend.service.board;
+package mokindang.jubging.project_backend.recruitment_board.service;
 
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;

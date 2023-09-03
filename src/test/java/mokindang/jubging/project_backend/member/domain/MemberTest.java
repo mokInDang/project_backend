@@ -1,4 +1,4 @@
-package mokindang.jubging.project_backend.domain.member;
+package mokindang.jubging.project_backend.member.domain;
 
 import mokindang.jubging.project_backend.member.domain.Member;
 import org.assertj.core.api.SoftAssertions;

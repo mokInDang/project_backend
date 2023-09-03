@@ -1,4 +1,4 @@
-package mokindang.jubging.project_backend.service.board;
+package mokindang.jubging.project_backend.recruitment_board.service;
 
 import mokindang.jubging.project_backend.recruitment_board.repository.RecruitmentBoardRepository;
 import mokindang.jubging.project_backend.recruitment_board.scheduler.RecruitmentBoardSchedulingService;
