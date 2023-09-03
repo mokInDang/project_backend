@@ -108,7 +108,7 @@ class RecruitmentBoardServiceTest {
     void selectBoardId() {
         //given
         SoftAssertions softly = new SoftAssertions();
-        RecruitmentBoard recruitmentBoard = createMockedBoard();
+        RecruitmentBoard recruitmentBoard = MockedRecruitmentBoardFactory.createMockedRecruitmentBoard(1L);
         when(boardRepository.findByIdWithOptimisticLock(1L)).thenReturn(Optional.of(recruitmentBoard));
         Member member = createMockedMember();
         when(memberService.findByMemberId(1L)).thenReturn(member);
@@ -142,33 +142,6 @@ class RecruitmentBoardServiceTest {
         when(member.getId()).thenReturn(1L);
         when(member.getRegion()).thenReturn(Region.from("동작구"));
         return member;
-    }
-
-    private RecruitmentBoard createMockedBoard() {
-        LocalDate today = LocalDate.of(2023, 3, 14);
-        RecruitmentBoard recruitmentBoard = mock(RecruitmentBoard.class);
-        when(recruitmentBoard.getId()).thenReturn(1L);
-        when(recruitmentBoard.getTitle()).thenReturn(new Title("제목"));
-        when(recruitmentBoard.getContentBody()).thenReturn(new ContentBody("본문내용"));
-        when(recruitmentBoard.getWritingRegion()).thenReturn(Region.from("동작구"));
-        when(recruitmentBoard.getActivityCategory()).thenReturn(ActivityCategory.RUNNING);
-        when(recruitmentBoard.isOnRecruitment()).thenReturn(true);
-        when(recruitmentBoard.getCreatingDateTime()).thenReturn(LocalDateTime.of(2023, 11, 12, 0, 0, 0));
-        when(recruitmentBoard.getStartingDate()).thenReturn(new StartingDate(today, LocalDate.of(2025, 2, 11)));
-        when(recruitmentBoard.getWriterAlias()).thenReturn("test");
-        when(recruitmentBoard.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
-        when(recruitmentBoard.getWriterProfileImageUrl()).thenReturn("test_url");
-        when(recruitmentBoard.getMeetingPlace()).thenReturn(createTestPlace());
-        when(recruitmentBoard.getParticipationCount()).thenReturn(ParticipationCount.createDefaultParticipationCount(8));
-        when(recruitmentBoard.isSameWriterId(1L)).thenReturn(true);
-        when(recruitmentBoard.isParticipatedIn(1L)).thenReturn(true);
-        when(recruitmentBoard.isSameRegion(Region.from("동작구"))).thenReturn(true);
-        return recruitmentBoard;
-    }
-
-    private Place createTestPlace() {
-        Coordinate coordinate = new Coordinate(1.1, 1.2);
-        return new Place(coordinate, "서울시 동작구 상도동 1-1");
     }
 
     @Test
@@ -290,6 +263,11 @@ class RecruitmentBoardServiceTest {
         //then
         assertThat(multiBoardSelectionResponse.getBoards()).hasSize(2);
         verify(boardRepository, times(1)).selectRegionBoards(any(Region.class), any(Pageable.class));
+    }
+
+    private static Place createTestPlace() {
+        Coordinate coordinate = new Coordinate(1.1, 1.2);
+        return new Place(coordinate, "서울시 동작구 상도동 1-1");
     }
 
     @Test
