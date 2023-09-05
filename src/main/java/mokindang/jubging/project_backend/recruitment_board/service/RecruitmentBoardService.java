@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.member.service.MemberService;
+import mokindang.jubging.project_backend.participation.repository.ParticipationRepository;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Coordinate;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Place;
@@ -36,6 +37,7 @@ public class RecruitmentBoardService {
 
     private final MemberService memberService;
     private final RecruitmentBoardRepository recruitmentBoardRepository;
+    private final ParticipationRepository participationRepository;
 
     @Transactional
     public RecruitmentBoardIdResponse write(final Long memberId, final RecruitmentBoardCreationRequest recruitmentBoardCreationRequest) {
@@ -81,6 +83,7 @@ public class RecruitmentBoardService {
         RecruitmentBoard recruitmentBoard = findByIdWithOptimisticLock(boardId);
         recruitmentBoard.validatePermission(memberId);
         recruitmentBoardRepository.delete(recruitmentBoard);
+        participationRepository.deleteAllByRecruitmentBoardId(boardId);
         return new RecruitmentBoardIdResponse(recruitmentBoard.getId());
     }
 
