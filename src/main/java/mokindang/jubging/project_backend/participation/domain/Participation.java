@@ -1,4 +1,4 @@
-package mokindang.jubging.project_backend.recruitment_board.domain.participation;
+package mokindang.jubging.project_backend.participation.domain;
 
 import lombok.AccessLevel;
 import lombok.Getter;
