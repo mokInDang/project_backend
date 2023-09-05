@@ -151,7 +151,8 @@ class RecruitmentBoardServiceTest {
 
         //then
         assertThat(deleteBoardIdResponse.getBoardId()).isEqualTo(boardId);
-        verify(boardRepository, times(1)).delete(any());
+        verify(boardRepository, times(1)).delete(any(RecruitmentBoard.class));
+        verify(participationRepository, times(1)).deleteAllByRecruitmentBoardId(anyLong());
     }
 
     @Test
