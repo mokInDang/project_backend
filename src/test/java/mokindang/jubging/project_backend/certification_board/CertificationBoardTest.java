@@ -1,4 +1,4 @@
-package mokindang.jubging.project_backend.domain.board.certificationboard;
+package mokindang.jubging.project_backend.certification_board;
 
 import mokindang.jubging.project_backend.certification_board.domain.CertificationBoard;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.ContentBody;

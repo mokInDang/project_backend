@@ -1,4 +1,4 @@
-package mokindang.jubging.project_backend.service.authentication;
+package mokindang.jubging.project_backend.authentication;
 
 import io.jsonwebtoken.JwtException;
 import mokindang.jubging.project_backend.authentication.domain.token.RefreshToken;

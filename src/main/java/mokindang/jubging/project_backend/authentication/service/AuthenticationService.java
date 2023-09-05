@@ -69,7 +69,6 @@ public class AuthenticationService {
         return new JwtResponse(newAccessToken, newRefreshToken);
     }
 
-    @Transactional
     private void issue(final Member member, final String newRefreshToken, final String newAccessToken) {
         refreshTokenRepository.findByMemberId(member.getId())
                 .ifPresentOrElse(

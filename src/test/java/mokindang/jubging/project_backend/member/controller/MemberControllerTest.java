@@ -1,4 +1,4 @@
-package mokindang.jubging.project_backend.controller.member;
+package mokindang.jubging.project_backend.member.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mokindang.jubging.project_backend.member.controller.MemberController;

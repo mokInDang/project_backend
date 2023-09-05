@@ -1,26 +1,20 @@
-package mokindang.jubging.project_backend.service.board;
+package mokindang.jubging.project_backend.recruitment_board.service;
 
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.member.service.MemberService;
-import mokindang.jubging.project_backend.recruitment_board.domain.ActivityCategory;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.ContentBody;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.ParticipationCount;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.StartingDate;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.Title;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Coordinate;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Place;
 import mokindang.jubging.project_backend.recruitment_board.repository.RecruitmentBoardRepository;
-import mokindang.jubging.project_backend.recruitment_board.service.RecruitmentBoardService;
 import mokindang.jubging.project_backend.recruitment_board.service.request.BoardModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceCreationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
-import mokindang.jubging.project_backend.recruitment_board.service.response.marker.MultiBoardPlaceSelectionResponse;
-import mokindang.jubging.project_backend.recruitment_board.service.response.board.MultiBoardSelectionResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.response.board.MultiBoardSelectionResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.board.RecruitmentBoardSelectionResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.response.marker.MultiBoardPlaceSelectionResponse;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -61,9 +55,7 @@ class RecruitmentBoardServiceTest {
     void write() {
         //given
         Member member = mock(Member.class);
-        Region region = mock(Region.class);
-        when(member.getRegion()).thenReturn(region);
-        when(region.isDefault()).thenReturn(false);
+        when(member.getRegion()).thenReturn(Region.from("동작구"));
         when(memberService.findByMemberId(anyLong())).thenReturn(member);
         RecruitmentBoard savedBoard = mock(RecruitmentBoard.class);
         when(savedBoard.getId()).thenReturn(1L);
@@ -108,9 +100,11 @@ class RecruitmentBoardServiceTest {
     void selectBoardId() {
         //given
         SoftAssertions softly = new SoftAssertions();
-        RecruitmentBoard recruitmentBoard = createMockedBoard();
+        RecruitmentBoard recruitmentBoard = MockedRecruitmentBoardFactory.createMockedRecruitmentBoard(1L);
         when(boardRepository.findByIdWithOptimisticLock(1L)).thenReturn(Optional.of(recruitmentBoard));
-        Member member = createMockedMember();
+        Member member = mock(Member.class);
+        when(member.getId()).thenReturn(1L);
+        when(member.getRegion()).thenReturn(Region.from("동작구"));
         when(memberService.findByMemberId(1L)).thenReturn(member);
 
         //when
@@ -135,40 +129,6 @@ class RecruitmentBoardServiceTest {
         softly.assertThat(actual.isOnRecruitment()).isTrue();
         softly.assertThat(actual.isSameRegion()).isTrue();
         softly.assertAll();
-    }
-
-    private Member createMockedMember() {
-        Member member = mock(Member.class);
-        when(member.getId()).thenReturn(1L);
-        when(member.getRegion()).thenReturn(Region.from("동작구"));
-        return member;
-    }
-
-    private RecruitmentBoard createMockedBoard() {
-        LocalDate today = LocalDate.of(2023, 3, 14);
-        RecruitmentBoard recruitmentBoard = mock(RecruitmentBoard.class);
-        when(recruitmentBoard.getId()).thenReturn(1L);
-        when(recruitmentBoard.getTitle()).thenReturn(new Title("제목"));
-        when(recruitmentBoard.getContentBody()).thenReturn(new ContentBody("본문내용"));
-        when(recruitmentBoard.getWritingRegion()).thenReturn(Region.from("동작구"));
-        when(recruitmentBoard.getActivityCategory()).thenReturn(ActivityCategory.RUNNING);
-        when(recruitmentBoard.isOnRecruitment()).thenReturn(true);
-        when(recruitmentBoard.getCreatingDateTime()).thenReturn(LocalDateTime.of(2023, 11, 12, 0, 0, 0));
-        when(recruitmentBoard.getStartingDate()).thenReturn(new StartingDate(today, LocalDate.of(2025, 2, 11)));
-        when(recruitmentBoard.getWriterAlias()).thenReturn("test");
-        when(recruitmentBoard.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
-        when(recruitmentBoard.getWriterProfileImageUrl()).thenReturn("test_url");
-        when(recruitmentBoard.getMeetingPlace()).thenReturn(createTestPlace());
-        when(recruitmentBoard.getParticipationCount()).thenReturn(ParticipationCount.createDefaultParticipationCount(8));
-        when(recruitmentBoard.isSameWriterId(1L)).thenReturn(true);
-        when(recruitmentBoard.isParticipatedIn(1L)).thenReturn(true);
-        when(recruitmentBoard.isSameRegion(Region.from("동작구"))).thenReturn(true);
-        return recruitmentBoard;
-    }
-
-    private Place createTestPlace() {
-        Coordinate coordinate = new Coordinate(1.1, 1.2);
-        return new Place(coordinate, "서울시 동작구 상도동 1-1");
     }
 
     @Test
@@ -290,6 +250,11 @@ class RecruitmentBoardServiceTest {
         //then
         assertThat(multiBoardSelectionResponse.getBoards()).hasSize(2);
         verify(boardRepository, times(1)).selectRegionBoards(any(Region.class), any(Pageable.class));
+    }
+
+    private static Place createTestPlace() {
+        Coordinate coordinate = new Coordinate(1.1, 1.2);
+        return new Place(coordinate, "서울시 동작구 상도동 1-1");
     }
 
     @Test

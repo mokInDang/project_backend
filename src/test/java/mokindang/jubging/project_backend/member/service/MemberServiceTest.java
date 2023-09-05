@@ -1,11 +1,8 @@
-package mokindang.jubging.project_backend.service.member;
+package mokindang.jubging.project_backend.member.service;
 
-import mokindang.jubging.project_backend.file.FileService;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.member.repository.MemberRepository;
-import mokindang.jubging.project_backend.member.service.KaKaoLocalApi;
-import mokindang.jubging.project_backend.member.service.MemberService;
 import mokindang.jubging.project_backend.member.service.request.RegionUpdateRequest;
 import mokindang.jubging.project_backend.member.service.response.MyPageResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Optional;
 
@@ -35,9 +31,6 @@ class MemberServiceTest {
 
     @InjectMocks
     private MemberService memberService;
-
-    @MockBean
-    private FileService fileService;
 
     @Test
     @DisplayName("Member 를 저장한다.")
@@ -96,7 +89,7 @@ class MemberServiceTest {
 
     @Test
     @DisplayName("멤버의 alias, region, profileImageUrl을 MyPageResponse Dto에 담아 반환한다.")
-    void getMyInformation(){
+    void getMyInformation() {
         //given
         Member member = new Member("test@email.com", "test");
         member.updateRegion("부천시");

@@ -1,4 +1,4 @@
-package mokindang.jubging.project_backend.controller.board;
+package mokindang.jubging.project_backend.recruitment_board.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
@@ -42,6 +42,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static mokindang.jubging.project_backend.member.MockedMemberFactory.createMockedMember;
+import static mokindang.jubging.project_backend.recruitment_board.service.MockedRecruitmentBoardFactory.createMockedRecruitmentBoard;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -176,8 +178,7 @@ class RecruitmentBoardControllerTest {
             "게시글 조회 정보를 담은 BoardSelectResponse 를 반환한다.")
     void select() throws Exception {
         //given
-
-        RecruitmentBoardSelectionResponse boardSelectionResponse = new RecruitmentBoardSelectionResponse(createMockedMember(), createMockedBoard());
+        RecruitmentBoardSelectionResponse boardSelectionResponse = new RecruitmentBoardSelectionResponse(createMockedMember(1L), createMockedRecruitmentBoard(1L));
         when(boardService.select(anyLong(), anyLong())).thenReturn(boardSelectionResponse);
 
         //when
@@ -202,39 +203,6 @@ class RecruitmentBoardControllerTest {
                 .andExpect(jsonPath("$.meetingPlaceResponse.meetingAddress").value("서울시 동작구 상도동 1-1"));
     }
 
-    private Member createMockedMember() {
-        Member member = mock(Member.class);
-        when(member.getId()).thenReturn(1L);
-        when(member.getRegion()).thenReturn(Region.from("동작구"));
-        when(member.getProfileImage()).thenReturn(new ProfileImage("test_url"));
-        return member;
-    }
-
-    private RecruitmentBoard createMockedBoard() {
-        LocalDate today = LocalDate.of(2023, 3, 14);
-        RecruitmentBoard recruitmentBoard = mock(RecruitmentBoard.class);
-        when(recruitmentBoard.getId()).thenReturn(1L);
-        when(recruitmentBoard.getTitle()).thenReturn(new Title("제목"));
-        when(recruitmentBoard.getContentBody()).thenReturn(new ContentBody("본문내용"));
-        when(recruitmentBoard.getWritingRegion()).thenReturn(Region.from("동작구"));
-        when(recruitmentBoard.getActivityCategory()).thenReturn(ActivityCategory.RUNNING);
-        when(recruitmentBoard.isOnRecruitment()).thenReturn(true);
-        when(recruitmentBoard.getCreatingDateTime()).thenReturn(LocalDateTime.of(2023, 11, 12, 0, 0, 0));
-        when(recruitmentBoard.getStartingDate()).thenReturn(new StartingDate(today, LocalDate.of(2025, 2, 11)));
-        when(recruitmentBoard.getWriterAlias()).thenReturn("test");
-        when(recruitmentBoard.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
-        when(recruitmentBoard.getWriterProfileImageUrl()).thenReturn("test_url");
-        when(recruitmentBoard.getMeetingPlace()).thenReturn(createTestPlace());
-        when(recruitmentBoard.getParticipationCount()).thenReturn(ParticipationCount.createDefaultParticipationCount(8));
-        when(recruitmentBoard.isSameWriterId(1L)).thenReturn(true);
-        when(recruitmentBoard.isParticipatedIn(1L)).thenReturn(true);
-        return recruitmentBoard;
-    }
-
-    private Place createTestPlace() {
-        Coordinate coordinate = new Coordinate(1.1, 1.2);
-        return new Place(coordinate, "서울시 동작구 상도동 1-1");
-    }
 
     @Test
     @DisplayName("게시글 식별 번호를 입력받아 게시글 조회 시, 유저의 지역과 게시글의 지역이 일치하지 않으면 HTTP 400 상태코드와 함께 예외를 반환한다.")
@@ -431,8 +399,8 @@ class RecruitmentBoardControllerTest {
     @DisplayName("특정 지역에 해당하는 구인 게시글 조회 시, HTTP 200 코드와 함께 요청 회원 지역에 해당하는 게시글 리스트를 반환한다.")
     void selectRegionBoards() throws Exception {
         //given
-        List<SummaryBoardResponse> summaryBoardResponses = List.of(new SummaryBoardResponse(createMockedBoard()),
-                new SummaryBoardResponse(createMockedBoard()));
+        List<SummaryBoardResponse> summaryBoardResponses = List.of(new SummaryBoardResponse(createMockedRecruitmentBoard(1L)),
+                new SummaryBoardResponse(createMockedRecruitmentBoard(1L)));
         when(boardService.selectRegionBoards(anyLong(), any(Pageable.class)))
                 .thenReturn(new MultiBoardSelectionResponse(summaryBoardResponses, false));
 
@@ -450,8 +418,8 @@ class RecruitmentBoardControllerTest {
     @DisplayName("특정 지역에 해당하는 게시글리스트 조회 시, HTTP 200 와 함께 게시글의 장소 값(마커)과 id 를 갖고 있는 BoardPlaceMarkerResponse 리스트를 반환한다.")
     void selectPlacesOfRegionBoards() throws Exception {
         //given
-        List<BoardPlaceMarkerResponse> boardPlaceMarkerResponses = List.of(new BoardPlaceMarkerResponse(createMockedBoard()),
-                new BoardPlaceMarkerResponse(createMockedBoard()));
+        List<BoardPlaceMarkerResponse> boardPlaceMarkerResponses = List.of(new BoardPlaceMarkerResponse(createMockedRecruitmentBoard(2L)),
+                new BoardPlaceMarkerResponse(createMockedRecruitmentBoard(1L)));
         when(boardService.selectRegionBoardsCloseToDeadline(anyLong(), any(Pageable.class)))
                 .thenReturn(new MultiBoardPlaceSelectionResponse(boardPlaceMarkerResponses, false));
 

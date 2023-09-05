@@ -1,4 +1,4 @@
-package mokindang.jubging.project_backend.repository;
+package mokindang.jubging.project_backend.member.repository;
 
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.repository.MemberRepository;
