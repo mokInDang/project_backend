@@ -1,6 +1,5 @@
 package mokindang.jubging.project_backend.recruitment_board.service;
 
-import mokindang.jubging.project_backend.member.MockedMemberFactory;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.member.service.MemberService;
@@ -103,7 +102,9 @@ class RecruitmentBoardServiceTest {
         SoftAssertions softly = new SoftAssertions();
         RecruitmentBoard recruitmentBoard = MockedRecruitmentBoardFactory.createMockedRecruitmentBoard(1L);
         when(boardRepository.findByIdWithOptimisticLock(1L)).thenReturn(Optional.of(recruitmentBoard));
-        Member member = MockedMemberFactory.createMockedMember(1L);
+        Member member = mock(Member.class);
+        when(member.getId()).thenReturn(1L);
+        when(member.getRegion()).thenReturn(Region.from("동작구"));
         when(memberService.findByMemberId(1L)).thenReturn(member);
 
         //when
