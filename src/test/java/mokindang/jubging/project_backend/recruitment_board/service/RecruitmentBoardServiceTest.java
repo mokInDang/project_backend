@@ -1,26 +1,21 @@
 package mokindang.jubging.project_backend.recruitment_board.service;
 
+import mokindang.jubging.project_backend.member.MockedMemberFactory;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.member.service.MemberService;
-import mokindang.jubging.project_backend.recruitment_board.domain.ActivityCategory;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.ContentBody;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.ParticipationCount;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.StartingDate;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.Title;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Coordinate;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Place;
 import mokindang.jubging.project_backend.recruitment_board.repository.RecruitmentBoardRepository;
-import mokindang.jubging.project_backend.recruitment_board.service.RecruitmentBoardService;
 import mokindang.jubging.project_backend.recruitment_board.service.request.BoardModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceCreationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
-import mokindang.jubging.project_backend.recruitment_board.service.response.marker.MultiBoardPlaceSelectionResponse;
-import mokindang.jubging.project_backend.recruitment_board.service.response.board.MultiBoardSelectionResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.response.board.MultiBoardSelectionResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.board.RecruitmentBoardSelectionResponse;
+import mokindang.jubging.project_backend.recruitment_board.service.response.marker.MultiBoardPlaceSelectionResponse;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -61,9 +56,7 @@ class RecruitmentBoardServiceTest {
     void write() {
         //given
         Member member = mock(Member.class);
-        Region region = mock(Region.class);
-        when(member.getRegion()).thenReturn(region);
-        when(region.isDefault()).thenReturn(false);
+        when(member.getRegion()).thenReturn(Region.from("동작구"));
         when(memberService.findByMemberId(anyLong())).thenReturn(member);
         RecruitmentBoard savedBoard = mock(RecruitmentBoard.class);
         when(savedBoard.getId()).thenReturn(1L);
@@ -110,7 +103,7 @@ class RecruitmentBoardServiceTest {
         SoftAssertions softly = new SoftAssertions();
         RecruitmentBoard recruitmentBoard = MockedRecruitmentBoardFactory.createMockedRecruitmentBoard(1L);
         when(boardRepository.findByIdWithOptimisticLock(1L)).thenReturn(Optional.of(recruitmentBoard));
-        Member member = createMockedMember();
+        Member member = MockedMemberFactory.createMockedMember(1L);
         when(memberService.findByMemberId(1L)).thenReturn(member);
 
         //when
@@ -135,13 +128,6 @@ class RecruitmentBoardServiceTest {
         softly.assertThat(actual.isOnRecruitment()).isTrue();
         softly.assertThat(actual.isSameRegion()).isTrue();
         softly.assertAll();
-    }
-
-    private Member createMockedMember() {
-        Member member = mock(Member.class);
-        when(member.getId()).thenReturn(1L);
-        when(member.getRegion()).thenReturn(Region.from("동작구"));
-        return member;
     }
 
     @Test
