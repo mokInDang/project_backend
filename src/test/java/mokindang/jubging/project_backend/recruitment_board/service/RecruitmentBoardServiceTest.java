@@ -3,6 +3,7 @@ package mokindang.jubging.project_backend.recruitment_board.service;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.member.service.MemberService;
+import mokindang.jubging.project_backend.participation.repository.ParticipationRepository;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Coordinate;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Place;
@@ -45,6 +46,9 @@ class RecruitmentBoardServiceTest {
 
     @Mock
     private RecruitmentBoardRepository boardRepository;
+
+    @Mock
+    private ParticipationRepository participationRepository;
 
     @InjectMocks
     private RecruitmentBoardService boardService;
@@ -147,7 +151,8 @@ class RecruitmentBoardServiceTest {
 
         //then
         assertThat(deleteBoardIdResponse.getBoardId()).isEqualTo(boardId);
-        verify(boardRepository, times(1)).delete(any());
+        verify(boardRepository, times(1)).delete(any(RecruitmentBoard.class));
+        verify(participationRepository, times(1)).deleteAllByRecruitmentBoardId(anyLong());
     }
 
     @Test

@@ -7,7 +7,7 @@ import mokindang.jubging.project_backend.comment.domain.Comment;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
-import mokindang.jubging.project_backend.recruitment_board.domain.participation.Participation;
+import mokindang.jubging.project_backend.participation.domain.Participation;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.ContentBody;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.ParticipationCount;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.StartingDate;
