@@ -3,11 +3,10 @@ package mokindang.jubging.project_backend.comment.domain;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import mokindang.jubging.project_backend.certification_board.domain.CertificationBoard;
 import mokindang.jubging.project_backend.comment.domain.vo.CommentBody;
+import mokindang.jubging.project_backend.comment.service.BoardType;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.member.domain.Member;
-import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -23,7 +22,10 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id", nullable = false)
-    Long id;
+    private Long id;
+
+    @Column
+    private Long boardId;
 
     @Embedded
     @Column(nullable = false)
@@ -33,17 +35,11 @@ public class Comment {
     @JoinColumn(name = "member_id")
     private Member writer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recruitment_board_id")
-    private RecruitmentBoard recruitmentBoard;
-
     @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE)
     private List<ReplyComment> replyComments = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "certification_board_id")
-    private CertificationBoard certificationBoard;
-
+    @Enumerated(EnumType.STRING)
+    private BoardType boardType;
 
     @Column(nullable = false)
     private LocalDateTime createdDateTime;
@@ -51,38 +47,13 @@ public class Comment {
     @Column(nullable = false)
     private LocalDateTime lastModifiedDateTime;
 
-    public static Comment createOnRecruitmentBoardWith(final RecruitmentBoard board, final String commentBody, final Member writer, final LocalDateTime now) {
-        return new Comment(board, commentBody, writer, now);
-    }
-
-    private Comment(final RecruitmentBoard board, final String commentBody, final Member writer, final LocalDateTime now) {
+    public Comment(final Long boardId, final BoardType boardType, final String commentBody, final Member writer, final LocalDateTime now) {
+        this.boardId = boardId;
+        this.boardType = boardType;
         this.commentBody = new CommentBody(commentBody);
         this.writer = writer;
         this.createdDateTime = now;
         this.lastModifiedDateTime = createdDateTime;
-        setRecruitmentBoard(board);
-    }
-
-    private void setRecruitmentBoard(final RecruitmentBoard recruitmentBoard) {
-        this.recruitmentBoard = recruitmentBoard;
-        recruitmentBoard.addComment(this);
-    }
-
-    public static Comment createOnCertificationBoardWith(final CertificationBoard board, final String commentBody, final Member writer, final LocalDateTime now) {
-        return new Comment(board, commentBody, writer, now);
-    }
-
-    private Comment(final CertificationBoard board, final String commentBody, final Member writer, final LocalDateTime now) {
-        this.commentBody = new CommentBody(commentBody);
-        this.writer = writer;
-        this.createdDateTime = now;
-        this.lastModifiedDateTime = createdDateTime;
-        setCertificationBoard(board);
-    }
-
-    private void setCertificationBoard(final CertificationBoard certificationBoard) {
-        this.certificationBoard = certificationBoard;
-        certificationBoard.addComment(this);
     }
 
     public int countReplyComment() {
