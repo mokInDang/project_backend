@@ -50,13 +50,11 @@ VALUES (1, '2023-3-9-12-0', '2023-3-9-12-0', '인증제목1', '인증본문1');
 
 
 -- 댓글
-INSERT INTO comment (body, created_date_time, last_modified_date_time, certification_board_id, recruitment_board_id,
-                     member_id)
-VALUES ('테스트 댓글', '2023-3-10-11-0', '2023-3-10-11-0', null, 1, 1);
+INSERT INTO comment (body, created_date_time, last_modified_date_time, board_type, board_id, member_id)
+VALUES ('테스트 댓글', '2023-3-10-11-0', '2023-3-10-11-0', 'recruitment-board', 1, 1);
 
-INSERT INTO comment (body, created_date_time, last_modified_date_time, certification_board_id, recruitment_board_id,
-                     member_id)
-VALUES ('테스트 댓글', '2023-3-10-11-0', '2023-3-10-11-0', 1, null, 1);
+INSERT INTO comment (body, created_date_time, last_modified_date_time, board_type, board_id, member_id)
+VALUES ('테스트 댓글', '2023-3-10-11-0', '2023-3-10-11-0', 'recruitment-board', 1, 1);
 
 
 -- 대댓글

@@ -19,13 +19,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RecruitmentBoardCommentsSelectionStrategy implements CommentsSelectionStrategy {
 
+    private static final BoardType BOARD_TYPE = BoardType.RECRUITMENT_BOARD;
     private final CommentRepository commentRepository;
     private final MemberService memberService;
     private final RecruitmentBoardService recruitmentBoardService;
 
     @Override
     public MultiCommentSelectionResponse selectComments(Long boardId, Long memberId) {
-        List<Comment> commentsByRecruitmentBoard = commentRepository.findCommentsByRecruitmentBoardId(boardId);
+        List<Comment> commentsByRecruitmentBoard = commentRepository.findCommentByBoardTypeAndBoardId(BOARD_TYPE, boardId);
         Member member = memberService.findByMemberId(memberId);
         RecruitmentBoard board = recruitmentBoardService.findByIdWithOptimisticLock(boardId);
         boolean writingCommentPermission = board.isSameRegion(member.getRegion());
@@ -41,6 +42,6 @@ public class RecruitmentBoardCommentsSelectionStrategy implements CommentsSelect
 
     @Override
     public BoardType getBoardType() {
-        return BoardType.RECRUITMENT_BOARD;
+        return BOARD_TYPE;
     }
 }

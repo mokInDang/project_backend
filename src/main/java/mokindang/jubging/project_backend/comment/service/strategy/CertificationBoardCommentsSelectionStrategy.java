@@ -17,12 +17,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CertificationBoardCommentsSelectionStrategy implements CommentsSelectionStrategy {
 
+    private static final BoardType BOARD_TYPE = BoardType.CERTIFICATION_BOARD;
     private final CommentRepository commentRepository;
     private final CertificationBoardService certificationBoardService;
 
     @Override
     public MultiCommentSelectionResponse selectComments(Long boardId, Long memberId) {
-        List<Comment> commentsByCertificationBoard = commentRepository.findCommentsByCertificationBoardId(boardId);
+        List<Comment> commentsByCertificationBoard = commentRepository.findCommentByBoardTypeAndBoardId(BOARD_TYPE, boardId);
         CertificationBoard board = certificationBoardService.findById(boardId);
         return new MultiCommentSelectionResponse(convertToCertificationBoardCommentSelectionResponse2(memberId, commentsByCertificationBoard, board),
                 true);
@@ -36,6 +37,6 @@ public class CertificationBoardCommentsSelectionStrategy implements CommentsSele
 
     @Override
     public BoardType getBoardType() {
-        return BoardType.CERTIFICATION_BOARD;
+        return BOARD_TYPE;
     }
 }
