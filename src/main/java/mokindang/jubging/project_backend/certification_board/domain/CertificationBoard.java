@@ -45,9 +45,6 @@ public class CertificationBoard {
     @OneToMany(mappedBy = "certificationBoard", cascade = CascadeType.REMOVE)
     private List<Image> images = new ArrayList<>();
 
-    @OneToMany(mappedBy = "certificationBoard", cascade = CascadeType.REMOVE)
-    List<Comment> comments = new ArrayList<>();
-
     public CertificationBoard(final LocalDateTime createdDateTime, final LocalDateTime modifiedTIme,
                               final Member writer, final String title, final String contentBody) {
         this.createdDateTime = createdDateTime;
@@ -90,10 +87,6 @@ public class CertificationBoard {
         this.modifiedTIme = LocalDateTime.now();
         this.title = new Title(titleValue);
         this.contentBody = new ContentBody(contentBody);
-    }
-
-    public void addComment(final Comment comment) {
-        this.comments.add(comment);
     }
 
     @Override

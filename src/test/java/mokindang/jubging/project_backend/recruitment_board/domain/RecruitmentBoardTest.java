@@ -292,20 +292,6 @@ class RecruitmentBoardTest {
         assertThat(writerProfileImageUrl).isEqualTo(testUrl);
     }
 
-    @Test
-    @DisplayName("구인 게시글에 달린 모든 댓글과 대댓글의 갯수를 반환한다.")
-    void countCommentAndReplyComment() {
-        //given
-        RecruitmentBoard recruitmentBoard = findTestRecruitmentBoard();
-
-        //when
-        Long actual = recruitmentBoard.countCommentAndReplyComment();
-
-        //then
-        assertThat(actual).isEqualTo(3);
-    }
-
-
     @ParameterizedTest
     @CsvSource(value = {"성동구 , false", "동작구 , true"})
     @DisplayName("게시글 작성 지역에 대해서 입력 받은 지역이 같은지 확인한다.")

@@ -65,9 +65,6 @@ public class RecruitmentBoard {
     @OneToMany(mappedBy = "recruitmentBoard", cascade = CascadeType.ALL)
     private List<Participation> participationList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "recruitmentBoard", cascade = CascadeType.REMOVE)
-    private List<Comment> comments = new ArrayList<>();
-
     @Version
     private Long version;
 
@@ -140,17 +137,6 @@ public class RecruitmentBoard {
 
     public String getFirstFourDigitsOfWriterEmail() {
         return writer.getFirstFourDigitsOfWriterEmail();
-    }
-
-    public Long countCommentAndReplyComment() {
-        long countOfAllReplyComment = comments.stream()
-                .mapToInt(Comment::countReplyComment)
-                .sum();
-        return comments.size() + countOfAllReplyComment;
-    }
-
-    public void addComment(final Comment comment) {
-        this.comments.add(comment);
     }
 
     public boolean isSameRegion(final Region region) {
