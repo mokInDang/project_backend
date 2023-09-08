@@ -2,8 +2,6 @@ package mokindang.jubging.project_backend.comment.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import mokindang.jubging.project_backend.certification_board.domain.CertificationBoard;
-import mokindang.jubging.project_backend.certification_board.service.CertificationBoardService;
 import mokindang.jubging.project_backend.comment.domain.Comment;
 import mokindang.jubging.project_backend.comment.domain.ReplyComment;
 import mokindang.jubging.project_backend.comment.repository.CommentRepository;
@@ -12,19 +10,15 @@ import mokindang.jubging.project_backend.comment.service.request.CommentCreation
 import mokindang.jubging.project_backend.comment.service.request.ReplyCommentCreationRequest;
 import mokindang.jubging.project_backend.comment.service.response.BoardIdResponse;
 import mokindang.jubging.project_backend.comment.service.response.CommentIdResponse;
-import mokindang.jubging.project_backend.comment.service.response.CommentSelectionResponse;
 import mokindang.jubging.project_backend.comment.service.response.MultiCommentSelectionResponse;
+import mokindang.jubging.project_backend.comment.service.strategy.CommentsSelectionStrategy;
+import mokindang.jubging.project_backend.comment.service.strategy.CommentsSelectionStrategyFinder;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.service.MemberService;
-import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
-import mokindang.jubging.project_backend.recruitment_board.service.RecruitmentBoardService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
-
 
 @Slf4j
 @Service
@@ -34,63 +28,23 @@ public class CommentService {
 
     private final ReplyCommentRepository replyCommentRepository;
     private final CommentRepository commentRepository;
-    private final RecruitmentBoardService recruitmentBoardService;
-    private final CertificationBoardService certificationBoardService;
     private final MemberService memberService;
+    private final CommentsSelectionStrategyFinder commentsSelectionStrategyFinder;
 
     @Transactional
     public BoardIdResponse addComment(final Long memberId, final BoardType boardType, final Long boardId,
                                       final CommentCreationRequest commentCreationRequest) {
         Member writer = memberService.findByMemberId(memberId);
         LocalDateTime now = LocalDateTime.now();
-
-        if (boardType == BoardType.RECRUITMENT_BOARD) {
-            RecruitmentBoard board = recruitmentBoardService.findByIdWithOptimisticLock(boardId);
-            Comment comment = Comment.createOnRecruitmentBoardWith(board, commentCreationRequest.getCommentBody(), writer, now);
-            commentRepository.save(comment);
-            return new BoardIdResponse(boardId);
-        }
-
-        if (boardType == BoardType.CERTIFICATION_BOARD) {
-            CertificationBoard board = certificationBoardService.findById(boardId);
-            Comment comment = Comment.createOnCertificationBoardWith(board, commentCreationRequest.getCommentBody(), writer, now);
-            commentRepository.save(comment);
-            return new BoardIdResponse(boardId);
-        }
-        throw new IllegalArgumentException("존재 하지 않는 게시판에 대한 접근입니다.");
+        Comment comment = new Comment(boardId, boardType, commentCreationRequest.getCommentBody(), writer, now);
+        commentRepository.save(comment);
+        return new BoardIdResponse(comment.getBoardId());
     }
 
     @Transactional
     public MultiCommentSelectionResponse selectComments(final Long memberId, final BoardType boardType, final Long boardId) {
-        if (boardType == BoardType.RECRUITMENT_BOARD) {
-            List<Comment> commentsByRecruitmentBoard = commentRepository.findCommentsByRecruitmentBoardId(boardId);
-            Member member = memberService.findByMemberId(memberId);
-            RecruitmentBoard board = recruitmentBoardService.findByIdWithOptimisticLock(boardId);
-            boolean writingCommentPermission = board.isSameRegion(member.getRegion());
-            boolean isWriterParticipatedIn = board.isParticipatedIn(memberId);
-            return new MultiCommentSelectionResponse(convertToRecruitmentBoardCommentSelectionResponse(memberId, commentsByRecruitmentBoard, board, isWriterParticipatedIn),
-                    writingCommentPermission);
-        }
-
-        if (boardType == BoardType.CERTIFICATION_BOARD) {
-            List<Comment> commentsByCertificationBoard = commentRepository.findCommentsByCertificationBoardId(boardId);
-            CertificationBoard board = certificationBoardService.findById(boardId);
-            return new MultiCommentSelectionResponse(convertToCertificationBoardCommentSelectionResponse2(memberId, commentsByCertificationBoard, board),
-                    true);
-        }
-        throw new IllegalArgumentException("존재 하지 않는 게시판에 대한 접근입니다.");
-    }
-
-    private List<CommentSelectionResponse> convertToRecruitmentBoardCommentSelectionResponse(final Long memberId, final List<Comment> commentsByRecruitmentBoard, final RecruitmentBoard board, final boolean isWriterParticipatedIn) {
-        return commentsByRecruitmentBoard.stream()
-                .map(comment -> new CommentSelectionResponse(comment, memberId, board.isSameWriterId(comment.getWriter().getId()), isWriterParticipatedIn))
-                .collect(Collectors.toUnmodifiableList());
-    }
-
-    private List<CommentSelectionResponse> convertToCertificationBoardCommentSelectionResponse2(final Long memberId, final List<Comment> commentsByRecruitmentBoard, final CertificationBoard board) {
-        return commentsByRecruitmentBoard.stream()
-                .map(comment -> new CommentSelectionResponse(comment, memberId, board.isSameWriterId(comment.getWriter().getId()), false))
-                .collect(Collectors.toUnmodifiableList());
+        CommentsSelectionStrategy commentSelectionStrategy = commentsSelectionStrategyFinder.getCommentSelectionStrategy(boardType);
+        return commentSelectionStrategy.selectComments(boardId, memberId);
     }
 
     @Transactional
