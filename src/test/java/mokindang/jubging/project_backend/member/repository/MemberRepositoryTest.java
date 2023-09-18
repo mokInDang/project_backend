@@ -22,7 +22,7 @@ class MemberRepositoryTest {
 
     @Test
     @DisplayName("멤버의 email 과 alias를 데이터베이스에 저장한다.")
-    public void save(){
+    public void save() {
         //given
         SoftAssertions softly = new SoftAssertions();
         Member testMember = new Member("koho1047@naver.com", "고민호");
@@ -47,7 +47,7 @@ class MemberRepositoryTest {
 
         //when
         Member findMember = memberRepository.findById(saveMember.getId())
-                                            .get();
+                .get();
 
         //then
         assertThat(findMember).isEqualTo(saveMember);
@@ -62,7 +62,7 @@ class MemberRepositoryTest {
 
         //when
         Member findMember = memberRepository.findByEmail(saveMember.getEmail())
-                                            .get();
+                .get();
 
         //then
         assertThat(findMember).isEqualTo(saveMember);
@@ -84,7 +84,7 @@ class MemberRepositoryTest {
 
     @Test
     @DisplayName("모든 멤버를 반환한다.")
-    public void findAll(){
+    public void findAll() {
         //given
         Member member1 = new Member("dog123@naver.com", "철수");
         Member member2 = new Member("cat456@naver.com", "영희");
@@ -95,6 +95,6 @@ class MemberRepositoryTest {
         List<Member> members = memberRepository.findAll();
 
         //then
-        assertThat(members).contains(saveMember1,saveMember2);
+        assertThat(members).contains(saveMember1, saveMember2);
     }
 }
