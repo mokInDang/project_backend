@@ -2,7 +2,7 @@ package mokindang.jubging.project_backend.recruitment_board.service;
 
 import lombok.RequiredArgsConstructor;
 import mokindang.jubging.project_backend.comment.repository.CommentRepository;
-import mokindang.jubging.project_backend.comment.repository.projectionDto.CommentCountResponse;
+import mokindang.jubging.project_backend.comment.repository.response.CommentCountResponse;
 import mokindang.jubging.project_backend.comment.service.BoardType;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
