@@ -2,7 +2,7 @@ package mokindang.jubging.project_backend.comment.repository;
 
 import mokindang.jubging.project_backend.comment.domain.Comment;
 import mokindang.jubging.project_backend.comment.domain.ReplyComment;
-import mokindang.jubging.project_backend.comment.repository.projectionDto.CommentCountResponse;
+import mokindang.jubging.project_backend.comment.repository.response.CommentCountResponse;
 import mokindang.jubging.project_backend.comment.service.BoardType;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.repository.MemberRepository;
