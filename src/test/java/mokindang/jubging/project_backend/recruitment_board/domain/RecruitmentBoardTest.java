@@ -3,8 +3,6 @@ package mokindang.jubging.project_backend.recruitment_board.domain;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
-import mokindang.jubging.project_backend.recruitment_board.domain.ActivityCategory;
-import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.ContentBody;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.StartingDate;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.Title;

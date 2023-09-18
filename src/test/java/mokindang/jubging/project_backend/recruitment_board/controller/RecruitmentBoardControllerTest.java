@@ -388,7 +388,7 @@ class RecruitmentBoardControllerTest {
     void selectRegionBoards() throws Exception {
         //given
         List<SummaryBoardResponse> summaryBoardResponses = List.of(new SummaryBoardResponse(createMockedRecruitmentBoard(1L), 1L),
-                new SummaryBoardResponse(createMockedRecruitmentBoard(1L),0L));
+                new SummaryBoardResponse(createMockedRecruitmentBoard(1L), 0L));
         when(boardService.selectRegionBoards(anyLong(), any(Pageable.class)))
                 .thenReturn(new MultiBoardSelectionResponse(summaryBoardResponses, false));
 
