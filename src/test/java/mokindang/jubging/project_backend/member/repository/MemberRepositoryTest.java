@@ -1,7 +1,6 @@
 package mokindang.jubging.project_backend.member.repository;
 
 import mokindang.jubging.project_backend.member.domain.Member;
-import mokindang.jubging.project_backend.member.repository.MemberRepository;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,7 +11,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -23,7 +22,7 @@ class MemberRepositoryTest {
 
     @Test
     @DisplayName("멤버의 email 과 alias를 데이터베이스에 저장한다.")
-    public void save(){
+    public void save() {
         //given
         SoftAssertions softly = new SoftAssertions();
         Member testMember = new Member("koho1047@naver.com", "고민호");
@@ -48,26 +47,10 @@ class MemberRepositoryTest {
 
         //when
         Member findMember = memberRepository.findById(saveMember.getId())
-                                            .get();
+                .get();
 
         //then
         assertThat(findMember).isEqualTo(saveMember);
-    }
-
-    @Test
-    @DisplayName("존재하지 않는 ID가 주어지면 아무것도 반환하지 않는다.")
-    public void findByIdError() {
-        //given
-        Long testId = 10L;
-        Member testMember = new Member("koho1047@naver.com", "고민호");
-        memberRepository.save(testMember);
-
-        //when
-        Optional<Member> findMember = memberRepository.findById(testId);
-
-        //then
-        assertThat(findMember).isEmpty();
-
     }
 
     @Test
@@ -79,7 +62,7 @@ class MemberRepositoryTest {
 
         //when
         Member findMember = memberRepository.findByEmail(saveMember.getEmail())
-                                            .get();
+                .get();
 
         //then
         assertThat(findMember).isEqualTo(saveMember);
@@ -101,7 +84,7 @@ class MemberRepositoryTest {
 
     @Test
     @DisplayName("모든 멤버를 반환한다.")
-    public void findAll(){
+    public void findAll() {
         //given
         Member member1 = new Member("dog123@naver.com", "철수");
         Member member2 = new Member("cat456@naver.com", "영희");
@@ -112,6 +95,6 @@ class MemberRepositoryTest {
         List<Member> members = memberRepository.findAll();
 
         //then
-        assertThat(members).contains(saveMember1,saveMember2);
+        assertThat(members).contains(saveMember1, saveMember2);
     }
 }

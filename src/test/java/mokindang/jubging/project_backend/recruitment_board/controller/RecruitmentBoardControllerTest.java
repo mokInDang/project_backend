@@ -2,25 +2,13 @@ package mokindang.jubging.project_backend.recruitment_board.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
-import mokindang.jubging.project_backend.member.domain.Member;
-import mokindang.jubging.project_backend.member.domain.vo.ProfileImage;
-import mokindang.jubging.project_backend.member.domain.vo.Region;
-import mokindang.jubging.project_backend.recruitment_board.controller.RecruitmentBoardController;
-import mokindang.jubging.project_backend.recruitment_board.domain.ActivityCategory;
-import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.ContentBody;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.ParticipationCount;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.StartingDate;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.Title;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Coordinate;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Place;
 import mokindang.jubging.project_backend.recruitment_board.service.RecruitmentBoardService;
 import mokindang.jubging.project_backend.recruitment_board.service.facade.OptimisticLockRecruitmentBoardResolver;
 import mokindang.jubging.project_backend.recruitment_board.service.request.BoardModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceCreationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
-import mokindang.jubging.project_backend.recruitment_board.service.response.*;
+import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.board.MultiBoardSelectionResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.board.RecruitmentBoardSelectionResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.board.SummaryBoardResponse;
@@ -39,14 +27,14 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static mokindang.jubging.project_backend.member.MockedMemberFactory.createMockedMember;
 import static mokindang.jubging.project_backend.recruitment_board.service.MockedRecruitmentBoardFactory.createMockedRecruitmentBoard;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -399,8 +387,8 @@ class RecruitmentBoardControllerTest {
     @DisplayName("특정 지역에 해당하는 구인 게시글 조회 시, HTTP 200 코드와 함께 요청 회원 지역에 해당하는 게시글 리스트를 반환한다.")
     void selectRegionBoards() throws Exception {
         //given
-        List<SummaryBoardResponse> summaryBoardResponses = List.of(new SummaryBoardResponse(createMockedRecruitmentBoard(1L)),
-                new SummaryBoardResponse(createMockedRecruitmentBoard(1L)));
+        List<SummaryBoardResponse> summaryBoardResponses = List.of(new SummaryBoardResponse(createMockedRecruitmentBoard(1L), 1L),
+                new SummaryBoardResponse(createMockedRecruitmentBoard(1L),0L));
         when(boardService.selectRegionBoards(anyLong(), any(Pageable.class)))
                 .thenReturn(new MultiBoardSelectionResponse(summaryBoardResponses, false));
 
