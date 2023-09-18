@@ -51,16 +51,13 @@ VALUES (1, '2023-3-9-12-0', '2023-3-9-12-0', '인증제목1', '인증본문1');
 
 -- 댓글
 INSERT INTO comment (body, created_date_time, last_modified_date_time, board_type, board_id, member_id)
-VALUES ('테스트 댓글', '2023-3-10-11-0', '2023-3-10-11-0', 'recruitment-board', 1, 1);
+VALUES ('테스트 댓글', '2023-3-10-11-0', '2023-3-10-11-0', 'RECRUITMENT_BOARD', 1, 1);
 
 INSERT INTO comment (body, created_date_time, last_modified_date_time, board_type, board_id, member_id)
-VALUES ('테스트 댓글', '2023-3-10-11-0', '2023-3-10-11-0', 'recruitment-board', 1, 1);
+VALUES ('테스트 댓글', '2023-3-10-11-0', '2023-3-10-11-0', 'RECRUITMENT_BOARD', 1, 1);
 
 INSERT INTO comment (body, created_date_time, last_modified_date_time, board_type, board_id, member_id)
-VALUES ('테스트 댓글', '2023-3-10-11-0', '2023-3-10-11-0', 'recruitment-board', 2, 1);
-
-INSERT INTO comment (body, created_date_time, last_modified_date_time, board_type, board_id, member_id)
-VALUES ('테스트 댓글', '2023-3-10-11-0', '2023-3-10-11-0', 'recruitment-board', 3, 1);
+VALUES ('테스트 댓글', '2023-3-10-11-0', '2023-3-10-11-0', 'RECRUITMENT_BOARD', 2, 1);
 
 
 
@@ -68,11 +65,11 @@ VALUES ('테스트 댓글', '2023-3-10-11-0', '2023-3-10-11-0', 'recruitment-boa
 INSERT INTO reply_comment (reply_comment_id, created_date_time, last_modified_date_time, body, comment_id, member_id)
 VALUES (1, '2023-3-10-11-0', '2023-3-10-11-0', '테스트 대댓글1', 1, 1);
 
-INSERT INTO reply_comment (reply_comment_id, created_date_time, last_modified_date_time, body, comment_id, member_id)
-VALUES (2, '2023-3-10-11-0', '2023-4-10-11-0', '테스트 대댓글2', 1, 1);
+# INSERT INTO reply_comment (reply_comment_id, created_date_time, last_modified_date_time, body, comment_id, member_id)
+# VALUES (2, '2023-3-10-11-0', '2023-4-10-11-0', '테스트 대댓글2', 1, 1);
 
-INSERT INTO reply_comment (reply_comment_id, created_date_time, last_modified_date_time, body, comment_id, member_id)
-VALUES (3, '2023-3-10-11-0', '2023-3-10-11-0', '테스트 대댓글1', 2, 1);
+# INSERT INTO reply_comment (reply_comment_id, created_date_time, last_modified_date_time, body, comment_id, member_id)
+# VALUES (3, '2023-3-10-11-0', '2023-3-10-11-0', '테스트 대댓글1', 2, 1);
 
 -- 참여상태
 INSERT INTO participation(member_id, recruitment_board_id)

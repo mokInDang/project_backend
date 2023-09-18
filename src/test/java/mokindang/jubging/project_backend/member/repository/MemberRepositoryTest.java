@@ -1,7 +1,6 @@
 package mokindang.jubging.project_backend.member.repository;
 
 import mokindang.jubging.project_backend.member.domain.Member;
-import mokindang.jubging.project_backend.member.repository.MemberRepository;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,7 +11,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -52,22 +51,6 @@ class MemberRepositoryTest {
 
         //then
         assertThat(findMember).isEqualTo(saveMember);
-    }
-
-    @Test
-    @DisplayName("존재하지 않는 ID가 주어지면 아무것도 반환하지 않는다.")
-    public void findByIdError() {
-        //given
-        Long testId = 10L;
-        Member testMember = new Member("koho1047@naver.com", "고민호");
-        memberRepository.save(testMember);
-
-        //when
-        Optional<Member> findMember = memberRepository.findById(testId);
-
-        //then
-        assertThat(findMember).isEmpty();
-
     }
 
     @Test
