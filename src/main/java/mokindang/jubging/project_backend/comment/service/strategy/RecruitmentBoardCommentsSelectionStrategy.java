@@ -25,7 +25,7 @@ public class RecruitmentBoardCommentsSelectionStrategy implements CommentsSelect
     private final RecruitmentBoardService recruitmentBoardService;
 
     @Override
-    public MultiCommentSelectionResponse selectComments(Long boardId, Long memberId) {
+    public MultiCommentSelectionResponse selectComments(final Long boardId, final Long memberId) {
         List<Comment> commentsByRecruitmentBoard = commentRepository.findCommentByBoardTypeAndBoardId(BOARD_TYPE, boardId);
         Member member = memberService.findByMemberId(memberId);
         RecruitmentBoard board = recruitmentBoardService.findByIdWithOptimisticLock(boardId);
