@@ -1,6 +1,9 @@
 package mokindang.jubging.project_backend.recruitment_board.service;
 
 import lombok.RequiredArgsConstructor;
+import mokindang.jubging.project_backend.comment.repository.CommentRepository;
+import mokindang.jubging.project_backend.comment.repository.projectionDto.CommentCountResponse;
+import mokindang.jubging.project_backend.comment.service.BoardType;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.member.service.MemberService;
@@ -13,7 +16,7 @@ import mokindang.jubging.project_backend.recruitment_board.service.request.Board
 import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceCreationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
-import mokindang.jubging.project_backend.recruitment_board.service.response.*;
+import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.board.MultiBoardSelectionResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.board.RecruitmentBoardSelectionResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.board.SummaryBoardResponse;
@@ -29,15 +32,19 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class RecruitmentBoardService {
 
+    private static final int FIRST_INDEX = 0;
+
     private final MemberService memberService;
     private final RecruitmentBoardRepository recruitmentBoardRepository;
     private final ParticipationRepository participationRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional
     public RecruitmentBoardIdResponse write(final Long memberId, final RecruitmentBoardCreationRequest recruitmentBoardCreationRequest) {
@@ -58,7 +65,6 @@ public class RecruitmentBoardService {
         return new Place(meetingSpot, meetingAddress);
     }
 
-
     public RecruitmentBoardSelectionResponse select(final Long memberId, final Long boardId) {
         RecruitmentBoard recruitmentBoard = findByIdWithOptimisticLock(boardId);
         Member member = memberService.findByMemberId(memberId);
@@ -71,11 +77,23 @@ public class RecruitmentBoardService {
     }
 
     public MultiBoardSelectionResponse selectAllBoards(final Pageable pageable) {
-        Slice<RecruitmentBoard> recruitmentBoards = recruitmentBoardRepository.selectBoards(pageable);
-        List<SummaryBoardResponse> summaryRecruitmentBoards = recruitmentBoards.stream()
-                .map(SummaryBoardResponse::new)
+        Slice<RecruitmentBoard> boards = recruitmentBoardRepository.selectBoards(pageable);
+        List<SummaryBoardResponse> summaryRecruitmentBoards = convertToSummaryBoardResponses(boards.getContent());
+        return new MultiBoardSelectionResponse(summaryRecruitmentBoards, boards.hasNext());
+    }
+
+    private List<SummaryBoardResponse> convertToSummaryBoardResponses(final List<RecruitmentBoard> boards) {
+        List<CommentCountResponse> commentCountResponses = getCommentCountResponse(boards);
+        return IntStream.range(FIRST_INDEX, boards.size())
+                .mapToObj(index -> new SummaryBoardResponse(boards.get(index), commentCountResponses.get(index).getCommentCount())
+                ).collect(Collectors.toUnmodifiableList());
+    }
+
+    private List<CommentCountResponse> getCommentCountResponse(final List<RecruitmentBoard> boards) {
+        List<Long> boardIds = boards.stream()
+                .map(board -> board.getId())
                 .collect(Collectors.toUnmodifiableList());
-        return new MultiBoardSelectionResponse(summaryRecruitmentBoards, recruitmentBoards.hasNext());
+        return commentRepository.countALLCommentByBoardIds(boardIds, BoardType.RECRUITMENT_BOARD);
     }
 
     @Transactional
@@ -114,10 +132,8 @@ public class RecruitmentBoardService {
         Member loggedInMember = memberService.findByMemberId(memberId);
         Region targetRegion = loggedInMember.getRegion();
         Slice<RecruitmentBoard> boards = recruitmentBoardRepository.selectRegionBoards(targetRegion, pageable);
-        List<SummaryBoardResponse> summaryBoards = boards.stream()
-                .map(SummaryBoardResponse::new)
-                .collect(Collectors.toUnmodifiableList());
-        return new MultiBoardSelectionResponse(summaryBoards, boards.hasNext());
+        List<SummaryBoardResponse> summaryBoardResponses = convertToSummaryBoardResponses(boards.getContent());
+        return new MultiBoardSelectionResponse(summaryBoardResponses, boards.hasNext());
     }
 
     public MultiBoardPlaceSelectionResponse selectRegionBoardsCloseToDeadline(final Long memberId, final Pageable pageable) {
