@@ -1,5 +1,7 @@
 package mokindang.jubging.project_backend.recruitment_board.service;
 
+import mokindang.jubging.project_backend.comment.repository.CommentRepository;
+import mokindang.jubging.project_backend.comment.service.BoardType;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.member.service.MemberService;
@@ -49,6 +51,9 @@ class RecruitmentBoardServiceTest {
 
     @Mock
     private ParticipationRepository participationRepository;
+
+    @Mock
+    private CommentRepository commentRepository;
 
     @InjectMocks
     private RecruitmentBoardService boardService;
@@ -234,10 +239,8 @@ class RecruitmentBoardServiceTest {
         LocalDateTime now = LocalDateTime.of(2023, 3, 25, 1, 1);
         Member dongJackMember = new Member("test@mail.com", "동작이");
         dongJackMember.updateRegion("동작구");
-        RecruitmentBoard dongJackBoard1 = new RecruitmentBoard(now.plusDays(1), dongJackMember,
-                LocalDate.of(2023, 3, 27), "달리기", createTestPlace(), "제목1", "본문1", 8);
-        RecruitmentBoard dongJackBoard2 = new RecruitmentBoard(now, dongJackMember,
-                LocalDate.of(2023, 3, 27), "산책", createTestPlace(), "제목2", "본문2", 8);
+        RecruitmentBoard dongJackBoard1 = MockedRecruitmentBoardFactory.createMockedSummaryBoard(1L);
+        RecruitmentBoard dongJackBoard2 = MockedRecruitmentBoardFactory.createMockedSummaryBoard(2L);
         Slice<RecruitmentBoard> slice = new SliceImpl<>(List.of(dongJackBoard1, dongJackBoard2));
 
         Member member = mock(Member.class);
@@ -245,7 +248,7 @@ class RecruitmentBoardServiceTest {
         when(memberService.findByMemberId(1L)).thenReturn(member);
         when(boardRepository.selectRegionBoards(any(Region.class), any(Pageable.class)))
                 .thenReturn(slice);
-
+        when(commentRepository.countALLCommentByBoardIds(any(), any(BoardType.class))).thenReturn(List.of(() -> 1L, () -> 2L));
         Long memberId = 1L;
         Pageable pageable = PageRequest.of(0, 2);
 
@@ -256,6 +259,7 @@ class RecruitmentBoardServiceTest {
         assertThat(multiBoardSelectionResponse.getBoards()).hasSize(2);
         verify(boardRepository, times(1)).selectRegionBoards(any(Region.class), any(Pageable.class));
     }
+
 
     private static Place createTestPlace() {
         Coordinate coordinate = new Coordinate(1.1, 1.2);
