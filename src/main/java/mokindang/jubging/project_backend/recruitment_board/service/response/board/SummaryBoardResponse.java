@@ -47,7 +47,7 @@ public class SummaryBoardResponse {
     @Schema(description = "게시글에 참여한 회원의 수")
     private final int countOfParticipation;
 
-    public SummaryBoardResponse(final RecruitmentBoard recruitmentBoard) {
+    public SummaryBoardResponse(final RecruitmentBoard recruitmentBoard, final Long countOfCommentAndReplyComment) {
         this.boardId = recruitmentBoard.getId();
         this.title = recruitmentBoard.getTitle()
                 .getValue();
@@ -63,7 +63,7 @@ public class SummaryBoardResponse {
                 .getValue();
         this.onRecruitment = recruitmentBoard.isOnRecruitment();
         this.firstFourLettersOfEmail = recruitmentBoard.getFirstFourDigitsOfWriterEmail();
-        this.countOfCommentAndReplyComment = recruitmentBoard.countCommentAndReplyComment();
+        this.countOfCommentAndReplyComment = countOfCommentAndReplyComment;
         this.countOfMaxParticipation = recruitmentBoard.getParticipationCount().getMax();
         this.countOfParticipation = recruitmentBoard.getParticipationCount().getCount();
     }
