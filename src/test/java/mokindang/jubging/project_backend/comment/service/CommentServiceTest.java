@@ -7,8 +7,8 @@ import mokindang.jubging.project_backend.comment.repository.ReplyCommentReposito
 import mokindang.jubging.project_backend.comment.service.request.CommentCreationRequest;
 import mokindang.jubging.project_backend.comment.service.request.ReplyCommentCreationRequest;
 import mokindang.jubging.project_backend.comment.service.response.CommentIdResponse;
-import mokindang.jubging.project_backend.comment.service.response.CommentSelectionResponse;
 import mokindang.jubging.project_backend.comment.service.response.MultiCommentSelectionResponse;
+import mokindang.jubging.project_backend.comment.service.response.commentresponse.RecruitmentBoardCommentResponse;
 import mokindang.jubging.project_backend.comment.service.strategy.CommentsSelectionStrategy;
 import mokindang.jubging.project_backend.comment.service.strategy.CommentsSelectionStrategyFinder;
 import mokindang.jubging.project_backend.member.domain.Member;
@@ -86,9 +86,9 @@ class CommentServiceTest {
         return new CommentsSelectionStrategy() {
             @Override
             public MultiCommentSelectionResponse selectComments(Long boardId, Long memberId) {
-                CommentSelectionResponse commentSelectionResponse = mock(CommentSelectionResponse.class);
+                RecruitmentBoardCommentResponse recruitmentBoardCommentSelectionResponse = mock(RecruitmentBoardCommentResponse.class);
                 MultiCommentSelectionResponse multiReplyCommentSelectionResponse = mock(MultiCommentSelectionResponse.class);
-                when(multiReplyCommentSelectionResponse.getComments()).thenReturn(List.of(commentSelectionResponse));
+                when(multiReplyCommentSelectionResponse.getComments()).thenReturn(List.of(recruitmentBoardCommentSelectionResponse));
                 return multiReplyCommentSelectionResponse;
             }
 
