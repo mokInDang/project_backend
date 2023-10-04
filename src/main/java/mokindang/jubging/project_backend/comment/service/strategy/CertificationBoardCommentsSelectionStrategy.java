@@ -17,7 +17,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CertificationBoardCommentsSelectionStrategy implements CommentsSelectionStrategy {
 
+    private static final Boolean WRITING_COMMENT_PERMISSION = true;
     private static final BoardType BOARD_TYPE = BoardType.CERTIFICATION_BOARD;
+
     private final CommentRepository commentRepository;
     private final CertificationBoardService certificationBoardService;
 
@@ -25,11 +27,11 @@ public class CertificationBoardCommentsSelectionStrategy implements CommentsSele
     public MultiCommentSelectionResponse selectComments(Long boardId, Long memberId) {
         List<Comment> commentsByCertificationBoard = commentRepository.findCommentByBoardTypeAndBoardId(BOARD_TYPE, boardId);
         CertificationBoard board = certificationBoardService.findById(boardId);
-        return new MultiCommentSelectionResponse(convertToCertificationBoardCommentSelectionResponse2(memberId, commentsByCertificationBoard, board),
-                true);
+        return new MultiCommentSelectionResponse(convertToCertificationBoardCommentSelectionResponse(memberId, commentsByCertificationBoard, board),
+                WRITING_COMMENT_PERMISSION);
     }
 
-    private List<CommentSelectionResponse> convertToCertificationBoardCommentSelectionResponse2(final Long memberId, final List<Comment> commentsByRecruitmentBoard, final CertificationBoard board) {
+    private List<CommentSelectionResponse> convertToCertificationBoardCommentSelectionResponse(final Long memberId, final List<Comment> commentsByRecruitmentBoard, final CertificationBoard board) {
         return commentsByRecruitmentBoard.stream()
                 .map(comment -> new CommentSelectionResponse(comment, memberId, board.isSameWriterId(comment.getWriter().getId()), false))
                 .collect(Collectors.toUnmodifiableList());
