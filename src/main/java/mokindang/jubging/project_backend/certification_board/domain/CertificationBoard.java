@@ -3,7 +3,6 @@ package mokindang.jubging.project_backend.certification_board.domain;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import mokindang.jubging.project_backend.comment.domain.Comment;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.image.domain.Image;
 import mokindang.jubging.project_backend.member.domain.Member;
@@ -20,6 +19,8 @@ import java.util.Objects;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CertificationBoard {
+
+    private static final int MAIN_IMAGE_INDEX = 0;
 
     @Id
     @Column(name = "certification_board_id")
@@ -73,7 +74,15 @@ public class CertificationBoard {
     }
 
     public String getMainImageUrl() {
-        return images.get(0).getFilePath();
+        validateMainImageUrl();
+        return images.get(MAIN_IMAGE_INDEX)
+                .getFilePath();
+    }
+
+    private void validateMainImageUrl() {
+        if (images.isEmpty()) {
+            throw new IllegalStateException("이미지가 존재하지 않습니다.");
+        }
     }
 
     public void validatePermission(final Long memberId) {
