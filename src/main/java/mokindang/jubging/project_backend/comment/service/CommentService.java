@@ -41,7 +41,6 @@ public class CommentService {
         return new BoardIdResponse(comment.getBoardId());
     }
 
-    @Transactional
     public MultiCommentSelectionResponse selectComments(final Long memberId, final BoardType boardType, final Long boardId) {
         CommentsSelectionStrategy commentSelectionStrategy = commentsSelectionStrategyFinder.getCommentSelectionStrategy(boardType);
         return commentSelectionStrategy.selectComments(boardId, memberId);
