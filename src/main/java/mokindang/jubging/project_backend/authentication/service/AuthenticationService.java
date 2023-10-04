@@ -3,9 +3,9 @@ package mokindang.jubging.project_backend.authentication.service;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.authentication.domain.token.RefreshToken;
 import mokindang.jubging.project_backend.authentication.repository.RefreshTokenRepository;
+import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.service.MemberService;
 import mokindang.jubging.project_backend.member.service.request.AuthorizationCodeRequest;
 import mokindang.jubging.project_backend.member.service.response.JwtResponse;
@@ -92,8 +92,8 @@ public class AuthenticationService {
     public JwtResponse reissue(final String refreshToken) {
         RefreshToken existRefreshToken = refreshTokenRepository.findByToken(refreshToken)
                 .orElseThrow(() -> new JwtException("Refresh Token 이 존재하지 않습니다."));
-        String newRefreshToken = UUID.randomUUID().toString();
         existRefreshToken.validateExpirationTime(LocalDateTime.now());
+        String newRefreshToken = UUID.randomUUID().toString();
         existRefreshToken.switchRefreshToken(newRefreshToken);
         Member member = memberService.findByMemberId(existRefreshToken.getMemberId());
         return new JwtResponse(tokenManager.createToken(member.getId()), newRefreshToken);

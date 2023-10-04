@@ -70,6 +70,8 @@ public class RecruitmentBoard {
     public RecruitmentBoard(final LocalDateTime creatingDateTime, final Member writer, final LocalDate startingDate,
                             final String activityCategory, final Place meetingPlace, final String title, final String content,
                             final int maxParticipationCount) {
+        Region writerRegion = writer.getRegion();
+        validateRegion(writerRegion);
         this.creatingDateTime = creatingDateTime;
         this.writer = writer;
         LocalDate creatingDate = creatingDateTime.toLocalDate();
@@ -77,9 +79,7 @@ public class RecruitmentBoard {
         this.activityCategory = ActivityCategory.from(activityCategory);
         this.title = new Title(title);
         this.contentBody = new ContentBody(content);
-        Region region = writer.getRegion();
-        validateRegion(region);
-        this.writingRegion = region;
+        this.writingRegion = writerRegion;
         this.onRecruitment = true;
         this.meetingPlace = meetingPlace;
         this.participationList.add(new Participation(this, writer));
@@ -143,8 +143,8 @@ public class RecruitmentBoard {
     }
 
     public void addParticipationMember(final Member member) {
-        Participation participation = new Participation(this, member);
         validateAlreadyParticipatingMember(member);
+        Participation participation = new Participation(this, member);
         if (onRecruitment) {
             participationCount = participationCount.countUp();
             participationList.add(participation);
