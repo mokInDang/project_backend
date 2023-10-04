@@ -46,10 +46,10 @@ public class CertificationBoard {
     @OneToMany(mappedBy = "certificationBoard", cascade = CascadeType.REMOVE)
     private List<Image> images = new ArrayList<>();
 
-    public CertificationBoard(final LocalDateTime createdDateTime, final LocalDateTime modifiedTIme,
+    public CertificationBoard(final LocalDateTime createdDateTime, final LocalDateTime modifiedTime,
                               final Member writer, final String title, final String contentBody) {
         this.createdDateTime = createdDateTime;
-        this.modifiedTIme = modifiedTIme;
+        this.modifiedTIme = modifiedTime;
         this.writer = writer;
         this.title = new Title(title);
         this.contentBody = new ContentBody(contentBody);
