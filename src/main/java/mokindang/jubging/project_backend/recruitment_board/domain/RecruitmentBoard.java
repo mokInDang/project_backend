@@ -61,7 +61,7 @@ public class RecruitmentBoard {
     @Embedded
     private ParticipationCount participationCount;
 
-    @OneToMany(mappedBy = "recruitmentBoard", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "recruitmentBoard", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Participation> participationList = new ArrayList<>();
 
     @Version
