@@ -26,7 +26,7 @@ public class MultiCommentSelectionResponse {
 
     private Long countReplyCommentAndComment(final List<CommentResponse> comments) {
         return (comments.stream()
-                .mapToLong(commentResponse -> commentResponse.getMultiReplyCommentResponse().countOfReplyComments)
+                .mapToLong(commentResponse -> commentResponse.getCountOfReplyComment())
                 .sum()) + comments.size();
     }
 }

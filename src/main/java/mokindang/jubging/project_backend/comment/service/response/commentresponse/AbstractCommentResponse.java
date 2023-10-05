@@ -44,8 +44,8 @@ public abstract class AbstractCommentResponse implements CommentResponse {
     private final boolean writerOfBoard;
 
     @Override
-    public MultiReplyCommentSelectionResponse getMultiReplyCommentResponse() {
-        return multiReplyCommentSelectionResponse;
+    public Long getCountOfReplyComment() {
+        return multiReplyCommentSelectionResponse.getCountOfReplyComments();
     }
 
     public AbstractCommentResponse(final Comment comment, final Long memberId, final boolean isWriterOfBoard) {
