@@ -39,9 +39,9 @@ class CertificationBoardCommentsSelectionStrategyTest {
     void selectComments() {
         //given
         SoftAssertions softly = new SoftAssertions();
-        List<Comment> testComment = List.of(createTestComment(1L), createTestComment(1L));
+        List<Comment> testComments = List.of(createTestComment(1L), createTestComment(1L));
         when(commentRepository.findCommentByBoardTypeAndBoardId(BoardType.CERTIFICATION_BOARD, 1L))
-                .thenReturn(testComment);
+                .thenReturn(testComments);
         CertificationBoard certificationBoard = createCertificationBoard();
         when(certificationBoardService.findById(1L)).thenReturn(certificationBoard);
 
@@ -55,7 +55,7 @@ class CertificationBoardCommentsSelectionStrategyTest {
         softly.assertAll();
     }
 
-    private Comment createTestComment(Long boardId) {
+    private Comment createTestComment(final Long boardId) {
         LocalDateTime createdDateTime = LocalDateTime.of(2023, 11, 11, 3, 12);
         Member writer = mock(Member.class);
         when(writer.getId()).thenReturn(1L);
