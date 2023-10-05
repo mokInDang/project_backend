@@ -6,8 +6,9 @@ import mokindang.jubging.project_backend.certification_board.service.Certificati
 import mokindang.jubging.project_backend.comment.domain.Comment;
 import mokindang.jubging.project_backend.comment.repository.CommentRepository;
 import mokindang.jubging.project_backend.comment.service.BoardType;
-import mokindang.jubging.project_backend.comment.service.response.CommentSelectionResponse;
 import mokindang.jubging.project_backend.comment.service.response.MultiCommentSelectionResponse;
+import mokindang.jubging.project_backend.comment.service.response.commentresponse.CertificationBoardCommentResponse;
+import mokindang.jubging.project_backend.comment.service.response.commentresponse.CommentResponse;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -31,9 +32,9 @@ public class CertificationBoardCommentsSelectionStrategy implements CommentsSele
                 WRITING_COMMENT_PERMISSION);
     }
 
-    private List<CommentSelectionResponse> convertToCertificationBoardCommentSelectionResponse(final Long memberId, final List<Comment> commentsByRecruitmentBoard, final CertificationBoard board) {
+    private List<CommentResponse> convertToCertificationBoardCommentSelectionResponse(final Long memberId, final List<Comment> commentsByRecruitmentBoard, final CertificationBoard board) {
         return commentsByRecruitmentBoard.stream()
-                .map(comment -> new CommentSelectionResponse(comment, memberId, board.isSameWriterId(comment.getWriter().getId()), false))
+                .map(comment -> new CertificationBoardCommentResponse(comment, memberId, board.isSameWriterId(comment.getWriter().getId())))
                 .collect(Collectors.toUnmodifiableList());
     }
 
