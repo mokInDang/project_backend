@@ -50,3 +50,5 @@
 - [참여인원 카운트 관련 동시성 이슈 탐구 및 해결](https://velog.io/@cjh8746/%ED%99%9C%EB%8F%99-%EC%B0%B8%EC%97%AC%ED%95%98%EA%B8%B0-api-%EA%B5%AC%ED%98%84%EA%B8%B0-with-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%9D%B4%EC%8A%88)
 
 - [외래키 잠금 전파로 인한 데드락 발생 이슈 탐구 및 해결](https://velog.io/@cjh8746/%ED%94%8C%EB%A1%9C%EA%B9%85-%ED%99%9C%EB%8F%99-%EC%B0%B8%EC%97%AC%ED%95%98%EA%B8%B0-api-%EA%B5%AC%ED%98%84%EA%B8%B0-with-%EB%8D%B0%EB%93%9C%EB%9D%BD-2%ED%83%84)
+
+- [전략 패턴을 활용한 댓글 서비스 구조 리팩토링](https://www.notion.so/a7a703e09f194f3a8b45c3ba2ddece5c?pvs=4)
