@@ -48,7 +48,5 @@
 - [도메인에서 시간 검증이 필요한 경우, 테스트 코드에서 LocalDate.now() 제어하기](https://velog.io/@cjh8746/%ED%85%8C%EC%8A%A4%ED%8A%B8-%EC%BD%94%EB%93%9C%EC%97%90%EC%84%9C-LocalDate.now-%EC%A0%9C%EC%96%B4%ED%95%98%EA%B8%B0)
 
 - [참여인원 카운트 관련 동시성 이슈 탐구 및 해결](https://velog.io/@cjh8746/%ED%99%9C%EB%8F%99-%EC%B0%B8%EC%97%AC%ED%95%98%EA%B8%B0-api-%EA%B5%AC%ED%98%84%EA%B8%B0-with-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%9D%B4%EC%8A%88)
-- 
+
 - [외래키 잠금 전파로 인한 데드락 발생 이슈 탐구 및 해결](https://velog.io/@cjh8746/%ED%94%8C%EB%A1%9C%EA%B9%85-%ED%99%9C%EB%8F%99-%EC%B0%B8%EC%97%AC%ED%95%98%EA%B8%B0-api-%EA%B5%AC%ED%98%84%EA%B8%B0-with-%EB%8D%B0%EB%93%9C%EB%9D%BD-2%ED%83%84)
-
-
