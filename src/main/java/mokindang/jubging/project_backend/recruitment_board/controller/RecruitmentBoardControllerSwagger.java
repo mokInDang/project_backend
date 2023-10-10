@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import mokindang.jubging.project_backend.exception.ErrorResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.request.BoardModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
-import mokindang.jubging.project_backend.recruitment_board.service.response.*;
+import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.board.MultiBoardSelectionResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.board.RecruitmentBoardSelectionResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.marker.MultiBoardPlaceSelectionResponse;
@@ -60,7 +60,7 @@ public interface RecruitmentBoardControllerSwagger {
             @ApiResponse(responseCode = "200", description = "전체 게시글 리스트 조회 완료"),
     })
     @GetMapping
-    ResponseEntity<MultiBoardSelectionResponse> selectBoards(final Pageable pageable);
+    ResponseEntity<MultiBoardSelectionResponse> selectBoards(final Long startId, final Pageable pageable);
 
     @Operation(summary = "게시글 삭제", parameters = {
             @Parameter(name = "boardId", description = "삭제할 Board 의 Id", in = ParameterIn.PATH),
