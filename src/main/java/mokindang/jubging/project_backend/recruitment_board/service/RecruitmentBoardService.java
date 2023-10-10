@@ -24,6 +24,7 @@ import mokindang.jubging.project_backend.recruitment_board.service.response.mark
 import mokindang.jubging.project_backend.recruitment_board.service.response.marker.MultiBoardPlaceSelectionResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.ranking.MultiRegionCountingChartResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.ranking.RegionCountingChartResponse;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -76,8 +77,9 @@ public class RecruitmentBoardService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
     }
 
-    public MultiBoardSelectionResponse selectAllBoards(final Pageable pageable) {
-        Slice<RecruitmentBoard> boards = recruitmentBoardRepository.selectBoards(pageable);
+    public MultiBoardSelectionResponse selectAllBoards(final Long startId, final Pageable pageable) {
+        PageRequest pageRequest = PageRequest.of(0, pageable.getPageSize());
+        Slice<RecruitmentBoard> boards = recruitmentBoardRepository.selectBoards(startId, pageRequest);
         List<SummaryBoardResponse> summaryRecruitmentBoards = convertToSummaryBoardResponses(boards.getContent());
         return new MultiBoardSelectionResponse(summaryRecruitmentBoards, boards.hasNext());
     }
@@ -85,7 +87,7 @@ public class RecruitmentBoardService {
     private List<SummaryBoardResponse> convertToSummaryBoardResponses(final List<RecruitmentBoard> boards) {
         List<CommentCountResponse> commentCountResponses = getCommentCountResponse(boards);
         return IntStream.range(FIRST_INDEX, boards.size())
-                .mapToObj(index -> new SummaryBoardResponse(boards.get(index), commentCountResponses.get(index).getCommentCount())
+                .mapToObj(index -> new SummaryBoardResponse(boards.get(index), 0L)
                 ).collect(Collectors.toUnmodifiableList());
     }
 

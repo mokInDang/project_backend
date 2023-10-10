@@ -24,8 +24,8 @@ public interface RecruitmentBoardRepository extends JpaRepository<RecruitmentBoa
     void updateOnRecruitmentByStartingDate(LocalDate today);
 
     @BatchSize(size = 1000)
-    @Query("SELECT b FROM RecruitmentBoard b ORDER BY b.creatingDateTime DESC")
-    Slice<RecruitmentBoard> selectBoards(final Pageable pageable);
+    @Query("SELECT b FROM RecruitmentBoard b WHERE b.id >:startId ORDER BY b.creatingDateTime DESC")
+    Slice<RecruitmentBoard> selectBoards(final Long startId, Pageable pageable);
 
     @BatchSize(size = 1000)
     @Query("SELECT b " +
