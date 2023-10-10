@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import javax.persistence.LockModeType;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 public interface RecruitmentBoardRepository extends JpaRepository<RecruitmentBoard, Long> {
@@ -24,8 +25,9 @@ public interface RecruitmentBoardRepository extends JpaRepository<RecruitmentBoa
     void updateOnRecruitmentByStartingDate(LocalDate today);
 
     @BatchSize(size = 1000)
-    @Query("SELECT b FROM RecruitmentBoard b WHERE b.id >:startId ORDER BY b.creatingDateTime DESC")
-    Slice<RecruitmentBoard> selectBoards(final Long startId, Pageable pageable);
+    @Query("SELECT b FROM RecruitmentBoard b " +
+            "WHERE b.id >:lastBoardId ")
+    List<RecruitmentBoard> selectBoards(final Long lastBoardId, Pageable pageable);
 
     @BatchSize(size = 1000)
     @Query("SELECT b " +

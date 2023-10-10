@@ -6,6 +6,7 @@ import mokindang.jubging.project_backend.recruitment_board.service.RecruitmentBo
 import mokindang.jubging.project_backend.recruitment_board.service.facade.OptimisticLockRecruitmentBoardResolver;
 import mokindang.jubging.project_backend.recruitment_board.service.request.BoardModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
+import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardPagingResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.board.MultiBoardSelectionResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.board.RecruitmentBoardSelectionResponse;
@@ -45,10 +46,10 @@ public class RecruitmentBoardController implements RecruitmentBoardControllerSwa
     }
 
     @GetMapping
-    public ResponseEntity<MultiBoardSelectionResponse> selectBoards(@RequestParam(name = "boardId") final Long startId, final Pageable pageable) {
-        MultiBoardSelectionResponse multiBoardSelectionResponse = recruitmentBoardService.selectAllBoards(startId, pageable);
+    public ResponseEntity<MultiBoardPagingResponse> selectBoards(@RequestParam final Long lastBoardId, final int size) {
+        MultiBoardPagingResponse multiBoardPagingResponse = recruitmentBoardService.selectAllBoards(lastBoardId, size);
         return ResponseEntity.ok()
-                .body(multiBoardSelectionResponse);
+                .body(multiBoardPagingResponse);
     }
 
     @DeleteMapping("/{boardId}")

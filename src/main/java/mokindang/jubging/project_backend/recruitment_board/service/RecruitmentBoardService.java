@@ -16,6 +16,7 @@ import mokindang.jubging.project_backend.recruitment_board.service.request.Board
 import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceCreationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.MeetingPlaceModificationRequest;
 import mokindang.jubging.project_backend.recruitment_board.service.request.RecruitmentBoardCreationRequest;
+import mokindang.jubging.project_backend.recruitment_board.service.response.MultiBoardPagingResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.RecruitmentBoardIdResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.board.MultiBoardSelectionResponse;
 import mokindang.jubging.project_backend.recruitment_board.service.response.board.RecruitmentBoardSelectionResponse;
@@ -77,11 +78,12 @@ public class RecruitmentBoardService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
     }
 
-    public MultiBoardSelectionResponse selectAllBoards(final Long startId, final Pageable pageable) {
-        PageRequest pageRequest = PageRequest.of(0, pageable.getPageSize());
-        Slice<RecruitmentBoard> boards = recruitmentBoardRepository.selectBoards(startId, pageRequest);
-        List<SummaryBoardResponse> summaryRecruitmentBoards = convertToSummaryBoardResponses(boards.getContent());
-        return new MultiBoardSelectionResponse(summaryRecruitmentBoards, boards.hasNext());
+    public MultiBoardPagingResponse selectAllBoards(final Long lastBoardId, final int size) {
+        PageRequest pageRequest = PageRequest.of(0, size + 1);
+        List<RecruitmentBoard> boardsWithNextCursor = recruitmentBoardRepository.selectBoards(lastBoardId, pageRequest);
+        List<SummaryBoardResponse> summaryRecruitmentBoardsWithNextCursor = convertToSummaryBoardResponses(boardsWithNextCursor);
+        PaginationCollection<SummaryBoardResponse> boardPaginationCollection = PaginationCollection.of(summaryRecruitmentBoardsWithNextCursor, size);
+        return new MultiBoardPagingResponse(boardPaginationCollection);
     }
 
     private List<SummaryBoardResponse> convertToSummaryBoardResponses(final List<RecruitmentBoard> boards) {
