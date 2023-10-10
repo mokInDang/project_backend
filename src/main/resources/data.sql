@@ -36,13 +36,13 @@ INSERT INTO recruitment_board (RECRUITMENT_BOARD_ID, MEMBER_ID, CREATING_DATE_TI
                                TITLE, CONTENT_BODY,
                                REGION, ON_RECRUITMENT, longitude_point, latitude_point, address, count_of_participation,
                                max_count_of_participation, version)
-VALUES (1, 1, '2023-3-9-12-0', '2023-3-15', 'RUNNING', '제목', '본문내용', '동작구', true, 1.1, 1.2, '서울시 동작구 상도동 1-1', 1, 8, 1);
+VALUES (1, 1, '2022-3-9-12-0', '2023-3-15', 'RUNNING', '제목', '본문내용', '동작구', true, 1.1, 1.2, '서울시 동작구 상도동 1-1', 1, 8, 1);
 
 INSERT INTO recruitment_board (RECRUITMENT_BOARD_ID, MEMBER_ID, CREATING_DATE_TIME, STARTING_DATE, ACTIVITY_CATEGORY,
                                TITLE, CONTENT_BODY,
                                REGION, ON_RECRUITMENT, longitude_point, latitude_point, address, count_of_participation,
                                max_count_of_participation, version)
-VALUES (2, 2, '2023-3-9-12-0', '2023-3-16', 'RUNNING', '제목2', '본문내용2', '동작구', true, 1.3, 1.4, '서울시 동작구 상도동 1-2', 1, 8,
+VALUES (2, 2, '2022-3-9-12-0', '2023-3-16', 'RUNNING', '제목2', '본문내용2', '동작구', true, 1.3, 1.4, '서울시 동작구 상도동 1-2', 1, 8,
         1);
 
 INSERT INTO certification_board (MEMBER_ID, CREATED_DATE_TIME, modifiedtime, TITLE, CONTENT_BODY)
