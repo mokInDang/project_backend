@@ -3,9 +3,9 @@ package mokindang.jubging.project_backend.authentication.service;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.authentication.domain.token.RefreshToken;
 import mokindang.jubging.project_backend.authentication.repository.RefreshTokenRepository;
+import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.service.MemberService;
 import mokindang.jubging.project_backend.member.service.request.AuthorizationCodeRequest;
 import mokindang.jubging.project_backend.member.service.response.JwtResponse;
@@ -27,6 +27,8 @@ import static mokindang.jubging.project_backend.member.domain.LoginState.LOGIN;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AuthenticationService {
+
+    private static final int ONE_MONTH = 30;
 
     private final MemberService memberService;
     private final KaKaoOAuth2 kakaoOAuth2;
@@ -79,7 +81,7 @@ public class AuthenticationService {
                         },
                         () -> {
                             LocalDateTime newTokenExpirationTime = LocalDateTime.now()
-                                    .plusDays(60);
+                                    .plusDays(ONE_MONTH);
                             RefreshToken refreshToken = new RefreshToken(member.getId(), newRefreshToken, newTokenExpirationTime);
                             refreshTokenRepository.save(refreshToken);
                             log.info("JWT 토큰 발행 - MemberId : {}, Email : {}, Alias : {}, Access Token : {}, RefreshToken : {} ",
