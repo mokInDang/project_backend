@@ -78,7 +78,7 @@ class RecruitmentBoardServiceTest {
     private RecruitmentBoardCreationRequest createTestRecruitmentBoardCreationRequest() {
         MeetingPlaceCreationRequest meetingPlaceCreationRequest = createTestMeetingPlaceCreationRequest();
         return new RecruitmentBoardCreationRequest("제목", "본문", "달리기",
-                LocalDate.of(2023, 11, 11), meetingPlaceCreationRequest, 8);
+                LocalDate.of(2025, 11, 11), meetingPlaceCreationRequest, 8);
     }
 
     private MeetingPlaceCreationRequest createTestMeetingPlaceCreationRequest() {
