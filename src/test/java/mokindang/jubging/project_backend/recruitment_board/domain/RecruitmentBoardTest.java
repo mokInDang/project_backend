@@ -236,14 +236,14 @@ class RecruitmentBoardTest {
         String newActivityCategory = "산책";
         String newTitleValue = "새로운 제목입니다.";
         String newContentValue = "새로운 본문 내용입니다.";
-        LocalDate newStartingDate = LocalDate.parse("2023-11-13");
+        LocalDate newStartingDate = LocalDate.parse("2025-11-13");
         Place place = new Place(new Coordinate(1.1, 1.2), "서울시 동작구 상도동 1-1");
 
         //when
         recruitmentBoard.modify(writerId, newStartingDate, newActivityCategory, newTitleValue, newContentValue, place);
 
         //then
-        softly.assertThat(recruitmentBoard.getStartingDate().getValue()).isEqualTo("2023-11-13");
+        softly.assertThat(recruitmentBoard.getStartingDate().getValue()).isEqualTo("2025-11-13");
         softly.assertThat(recruitmentBoard.getActivityCategory().getValue()).isEqualTo(newActivityCategory);
         softly.assertThat(recruitmentBoard.getTitle().getValue()).isEqualTo(newTitleValue);
         softly.assertThat(recruitmentBoard.getContentBody().getValue()).isEqualTo(newContentValue);
@@ -260,7 +260,7 @@ class RecruitmentBoardTest {
         String newActivityCategory = "산책";
         String newTitleValue = "새로운 제목입니다.";
         String newContentValue = "새로운 본문 내용입니다.";
-        LocalDate newStartingDate = LocalDate.parse("2023-11-13");
+        LocalDate newStartingDate = LocalDate.parse("2025-11-13");
         Place place = new Place(new Coordinate(1.1, 1.2), "서울시 동작구 상도동 1-1");
 
         //when, then
