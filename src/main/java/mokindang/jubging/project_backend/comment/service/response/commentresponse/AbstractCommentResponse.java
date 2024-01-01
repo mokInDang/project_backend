@@ -1,15 +1,17 @@
-package mokindang.jubging.project_backend.comment.service.response;
+package mokindang.jubging.project_backend.comment.service.response.commentresponse;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import mokindang.jubging.project_backend.comment.domain.Comment;
+import mokindang.jubging.project_backend.comment.service.response.MultiReplyCommentSelectionResponse;
+import mokindang.jubging.project_backend.comment.service.response.ReplyCommentSelectionResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-public class CommentSelectionResponse {
+public abstract class AbstractCommentResponse implements CommentResponse {
 
     @Schema(description = "댓글 id")
     private final Long commentId;
@@ -36,15 +38,17 @@ public class CommentSelectionResponse {
     private final boolean mine;
 
     @Schema(description = "대댓글 목록")
-    MultiReplyCommentSelectionResponse multiReplyCommentSelectionResponse;
+    private final MultiReplyCommentSelectionResponse multiReplyCommentSelectionResponse;
 
     @Schema(description = "해당 댓글이 게시글의 작성자인지 여부")
     private final boolean writerOfBoard;
 
-    @Schema(description = "댓글의 작성자가 플로깅에 참여한 상태 여부")
-    private final boolean writerParticipatedIn;
+    @Override
+    public Long getCountOfReplyComment() {
+        return multiReplyCommentSelectionResponse.getCountOfReplyComments();
+    }
 
-    public CommentSelectionResponse(final Comment comment, final Long memberId, final boolean isWriterOfBoard, final boolean writerParticipatedIn) {
+    public AbstractCommentResponse(final Comment comment, final Long memberId, final boolean isWriterOfBoard) {
         this.commentId = comment.getId();
         this.commentBody = comment.getCommentBody()
                 .getBody();
@@ -57,10 +61,9 @@ public class CommentSelectionResponse {
         List<ReplyCommentSelectionResponse> replyCommentSelectionResponses = generateReplyCommentSelectionResponses(comment, memberId);
         this.multiReplyCommentSelectionResponse = new MultiReplyCommentSelectionResponse(replyCommentSelectionResponses);
         this.writerOfBoard = isWriterOfBoard;
-        this.writerParticipatedIn = writerParticipatedIn;
     }
 
-    private  List<ReplyCommentSelectionResponse> generateReplyCommentSelectionResponses(final Comment comment, final Long memberId) {
+    private List<ReplyCommentSelectionResponse> generateReplyCommentSelectionResponses(final Comment comment, final Long memberId) {
         return comment.getReplyComments().stream()
                 .map(replyComment -> new ReplyCommentSelectionResponse(replyComment, memberId))
                 .collect(Collectors.toUnmodifiableList());

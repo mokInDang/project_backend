@@ -94,8 +94,8 @@ public class AuthenticationService {
     public JwtResponse reissue(final String refreshToken) {
         RefreshToken existRefreshToken = refreshTokenRepository.findByToken(refreshToken)
                 .orElseThrow(() -> new JwtException("Refresh Token 이 존재하지 않습니다."));
-        String newRefreshToken = UUID.randomUUID().toString();
         existRefreshToken.validateExpirationTime(LocalDateTime.now());
+        String newRefreshToken = UUID.randomUUID().toString();
         existRefreshToken.switchRefreshToken(newRefreshToken);
         Member member = memberService.findByMemberId(existRefreshToken.getMemberId());
         return new JwtResponse(tokenManager.createToken(member.getId()), newRefreshToken);

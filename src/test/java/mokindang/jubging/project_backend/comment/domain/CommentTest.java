@@ -1,9 +1,8 @@
 package mokindang.jubging.project_backend.comment.domain;
 
-import mokindang.jubging.project_backend.certification_board.domain.CertificationBoard;
 import mokindang.jubging.project_backend.comment.domain.vo.CommentBody;
+import mokindang.jubging.project_backend.comment.service.BoardType;
 import mokindang.jubging.project_backend.member.domain.Member;
-import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,12 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.annotation.Rollback;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,50 +18,20 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Rollback
-@DataJpaTest
 @ExtendWith(MockitoExtension.class)
 class CommentTest {
-
-    @PersistenceContext
-    private EntityManager em;
 
     @Test
     @DisplayName("작성 일시, 작성자, 댓글 본문을 입력받아 댓글을 생성한다.")
     void create() {
         //given
-        RecruitmentBoard recruitmentBoard = findTestRecruitmentBoard();
         LocalDateTime now = LocalDateTime.of(2023, 4, 8, 16, 48);
         Member writer = new Member("test@email.com", "test");
         String commentBodyValue = "안녕하세요.";
+        BoardType boardType = BoardType.RECRUITMENT_BOARD;
 
         //when, then
-        assertThatCode(() -> Comment.createOnRecruitmentBoardWith(recruitmentBoard, commentBodyValue, writer, now)).doesNotThrowAnyException();
-    }
-
-    private RecruitmentBoard findTestRecruitmentBoard() {
-        return em.find(RecruitmentBoard.class, 1L);
-    }
-
-    @Test
-    @DisplayName("인증 게시글에 대한 작성 일시, 작성자, 댓글 본문을 입력받아 댓글을 생성한다.")
-    void createByCertification_board() {
-        //given
-        CertificationBoard certificationBoard = createCertificationBoard();
-        LocalDateTime now = LocalDateTime.of(2023, 4, 8, 16, 48);
-        Member writer = new Member("test@email.com", "test");
-        String commentBodyValue = "안녕하세요.";
-
-        //when, then
-        assertThatCode(() -> Comment.createOnCertificationBoardWith(certificationBoard, commentBodyValue, writer, now)).doesNotThrowAnyException();
-    }
-
-    private CertificationBoard createCertificationBoard() {
-        LocalDateTime now = LocalDateTime.of(2023, 11, 12, 0, 0, 0);
-        Member writer = new Member("test1@email.com", "test");
-        writer.updateRegion("동작구");
-        return new CertificationBoard(now, now, writer, "본문", "내용");
+        assertThatCode(() -> new Comment(1L, boardType, commentBodyValue, writer, now)).doesNotThrowAnyException();
     }
 
     @Test
@@ -92,12 +56,13 @@ class CommentTest {
     }
 
     private Comment createTestComment() {
-        RecruitmentBoard recruitmentBoard = findTestRecruitmentBoard();
         LocalDateTime now = LocalDateTime.of(2023, 4, 8, 16, 48);
         Member writer = new Member("test@email.com", "test");
         writer.updateProfileImage("test_url");
         String commentBodyValue = "안녕하세요.";
-        return Comment.createOnRecruitmentBoardWith(recruitmentBoard, commentBodyValue, writer, now);
+        BoardType boardType = BoardType.RECRUITMENT_BOARD;
+
+        return new Comment(1L, boardType, commentBodyValue, writer, now);
     }
 
     @Test
@@ -108,11 +73,7 @@ class CommentTest {
         when(writer.getId()).thenReturn(1L);
 
         SoftAssertions softly = new SoftAssertions();
-        RecruitmentBoard recruitmentBoard = findTestRecruitmentBoard();
-        LocalDateTime createdTime = LocalDateTime.of(2023, 4, 8, 16, 48);
-
-        String commentBodyValue = "안녕하세요.";
-        Comment comment = Comment.createOnRecruitmentBoardWith(recruitmentBoard, commentBodyValue, writer, createdTime);
+        Comment comment = new Comment(1L, BoardType.RECRUITMENT_BOARD, "본문", writer, LocalDateTime.now());
         String newCommentBody = "하이~~";
         LocalDateTime now = LocalDateTime.of(2023, 5, 9, 11, 11, 11);
 
@@ -134,10 +95,8 @@ class CommentTest {
         Member writer = mock(Member.class);
         when(writer.getId()).thenReturn(1L);
 
-        RecruitmentBoard recruitmentBoard = findTestRecruitmentBoard();
-        LocalDateTime createdTime = LocalDateTime.of(2023, 4, 8, 16, 48);
-        String commentBodyValue = "안녕하세요.";
-        Comment comment = Comment.createOnRecruitmentBoardWith(recruitmentBoard, commentBodyValue, writer, createdTime);
+        LocalDateTime createdTime = LocalDateTime.of(2022, 1, 1, 1, 1, 1);
+        Comment comment = new Comment(1L, BoardType.RECRUITMENT_BOARD, "본문", writer, createdTime);
         String newCommentBody = "하이~~";
         LocalDateTime now = LocalDateTime.of(2023, 5, 9, 11, 11, 11);
         comment.modify(1L, newCommentBody, now);

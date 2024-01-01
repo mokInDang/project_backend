@@ -43,4 +43,21 @@ public class MockedRecruitmentBoardFactory {
         Coordinate coordinate = new Coordinate(1.1, 1.2);
         return new Place(coordinate, "서울시 동작구 상도동 1-1");
     }
+
+    public static RecruitmentBoard createMockedSummaryBoard(final Long boardId) {
+        LocalDate today = LocalDate.of(2023, 3, 14);
+        RecruitmentBoard recruitmentBoard = mock(RecruitmentBoard.class);
+        when(recruitmentBoard.getId()).thenReturn(boardId);
+        when(recruitmentBoard.getTitle()).thenReturn(new Title("제목"));
+        when(recruitmentBoard.getContentBody()).thenReturn(new ContentBody("본문내용"));
+        when(recruitmentBoard.getWritingRegion()).thenReturn(Region.from("동작구"));
+        when(recruitmentBoard.isOnRecruitment()).thenReturn(true);
+        when(recruitmentBoard.getStartingDate()).thenReturn(new StartingDate(today, LocalDate.of(2025, 2, 11)));
+        when(recruitmentBoard.getWriterAlias()).thenReturn("test");
+        when(recruitmentBoard.getFirstFourDigitsOfWriterEmail()).thenReturn("test");
+        when(recruitmentBoard.getWriterProfileImageUrl()).thenReturn("test_url");
+        when(recruitmentBoard.getActivityCategory()).thenReturn(ActivityCategory.WALK);
+        when(recruitmentBoard.getParticipationCount()).thenReturn(ParticipationCount.createDefaultParticipationCount(8));
+        return recruitmentBoard;
+    }
 }

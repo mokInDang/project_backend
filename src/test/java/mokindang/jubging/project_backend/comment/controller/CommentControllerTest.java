@@ -9,8 +9,8 @@ import mokindang.jubging.project_backend.comment.service.request.CommentCreation
 import mokindang.jubging.project_backend.comment.service.request.ReplyCommentCreationRequest;
 import mokindang.jubging.project_backend.comment.service.response.BoardIdResponse;
 import mokindang.jubging.project_backend.comment.service.response.CommentIdResponse;
-import mokindang.jubging.project_backend.comment.service.response.CommentSelectionResponse;
 import mokindang.jubging.project_backend.comment.service.response.MultiCommentSelectionResponse;
+import mokindang.jubging.project_backend.comment.service.response.commentresponse.RecruitmentBoardCommentResponse;
 import mokindang.jubging.project_backend.web.jwt.TokenManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -71,10 +71,10 @@ class CommentControllerTest {
             "이때 각 댓글에 게시판의 작성자 유무와, 활동 참여 여부를 함께 반환한다.")
     void selectComments() throws Exception {
         //given
-        CommentSelectionResponse commentSelectionResponse = new CommentSelectionResponse(createMockedComment(), 1L,
+        RecruitmentBoardCommentResponse recruitmentBoardCommentSelectionResponse = new RecruitmentBoardCommentResponse(createMockedComment(), 1L,
                 true, true);
         when(commentService.selectComments(anyLong(), any(BoardType.class), anyLong()))
-                .thenReturn(new MultiCommentSelectionResponse(List.of(commentSelectionResponse), true));
+                .thenReturn(new MultiCommentSelectionResponse(List.of(recruitmentBoardCommentSelectionResponse), true));
 
         //when
         ResultActions actual = mockMvc.perform(get("/api/{board-type}/{boardId}/comments",

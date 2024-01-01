@@ -4,7 +4,10 @@ import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
 import mokindang.jubging.project_backend.recruitment_board.domain.ActivityCategory;
 import mokindang.jubging.project_backend.recruitment_board.domain.RecruitmentBoard;
-import mokindang.jubging.project_backend.recruitment_board.domain.vo.*;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.ContentBody;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.ParticipationCount;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.StartingDate;
+import mokindang.jubging.project_backend.recruitment_board.domain.vo.Title;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Coordinate;
 import mokindang.jubging.project_backend.recruitment_board.domain.vo.place.Place;
 import mokindang.jubging.project_backend.recruitment_board.service.response.board.SummaryBoardResponse;
@@ -28,7 +31,7 @@ class SummaryBoardResponseTest {
         RecruitmentBoard recruitmentBoard = createRecruitmentBoard();
 
         //when, then
-        assertThatCode(() -> new SummaryBoardResponse(recruitmentBoard)).doesNotThrowAnyException();
+        assertThatCode(() -> new SummaryBoardResponse(recruitmentBoard,1L)).doesNotThrowAnyException();
     }
 
     private RecruitmentBoard createRecruitmentBoard() {
@@ -51,7 +54,7 @@ class SummaryBoardResponseTest {
         //given
         SoftAssertions softly = new SoftAssertions();
         RecruitmentBoard recruitmentBoard = createMockedBoard();
-        SummaryBoardResponse summaryBoardResponse = new SummaryBoardResponse(recruitmentBoard);
+        SummaryBoardResponse summaryBoardResponse = new SummaryBoardResponse(recruitmentBoard,1L);
 
         //when
         Long boardId = summaryBoardResponse.getBoardId();

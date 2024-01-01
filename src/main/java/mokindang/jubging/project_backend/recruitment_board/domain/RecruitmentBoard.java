@@ -3,7 +3,6 @@ package mokindang.jubging.project_backend.recruitment_board.domain;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import mokindang.jubging.project_backend.comment.domain.Comment;
 import mokindang.jubging.project_backend.exception.custom.ForbiddenException;
 import mokindang.jubging.project_backend.member.domain.Member;
 import mokindang.jubging.project_backend.member.domain.vo.Region;
@@ -62,11 +61,8 @@ public class RecruitmentBoard {
     @Embedded
     private ParticipationCount participationCount;
 
-    @OneToMany(mappedBy = "recruitmentBoard", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "recruitmentBoard", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Participation> participationList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "recruitmentBoard", cascade = CascadeType.REMOVE)
-    private List<Comment> comments = new ArrayList<>();
 
     @Version
     private Long version;
@@ -74,6 +70,8 @@ public class RecruitmentBoard {
     public RecruitmentBoard(final LocalDateTime creatingDateTime, final Member writer, final LocalDate startingDate,
                             final String activityCategory, final Place meetingPlace, final String title, final String content,
                             final int maxParticipationCount) {
+        Region writerRegion = writer.getRegion();
+        validateRegion(writerRegion);
         this.creatingDateTime = creatingDateTime;
         this.writer = writer;
         LocalDate creatingDate = creatingDateTime.toLocalDate();
@@ -81,9 +79,7 @@ public class RecruitmentBoard {
         this.activityCategory = ActivityCategory.from(activityCategory);
         this.title = new Title(title);
         this.contentBody = new ContentBody(content);
-        Region region = writer.getRegion();
-        validateRegion(region);
-        this.writingRegion = region;
+        this.writingRegion = writerRegion;
         this.onRecruitment = true;
         this.meetingPlace = meetingPlace;
         this.participationList.add(new Participation(this, writer));
@@ -142,24 +138,13 @@ public class RecruitmentBoard {
         return writer.getFirstFourDigitsOfWriterEmail();
     }
 
-    public Long countCommentAndReplyComment() {
-        long countOfAllReplyComment = comments.stream()
-                .mapToInt(Comment::countReplyComment)
-                .sum();
-        return comments.size() + countOfAllReplyComment;
-    }
-
-    public void addComment(final Comment comment) {
-        this.comments.add(comment);
-    }
-
     public boolean isSameRegion(final Region region) {
         return this.writingRegion.equals(region);
     }
 
     public void addParticipationMember(final Member member) {
-        Participation participation = new Participation(this, member);
         validateAlreadyParticipatingMember(member);
+        Participation participation = new Participation(this, member);
         if (onRecruitment) {
             participationCount = participationCount.countUp();
             participationList.add(participation);
